@@ -1,0 +1,60 @@
+/* Guest Header Namespace: gh- */
+
+.gh-wrapper {
+    background-color: #0056AC;
+    /* Azul actualizado */
+    color: white;
+    height: 56px;
+    /* Altura fija estándar */
+    padding: 0;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+}
+
+.gh-container {
+    width: 100%;
+    margin: 0;
+    padding: 0 40px;
+    /* Espacio prudente desde el borde */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    gap: 15px;
+}
+
+.gh-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gh-icon {
+    display: flex;
+    align-items: center;
+    opacity: 0.9;
+}
+
+.gh-title {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.gh-right {
+    display: flex;
+    align-items: center;
+}
+
+.gh-logo {
+    height: 40px;
+    width: auto;
+    background-color: white;
+    /* Fondo blanco si el logo es transparente */
+    padding: 2px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    /* Asegura consistencia de tamaño */
+}

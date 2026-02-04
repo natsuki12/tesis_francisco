@@ -1,0 +1,244 @@
+:root {
+    --saime-blue: #0b5aa6;
+    --saime-blue-dark: #084b8a;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --line: #d8dde6;
+    --soft: #eef2f6;
+    /* Colores para alertas */
+    --success-bg: #d4edda;
+    --success-text: #155724;
+    --success-border: #c3e6cb;
+    --error-bg: #fff6f6;
+    --error-text: #7f1d1d;
+    --error-border: #f0caca;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* --- FIX GLOBAL: Fondo blanco --- */
+body {
+    background-color: #ffffff;
+    /* Asegura fondo blanco */
+    margin: 0;
+    /* Quita márgenes por defecto del navegador */
+}
+
+/* Specific view styles */
+.auth-main {
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text);
+    background: #ffffff;
+}
+
+/* MAIN CONTAINER */
+.auth-main {
+    min-height: calc(100vh - 64px);
+    /* Ajustado ya que no hay footer */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 16px;
+}
+
+.auth-shell {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 44px;
+}
+
+/* Logo block */
+.auth-shell__logo {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.logo-card__img {
+    width: 180px;
+    height: auto;
+    object-fit: contain;
+    background: #fff;
+}
+
+/* Panel Derecho */
+.auth-shell__panel {
+    width: min(640px, 100%);
+}
+
+.auth-title {
+    margin: 10px 0 18px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    color: #111827;
+}
+
+/* --- ESTILOS DE ALERTAS (NUEVO) --- */
+.auth-alert {
+    padding: 10px 12px;
+    border-radius: 4px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    border: 1px solid transparent;
+}
+
+/* Alerta Roja (Error) */
+.auth-alert:not(.success) {
+    background: var(--error-bg);
+    border-color: var(--error-border);
+    color: var(--error-text);
+}
+
+/* Alerta Verde (Éxito) - Movido desde el PHP */
+.auth-alert.success {
+    background-color: var(--success-bg);
+    color: var(--success-text);
+    border-color: var(--success-border);
+}
+
+/* Grid inside panel */
+.auth-fields-container {
+    max-width: 400px;
+}
+
+/* Divider */
+.auth-divider {
+    position: relative;
+    height: 160px;
+    margin-top: 6px;
+}
+
+.auth-divider::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 100%;
+    background: var(--line);
+}
+
+.auth-divider::after {
+    content: "";
+    position: absolute;
+    right: 4px;
+    top: 22px;
+    width: 4px;
+    height: 34px;
+    background: var(--saime-blue);
+    border-radius: 2px;
+}
+
+/* Inputs y Labels */
+.auth-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.field__label {
+    display: block;
+    font-size: 12px;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.input-group__icon {
+    width: 40px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--soft);
+    color: #6b7280;
+    border-right: 1px solid var(--line);
+}
+
+.input-group__input {
+    flex: 1;
+    height: 100%;
+    border: 0;
+    outline: none;
+    padding: 0 12px;
+    font-size: 13px;
+    color: #111827;
+}
+
+.input-group__input::placeholder {
+    color: #9aa3af;
+}
+
+/* Links */
+.auth-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: -6px;
+}
+
+.auth-link {
+    font-size: 12px;
+    color: var(--saime-blue);
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+
+/* Botón */
+.auth-submit {
+    margin-top: 8px;
+    height: 46px;
+    border-radius: 4px;
+    border: 1px solid #0a4d93;
+    background: var(--saime-blue-dark);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: .2px;
+    cursor: pointer;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, .12);
+}
+
+.auth-submit:hover {
+    filter: brightness(1.04);
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+    .auth-main {
+        padding: 70px 16px 40px;
+    }
+
+    .auth-shell {
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
+    }
+
+    .auth-shell__panel {
+        width: min(720px, 100%);
+    }
+
+    .auth-links {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}

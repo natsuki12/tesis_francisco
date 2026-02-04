@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # 1. Definimos la base del proyecto (¡CRUCIAL!)
+    RewriteBase /sistema/
+
+    # 2. ELIMINAR "public" DE LA URL (Redirección Externa)
+    # Si la petición original contiene "/public/", lo borramos visualmente.
+    RewriteCond %{THE_REQUEST} /sistema/public/([^\s?]*) [NC]
+    RewriteRule ^public/(.*)$ %1 [L,R=301]
+
+    # 3. ENRUTAMIENTO INTERNO (Invisible)
+    # Si la petición NO va a la carpeta public, la enviamos ahí internamente.
+    RewriteCond %{REQUEST_URI} !^/sistema/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

@@ -1,0 +1,354 @@
+[29-Jan-2026 00:03:10 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:38
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:03:18 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:38
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:12:03 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:38
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:12:04 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:38
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:12:04 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:38
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:12:04 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:38
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:12:04 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:38
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:22:02 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:37
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:22:03 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:37
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:22:03 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:37
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:22:03 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:37
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:22:03 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:37
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:22:03 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:37
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:22:03 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:37
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:25:54 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:63
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:25:55 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:63
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:26:03 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:63
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:26:04 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:63
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:26:10 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:63
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:26:10 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:63
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:28:07 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:63
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:30:14 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:67
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:30:15 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:67
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:30:15 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:67
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:30:15 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:67
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:30:16 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:67
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:30:26 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:67
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:39:22 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:62
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:39:24 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:62
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:39:24 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:62
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:39:24 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:62
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:39:24 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:62
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 00:39:25 Europe/Berlin] Error: Call to undefined function base_url() in C:\xampp\htdocs\SISTEMA\resources\views\auth\login.php:62
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(8): App\Core\App->view('auth/login')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/login')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[29-Jan-2026 04:13:19 Europe/Berlin] ErrorException: include(C:\xampp\htdocs\SISTEMA\resources\views\layouts/../partials/header.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php:14
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php(14): App\Core\App->App\Core\{closure}(2, 'include(C:\\xamp...', 'C:\\xampp\\htdocs...', 14)
+#1 C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php(14): include()
+#2 C:\xampp\htdocs\SISTEMA\resources\views\simulator\simulador_index.php(114): require('C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require('C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\SISTEMA\routes\web.php(14): App\Core\App->view('simulator/simul...')
+#5 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#6 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/simulador_inde...')
+#7 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#8 {main}
+[29-Jan-2026 04:13:20 Europe/Berlin] ErrorException: include(C:\xampp\htdocs\SISTEMA\resources\views\layouts/../partials/header.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php:14
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php(14): App\Core\App->App\Core\{closure}(2, 'include(C:\\xamp...', 'C:\\xampp\\htdocs...', 14)
+#1 C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php(14): include()
+#2 C:\xampp\htdocs\SISTEMA\resources\views\simulator\simulador_index.php(114): require('C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require('C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\SISTEMA\routes\web.php(14): App\Core\App->view('simulator/simul...')
+#5 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#6 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/simulador_inde...')
+#7 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#8 {main}
+[29-Jan-2026 04:13:20 Europe/Berlin] ErrorException: include(C:\xampp\htdocs\SISTEMA\resources\views\layouts/../partials/header.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php:14
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php(14): App\Core\App->App\Core\{closure}(2, 'include(C:\\xamp...', 'C:\\xampp\\htdocs...', 14)
+#1 C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php(14): include()
+#2 C:\xampp\htdocs\SISTEMA\resources\views\simulator\simulador_index.php(114): require('C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require('C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\SISTEMA\routes\web.php(14): App\Core\App->view('simulator/simul...')
+#5 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#6 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/simulador_inde...')
+#7 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#8 {main}
+[29-Jan-2026 04:13:20 Europe/Berlin] ErrorException: include(C:\xampp\htdocs\SISTEMA\resources\views\layouts/../partials/header.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php:14
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php(14): App\Core\App->App\Core\{closure}(2, 'include(C:\\xamp...', 'C:\\xampp\\htdocs...', 14)
+#1 C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php(14): include()
+#2 C:\xampp\htdocs\SISTEMA\resources\views\simulator\simulador_index.php(114): require('C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require('C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\SISTEMA\routes\web.php(14): App\Core\App->view('simulator/simul...')
+#5 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#6 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/simulador_inde...')
+#7 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#8 {main}
+[29-Jan-2026 04:13:20 Europe/Berlin] ErrorException: include(C:\xampp\htdocs\SISTEMA\resources\views\layouts/../partials/header.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php:14
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php(14): App\Core\App->App\Core\{closure}(2, 'include(C:\\xamp...', 'C:\\xampp\\htdocs...', 14)
+#1 C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php(14): include()
+#2 C:\xampp\htdocs\SISTEMA\resources\views\simulator\simulador_index.php(114): require('C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require('C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\SISTEMA\routes\web.php(14): App\Core\App->view('simulator/simul...')
+#5 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#6 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/simulador_inde...')
+#7 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#8 {main}
+[29-Jan-2026 04:13:20 Europe/Berlin] ErrorException: include(C:\xampp\htdocs\SISTEMA\resources\views\layouts/../partials/header.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php:14
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php(14): App\Core\App->App\Core\{closure}(2, 'include(C:\\xamp...', 'C:\\xampp\\htdocs...', 14)
+#1 C:\xampp\htdocs\SISTEMA\resources\views\layouts\simulador_layout.php(14): include()
+#2 C:\xampp\htdocs\SISTEMA\resources\views\simulator\simulador_index.php(114): require('C:\\xampp\\htdocs...')
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(75): require('C:\\xampp\\htdocs...')
+#4 C:\xampp\htdocs\SISTEMA\routes\web.php(14): App\Core\App->view('simulator/simul...')
+#5 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(68): {closure}()
+#6 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/simulador_inde...')
+#7 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#8 {main}
+[02-Feb-2026 04:18:25 Europe/Berlin] Error: Call to undefined method App\Modules\Auth\RegisterController::render() in C:\xampp\htdocs\SISTEMA\src\Modules\Auth\RegisterController.php:18
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(65): App\Modules\Auth\RegisterController->index()
+#1 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/registro')
+#2 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#3 {main}
+[02-Feb-2026 04:18:27 Europe/Berlin] Error: Call to undefined method App\Modules\Auth\RegisterController::render() in C:\xampp\htdocs\SISTEMA\src\Modules\Auth\RegisterController.php:18
+Stack trace:
+#0 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(65): App\Modules\Auth\RegisterController->index()
+#1 C:\xampp\htdocs\SISTEMA\src\Core\App.php(98): App\Core\Router->dispatch('GET', '/registro')
+#2 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#3 {main}
+[03-Feb-2026 04:05:19 Europe/Berlin] PHP Warning:  require(C:\xampp\htdocs\SISTEMA\resources\views\simulator\student/../layouts/simulador_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\SISTEMA\resources\views\simulator\student\home_st.php on line 88
+[03-Feb-2026 04:05:19 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\SISTEMA\resources\views\simulator\student/../layouts/simulador_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\SISTEMA\resources\views\simulator\student\home_st.php:88
+[03-Feb-2026 04:05:19 Europe/Berlin] #0 C:\xampp\htdocs\SISTEMA\src\Core\App.php(82): require()
+#1 C:\xampp\htdocs\SISTEMA\routes\web.php(50): App\Core\App->view('simulator/stude...')
+#2 C:\xampp\htdocs\SISTEMA\src\Core\Router.php(114): {closure}()
+#3 C:\xampp\htdocs\SISTEMA\src\Core\App.php(122): App\Core\Router->dispatch('GET', '/home')
+#4 C:\xampp\htdocs\SISTEMA\public\index.php(17): App\Core\App->run()
+#5 {main}
+[04-Feb-2026 15:37:52 UTC] General Error: Sección no existe
+[04-Feb-2026 15:38:13 UTC] General Error: Sección no existe
+[04-Feb-2026 15:39:02 UTC] General Error: Sección no existe
+[04-Feb-2026 15:47:51 UTC] General Error: Rol no configurado

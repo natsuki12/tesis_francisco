@@ -1,0 +1,166 @@
+/* ARCHIVO: public/css/dashboard/home_st.css
+   DESCRIPCIÓN: Estilos específicos para el Dashboard del Estudiante.
+*/
+
+/* Variables locales para las tarjetas (Heredan los colores globales del :root) */
+:root {
+    --card-bg: #ffffff;
+    --card-border: #e5e7eb;
+    /* Sombra suave para dar profundidad sin ensuciar */
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    /* Sombra más fuerte para el efecto hover */
+    --card-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.dashboard-main {
+    background-color: #f3f4f6;
+    /* Gris muy suave (diferente al blanco de las tarjetas) */
+    min-height: calc(100vh - 64px);
+    /* Ocupa el alto disponible menos el header */
+    padding: 40px 20px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    /* Ancho máximo para pantallas gigantes */
+    margin: 0 auto;
+    /* Centrado horizontal */
+}
+
+/* --- SECCIÓN DE BIENVENIDA (HERO) --- */
+.dash-hero {
+    margin-bottom: 40px;
+}
+
+.dash-hero__title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    /* Variable global */
+    margin: 0 0 10px 0;
+}
+
+.dash-hero__name {
+    color: var(--saime-blue);
+    /* Variable global SENIAT */
+}
+
+.dash-hero__subtitle {
+    font-size: 16px;
+    color: var(--muted);
+    margin: 0;
+}
+
+/* --- GRID DE TARJETAS (RESPONSIVE) --- */
+.dash-grid {
+    display: grid;
+    /* Crea columnas automáticas de mínimo 300px */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+/* --- ESTILO DE TARJETA INDIVIDUAL --- */
+.dash-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 32px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    /* Suaviza la animación de hover */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto al pasar el mouse */
+.dash-card:hover {
+    transform: translateY(-4px);
+    /* La tarjeta "flota" hacia arriba */
+    box-shadow: var(--card-hover-shadow);
+    border-color: var(--saime-blue);
+}
+
+/* Caja del Icono */
+.dash-card__icon-box {
+    width: 56px;
+    height: 56px;
+    background-color: var(--soft);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: var(--saime-blue);
+}
+
+/* Títulos y Texto */
+.dash-card__title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0 0 12px 0;
+}
+
+.dash-card__desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0 0 24px 0;
+    flex-grow: 1;
+    /* Esto empuja el botón siempre al fondo de la tarjeta */
+}
+
+/* --- BOTONES DE ACCIÓN --- */
+.dash-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background 0.2s;
+    width: 100%;
+    /* Botón ancho completo */
+}
+
+/* Botón Primario (Azul SENIAT) */
+.dash-btn--primary {
+    background-color: var(--saime-blue);
+    color: white;
+    border: 1px solid var(--saime-blue);
+}
+
+.dash-btn--primary:hover {
+    background-color: var(--saime-blue-dark);
+}
+
+/* Botón Secundario (Borde Azul) */
+.dash-btn--outline {
+    background-color: transparent;
+    color: var(--saime-blue);
+    border: 1px solid var(--saime-blue);
+}
+
+.dash-btn--outline:hover {
+    background-color: var(--soft);
+}
+
+/* Estado Deshabilitado (Gris) */
+.dash-card--disabled {
+    opacity: 0.7;
+    pointer-events: none;
+    background-color: #f9fafb;
+}
+
+.dash-card--disabled .dash-btn {
+    background-color: #e5e7eb;
+    color: #9ca3af;
+    border-color: #e5e7eb;
+}

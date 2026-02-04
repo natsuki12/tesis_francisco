@@ -1,0 +1,297 @@
+/* =========================================
+   ESTILOS LANDING "GOBIERNO DIGITAL"
+   ========================================= */
+
+/* Reset básico */
+.landing-hero-split {
+    display: flex;
+    min-height: calc(100vh - 80px);
+    width: 100%;
+    background-color: #fff;
+    overflow-x: hidden;
+}
+
+/* --- COLUMNA IZQUIERDA (Texto) --- */
+.landing-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 60px;
+    z-index: 2;
+}
+
+.content-wrapper {
+    max-width: 550px;
+    width: 100%;
+}
+
+.badge-project {
+    display: inline-block;
+    background-color: #f0f2f5;
+    color: #666;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.landing-title {
+    font-size: 3rem;
+    line-height: 1.1;
+    color: #1a1a1a;
+    font-weight: 800;
+    margin-bottom: 20px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.text-highlight {
+    color: #1a237e;
+    /* Azul SENIAT */
+}
+
+.landing-description {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+
+/* --- LA PÍLDORA DE BOTONES --- */
+.auth-pill-container {
+    width: 100%;
+}
+
+.auth-pill-wrapper {
+    display: inline-flex;
+    background-color: #f5f7fa;
+    border-radius: 50px;
+    padding: 5px;
+    border: 1px solid #e1e4e8;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 480px;
+}
+
+.auth-btn {
+    flex: 1;
+    text-decoration: none;
+    padding: 15px 20px;
+    border-radius: 45px;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.3;
+}
+
+.auth-btn span {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+.auth-btn.active {
+    background-color: #0d47a1;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(13, 71, 161, 0.3);
+}
+
+.auth-btn:hover:not(.active) {
+    background-color: #e2e6ea;
+    color: #333;
+}
+
+/* --- COLUMNA DERECHA (NUEVO DISEÑO 3D) --- */
+.landing-right {
+    flex: 0.8;
+    /* Un poco más ancha para que quepa la laptop */
+    position: relative;
+    background: transparent;
+    /* El fondo lo manejamos con .blue-backdrop */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    perspective: 1200px;
+    /* CRÍTICO: Activa el 3D */
+    padding: 20px;
+    overflow: hidden;
+    /* Corta lo que se salga */
+}
+
+/* El fondo azul curvo decorativo */
+.blue-backdrop {
+    position: absolute;
+    top: 10%;
+    right: 0;
+    width: 95%;
+    height: 80%;
+    background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+    border-top-left-radius: 200px;
+    /* Curva suave y moderna */
+    border-bottom-left-radius: 50px;
+    z-index: 1;
+}
+
+/* Título sobre la laptop */
+.landing-right-title {
+    position: relative;
+    z-index: 10;
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* --- LAPTOP HECHA CON CSS --- */
+.css-laptop {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 650px;
+    transform: rotateY(-12deg) rotateX(5deg);
+    /* Inclinación 3D */
+    transition: transform 0.5s ease;
+    filter: drop-shadow(-30px 30px 40px rgba(0, 0, 0, 0.35));
+    /* Sombra realista */
+}
+
+.css-laptop:hover {
+    transform: rotateY(0deg) rotateX(0deg) scale(1.02);
+    /* Se endereza al mouse */
+}
+
+.screen {
+    background: #111;
+    border-radius: 12px 12px 0 0;
+    padding: 3% 3% 0 3%;
+    /* Bordes negros */
+    position: relative;
+    aspect-ratio: 16/10;
+    box-shadow: inset 0 0 0 2px #333;
+}
+
+.screen-content {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 4px 4px 0 0;
+    background: #fff;
+    display: block;
+}
+
+.keyboard {
+    height: 24px;
+    background: linear-gradient(to bottom, #dcdcdc 0%, #999 100%);
+    border-radius: 0 0 16px 16px;
+    position: relative;
+    margin-top: -1px;
+}
+
+/* Muesca para abrir la laptop */
+.keyboard::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 15%;
+    height: 6px;
+    background: #bbb;
+    border-radius: 0 0 6px 6px;
+}
+
+/* Etiqueta flotante decorativa */
+.floating-badge {
+    position: absolute;
+    bottom: 12%;
+    left: 5%;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 10px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 20;
+    backdrop-filter: blur(5px);
+    animation: float 4s ease-in-out infinite;
+}
+
+.floating-badge span {
+    font-size: 1.5rem;
+}
+
+.floating-badge p {
+    margin: 0;
+    font-weight: 700;
+    color: #0d47a1;
+    font-size: 0.9rem;
+    line-height: 1.1;
+}
+
+.floating-badge small {
+    color: #666;
+    font-weight: 400;
+    font-size: 0.75rem;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 992px) {
+    .landing-hero-split {
+        flex-direction: column;
+    }
+
+    .landing-left {
+        padding: 40px 20px;
+        text-align: center;
+    }
+
+    .auth-pill-wrapper {
+        margin: 0 auto;
+    }
+
+    .landing-right {
+        padding: 40px 20px;
+        min-height: auto;
+        perspective: none;
+    }
+
+    .blue-backdrop {
+        width: 100%;
+        height: 120%;
+        /* Estirar fondo en móvil */
+        top: -20px;
+        border-radius: 40px 40px 0 0;
+    }
+
+    .css-laptop {
+        transform: none !important;
+        /* Quitar 3D en móvil */
+        margin-top: 20px;
+    }
+}

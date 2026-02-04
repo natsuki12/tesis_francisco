@@ -1,0 +1,12 @@
+<IfModule mod_rewrite.c>
+    # Evita conflictos de nombres
+    Options -MultiViews
+    
+    RewriteEngine On
+    RewriteBase /sistema/public/
+
+    # Si no es un archivo ni carpeta real, pásalo al index.php
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>

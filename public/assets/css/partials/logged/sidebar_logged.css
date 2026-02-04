@@ -1,0 +1,267 @@
+/* ================================================
+   SIDEBAR - LOGGED LAYOUT
+   ================================================ */
+
+.sim-sidebar {
+    grid-area: sidebar;
+    background: var(--sim-white);
+    border-right: 1px solid var(--sim-border);
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.sim-sidebar__header {
+    padding: 20px 16px;
+    border-bottom: 1px solid var(--sim-border);
+}
+
+.sim-sidebar__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sim-sidebar__logo {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    object-fit: contain;
+}
+
+.sim-sidebar__brand-text {
+    opacity: 1;
+    transition: opacity 0.2s;
+}
+
+.sim-sidebar__brand-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--sim-text);
+    line-height: 1.3;
+}
+
+.sim-sidebar__brand-sub {
+    font-size: 11px;
+    color: var(--sim-text-light);
+    line-height: 1.3;
+}
+
+/* Sidebar colapsado */
+.sim-sidebar--collapsed {
+    width: var(--sidebar-collapsed-width);
+}
+
+.sim-sidebar--collapsed .sim-sidebar__header {
+    padding: 12px 6px;
+}
+
+.sim-sidebar--collapsed .sim-sidebar__logo {
+    width: 40px;
+    height: 40px;
+}
+
+.sim-sidebar--collapsed .sim-sidebar__brand-text {
+    display: none;
+}
+
+.sim-sidebar--collapsed .sim-nav__text,
+.sim-sidebar--collapsed .sim-nav__arrow,
+.sim-sidebar--collapsed .sim-nav__section-title {
+    display: none;
+}
+
+.sim-sidebar--collapsed .sim-nav__section {
+    margin-bottom: 4px;
+}
+
+.sim-sidebar--collapsed .sim-nav__link {
+    justify-content: center;
+    padding: 12px 0;
+}
+
+.sim-sidebar--collapsed .sim-nav__icon {
+    width: 24px;
+    height: 24px;
+}
+
+/* En colapsado, ocultar submenu */
+.sim-sidebar--collapsed .sim-nav__submenu {
+    display: none !important;
+}
+
+.sim-sidebar--collapsed .sim-nav__sublink {
+    padding: 12px 0;
+    justify-content: center;
+}
+
+.sim-sidebar--collapsed .sim-nav__subtext {
+    display: none;
+}
+
+.sim-sidebar--collapsed .sim-nav__subicon {
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+    color: var(--sim-blue);
+}
+
+/* ================================================
+   NAVIGATION
+   ================================================ */
+.sim-nav {
+    flex: 1;
+    padding: 12px 0;
+}
+
+.sim-nav__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Secciones del sidebar */
+.sim-nav__section {
+    margin-bottom: 8px;
+}
+
+.sim-nav__section-title {
+    display: block;
+    padding: 12px 20px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--sim-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sim-nav__item {
+    position: relative;
+}
+
+/* Item activo */
+.sim-nav__item--active>.sim-nav__link {
+    color: var(--sim-blue);
+    font-weight: 600;
+}
+
+.sim-nav__item--active>.sim-nav__link .sim-nav__icon {
+    color: var(--sim-blue);
+}
+
+.sim-nav__link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: var(--sim-text);
+    text-decoration: none;
+    font-size: 14px;
+    border: none;
+    background: none;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+}
+
+.sim-nav__link:hover {
+    background: var(--sim-blue-light);
+}
+
+.sim-nav__icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sim-blue);
+}
+
+.sim-nav__text {
+    flex: 1;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.sim-nav__arrow {
+    width: 16px;
+    height: 16px;
+    color: var(--sim-text-light);
+    transition: transform 0.2s;
+}
+
+.sim-nav__item--expanded .sim-nav__arrow {
+    transform: rotate(180deg);
+}
+
+/* Submenu */
+.sim-nav__submenu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: none;
+    background: #fafbfc;
+}
+
+.sim-nav__item--expanded .sim-nav__submenu {
+    display: block;
+}
+
+.sim-nav__subitem {
+    position: relative;
+}
+
+.sim-nav__sublink {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px 10px 52px;
+    color: var(--sim-text);
+    text-decoration: none;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+
+.sim-nav__sublink:hover {
+    background: var(--sim-blue-light);
+}
+
+.sim-nav__subitem--active .sim-nav__sublink {
+    background: var(--sim-blue-light);
+    color: var(--sim-blue);
+    font-weight: 600;
+}
+
+.sim-nav__subicon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--sim-text-light);
+}
+
+.sim-nav__subtext {
+    flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sim-sidebar {
+        position: fixed;
+        left: 0;
+        top: var(--header-height);
+        bottom: 0;
+        width: var(--sidebar-width);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        z-index: 90;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .sim-layout--sidebar-open .sim-sidebar {
+        transform: translateX(0);
+    }
+}

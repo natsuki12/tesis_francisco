@@ -1,0 +1,103 @@
+/* Progress Register Namespace: pr- */
+
+.pr-wrapper {
+    width: 100%;
+    margin-bottom: 40px;
+    /* Espacio inferior para no pegarse al formulario */
+    padding: 20px 0;
+    font-family: Arial, sans-serif;
+}
+
+.pr-progress-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Background Line */
+.pr-line-background {
+    position: absolute;
+    top: 15px;
+    /* Mitad del círculo (30px / 2) */
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #e0e0e0;
+    z-index: 0;
+}
+
+/* Step Container */
+.pr-step {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px;
+    /* Ancho fijo para centrar etiquetas */
+    text-align: center;
+}
+
+/* Circle Base Styles */
+.pr-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: #fff;
+    /* Por defecto fondo blanco para tapar la línea si es necesario */
+    border: 2px solid #e0e0e0;
+    color: #999;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+/* Label Base Styles */
+.pr-label {
+    font-size: 12px;
+    color: #999;
+    font-weight: normal;
+}
+
+/* --- STATES --- */
+
+/* Completed State */
+.pr-step--completed .pr-circle {
+    background-color: #28a745;
+    /* Verde check */
+    border-color: #28a745;
+    color: white;
+}
+
+.pr-step--completed .pr-label {
+    color: #28a745;
+}
+
+/* Active State */
+.pr-step--active .pr-circle {
+    background-color: #0056AC;
+    /* Azul Fuerte (mismo del header) */
+    border-color: #0056AC;
+    color: white;
+    box-shadow: 0 0 0 4px rgba(0, 86, 172, 0.1);
+    /* Efecto de foco */
+}
+
+.pr-step--active .pr-label {
+    color: #0056AC;
+    font-weight: bold;
+}
+
+/* Pending State (Default is already styled above, making explicit if needed) */
+.pr-step--pending .pr-circle {
+    background-color: #ffffff;
+    border-color: #e0e0e0;
+    color: #999;
+}
