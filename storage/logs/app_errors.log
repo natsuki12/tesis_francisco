@@ -352,3 +352,15 @@ Stack trace:
 [04-Feb-2026 15:38:13 UTC] General Error: Sección no existe
 [04-Feb-2026 15:39:02 UTC] General Error: Sección no existe
 [04-Feb-2026 15:47:51 UTC] General Error: Rol no configurado
+[11-Feb-2026 06:11:02 Europe/Berlin] [CRITICAL] Typed property App\Core\Controller::$app must not be accessed before initialization in C:\xampp\htdocs\tesis_francisco\src\Core\Controller.php:17
+[11-Feb-2026 06:11:02 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Auth\Controllers\RegisterController.php(27): App\Core\Controller->view('auth/register', Array)
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(110): App\Modules\Auth\Controllers\RegisterController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(122): App\Core\Router->dispatch('GET', '/registro')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}
+[11-Feb-2026 06:11:10 Europe/Berlin] [CRITICAL] Typed property App\Core\Controller::$app must not be accessed before initialization in C:\xampp\htdocs\tesis_francisco\src\Core\Controller.php:17
+[11-Feb-2026 06:11:10 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Auth\Controllers\RegisterController.php(27): App\Core\Controller->view('auth/register', Array)
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(110): App\Modules\Auth\Controllers\RegisterController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(122): App\Core\Router->dispatch('GET', '/registro')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}

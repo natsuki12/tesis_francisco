@@ -1,12 +1,16 @@
-SISTEMA/
+tesis_francisco/
     .env
     .env.example
     .gitignore
     .htaccess
+    README.md
     composer.json
     composer.lock
     estructura_actual.txt
     gen_tree.py
+    generate_pass.py
+    readme.txt
+    spdss.sql
     public/
         .htaccess
         index.php
@@ -16,7 +20,6 @@ SISTEMA/
                     login.css
                     progress-bar-register.css
                     register.css
-                global/
                 landing/
                     landing.css
                 partials/
@@ -65,14 +68,10 @@ SISTEMA/
             js/
                 auth/
                     register.js
-                global/
                 simulator/
-                    auth/
                     steps/
                         step_01_seniat_index.js
     resources/
-        content/
-        lang/
         views/
             auth/
                 _progress-bar-register.php
@@ -92,7 +91,6 @@ SISTEMA/
                     header_logged.php
                     sidebar_logged.php
             simulator/
-                auth/
                 legacy/
                     index_old.php
                 steps/
@@ -110,34 +108,15 @@ SISTEMA/
             Mailer.php
             Router.php
             helpers.php
-            Services/
         Modules/
-            Admin/
-                Controllers/
-                Models/
-                Services/
             Auth/
                 Controllers/
                     LoginController.php
                     RegisterController.php
-                Models/
-                Services/
-            Professor/
-                Controllers/
-                Models/
-                Services/
-            Simulator/
-                Controllers/
-                Models/
-                Services/
-            Student/
-                Controllers/
-                Models/
-                Services/
+                models/
+                services/
     storage/
-        cache/
         logs/
             app_errors.log
-        uploads/
     tests/
         test.php

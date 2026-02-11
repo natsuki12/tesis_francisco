@@ -3,7 +3,7 @@
     Options -MultiViews
     
     RewriteEngine On
-    RewriteBase /sistema/public/
+    RewriteBase /tesis_francisco/public/
 
     # Si no es un archivo ni carpeta real, pásalo al index.php
     RewriteCond %{REQUEST_FILENAME} !-d
