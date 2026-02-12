@@ -471,51 +471,80 @@
 /* FOOTER                                   */
 /* ========================================= */
 
+/* ========================================= */
+/* FOOTER                                   */
+/* ========================================= */
+
 .site-footer {
     width: 100%;
-    height: 350px;
-    /* Aumentamos altura para ver mejor la imagen */
-    background-image: url('../../img/seniat-portal-nuevo/fondo-footer-inicio.png');
-    background-size: 100% 100%;
-    background-position: center;
+    /* La altura debe ser suficiente para mostrar el diseño de la imagen curvas */
+    height: 250px;
+
+    background-image: url('../../../img/seniat-portal-nuevo/fondo-footer-inicio.jpg');
+    background-size: cover;
+    /* Ajustar imagen para cubrir */
+    background-position: center bottom;
+    /* Alinear abajo para que el texto quede en zona oscura */
     background-repeat: no-repeat;
+
     margin-top: 0;
+
     display: flex;
-    align-items: flex-start;
-    /* Alineado arriba */
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    /* Alineado arriba (inicio) */
+    padding-bottom: 20px;
     padding-top: 50px;
-    /* Margen superior para despegar del borde */
+    /* Un poco más de espacio arriba para no pegar con el borde */
 }
 
 .footer-content {
     width: 100%;
     max-width: 1200px;
-    padding: 0 40px;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    /* Ocupar toda la altura disponible del footer */
+    justify-content: space-between;
+    /* Separar top y bottom al máximo */
+}
+
+/* --- Footer Top: Logo + Links --- */
+.footer-top {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* Centrar verticalmente logo y texto entre sí */
-    height: auto;
+    /* margin-bottom eliminado ya que usaremos space-between */
+}
+
+/* --- Footer Bottom: Icons + Copyright --- */
+.footer-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 20px;
+    /* Un poco de margen abajo */
 }
 
 .footer-logo img {
-    height: 60px;
-    /* Ajustar según necesidad */
+    height: 50px;
     width: auto;
 }
 
 .footer-links {
     display: flex;
-    gap: 30px;
+    gap: 20px;
 }
 
 .footer-links a {
     color: #333;
-    /* Color oscuro según imagen de referencia */
     text-decoration: none;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 13px;
     font-family: Arial, sans-serif;
     transition: color 0.3s;
 }
@@ -523,4 +552,55 @@
 .footer-links a:hover {
     color: #1a237e;
     text-decoration: underline;
+}
+
+/* --- Social Icons --- */
+.social-icons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 5px;
+}
+
+.social-icon {
+    width: 36px;
+    height: 36px;
+    background-color: #fff;
+    /* Fondo blanco para el icono */
+    border-radius: 50%;
+    /* Círculo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a11c44;
+    /* Color vinotinto/rojo del SENIAT para el icono */
+    text-decoration: none;
+    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.social-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.social-icon:hover {
+    transform: translateY(-3px);
+    background-color: #a11c44;
+    color: #fff;
+}
+
+/* --- Copyright Text --- */
+.copyright-text {
+    font-size: 11px;
+    color: #555;
+    /* Gris oscuro para contraste si cae en zona clara, o ajustar según imagen */
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+
+    /* Si el texto cae sobre la zona oscura/azul de la imagen: */
+    /* color: rgba(255, 255, 255, 0.7); */
+
+    /* Si cae en zona amarilla/clara: */
+    color: #666;
 }

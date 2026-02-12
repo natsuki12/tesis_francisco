@@ -7,7 +7,7 @@ $phMain   = 'data:image/svg+xml;base64,...'; // (Tu código base64 largo...)
 
 // Captura de errores y mensajes de la URL
 $error = $_GET['error'] ?? null;
-$registroExito = isset($_GET['registro']) && $_GET['registro'] === 'exito';
+
 
 $pageTitle = 'Autenticación de Usuario';
 
@@ -32,10 +32,9 @@ ob_start();
       <div class="auth-shell__panel">
         <h1 class="auth-title">AUTENTICACIÓN DE USUARIO</h1>
 
-        <?php if ($registroExito) : ?>
-          <div class="auth-alert success" role="alert">
-            <strong>¡Registro exitoso!</strong><br>
-            Ya puede ingresar con su correo y contraseña.
+        <?php if (!empty($flashMessage)) : ?>
+          <div class="auth-alert <?= $flashMessage['type'] === 'success' ? 'success' : 'error' ?>" role="alert">
+            <?= htmlspecialchars($flashMessage['message']) ?>
           </div>
         <?php endif; ?>
 

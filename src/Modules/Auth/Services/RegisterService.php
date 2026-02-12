@@ -225,7 +225,13 @@ class RegisterService
             $this->clearRegistrationSessionALL();
             unset($_SESSION['last_email_sent_at']);
 
-            return "/login?registro=exito";
+            // ⚡ FLASH MESSAGE
+            $_SESSION['flash_message'] = [
+                'type' => 'success',
+                'message' => '¡Registro exitoso! Por favor inicia sesión.'
+            ];
+
+            return "/login";
 
         } catch (\PDOException $e) {
             error_log("DB Error: " . $e->getMessage());
