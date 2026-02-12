@@ -15,6 +15,11 @@ if (!isset($user)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $pageTitle ?? 'Simulador' ?> - UNIMAR</title>
     
+    <!-- Google Fonts (v2 Design System) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
     <!-- CSS Base del Layout (variables y estructura) -->
     <style>
         /* Variables globales */
@@ -37,7 +42,7 @@ if (!isset($user)) {
         * { box-sizing: border-box; }
         html, body { height: 100%; margin: 0; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             color: var(--sim-text);
             background: var(--sim-bg);
             line-height: 1.5;

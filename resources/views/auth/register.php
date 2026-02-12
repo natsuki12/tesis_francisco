@@ -11,8 +11,12 @@ declare(strict_types=1);
 $pageTitle = 'Registro de Usuario';
 
 // Carga de estilos
-$extraCss = '<link rel="stylesheet" href="'.asset('css/auth/progress-bar-register.css').'">
-             <link rel="stylesheet" href="'.asset('css/auth/register.css').'">';
+$extraCss = '
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="'.asset('css/auth/progress-bar-register.css?v='.time()).'">
+<link rel="stylesheet" href="'.asset('css/auth/register.css?v='.time()).'">';
 
 // Variable para la barra de progreso (Paso 1 activo)
 $currentStep = 1;

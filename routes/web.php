@@ -44,14 +44,21 @@ $router->get('/registro/parte3', [RegisterController::class, 'showPart3']);
 
 
 // =============================================================================
-// 🎓 RUTAS DEL SIMULADOR
+// 🎓 RUTAS DEL SIMULADOR (PROTEGIDAS - Requieren login)
 // =============================================================================
-// =============================================================================
-// 🎓 RUTAS DEL SIMULADOR
-// =============================================================================
-$router->get('/simulador_index_antiguo', fn() => $app->view('simulator/legacy/index_old'));
-$router->get('/home', fn() => $app->view('student/home_st'));
-$router->get('/simulador_inicio', fn() => $app->view('simulator/steps/step_01_seniat_index'));
+$requireAuth = function() {
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    if (empty($_SESSION['logged_in'])) {
+        header('Location: ' . base_url('/login'));
+        exit;
+    }
+};
+
+$router->get('/simulador_index_antiguo', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/legacy/index_old'); });
+$router->get('/home', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('student/home_st'); });
+$router->get('/home_st', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('student/home_st'); });
+$router->get('/simulador_inicio', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/steps/step_01_seniat_index'); });
+$router->get('/step_01_seniat_index', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/steps/step_01_seniat_index'); });
 
 // Perfil
 // $router->get('/simulador_profile', fn() => $app->view('student/profile_st')); 

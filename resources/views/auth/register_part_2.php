@@ -11,8 +11,12 @@ declare(strict_types=1);
 $pageTitle = 'Verificación de Código';
 
 // Carga de estilos
-$extraCss = '<link rel="stylesheet" href="'.asset('css/auth/progress-bar-register.css').'">
-             <link rel="stylesheet" href="'.asset('css/auth/register.css').'">';
+$extraCss = '
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="'.asset('css/auth/progress-bar-register.css?v='.time()).'">
+<link rel="stylesheet" href="'.asset('css/auth/register.css?v='.time()).'">';
 
 // Variable para el partial de progreso (Paso 3 activo: Verificación)
 $currentStep = 3;
@@ -71,10 +75,7 @@ ob_start();
             <div class="spa-footer space-between">
                 <a href="<?= base_url('/registro/atras') ?>" class="btn-spa btn-secondary" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">Regresar</a>
                 
-                <div style="display: flex; gap: 10px;">
-                    <button type="submit" id="btn-verificar" class="btn-spa btn-primary">Verificar código</button>
-                    <a href="<?= base_url('/registro/parte3') ?>" class="btn-spa btn-primary" style="text-decoration:none; display:flex; align-items:center; justify-content:center; background: #6c757d;">Continuar (Test)</a>
-                </div>
+                <button type="submit" id="btn-verificar" class="btn-spa btn-primary">Verificar código</button>
             </div>
         </form>
     </div>

@@ -27,7 +27,7 @@ $activePage = $activePage ?? '';
             <span class="sim-nav__section-title">PRINCIPAL</span>
             <ul class="sim-nav__list">
                 <li class="sim-nav__item <?= $activePage === 'inicio' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="<?= base_url('/simulador_inicio') ?>" class="sim-nav__link">
+                    <a href="<?= base_url('/home_st') ?>" class="sim-nav__link">
                         <span class="sim-nav__icon">
                             <svg viewBox="0 0 24 24" width="20" height="20"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
                         </span>
@@ -60,7 +60,7 @@ $activePage = $activePage ?? '';
                             </a>
                         </li>
                         <li class="sim-nav__subitem <?= $activePage === 'practica-libre' ? 'sim-nav__subitem--active' : '' ?>">
-                            <a href="#" class="sim-nav__sublink">
+                            <a href="<?= base_url('/step_01_seniat_index') ?>" class="sim-nav__sublink">
                                 <span class="sim-nav__subtext">Práctica Libre</span>
                             </a>
                         </li>

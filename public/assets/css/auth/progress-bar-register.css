@@ -1,11 +1,13 @@
-/* Progress Register Namespace: pr- */
+/* =========================================
+   PROGRESS BAR – REGISTRO (v2)
+   Uniform with register.css & login.css
+   ========================================= */
 
 .pr-wrapper {
     width: 100%;
-    margin-bottom: 40px;
-    /* Espacio inferior para no pegarse al formulario */
-    padding: 20px 0;
-    font-family: Arial, sans-serif;
+    margin-bottom: 32px;
+    padding: 24px 20px 0;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
 .pr-progress-bar {
@@ -13,23 +15,22 @@
     justify-content: space-between;
     align-items: flex-start;
     position: relative;
-    max-width: 800px;
+    max-width: 680px;
     margin: 0 auto;
 }
 
-/* Background Line */
+/* Connecting line */
 .pr-line-background {
     position: absolute;
-    top: 15px;
-    /* Mitad del círculo (30px / 2) */
+    top: 16px;
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: #e0e0e0;
+    background: #dfe3ea;
     z-index: 0;
 }
 
-/* Step Container */
+/* Step container */
 .pr-step {
     position: relative;
     z-index: 1;
@@ -37,67 +38,87 @@
     flex-direction: column;
     align-items: center;
     width: 120px;
-    /* Ancho fijo para centrar etiquetas */
     text-align: center;
 }
 
-/* Circle Base Styles */
+/* Circle */
 .pr-circle {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
-    font-weight: bold;
-    background-color: #fff;
-    /* Por defecto fondo blanco para tapar la línea si es necesario */
-    border: 2px solid #e0e0e0;
-    color: #999;
-    margin-bottom: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: #fff;
+    border: 2px solid #dfe3ea;
+    color: rgba(26, 31, 46, 0.35);
+    margin-bottom: 10px;
     transition: all 0.3s ease;
 }
 
-/* Label Base Styles */
+/* Label */
 .pr-label {
-    font-size: 12px;
-    color: #999;
-    font-weight: normal;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(26, 31, 46, 0.4);
+    letter-spacing: 0.01em;
+    line-height: 1.3;
 }
 
 /* --- STATES --- */
 
-/* Completed State */
+/* Completed */
 .pr-step--completed .pr-circle {
-    background-color: #28a745;
-    /* Verde check */
-    border-color: #28a745;
-    color: white;
+    background: #0052a3;
+    border-color: #0052a3;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 82, 163, 0.2);
 }
 
 .pr-step--completed .pr-label {
-    color: #28a745;
+    color: #0052a3;
+    font-weight: 600;
 }
 
-/* Active State */
+/* Active */
 .pr-step--active .pr-circle {
-    background-color: #0056AC;
-    /* Azul Fuerte (mismo del header) */
-    border-color: #0056AC;
-    color: white;
-    box-shadow: 0 0 0 4px rgba(0, 86, 172, 0.1);
-    /* Efecto de foco */
+    background: #0052a3;
+    border-color: #0052a3;
+    color: #fff;
+    box-shadow: 0 0 0 4px rgba(0, 82, 163, 0.12), 0 2px 8px rgba(0, 82, 163, 0.2);
 }
 
 .pr-step--active .pr-label {
-    color: #0056AC;
-    font-weight: bold;
+    color: #0052a3;
+    font-weight: 700;
 }
 
-/* Pending State (Default is already styled above, making explicit if needed) */
+/* Pending (default) */
 .pr-step--pending .pr-circle {
-    background-color: #ffffff;
-    border-color: #e0e0e0;
-    color: #999;
+    background: #fff;
+    border-color: #dfe3ea;
+    color: rgba(26, 31, 46, 0.3);
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 600px) {
+    .pr-step {
+        width: 80px;
+    }
+
+    .pr-label {
+        font-size: 0.65rem;
+    }
+
+    .pr-circle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+    }
+
+    .pr-line-background {
+        top: 14px;
+    }
 }
