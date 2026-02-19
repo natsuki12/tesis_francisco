@@ -3,6 +3,7 @@ tesis_francisco/
     .env.example
     .gitignore
     .htaccess
+    ProfesorAutorizado.php
     README.md
     composer.json
     composer.lock
@@ -30,9 +31,15 @@ tesis_francisco/
                         sidebar_logged.css
                 simulator/
                     legacy/
-                        index_old.css
+                        consulta_rif.css
+                        inscripcion_rif.css
                     steps/
                         step_01_seniat_index.css
+                        servicios_declaracion/
+                            asset_1.woff2
+                            bootstrap-icons.css
+                            bootstrap.min.css
+                            servicios_declaracion.css
                 student/
                     home_st.css
             img/
@@ -57,7 +64,7 @@ tesis_francisco/
                     seniat-portal-title-noticias.png
                 seniat-portal-nuevo/
                     Logo-SENIAT-blanco.png
-                    fondo-footer-inicio.png
+                    fondo-footer-inicio.jpg
                     seniat-banner-header.jpg
                     slider-inicio/
                         slider-SENIAT-1.png
@@ -65,10 +72,32 @@ tesis_francisco/
                         slider-SENIAT-3.png
                         slider-SENIAT-4.PNG
                         slider-SENIAT-5.PNG
+                simulator/
+                    consulta_rif/
+                        51635696147c.gif
+                        53aaaf7342a8.jpg
+                    inscripcion_rif/
+                        0121ffb003da.gif
+                        407ba5222c30.gif
+                        4c907c96f891.jpg
+                        5e3bb17364a1.jpg
+                        675cfe4fb1a8.gif
+                        6c27068ccc63.gif
+                        6c684c15cab3.gif
+                        79a6e64baf42.gif
+                        9bdef02d3863.gif
+                        b89604807a93.gif
+                        f897e0d4e525.gif
+                        fa03f267ae08.gif
+                    servicios_declaracion/
+                        asset_3.png
             js/
                 auth/
                     register.js
                 simulator/
+                    legacy/
+                        consulta_rif.js
+                        inscripcion_rif.js
                     steps/
                         step_01_seniat_index.js
     resources/
@@ -92,8 +121,11 @@ tesis_francisco/
                     sidebar_logged.php
             simulator/
                 legacy/
+                    consulta_rif.php
                     index_old.php
+                    inscripcion_rif.php
                 steps/
+                    servicios_declaracion.php
                     step_01_seniat_index.php
             student/
                 home_st.php
@@ -113,8 +145,14 @@ tesis_francisco/
                 Controllers/
                     LoginController.php
                     RegisterController.php
-                models/
-                services/
+                Models/
+                    LoginModel.php
+                    RegisterModel.php
+                Services/
+                    LoginService.php
+                    RegisterService.php
+            prueba/
+                PruebaController.php
     storage/
         logs/
             app_errors.log

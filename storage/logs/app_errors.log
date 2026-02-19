@@ -364,3 +364,5 @@ Stack trace:
 #2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(122): App\Core\Router->dispatch('GET', '/registro')
 #3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
 #4 {main}
+[19-Feb-2026 03:14:34 Europe/Berlin] [CRITICAL DB ERROR] SQLSTATE[HY000] [1049] Unknown database 'sistema_seniat'
+[19-Feb-2026 03:14:34 Europe/Berlin] [CRITICAL DB ERROR] SQLSTATE[HY000] [1049] Unknown database 'sistema_seniat'

@@ -1,0 +1,8 @@
+.env
+/vendor
+/node_modules
+/storage/*
+!/storage/.gitignore
+.idea
+.vscode
+*.log

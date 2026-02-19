@@ -83,6 +83,15 @@ class RegisterController extends Controller
             }
 
             // =========================================================
+            // REENVIAR CÓDIGO
+            // =========================================================
+            case 'resend_code': {
+                $redirectUrl = $this->service->handleResendCode();
+                $this->redirect($redirectUrl);
+                break;
+            }
+
+            // =========================================================
             // PASO 3: GUARDADO FINAL
             // =========================================================
             case 'personal_data': {

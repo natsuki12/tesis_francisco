@@ -59,8 +59,8 @@ ob_start();
                     <div class="mega-dropdown">
                         <div class="mega-dropdown__section">
                             <ul>
-                                <li><a href="#">Inscripción de RIF</a></li>
-                                <li><a href="#">Consulta RIF</a></li>
+                                <li><a href="<?= base_url('/inscripcion_rif') ?>">Inscripción de RIF</a></li>
+                                <li><a href="<?= base_url('/consulta_rif') ?>">Consulta RIF</a></li>
                                 <li><a href="#">Consulta comprobante digital de RIF</a></li>
                                 <li><a href="#">Consulta de Certificados</a></li>
                                 <li><a href="#">Retención IVA (Prueba carga de archivo)</a></li>
@@ -77,7 +77,7 @@ ob_start();
                         <div class="ingresar-header">SENIAT en Línea</div>
                         <a href="#" class="ingresar-item">Persona Natural</a>
                         <a href="#" class="ingresar-item">Persona Jurídica</a>
-                        <a href="#" class="ingresar-item">Servicios de Declaración</a>
+                        <a href="<?= base_url('/servicios_declaracion') ?>" class="ingresar-item">Servicios de Declaración</a>
                     </div>
                 </div>
                 <button class="btn-search" aria-label="Buscar">

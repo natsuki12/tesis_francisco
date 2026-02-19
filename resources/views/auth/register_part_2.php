@@ -48,7 +48,25 @@ ob_start();
                     Ingrese el código de verificación enviado a su correo electrónico.
                 </p>
 
-                <?php if(isset($_GET['error']) && $_GET['error'] === 'codigo_invalido'): ?>
+                <?php
+                    $flashError = $_SESSION['flash_error'] ?? null;
+                    $flashSuccessResend = $_SESSION['flash_success_resend'] ?? null;
+                    $flashSeg = $_SESSION['flash_seg'] ?? null;
+                    unset($_SESSION['flash_error'], $_SESSION['flash_vista'], $_SESSION['flash_success_resend'], $_SESSION['flash_seg']);
+                ?>
+
+                <?php if($flashSuccessResend): ?>
+                    <div style="background-color: #d1e7dd; color: #0f5132; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center; border: 1px solid #badbcc;">
+                        <strong>¡Éxito!</strong> <?= $flashSuccessResend ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if($flashError === 'espere_tiempo'): ?>
+                    <div style="background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center; border: 1px solid #ffeeba;">
+                        <strong>Por favor espere:</strong> Debe esperar <?= $flashSeg ?> segundos para solicitar otro código.
+                    </div>
+                <?php endif; ?>
+                <?php if($flashError === 'codigo_invalido'): ?>
                     <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center; border: 1px solid #f5c6cb;">
                         <strong>⚠ Error:</strong> El código ingresado es incorrecto.
                     </div>
@@ -67,8 +85,9 @@ ob_start();
                     </div>
                 </div>
 
-                <div class="alert-info-spa">
-                    <strong>¿No recibió el código?</strong> Revise su carpeta de spam o solicite un nuevo código.
+                <div class="alert-info-spa" style="display:flex; justify-content:space-between; align-items:center; gap: 10px;">
+                    <span><strong>¿No recibió el código?</strong> Revise su spam.</span>
+                    <button type="button" onclick="document.getElementById('form-resend-code').submit();" style="background:none; border:none; color:#0d6efd; text-decoration:underline; cursor:pointer; padding:0; font-size:inherit; font-family:inherit;">Solicitar nuevo</button>
                 </div>
             </div>
 
@@ -77,6 +96,12 @@ ob_start();
                 
                 <button type="submit" id="btn-verificar" class="btn-spa btn-primary">Verificar código</button>
             </div>
+        </form>
+
+        <!-- Formulario oculto para reenvío (fuera del form principal para evitar anidación) -->
+        <form id="form-resend-code" action="<?= base_url('/registro') ?>" method="POST" class="d-none">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="resend_code">
         </form>
     </div>
 

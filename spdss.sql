@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-02-2026 a las 14:45:44
+-- Tiempo de generación: 19-02-2026 a las 02:36:20
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -74,6 +74,16 @@ CREATE TABLE `estudiantes` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `estudiantes`
+--
+
+INSERT INTO `estudiantes` (`id`, `persona_id`, `carrera_id`, `created_at`, `updated_at`) VALUES
+(1, 2, 1, '2026-02-11 04:50:54', '2026-02-11 04:50:54'),
+(2, 3, 1, '2026-02-11 05:13:38', '2026-02-11 05:13:38'),
+(3, 4, 1, '2026-02-12 18:08:20', '2026-02-12 18:08:20'),
+(4, 5, 1, '2026-02-12 18:10:33', '2026-02-12 18:10:33');
+
 -- --------------------------------------------------------
 
 --
@@ -86,6 +96,16 @@ CREATE TABLE `inscripciones` (
   `seccion_id` int(10) UNSIGNED NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `inscripciones`
+--
+
+INSERT INTO `inscripciones` (`id`, `estudiante_id`, `seccion_id`, `created_at`) VALUES
+(1, 1, 1, '2026-02-11 04:50:54'),
+(2, 2, 1, '2026-02-11 05:13:38'),
+(3, 3, 1, '2026-02-12 18:08:20'),
+(4, 4, 1, '2026-02-12 18:10:33');
 
 -- --------------------------------------------------------
 
@@ -159,10 +179,21 @@ CREATE TABLE `personas` (
   `nombres` varchar(100) NOT NULL,
   `apellidos` varchar(100) NOT NULL,
   `fecha_nacimiento` date NOT NULL,
-  `genero` enum('M','F') DEFAULT NULL,
+  `genero` enum('M','F','Otro','Prefiero no decir') DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `personas`
+--
+
+INSERT INTO `personas` (`id`, `nacionalidad`, `cedula`, `nombres`, `apellidos`, `fecha_nacimiento`, `genero`, `created_at`, `updated_at`) VALUES
+(1, 'V', '31120479', 'Cesar', 'Requena', '1991-02-27', 'M', '2026-02-11 04:30:29', '2026-02-11 04:30:29'),
+(2, 'V', '27836650', 'Francisco', 'Diaz', '2026-02-11', 'M', '2026-02-11 04:50:54', '2026-02-11 04:51:09'),
+(3, 'V', '4224014', 'Valeria', 'Cardier', '2026-02-28', '', '2026-02-11 05:13:38', '2026-02-11 05:13:38'),
+(4, 'V', '31120478', 'prueba', 'Cardier', '2001-05-29', '', '2026-02-12 18:08:20', '2026-02-12 18:08:20'),
+(5, 'V', '31860250', 'Valeria', 'Cardier', '2001-05-29', '', '2026-02-12 18:10:33', '2026-02-12 18:10:33');
 
 -- --------------------------------------------------------
 
@@ -178,6 +209,30 @@ CREATE TABLE `profesores` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `profesores`
+--
+
+INSERT INTO `profesores` (`id`, `persona_id`, `titulo`, `firma_digital`, `created_at`, `updated_at`) VALUES
+(1, 1, 'ingeniero', NULL, '2026-02-11 04:34:10', '2026-02-11 04:34:10');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `profesores_autorizados`
+--
+
+CREATE TABLE `profesores_autorizados` (
+  `id` bigint(20) NOT NULL,
+  `email` varchar(150) NOT NULL COMMENT 'Debe coincidir con users.email',
+  `estatus_registro` enum('pendiente','completado') NOT NULL DEFAULT 'pendiente',
+  `condicion` enum('activo','retirado') NOT NULL DEFAULT 'activo',
+  `observaciones` varchar(255) DEFAULT NULL,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -199,8 +254,8 @@ CREATE TABLE `roles` (
 
 INSERT INTO `roles` (`id`, `nombre`, `descripcion`, `created_at`, `updated_at`) VALUES
 (1, 'admin', 'Administrador del Sistema y Configuración Fiscal', '2026-02-01 18:18:24', '2026-02-01 18:18:24'),
-(2, 'teacher', 'Docente evaluador y supervisor de secciones', '2026-02-01 18:18:24', '2026-02-01 18:18:24'),
-(3, 'student', 'Estudiante cursante de la materia', '2026-02-01 18:18:24', '2026-02-01 18:18:24');
+(2, 'profesor', 'Docente evaluador y supervisor de secciones', '2026-02-01 18:18:24', '2026-02-11 04:35:30'),
+(3, 'estudiante', 'Estudiante cursante de la materia', '2026-02-01 18:18:24', '2026-02-11 04:35:36');
 
 -- --------------------------------------------------------
 
@@ -218,6 +273,13 @@ CREATE TABLE `secciones` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `secciones`
+--
+
+INSERT INTO `secciones` (`id`, `materia_id`, `profesor_id`, `periodo_id`, `nombre`, `cupo_maximo`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 1, 'sucesiones onl 1', 20, '2026-02-11 04:46:12', '2026-02-11 04:46:12');
 
 -- --------------------------------------------------------
 
@@ -261,6 +323,17 @@ CREATE TABLE `users` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `users`
+--
+
+INSERT INTO `users` (`id`, `persona_id`, `role_id`, `email`, `password`, `status`, `created_at`, `updated_at`) VALUES
+(1, 1, 2, 'fadr2001@gmail.com', '$2b$12$I9S9nebQUxtwhXxv5U6GJeZP7CZUbHUuxsxp9SP/KPnjb0P4qOxwm', 'active', '2026-02-11 04:44:49', '2026-02-11 04:44:49'),
+(2, 2, 3, 'fdiaz.6650@unimar.edu.ve', '$2y$10$ctwj3nxTnx.83Ax9hNT3Ye5SHMEi6ATT5LzUh.G3oIVhsWEiMqobm', 'active', '2026-02-11 04:50:54', '2026-02-11 04:50:54'),
+(3, 3, 3, 'cardierv@gmail.com', '$2y$10$ZbEymi1ldw5.s46K0t4cdOOCS5EAVPntryBTZCx2ozNskNLTjpMtq', 'active', '2026-02-11 05:13:38', '2026-02-11 05:13:38'),
+(4, 4, 3, 'vcardier.0479@unimar.edu.ve', '$2y$10$KRc/FlxyrUVWliVPC13RK.Vuak8bRsta4f16HeHlXBhovaT5b93r6', 'active', '2026-02-12 18:08:20', '2026-02-12 18:08:20'),
+(5, 5, 3, 'valefrancardiaz@gmail.com', '$2y$10$JCFra4N/FFLg3zA66srZeOWbVXPdaz9m8A8ctl4c0aVosYhzS1SYm', 'active', '2026-02-12 18:10:33', '2026-02-12 18:10:33');
 
 --
 -- Índices para tablas volcadas
@@ -338,6 +411,14 @@ ALTER TABLE `profesores`
   ADD UNIQUE KEY `unique_persona_profesor` (`persona_id`);
 
 --
+-- Indices de la tabla `profesores_autorizados`
+--
+ALTER TABLE `profesores_autorizados`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `profesores_autorizados_email_unique` (`email`),
+  ADD KEY `fk_profesores_autorizados_admin` (`created_by`);
+
+--
 -- Indices de la tabla `roles`
 --
 ALTER TABLE `roles`
@@ -389,13 +470,13 @@ ALTER TABLE `carreras`
 -- AUTO_INCREMENT de la tabla `estudiantes`
 --
 ALTER TABLE `estudiantes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `inscripciones`
 --
 ALTER TABLE `inscripciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `materias`
@@ -419,13 +500,19 @@ ALTER TABLE `periodos`
 -- AUTO_INCREMENT de la tabla `personas`
 --
 ALTER TABLE `personas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `profesores`
 --
 ALTER TABLE `profesores`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `profesores_autorizados`
+--
+ALTER TABLE `profesores_autorizados`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -437,7 +524,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `secciones`
 --
 ALTER TABLE `secciones`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos_eventos`
@@ -449,7 +536,7 @@ ALTER TABLE `tipos_eventos`
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
@@ -493,6 +580,12 @@ ALTER TABLE `password_resets`
 --
 ALTER TABLE `profesores`
   ADD CONSTRAINT `fk_profesores_personas` FOREIGN KEY (`persona_id`) REFERENCES `personas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `profesores_autorizados`
+--
+ALTER TABLE `profesores_autorizados`
+  ADD CONSTRAINT `fk_profesores_autorizados_admin` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Filtros para la tabla `secciones`

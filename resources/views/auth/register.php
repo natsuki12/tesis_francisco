@@ -22,9 +22,14 @@ $extraCss = '
 $currentStep = 1;
 
 // DETECCIÓN INTELIGENTE:
-// Si el controlador nos devuelve con ?vista=datos (por un error),
+// Si el controlador nos devuelve con flash_vista='datos' en sesión (por un error),
 // saltamos los términos y mostramos directo el formulario.
-$mostrarDatos = isset($_GET['vista']) && $_GET['vista'] === 'datos';
+$mostrarDatos = isset($_SESSION['flash_vista']) && $_SESSION['flash_vista'] === 'datos';
+$flashError = $_SESSION['flash_error'] ?? null;
+$flashOld = $_SESSION['flash_old'] ?? [];
+
+// Consumir los flash data inmediatamente para que no persistan al recargar
+unset($_SESSION['flash_vista'], $_SESSION['flash_error'], $_SESSION['flash_seg'], $_SESSION['flash_old']);
 
 ob_start();
 ?>
@@ -73,13 +78,13 @@ ob_start();
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="register_data">
 
-            <?php if (isset($_GET['error'])): ?>
+            <?php if ($flashError): ?>
                 <div style="background-color: #f8d7da; color: #721c24; padding: 12px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #f5c6cb; font-size: 0.9em; display: flex; align-items: center; gap: 10px;">
                     <svg style="flex-shrink:0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                     <div>
-                        <?php if ($_GET['error'] === 'cedula_existe'): ?>
+                        <?php if ($flashError === 'cedula_existe'): ?>
                             <strong>Ya registrado:</strong> Esta cédula ya pertenece a un usuario en el sistema.
-                        <?php elseif ($_GET['error'] === 'email_existe'): ?>
+                        <?php elseif ($flashError === 'email_existe'): ?>
                             <strong>Correo en uso:</strong> Este correo ya está registrado. <a href="<?= base_url('/login') ?>" style="color:#721c24; text-decoration:underline;">¿Iniciar sesión?</a>
                         <?php else: ?>
                             Ocurrió un error inesperado al procesar su solicitud.
@@ -89,8 +94,9 @@ ob_start();
             <?php endif; ?>
             <div class="data-layout">
                 <div class="data-sidebar">
-                    <input type="hidden" name="rol" value="Estudiante">
-                    <div class="data-option active" onclick="selectOption(this)">Estudiante</div>
+                    <input type="hidden" name="rol" id="rol-hidden" value="Estudiante">
+                    <div class="data-option active" onclick="selectOption(this, 'Estudiante')">Estudiante</div>
+                    <div class="data-option" onclick="selectOption(this, 'Profesor')">Profesor</div>
                 </div>
 
                 <div class="data-form-container">
@@ -102,12 +108,12 @@ ob_start();
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                             </div>
                             <select class="input-prefix-select" name="nacionalidad">
-                                <option value="V" <?= (isset($_SESSION['temp_user']['nacionalidad']) && $_SESSION['temp_user']['nacionalidad'] == 'V') ? 'selected' : '' ?>>V</option>
-                                <option value="E" <?= (isset($_SESSION['temp_user']['nacionalidad']) && $_SESSION['temp_user']['nacionalidad'] == 'E') ? 'selected' : '' ?>>E</option>
+                                <option value="V" <?= (($flashOld['nacionalidad'] ?? $_SESSION['temp_user']['nacionalidad'] ?? '') == 'V') ? 'selected' : '' ?>>V</option>
+                                <option value="E" <?= (($flashOld['nacionalidad'] ?? $_SESSION['temp_user']['nacionalidad'] ?? '') == 'E') ? 'selected' : '' ?>>E</option>
                             </select>
                             
                             <input type="number" name="cedula" class="form-control-spa" placeholder="Cédula" required 
-                                   value="<?= isset($_SESSION['temp_user']['cedula']) ? e($_SESSION['temp_user']['cedula']) : '' ?>">
+                                   value="<?= e($flashOld['cedula'] ?? $_SESSION['temp_user']['cedula'] ?? '') ?>">
                         </div>
                     </div>
 
@@ -118,7 +124,7 @@ ob_start();
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                             </div>
                             <input type="email" name="email" class="form-control-spa" placeholder="ejemplo@correo.com" required 
-                                   value="<?= isset($_SESSION['temp_user']['email']) ? e($_SESSION['temp_user']['email']) : '' ?>">
+                                   value="<?= e($flashOld['email'] ?? $_SESSION['temp_user']['email'] ?? '') ?>">
                         </div>
                     </div>
 
@@ -176,7 +182,7 @@ ob_start();
             }
         }
 
-        // Si PHP detectó error y mandó ?vista=datos, actualizamos la barra UI automáticamente
+        // Si PHP detectó error y mandó flash_vista=datos, actualizamos la barra UI automáticamente
         <?php if ($mostrarDatos): ?>
             actualizarBarraProgreso(2);
         <?php endif; ?>
@@ -197,9 +203,10 @@ ob_start();
         });
     });
 
-    function selectOption(element) {
+    function selectOption(element, role) {
         document.querySelectorAll('.data-option').forEach(el => el.classList.remove('active'));
         element.classList.add('active');
+        document.getElementById('rol-hidden').value = role;
     }
 </script>
 

@@ -132,7 +132,7 @@ ob_start();
                 <div class="field">
                     <div class="field-label-row">
                         <label class="field-label" for="password">Contraseña</label>
-                        <a href="#" class="field-link">¿Olvidaste tu contraseña?</a>
+                        <a href="<?= base_url('/password-recovery') ?>" class="field-link">¿Olvidaste tu contraseña?</a>
                     </div>
                     <div class="field-input-wrap">
                         <svg class="field-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

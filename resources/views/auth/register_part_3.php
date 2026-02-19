@@ -48,7 +48,12 @@ ob_start();
                     Complete sus datos personales para finalizar el registro.
                 </p>
 
-                <?php if(isset($_GET['error'])): ?>
+                <?php
+                    $flashError = $_SESSION['flash_error'] ?? null;
+                    $flashOld = $_SESSION['flash_old'] ?? [];
+                    unset($_SESSION['flash_error'], $_SESSION['flash_vista'], $_SESSION['flash_old']);
+                ?>
+                <?php if($flashError): ?>
                     <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center; border: 1px solid #f5c6cb;">
                         <strong>⚠ Error:</strong> Por favor, complete todos los campos correctamente.
                     </div>
@@ -64,7 +69,8 @@ ob_start();
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                         </div>
-                        <input type="text" name="nombres" class="form-control-spa" placeholder="Ingrese sus nombres" required autocomplete="given-name">
+                        <input type="text" name="nombres" class="form-control-spa" placeholder="Ingrese sus nombres" required autocomplete="given-name"
+                               value="<?= htmlspecialchars($flashOld['nombres'] ?? '') ?>">
                     </div>
                 </div>
 
@@ -78,7 +84,8 @@ ob_start();
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                         </div>
-                        <input type="text" name="apellidos" class="form-control-spa" placeholder="Ingrese sus apellidos" required autocomplete="family-name">
+                        <input type="text" name="apellidos" class="form-control-spa" placeholder="Ingrese sus apellidos" required autocomplete="family-name"
+                               value="<?= htmlspecialchars($flashOld['apellidos'] ?? '') ?>">
                     </div>
                 </div>
 
@@ -94,7 +101,8 @@ ob_start();
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
                         </div>
-                        <input type="date" name="fecha_nacimiento" class="form-control-spa" required>
+                        <input type="date" name="fecha_nacimiento" class="form-control-spa" required
+                               value="<?= htmlspecialchars($flashOld['fecha_nacimiento'] ?? '') ?>">
                     </div>
                 </div>
 
@@ -111,10 +119,10 @@ ob_start();
                         </div>
                         <select name="genero" class="form-control-spa" required>
                             <option value="">Seleccione su género</option>
-                            <option value="masculino">Masculino</option>
-                            <option value="femenino">Femenino</option>
-                            <option value="otro">Otro</option>
-                            <option value="prefiero_no_decir">Prefiero no decir</option>
+                            <option value="masculino" <?= ($flashOld['genero'] ?? '') === 'masculino' ? 'selected' : '' ?>>Masculino</option>
+                            <option value="femenino" <?= ($flashOld['genero'] ?? '') === 'femenino' ? 'selected' : '' ?>>Femenino</option>
+                            <option value="otro" <?= ($flashOld['genero'] ?? '') === 'otro' ? 'selected' : '' ?>>Otro</option>
+                            <option value="prefiero_no_decir" <?= ($flashOld['genero'] ?? '') === 'prefiero_no_decir' ? 'selected' : '' ?>>Prefiero no decir</option>
                         </select>
                     </div>
                 </div>
@@ -132,7 +140,7 @@ ob_start();
                             <option value="">Seleccione sección</option>
                             <?php if (!empty($secciones)): ?>
                                 <?php foreach ($secciones as $seccion): ?>
-                                    <option value="<?= htmlspecialchars((string)$seccion['id']) ?>">
+                                    <option value="<?= htmlspecialchars((string)$seccion['id']) ?>" <?= ($flashOld['seccion'] ?? 0) == $seccion['id'] ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($seccion['materia'] . ' - Sec. ' . $seccion['seccion']) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -150,11 +158,21 @@ ob_start();
                         <div class="input-icon">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                <path d="M7 11V7a5 0 0 1 10 0v4"></path>
                             </svg>
                         </div>
-                        <input type="password" name="password" class="form-control-spa" placeholder="Ingrese su contraseña" required autocomplete="new-password">
+                        <input type="password" name="password" id="password" class="form-control-spa" placeholder="Mínimo 8 caracteres" required autocomplete="new-password">
                     </div>
+                    <!-- Requisitos de contraseña -->
+                    <!-- Requisitos de contraseña -->
+                    <ul style="margin: 5px 0 0 0; padding-left: 0; list-style: none; font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6;">
+                        <li id="req-length" style="display: flex; align-items: center; gap: 6px;">
+                            <span class="req-icon" style="color: #adb5bd;">○</span> Mínimo 8 caracteres
+                        </li>
+                        <li id="req-number" style="display: flex; align-items: center; gap: 6px;">
+                            <span class="req-icon" style="color: #adb5bd;">○</span> Al menos un número
+                        </li>
+                    </ul>
                 </div>
 
                 <!-- Campo Confirmar Contraseña -->
@@ -167,7 +185,10 @@ ob_start();
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                             </svg>
                         </div>
-                        <input type="password" name="password_confirm" class="form-control-spa" placeholder="Confirme su contraseña" required autocomplete="new-password">
+                        <input type="password" name="password_confirm" id="password_confirm" class="form-control-spa" placeholder="Confirme su contraseña" required autocomplete="new-password">
+                    </div>
+                    <div id="password-match-error" style="color: #dc3545; font-size: 0.8rem; margin-top: 5px; display: none; padding-left: 20px;">
+                        Las contraseñas no coinciden
                     </div>
                 </div>
             </div>
@@ -181,6 +202,65 @@ ob_start();
     </div>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordInput = document.getElementById('password');
+        const confirmInput = document.getElementById('password_confirm');
+        const errorMsg = document.getElementById('password-match-error');
+        const reqLength = document.getElementById('req-length');
+        const reqNumber = document.getElementById('req-number');
+
+        function updateRequirements() {
+            const pass = passwordInput.value;
+
+            // Mínimo 8 caracteres
+            const iconLength = reqLength.querySelector('.req-icon');
+            if (pass.length >= 8) {
+                reqLength.style.color = '#198754'; // success
+                iconLength.style.color = '#198754';
+                iconLength.textContent = '✔';
+            } else {
+                reqLength.style.color = 'var(--color-text-secondary)';
+                iconLength.style.color = '#adb5bd';
+                iconLength.textContent = '○';
+            }
+
+            // Al menos un número
+            const iconNumber = reqNumber.querySelector('.req-icon');
+            if (/\d/.test(pass)) {
+                reqNumber.style.color = '#198754'; // success
+                iconNumber.style.color = '#198754';
+                iconNumber.textContent = '✔';
+            } else {
+                reqNumber.style.color = 'var(--color-text-secondary)';
+                iconNumber.style.color = '#adb5bd';
+                iconNumber.textContent = '○';
+            }
+        }
+
+        function checkMatch() {
+            const pass = passwordInput.value;
+            const confirm = confirmInput.value;
+
+            // Mostrar error solo si hay contraseña escrita, hay confirmación escrita y NO coinciden
+            if (pass.length > 0 && confirm.length > 0 && pass !== confirm) {
+                errorMsg.style.display = 'block';
+            } else {
+                errorMsg.style.display = 'none';
+            }
+        }
+
+        confirmInput.addEventListener('input', checkMatch);
+        passwordInput.addEventListener('input', function() {
+            updateRequirements();
+            checkMatch();
+        });
+        
+        // Initial check in case of repopulation
+        updateRequirements();
+    });
+</script>
 
 <?php
 $content = ob_get_clean();

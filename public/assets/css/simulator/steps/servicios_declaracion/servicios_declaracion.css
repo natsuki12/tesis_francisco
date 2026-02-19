@@ -1,0 +1,100 @@
+/* === Style block 1 === */
+
+
+
+
+
+/* === Style block 2 === */
+
+:root {
+    --color-principal-btn: #245b98;
+    --color-principal-fuerte: #164193;
+    --color-principal-bg: linear-gradient(90deg, var(--color-principal-btn), var(--color-principal-fuerte));
+    --accordion-color-ligth: #dce9fc;
+    --letra: #fff
+}
+
+
+
+
+
+/* === Style block 5 === */
+
+
+
+
+
+/* === Style block 6 === */
+
+.card-header:first-child {
+    border-radius: calc(1rem - 1px) calc(1rem - 1px)0 0
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: none;
+    border-radius: 1rem
+}
+
+form i {
+    margin-left: auto;
+    cursor: pointer
+}
+
+.imgLogin {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../../../../img/simulator/servicios_declaracion/asset_3.png');
+    background-color: red !important;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat
+}
+
+.sombra {
+    outline: 1px var(--accordion-color-ligth) solid;
+    box-shadow: 8px 4px 20px #eee
+}
+
+.sombra:hover {
+    box-shadow: 10px 4px 20px var(--accordion-color-ligth)
+}
+
+.imageninput {
+    font-size: 25px;
+    display: inline-block;
+    width: 120px;
+    height: 60px;
+    text-align: center;
+    background-color: #eee;
+    border: none;
+    font-weight: 400;
+    text-decoration: line-through;
+    transform: translateY(-05%);
+    margin: auto;
+    border-radius: 10px
+}
+
+
+
+/* === Style block 7 === */
+
+.btn-seniat {
+    background-color: var(--color-principal-btn);
+    color: var(--letra);
+    border: none;
+}
+
+.btn-seniat:hover {
+    background-color: var(--color-principal-fuerte);
+    color: var(--letra);
+}

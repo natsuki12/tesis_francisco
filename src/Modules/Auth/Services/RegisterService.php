@@ -13,6 +13,14 @@ class RegisterService
         $this->model = $model;
     }
 
+    /**
+     * Guarda datos flash en sesión (se consumen una sola vez en la vista).
+     */
+    private function flash(string $key, string $value): void
+    {
+        $_SESSION['flash_' . $key] = $value;
+    }
+
     public function getCurrentStep(): int
     {
         return (int) ($_SESSION['register_step'] ?? 1);
@@ -31,30 +39,50 @@ class RegisterService
         // 🧹 LIMPIEZA PREVENTIVA
         unset($_SESSION['code_verified'], $_SESSION['verified_email']);
 
+        // 📝 Guardar datos enviados para repoblar el formulario si hay error
+        $_SESSION['flash_old'] = [
+            'nacionalidad' => $nacionalidad,
+            'cedula'       => $cedula,
+            'email'        => $email,
+        ];
+
         // ⏱️ RATE LIMITING
         $lastSent = (int) ($_SESSION['last_email_sent_at'] ?? 0);
         if (time() - $lastSent < 60) {
             $segundos = max(0, (int) (60 - (time() - $lastSent)));
-            return "/registro?vista=datos&error=espere_tiempo&seg=$segundos";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'espere_tiempo');
+            $this->flash('seg', (string) $segundos);
+            return "/registro";
         }
 
         // VALIDACIÓN DE FORMATO
         if (!in_array($nacionalidad, ['V', 'E'], true)) {
-            return "/registro?vista=datos&error=nacionalidad_invalida";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'nacionalidad_invalida');
+            return "/registro";
         }
         if (!preg_match('/^\d{6,10}$/', $cedula)) {
-            return "/registro?vista=datos&error=cedula_invalida";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'cedula_invalida');
+            return "/registro";
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return "/registro?vista=datos&error=email_invalido";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'email_invalido');
+            return "/registro";
         }
 
         // Validar duplicados (misma lógica)
         if ($this->model->personaExistsByCedula($nacionalidad, $cedula)) {
-            return "/registro?vista=datos&error=cedula_existe";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'cedula_existe');
+            return "/registro";
         }
         if ($this->model->userExistsByEmail($email)) {
-            return "/registro?vista=datos&error=email_existe";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'email_existe');
+            return "/registro";
         }
 
         // Guardar temporalmente
@@ -70,7 +98,9 @@ class RegisterService
             $codigo = (string) random_int(100000, 999999);
         } catch (\Exception $e) {
             error_log("CSPRNG Error: " . $e->getMessage());
-            return "/registro?vista=datos&error=error_interno";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'error_interno');
+            return "/registro";
         }
 
         // Configurar sesión
@@ -94,12 +124,15 @@ class RegisterService
         if (Mailer::send($email, $asunto, $mensajeHTML)) {
             $_SESSION['last_email_sent_at'] = time();
             $_SESSION['register_step'] = 2;
+            unset($_SESSION['flash_old']); // Ya no necesitamos repoblar
             return "/registro";
         }
 
         // Falló envío
         $this->clearRegistrationSessionKeepRateLimit();
-        return "/registro?vista=datos&error=fallo_envio";
+        $this->flash('vista', 'datos');
+        $this->flash('error', 'fallo_envio');
+        return "/registro";
     }
 
     // =========================================================
@@ -108,7 +141,9 @@ class RegisterService
     public function handleVerifyCode(string $inputCode): string
     {
         if (($this->getCurrentStep()) !== 2) {
-            return "/registro?vista=datos&error=flujo_invalido";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'flujo_invalido');
+            return "/registro";
         }
 
         $realCode = $_SESSION['verification_code'] ?? null;
@@ -116,26 +151,33 @@ class RegisterService
 
         // Validación formato
         if (!preg_match('/^\d{6}$/', $inputCode)) {
-            return "/registro?error=codigo_formato_invalido";
+            $this->flash('error', 'codigo_formato_invalido');
+            return "/registro";
         }
 
         // Sesión expirada
         if (!$realCode) {
             $this->clearRegistrationSessionKeepRateLimit();
-            return "/registro?vista=datos&error=sesion_expirada";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'sesion_expirada');
+            return "/registro";
         }
 
         // Tiempo expirado
         if (time() > $expires) {
             $this->clearRegistrationSessionKeepRateLimit();
-            return "/registro?vista=datos&error=codigo_expirado";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'codigo_expirado');
+            return "/registro";
         }
 
         // Intentos
         $_SESSION['verification_attempts'] = (int) ($_SESSION['verification_attempts'] ?? 0) + 1;
         if ($_SESSION['verification_attempts'] > 5) {
             $this->clearRegistrationSessionKeepRateLimit();
-            return "/registro?vista=datos&error=demasiados_intentos";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'demasiados_intentos');
+            return "/registro";
         }
 
         // Comparación segura
@@ -143,7 +185,9 @@ class RegisterService
 
             if (empty($_SESSION['temp_user']['email'])) {
                 $this->clearRegistrationSessionKeepRateLimit();
-                return "/registro?vista=datos&error=sesion_expirada";
+                $this->flash('vista', 'datos');
+                $this->flash('error', 'sesion_expirada');
+                return "/registro";
             }
 
             // Regenerar ID de sesión
@@ -160,7 +204,8 @@ class RegisterService
             return "/registro";
         }
 
-        return "/registro?error=codigo_invalido";
+        $this->flash('error', 'codigo_invalido');
+        return "/registro";
     }
 
     // =========================================================
@@ -169,7 +214,9 @@ class RegisterService
     public function handlePersonalData(array $p): string
     {
         if (($this->getCurrentStep()) !== 3) {
-            return "/registro?vista=datos&error=flujo_invalido";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'flujo_invalido');
+            return "/registro";
         }
 
         // Anti-Bypass
@@ -179,7 +226,9 @@ class RegisterService
             (($_SESSION['verified_email'] ?? '') !== ($_SESSION['temp_user']['email'] ?? ''))
         ) {
             $this->clearRegistrationSessionKeepRateLimit();
-            return "/registro?vista=datos&error=acceso_ilegal";
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'acceso_ilegal');
+            return "/registro";
         }
 
         $tempUser  = $_SESSION['temp_user'];
@@ -192,19 +241,32 @@ class RegisterService
         $pass      = (string) ($p['password'] ?? '');
         $passConf  = (string) ($p['password_confirm'] ?? '');
 
+        // 📝 Guardar datos enviados para repoblar el formulario si hay error (sin contraseñas)
+        $_SESSION['flash_old'] = [
+            'nombres'          => $nombres,
+            'apellidos'        => $apellidos,
+            'fecha_nacimiento' => $fechaNac,
+            'genero'           => $genero,
+            'seccion'          => $seccionId,
+        ];
+
         if (strlen($pass) < 8 || !preg_match('/\d/', $pass)) {
-            return "/registro?error=pass_debil";
+            $this->flash('error', 'pass_debil');
+            return "/registro";
         }
         if ($pass !== $passConf) {
-            return "/registro?error=pass_mismatch";
+            $this->flash('error', 'pass_mismatch');
+            return "/registro";
         }
         if ($seccionId <= 0) {
-            return "/registro?error=seccion_invalida";
+            $this->flash('error', 'seccion_invalida');
+            return "/registro";
         }
 
         $dt = \DateTime::createFromFormat('Y-m-d', $fechaNac);
         if (!$dt || $dt->format('Y-m-d') !== $fechaNac) {
-            return "/registro?error=fecha_invalida";
+            $this->flash('error', 'fecha_invalida');
+            return "/registro";
         }
 
         try {
@@ -238,16 +300,91 @@ class RegisterService
 
             if ($e->getCode() === '23000') {
                 $this->clearRegistrationSessionKeepRateLimit();
-                return "/registro?vista=datos&error=usuario_duplicado";
+                $this->flash('vista', 'datos');
+                $this->flash('error', 'usuario_duplicado');
+                return "/registro";
             }
 
-            return "/registro?error=error_db";
+            $this->flash('error', 'error_db');
+            return "/registro";
 
         } catch (\Exception $e) {
             error_log("General Error: " . $e->getMessage());
             $msg = ($e->getMessage() === "Sección no existe") ? "seccion_invalida" : "error_general";
-            return "/registro?error=$msg";
+            $this->flash('error', $msg);
+            return "/registro";
         }
+    }
+
+    // =========================================================
+    // REENVIAR CÓDIGO
+    // =========================================================
+    public function handleResendCode(): string
+    {
+        if (($this->getCurrentStep()) !== 2) {
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'flujo_invalido');
+            return "/registro";
+        }
+
+        // Recuperar datos de sesión
+        $tempUser = $_SESSION['temp_user'] ?? [];
+        $email    = $tempUser['email'] ?? null;
+        $cedula   = $tempUser['cedula'] ?? null;
+        
+        if (!$email || !$cedula) {
+            $this->clearRegistrationSessionKeepRateLimit();
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'sesion_expirada');
+            return "/registro";
+        }
+
+        // ⏱️ RATE LIMITING (Mismo contador que el registro inicial)
+        $lastSent = (int) ($_SESSION['last_email_sent_at'] ?? 0);
+        if (time() - $lastSent < 60) {
+            $segundos = max(0, (int) (60 - (time() - $lastSent)));
+            $this->flash('error', 'espere_tiempo');
+            $this->flash('seg', (string) $segundos);
+            return "/registro";
+        }
+
+        // Generar nuevo código
+        try {
+            $codigo = (string) random_int(100000, 999999);
+        } catch (\Exception $e) {
+            error_log("CSPRNG Error: " . $e->getMessage());
+            $this->flash('vista', 'datos');
+            $this->flash('error', 'error_interno');
+            return "/registro";
+        }
+
+        // Actualizar sesión
+        $_SESSION['verification_code'] = $codigo;
+        $_SESSION['verification_expires_at'] = time() + (10 * 60);
+        $_SESSION['verification_attempts'] = 0; // Reiniciar intentos
+
+        // Enviar correo (Mismo HTML, quizás cambiar título si se desea)
+        $asunto = "Nuevo Código de Verificación - Simulador SENIAT";
+        $mensajeHTML = "
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>
+                <h2 style='color: #004085; text-align: center;'>Solicitud de Nuevo Código</h2>
+                <p>Su nuevo código de seguridad es:</p>
+                <div style='background-color: #f8f9fa; padding: 15px; text-align: center; margin: 20px 0;'>
+                    <strong style='font-size: 32px; letter-spacing: 5px; color: #0d6efd;'>{$codigo}</strong>
+                </div>
+                <p style='color: #777; font-size: 12px;'>Válido por 10 minutos.</p>
+            </div>
+        ";
+
+        if (Mailer::send($email, $asunto, $mensajeHTML)) {
+            $_SESSION['last_email_sent_at'] = time();
+            $this->flash('success_resend', 'Código reenviado exitosamente.');
+            return "/registro";
+        }
+
+        $this->flash('vista', 'datos');
+        $this->flash('error', 'fallo_envio');
+        return "/registro";
     }
 
     // =========================================================
@@ -259,7 +396,8 @@ class RegisterService
         $_SESSION['register_step'] = max(1, $currentStep - 1);
 
         if ($currentStep === 2) {
-            return "/registro?vista=datos";
+            $this->flash('vista', 'datos');
+            return "/registro";
         }
 
         return "/registro";
