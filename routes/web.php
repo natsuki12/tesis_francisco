@@ -57,9 +57,29 @@ $requireAuth = function() {
     }
 };
 
+// Verificador de rol: redirige a /home si el rol no coincide
+$requireRole = function(int $allowedRole) {
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    $role = (int)($_SESSION['role_id'] ?? 3);
+    if ($role !== $allowedRole) {
+        header('Location: ' . base_url('/home'));
+        exit;
+    }
+};
+
 $router->get('/simulador_index_antiguo', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/legacy/index_old'); });
-$router->get('/home', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('student/home_st'); });
-$router->get('/home_st', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('student/home_st'); });
+
+// /home muestra el dashboard correcto según el rol
+$router->get('/home', function() use ($app, $requireAuth) {
+    $requireAuth();
+    $role = (int)($_SESSION['role_id'] ?? 3);
+    return match($role) {
+        1 => $app->view('admin/home_admin'),
+        2 => $app->view('professor/home_professor'),
+        default => $app->view('student/home_st'),
+    };
+});
+
 $router->get('/simulador_inicio', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/steps/step_01_seniat_index'); });
 $router->get('/step_01_seniat_index', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/steps/step_01_seniat_index'); });
 $router->get('/inscripcion_rif', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/legacy/inscripcion_rif'); });

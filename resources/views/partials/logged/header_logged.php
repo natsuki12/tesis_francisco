@@ -21,7 +21,7 @@ $phAvatar = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvM
                 alt="Avatar"
                 onerror="this.onerror=null;this.src='<?= $phAvatar ?>';"
             >
-            <span class="sim-user__name"><?= isset($user['name']) ? htmlspecialchars($user['name']) : 'Usuario' ?></span>
+            <span class="sim-user__name"><?= htmlspecialchars($_SESSION['user_name'] ?? 'Usuario') ?></span>
         </div>
     </div>
 </header>

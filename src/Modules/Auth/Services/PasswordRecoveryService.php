@@ -7,6 +7,8 @@ use App\Core\Mailer;
 class PasswordRecoveryService
 {
     private PasswordRecoveryModel $model;
+    private const RATE_LIMIT_SECONDS = 60;
+    private const MAX_ATTEMPTS = 5;
 
     public function __construct(PasswordRecoveryModel $model)
     {
@@ -15,6 +17,15 @@ class PasswordRecoveryService
 
     public function sendRecoveryCode(string $email): array
     {
+        // 0. RATE LIMITING
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        
+        $lastSent = $_SESSION['recovery_last_sent_at'] ?? 0;
+        if (time() - $lastSent < self::RATE_LIMIT_SECONDS) {
+            $remaining = self::RATE_LIMIT_SECONDS - (time() - $lastSent);
+            return ['success' => false, 'message' => "Por favor espera {$remaining} segundos antes de solicitar otro código."];
+        }
+
         // 1. Validate email
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return ['success' => false, 'message' => 'El correo electrónico no es válido.'];
@@ -64,6 +75,10 @@ class PasswordRecoveryService
         ";
 
         if (Mailer::send($email, $subject, $body)) {
+             // UPDATE RATE LIMIT
+             $_SESSION['recovery_last_sent_at'] = time();
+             $_SESSION['recovery_attempts'] = 0; // Reset attempts on new code
+             
              return ['success' => true, 'message' => 'Código enviado. Revisa tu correo.'];
         } else {
              return ['success' => false, 'message' => 'Error al enviar el correo. Por favor intenta más tarde.'];
@@ -72,6 +87,14 @@ class PasswordRecoveryService
 
     public function verifyCode(string $email, string $code): array
     {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        // 0. CHECK MAX ATTEMPTS
+        $attempts = $_SESSION['recovery_attempts'] ?? 0;
+        if ($attempts >= self::MAX_ATTEMPTS) {
+            return ['success' => false, 'message' => 'Has excedido el número máximo de intentos. Solicita un nuevo código.'];
+        }
+
         $user = $this->model->getUserByEmail($email);
         if (!$user) {
              return ['success' => false, 'message' => 'Usuario no válido.'];
@@ -83,10 +106,17 @@ class PasswordRecoveryService
         }
 
         if (password_verify($code, $tokenData['token_hash'])) {
+            // SUCCESS - Reset attempts? Or keep them? 
+            // Better to keep session clean for next steps, maybe reset attempts here.
+            $_SESSION['recovery_attempts'] = 0;
             return ['success' => true, 'message' => 'Código verificado.'];
         }
 
-        return ['success' => false, 'message' => 'Código incorrecto.'];
+        // FAILURE - Increment attempts
+        $_SESSION['recovery_attempts'] = $attempts + 1;
+        $remaining = self::MAX_ATTEMPTS - $_SESSION['recovery_attempts'];
+        
+        return ['success' => false, 'message' => "Código incorrecto. Te quedan {$remaining} intentos."];
     }
 
     public function resetPassword(string $email, string $code, string $password, string $confirmPassword): array
@@ -113,6 +143,11 @@ class PasswordRecoveryService
         if ($this->model->updateUserPassword((int)$user['id'], $hashedPassword)) {
             // Invalidate token
             $this->model->markTokenAsUsed((int)$user['id']);
+            
+            // Clean up session
+            unset($_SESSION['recovery_last_sent_at']);
+            unset($_SESSION['recovery_attempts']);
+            
             return ['success' => true, 'message' => 'Contraseña actualizada correctamente.'];
         }
 

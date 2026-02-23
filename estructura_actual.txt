@@ -19,6 +19,7 @@ tesis_francisco/
             css/
                 auth/
                     login.css
+                    password_recovery.css
                     progress-bar-register.css
                     register.css
                 landing/
@@ -105,6 +106,7 @@ tesis_francisco/
             auth/
                 _progress-bar-register.php
                 login.php
+                password_recovery.php
                 register.php
                 register_part_2.php
                 register_part_3.php
@@ -144,12 +146,15 @@ tesis_francisco/
             Auth/
                 Controllers/
                     LoginController.php
+                    PasswordRecoveryController.php
                     RegisterController.php
                 Models/
                     LoginModel.php
+                    PasswordRecoveryModel.php
                     RegisterModel.php
                 Services/
                     LoginService.php
+                    PasswordRecoveryService.php
                     RegisterService.php
             prueba/
                 PruebaController.php

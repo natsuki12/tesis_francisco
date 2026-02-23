@@ -1,5 +1,5 @@
-/* ARCHIVO: public/assets/css/student/home_st.css
-   DESCRIPCIÓN: Estilos del Dashboard del Estudiante — misma estética que el profesor.
+/* ARCHIVO: public/assets/css/admin/home_admin.css
+   DESCRIPCIÓN: Estilos del Dashboard del Administrador — misma estética que profesor/estudiante.
 */
 
 /* ===== VARIABLES ===== */
@@ -28,6 +28,8 @@
     --amber-100: #fef3c7;
     --red-500: #ef4444;
     --red-100: #fee2e2;
+    --purple-500: #8b5cf6;
+    --purple-100: #ede9fe;
 
     --radius: 12px;
     --radius-sm: 8px;
@@ -58,7 +60,7 @@
 /* ===== STATS ROW ===== */
 .stats-row {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin-bottom: 28px;
 }
@@ -112,6 +114,11 @@
 .stat-icon.red {
     background: var(--red-100);
     color: var(--red-500);
+}
+
+.stat-icon.purple {
+    background: var(--purple-100);
+    color: var(--purple-500);
 }
 
 .stat-number {
@@ -305,54 +312,8 @@
     text-decoration: underline;
 }
 
-/* Guide Items */
-.guide-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 14px 22px;
-    border-bottom: 1px solid var(--gray-50);
-    transition: background var(--transition);
-}
-
-.guide-item:last-child {
-    border-bottom: none;
-}
-
-.guide-item:hover {
-    background: var(--gray-50);
-}
-
-.guide-step {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--blue-50);
-    color: var(--blue-700);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 700;
-    flex-shrink: 0;
-    margin-top: 2px;
-}
-
-.guide-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--gray-800);
-    margin-bottom: 2px;
-}
-
-.guide-desc {
-    font-size: 12px;
-    color: var(--gray-400);
-    line-height: 1.4;
-}
-
-/* Legal Items */
-.legal-item {
+/* Activity Items */
+.activity-item {
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -361,34 +322,111 @@
     transition: background var(--transition);
 }
 
-.legal-item:last-child {
+.activity-item:last-child {
     border-bottom: none;
 }
 
-.legal-item:hover {
+.activity-item:hover {
     background: var(--gray-50);
 }
 
-.legal-icon {
-    width: 36px;
-    height: 36px;
+.activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+}
+
+.activity-dot.green {
+    background: var(--green-500);
+}
+
+.activity-dot.blue {
+    background: var(--blue-500);
+}
+
+.activity-dot.amber {
+    background: var(--amber-500);
+}
+
+.activity-dot.red {
+    background: var(--red-500);
+}
+
+.activity-text {
+    font-size: 13px;
+    color: var(--gray-700);
+    line-height: 1.4;
+}
+
+.activity-text strong {
+    font-weight: 600;
+    color: var(--gray-800);
+}
+
+.activity-time {
+    font-size: 12px;
+    color: var(--gray-400);
+    margin-top: 2px;
+}
+
+/* Config / Status Items */
+.config-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--gray-50);
+    transition: background var(--transition);
+}
+
+.config-item:last-child {
+    border-bottom: none;
+}
+
+.config-item:hover {
+    background: var(--gray-50);
+}
+
+.config-icon {
+    width: 32px;
+    height: 32px;
     border-radius: 8px;
-    background: var(--amber-100);
-    color: var(--amber-500);
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
 }
 
-.legal-title {
+.config-icon.green {
+    background: var(--green-100);
+    color: var(--green-500);
+}
+
+.config-icon.blue {
+    background: var(--blue-50);
+    color: var(--blue-600);
+}
+
+.config-icon.amber {
+    background: var(--amber-100);
+    color: var(--amber-500);
+}
+
+.config-icon.red {
+    background: var(--red-100);
+    color: var(--red-500);
+}
+
+.config-title {
     font-size: 14px;
     font-weight: 500;
     color: var(--gray-800);
     margin-bottom: 2px;
 }
 
-.legal-desc {
+.config-status {
     font-size: 12px;
     color: var(--gray-400);
     line-height: 1.4;

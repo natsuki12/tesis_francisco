@@ -2,6 +2,7 @@
 namespace App\Modules\Auth\Services;
 
 use App\Modules\Auth\Models\LoginModel;
+use App\Core\BitacoraModel;
 
 class LoginService
 {
@@ -24,6 +25,12 @@ class LoginService
             
             // Verificar si está activo
             if ($user['status'] !== 'active') {
+                BitacoraModel::log(
+                    BitacoraModel::USER_BLOCKED,
+                    (int)$user['id'],
+                    $email,
+                    "Usuario con status: {$user['status']}"
+                );
                 return '/login?error=inactivo';
             }
 
@@ -41,16 +48,40 @@ class LoginService
             $_SESSION['email'] = $email;
             $_SESSION['logged_in'] = true;
 
-            // C. Redirigir al sistema
+            // C. Registrar en bitácora
+            BitacoraModel::log(
+                BitacoraModel::LOGIN_SUCCESS,
+                (int)$user['id'],
+                $email
+            );
+
+            // D. Redirigir al dashboard
             return '/home';
         }
 
         // Error de credenciales
+        BitacoraModel::log(
+            BitacoraModel::LOGIN_FAILED,
+            null,
+            $email,
+            'Credenciales inválidas'
+        );
         return '/login?error=credenciales';
     }
 
     public function handleLogout(): string
     {
+        // Capturar datos ANTES de destruir la sesión
+        $userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
+        $email  = $_SESSION['email'] ?? null;
+
+        // Registrar en bitácora
+        BitacoraModel::log(
+            BitacoraModel::LOGOUT,
+            $userId,
+            $email
+        );
+
         $_SESSION = [];
         
         if (ini_get("session.use_cookies")) {

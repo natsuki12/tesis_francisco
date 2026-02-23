@@ -67,6 +67,20 @@ class PasswordRecoveryController extends Controller
             }
         }
 
+        if ($step === 'resend') {
+            $result = $this->service->sendRecoveryCode($email);
+            
+            // Stay on 'code' step regardless of success/limit, showing the message
+            return $this->view('auth/password_recovery', [
+                'step' => 'code',
+                'flashMessage' => [
+                    'type' => $result['success'] ? 'success' : 'error',
+                    'message' => $result['message']
+                ],
+                '_POST' => ['email' => $email]
+            ]);
+        }
+
         if ($step === 'code') {
             $code = $this->input('code');
             $result = $this->service->verifyCode($email, $code);

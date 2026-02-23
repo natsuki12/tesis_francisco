@@ -1,43 +1,147 @@
-# Simulador SENIAT (Tesis Francisco)
+# SPDSS — Sistema de Práctica de Declaración Sucesoral SENIAT
 
-Proyecto de tesis para la simulación del portal del SENIAT.
+Proyecto de tesis: simulador interactivo del portal SENIAT para la práctica de declaraciones sucesorales. Desarrollado con PHP 8.2, MariaDB y arquitectura MVC personalizada.
 
-## Resumen de Cambios Recientes
-- **Recuperación de Contraseña**: Se implementó el flujo completo de recuperación de contraseña con envío de correo electrónico.
-  - Vistas: `resources/views/auth/password_recovery.php`
-  - Controladores: `src/Modules/Auth/Controllers/PasswordRecoveryController.php`
-  - Servicios: `src/Modules/Auth/Services/PasswordRecoveryService.php`
-  - Modelos: `src/Modules/Auth/Models/PasswordRecoveryModel.php`
-- **Registro de Usuarios**: Mejoras en la validación y UI del registro.
-- **Simulador**: Correcciones en la navegación y enlaces del simulador.
+---
 
-## Configuración en Entorno de Desarrollo (XAMPP)
+## Actualizaciones Recientes
 
-1. **Clonar el Repositorio**:
-   ```bash
-   git clone <URL_DEL_REPOSITORIO>
-   cd tesis_francisco
-   ```
+### Dashboards por Rol
+- **Home Estudiante** (`/home`) — Dashboard con estadísticas, acciones rápidas, guía paso a paso y marco legal.
+- **Home Profesor** (`/home`) — Dashboard con estadísticas de estudiantes, tarjetas de acción y paneles de actividad.
+- **Home Administrador** (`/home`) — Dashboard con estado del sistema, bitácora de actividad y gestión de usuarios.
+- La ruta `/home` renderiza automáticamente el dashboard correcto según el `role_id` del usuario.
 
-2. **Configuración de Base de Datos**:
-   - Abrir phpMyAdmin (http://localhost/phpmyadmin).
-   - Crear una base de datos llamada `spdss`.
-   - Importar el archivo `spdss.sql` ubicado en la raíz del proyecto.
+### Sistema de Bitácora de Accesos
+- Modelo `BitacoraModel` (`src/Core/BitacoraModel.php`) integrado en login y logout.
+- Registra 4 eventos: `login_success`, `login_failed`, `user_blocked`, `logout`.
+- Captura automáticamente: IP, User-Agent y timestamp.
+- Protegido con `try/catch` para no interrumpir el flujo de autenticación.
 
-3. **Configuración del Servidor Web (Apache)**:
-   - Asegurarse de que la carpeta del proyecto esté en `htdocs` (ej: `C:\xampp\htdocs\tesis_francisco`).
-   - El proyecto está configurado para funcionar en `http://localhost/tesis_francisco/`.
-   - **Nota**: Si usas VirtualHost, ajusta la configuración `base_url()` en `src/Core/Config.php` (si aplica).
+### Layout Unificado
+- Todos los dashboards usan `logged_layout.php` con sidebar y header compartidos.
+- El header muestra el nombre del usuario logueado dinámicamente.
+- Sidebar con navegación por rol: Admin (Gestión de Usuarios, Profesores Autorizados, Reportes), Profesor (Declaraciones, Historial, Estudiantes, Calificaciones, Marco Legal), Estudiante (Simulador, Perfil, Historial).
 
-4. **Configuración de Correo (SMTP)**:
-   - Copiar el archivo `.env.example` a `.env` (si no existe).
-   - Configurar las variables `SMTP_*` en el archivo `.env` con tus credenciales (ej: Gmail, Mailtrap).
+### Protección de Rutas
+- Middleware `$requireAuth` para rutas protegidas (requiere sesión activa).
+- Middleware `$requireRole` para rutas exclusivas por rol.
+- Redirección automática a `/login` si no hay sesión.
 
-5. **Dependencias (Composer)**:
-   - Si el proyecto usa librerías externas, ejecutar:
-     ```bash
-     composer install
-     ```
+### Recuperación de Contraseña
+- Flujo completo con envío de correo electrónico (SMTP).
+- Vistas, controladores, servicios y modelos dedicados.
 
-6. **Ejecutar**:
-   - Abrir el navegador en `http://localhost/tesis_francisco/`.
+---
+
+## Requisitos Previos
+
+| Software | Versión Recomendada |
+|----------|-------------------|
+| XAMPP | 8.2.x o superior |
+| PHP | 8.2+ |
+| MariaDB / MySQL | 10.4+ |
+| Composer | 2.x |
+| Navegador | Chrome, Firefox o Edge actualizado |
+
+---
+
+## Instalación en XAMPP
+
+### 1. Clonar el repositorio
+
+```bash
+cd C:\xampp\htdocs
+git clone <URL_DEL_REPOSITORIO> tesis_francisco
+cd tesis_francisco
+```
+
+### 2. Instalar dependencias
+
+```bash
+composer install
+```
+
+### 3. Configurar la base de datos
+
+1. Iniciar **Apache** y **MySQL** desde el panel de XAMPP.
+2. Abrir phpMyAdmin en `http://localhost/phpmyadmin`.
+3. Crear una base de datos llamada **`spdss`** con cotejamiento `utf8mb4_unicode_ci`.
+4. Importar el archivo `spdss.sql` ubicado en la raíz del proyecto.
+
+> La base de datos incluye las tablas: `users`, `roles`, `personas`, `estudiantes`, `profesores`, `profesores_autorizados`, `carreras`, `materias`, `secciones`, `periodos`, `inscripciones`, `password_resets`, `bitacora_accesos` y `tipos_eventos`.
+
+### 4. Configurar el archivo `.env`
+
+Copiar `.env.example` a `.env` y ajustar las variables:
+
+```env
+APP_DEBUG=true
+APP_URL=http://localhost/tesis_francisco
+
+DB_HOST=127.0.0.1
+DB_NAME=spdss
+DB_USER=root
+DB_PASS=
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=tu_correo@gmail.com
+SMTP_PASS=tu_contraseña_de_aplicacion
+SMTP_FROM=tu_correo@gmail.com
+SMTP_FROM_NAME="SPDSS - Simulador SENIAT"
+```
+
+### 5. Verificar Apache
+
+- Asegurarse de que `mod_rewrite` esté habilitado en Apache.
+- La carpeta del proyecto debe estar en `C:\xampp\htdocs\tesis_francisco`.
+
+### 6. Acceder al sistema
+
+Abrir el navegador en:
+
+```
+http://localhost/tesis_francisco/
+```
+
+---
+
+## Estructura del Proyecto
+
+```
+tesis_francisco/
+├── public/                  # Punto de entrada y assets públicos
+│   ├── index.php            # Front controller
+│   ├── .htaccess             # Reescritura de URLs
+│   └── assets/
+│       ├── css/             # Estilos por módulo (admin, professor, student, etc.)
+│       ├── js/              # Scripts por módulo
+│       └── img/             # Imágenes y branding
+├── resources/views/         # Vistas PHP
+│   ├── admin/               # Vistas del administrador
+│   ├── professor/           # Vistas del profesor
+│   ├── student/             # Vistas del estudiante
+│   ├── auth/                # Login, registro, recuperación
+│   ├── layouts/             # Layouts (logged_layout, guest_layout)
+│   ├── partials/            # Header, sidebar, footer
+│   └── simulator/           # Vistas del simulador SENIAT
+├── routes/
+│   └── web.php              # Definición de rutas
+├── src/
+│   ├── Core/                # Kernel: App, DB, Router, Config, BitacoraModel
+│   └── Modules/Auth/        # Módulo de autenticación (Controllers, Services, Models)
+├── storage/logs/            # Logs de errores
+├── spdss.sql                # Dump de la base de datos
+└── .env                     # Variables de entorno (no se sube al repo)
+```
+
+---
+
+## Roles del Sistema
+
+| ID | Rol | Descripción |
+|----|-----|------------|
+| 1 | Admin | Administrador del sistema y configuración |
+| 2 | Profesor | Docente evaluador y supervisor |
+| 3 | Estudiante | Estudiante cursante de la materia |

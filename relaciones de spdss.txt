@@ -1,0 +1,37 @@
+127.0.0.1/spdss/KEY_COLUMN_USAGE/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=spdss
+
+   Mostrando filas 0 - 14 (total de 15, La consulta tardó 0,0004 segundos.)
+
+
+SELECT 
+    TABLE_NAME AS 'Tabla_Origen',
+    COLUMN_NAME AS 'Columna_Foranea',
+    CONSTRAINT_NAME AS 'Nombre_Restriccion',
+    REFERENCED_TABLE_NAME AS 'Tabla_Destino',
+    REFERENCED_COLUMN_NAME AS 'Columna_Destino'
+FROM 
+    information_schema.KEY_COLUMN_USAGE
+WHERE 
+    TABLE_SCHEMA = 'spdss' -- Aquí filtramos por tu base de datos
+    AND REFERENCED_TABLE_NAME IS NOT NULL
+ORDER BY 
+    TABLE_NAME, 
+    COLUMN_NAME;
+
+
+Tabla_Origen	Columna_Foranea	Nombre_Restriccion	Tabla_Destino	Columna_Destino	
+bitacora_accesos	tipo_evento_id	fk_bitacora_tipos	tipos_eventos	id	
+bitacora_accesos	user_id	fk_bitacora_users	users	id	
+estudiantes	carrera_id	fk_estudiantes_carreras	carreras	id	
+estudiantes	persona_id	fk_estudiantes_personas	personas	id	
+inscripciones	estudiante_id	fk_inscripcion_estudiante	estudiantes	id	
+inscripciones	seccion_id	fk_inscripcion_seccion	secciones	id	
+materias	carrera_id	fk_materias_carreras	carreras	id	
+password_resets	user_id	fk_password_resets_users	users	id	
+profesores	persona_id	fk_profesores_personas	personas	id	
+profesores_autorizados	created_by	fk_profesores_autorizados_admin	users	id	
+secciones	materia_id	fk_secciones_materias	materias	id	
+secciones	periodo_id	fk_secciones_periodos	periodos	id	
+secciones	profesor_id	fk_secciones_profesores	profesores	id	
+users	persona_id	fk_users_personas	personas	id	
+users	role_id	fk_users_roles	roles	id	

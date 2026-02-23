@@ -366,3 +366,15 @@ Stack trace:
 #4 {main}
 [19-Feb-2026 03:14:34 Europe/Berlin] [CRITICAL DB ERROR] SQLSTATE[HY000] [1049] Unknown database 'sistema_seniat'
 [19-Feb-2026 03:14:34 Europe/Berlin] [CRITICAL DB ERROR] SQLSTATE[HY000] [1049] Unknown database 'sistema_seniat'
+[23-Feb-2026 05:21:21 Europe/Berlin] [CRITICAL] Class "App\Core\BitacoraModel" not found in C:\xampp\htdocs\tesis_francisco\src\Modules\Auth\Services\LoginService.php:79
+[23-Feb-2026 05:21:21 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Auth\Controllers\LoginController.php(69): App\Modules\Auth\Services\LoginService->handleLogout()
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(110): App\Modules\Auth\Controllers\LoginController->logout()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(122): App\Core\Router->dispatch('GET', '/logout')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}
+[23-Feb-2026 05:21:33 Europe/Berlin] [CRITICAL] Class "App\Core\BitacoraModel" not found in C:\xampp\htdocs\tesis_francisco\src\Modules\Auth\Services\LoginService.php:79
+[23-Feb-2026 05:21:33 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Auth\Controllers\LoginController.php(69): App\Modules\Auth\Services\LoginService->handleLogout()
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(110): App\Modules\Auth\Controllers\LoginController->logout()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(122): App\Core\Router->dispatch('GET', '/logout')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}
