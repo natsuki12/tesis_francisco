@@ -62,11 +62,23 @@ if (!isset($user)) {
             grid-template-columns: var(--sidebar-collapsed-width) 1fr;
         }
 
+        /* Layout Grid Responsive */
+        @media (max-width: 768px) {
+            .sim-layout {
+                grid-template-areas: "header" "main";
+                grid-template-columns: 1fr;
+            }
+            .sim-main {
+                padding: 24px 16px;
+            }
+        }
+
         /* Main Content */
         .sim-main {
             grid-area: main;
             overflow-y: auto;
             overflow-x: hidden;
+            padding: 32px 36px;
         }
         .sim-container {
             width: 100%;
@@ -102,8 +114,12 @@ if (!isset($user)) {
 
         if(toggle && sidebar) {
             toggle.addEventListener('click', () => {
-                sidebar.classList.toggle('sim-sidebar--collapsed');
-                body.classList.toggle('sim-layout--sidebar-collapsed');
+                if (window.innerWidth <= 768) {
+                    body.classList.toggle('sim-layout--sidebar-open');
+                } else {
+                    sidebar.classList.toggle('sim-sidebar--collapsed');
+                    body.classList.toggle('sim-layout--sidebar-collapsed');
+                }
             });
         }
 
