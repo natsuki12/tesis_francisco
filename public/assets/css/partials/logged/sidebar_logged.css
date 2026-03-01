@@ -139,6 +139,8 @@
 .sim-nav {
     flex: 1;
     padding: 10px 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .sim-nav__list {
@@ -168,15 +170,16 @@
     position: relative;
 }
 
+/* Nav links (flat anchor pattern — direct children of section) */
 .sim-nav__link {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 18px;
+    padding: 9px 18px;
     margin: 2px 10px;
     color: var(--sim-text);
     text-decoration: none;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     font-weight: 500;
     border: none;
     background: none;
@@ -192,7 +195,30 @@
     color: var(--sim-blue);
 }
 
-/* Active item */
+/* Active link (flat pattern — class on the <a> itself) */
+.sim-nav__link--active {
+    background: var(--sim-blue-light);
+    color: var(--sim-blue);
+    font-weight: 700;
+}
+
+.sim-nav__link--active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 20px;
+    background: var(--sim-blue);
+    border-radius: 0 3px 3px 0;
+}
+
+.sim-nav__link--active .sim-nav__icon {
+    color: var(--sim-blue);
+}
+
+/* Active item (legacy li pattern — kept for student submenu) */
 .sim-nav__item--active>.sim-nav__link {
     background: var(--sim-blue-light);
     color: var(--sim-blue);
@@ -224,6 +250,20 @@
     flex: 1;
     text-align: left;
     white-space: nowrap;
+}
+
+/* Badge (e.g. count or label next to a link) */
+.sim-nav__badge {
+    margin-left: auto;
+    font-size: 0.65rem;
+    font-weight: 600;
+    background: var(--sim-blue-light, rgba(37, 99, 168, 0.1));
+    color: var(--sim-blue, #2563a8);
+    padding: 2px 8px;
+    border-radius: 10px;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1.4;
 }
 
 /* Submenu arrow */
@@ -311,6 +351,23 @@
 
 .sim-nav__subtext {
     flex: 1;
+}
+
+/* ================================================
+   SIDEBAR FOOTER (pushed to bottom)
+   ================================================ */
+.sim-sidebar__footer {
+    margin-top: auto;
+    padding: 16px 0;
+    border-top: 1px solid var(--sim-border);
+}
+
+.sim-sidebar__footer .sim-nav__link {
+    opacity: 0.8;
+}
+
+.sim-sidebar__footer .sim-nav__link:hover {
+    opacity: 1;
 }
 
 /* ================================================

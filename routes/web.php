@@ -86,6 +86,10 @@ $router->get('/inscripcion_rif', function() use ($app, $requireAuth) { $requireA
 $router->get('/consulta_rif', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/legacy/consulta_rif'); });
 $router->get('/servicios_declaracion', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/steps/servicios_declaracion'); });
 
+// Casos Sucesorales (Profesor)
+$router->get('/casos-sucesorales', function() use ($app, $requireAuth, $requireRole) { $requireAuth(); $requireRole(2); return $app->view('professor/casos_sucesorales'); });
+$router->get('/crear-caso', function() use ($app, $requireAuth, $requireRole) { $requireAuth(); $requireRole(2); return $app->view('professor/crear_caso'); });
+
 // Perfil
 // $router->get('/simulador_profile', fn() => $app->view('student/profile_st')); 
 // $router->get('/perfil', fn() => $app->view('student/profile_st'));

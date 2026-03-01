@@ -131,5 +131,8 @@ if (!isset($user)) {
             });
         });
     </script>
+
+    <!-- JS extra de la página (si existe) -->
+    <?php if (isset($extraJs)) echo $extraJs; ?>
 </body>
 </html>

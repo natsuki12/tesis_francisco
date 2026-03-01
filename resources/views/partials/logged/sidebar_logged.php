@@ -28,16 +28,12 @@ $role = $_SESSION['role_id'] ?? 3;
         <!-- ============================================================= -->
         <div class="sim-nav__section">
             <span class="sim-nav__section-title">PRINCIPAL</span>
-            <ul class="sim-nav__list">
-                <li class="sim-nav__item <?= $activePage === 'inicio' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="<?= base_url('/home') ?>" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Inicio</span>
-                    </a>
-                </li>
-            </ul>
+            <a href="<?= base_url('/home') ?>" class="sim-nav__link <?= $activePage === 'inicio' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </span>
+                <span class="sim-nav__text">Inicio</span>
+            </a>
         </div>
 
         <?php if ($role === 1): ?>
@@ -46,98 +42,86 @@ $role = $_SESSION['role_id'] ?? 3;
         <!-- ============================================================= -->
         <div class="sim-nav__section">
             <span class="sim-nav__section-title">ADMINISTRACIÓN</span>
-            <ul class="sim-nav__list">
-                <!-- Gestión de Usuarios -->
-                <li class="sim-nav__item <?= $activePage === 'gestion-usuarios' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="#" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" fill="currentColor"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Gestión de Usuarios</span>
-                    </a>
-                </li>
-                <!-- Profesores Autorizados -->
-                <li class="sim-nav__item <?= $activePage === 'profesores-autorizados' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="#" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M20 17a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H9.46c.35.61.54 1.3.54 2h10v11h-9v2h9zM15 7v2H9v-2h6zm0 4v2H9v-2h6zM1 11v10l5-3 5 3V11H1zm8 6.12l-3-1.8-3 1.8V13h6v4.12z" fill="currentColor"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Profesores Autorizados</span>
-                    </a>
-                </li>
-                <!-- Reportes Generales -->
-                <li class="sim-nav__item <?= $activePage === 'reportes' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="#" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" fill="currentColor"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Reportes Generales</span>
-                    </a>
-                </li>
-            </ul>
+            <a href="#" class="sim-nav__link <?= $activePage === 'gestion-usuarios' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </span>
+                <span class="sim-nav__text">Gestión de Usuarios</span>
+            </a>
+            <a href="#" class="sim-nav__link <?= $activePage === 'profesores-autorizados' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 17a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H9.46c.35.61.54 1.3.54 2h10v11h-9v2h9z"/><path d="M1 11v10l5-3 5 3V11H1z"/></svg>
+                </span>
+                <span class="sim-nav__text">Profesores Autorizados</span>
+            </a>
+            <a href="#" class="sim-nav__link <?= $activePage === 'reportes' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                </span>
+                <span class="sim-nav__text">Reportes Generales</span>
+            </a>
         </div>
         <?php endif; ?>
 
         <?php if ($role === 2): ?>
         <!-- ============================================================= -->
-        <!-- SECCIÓN: SIMULADOR SENIAT (Profesor)                          -->
+        <!-- SECCIÓN: SIMULADOR (Profesor)                                 -->
         <!-- ============================================================= -->
         <div class="sim-nav__section">
-            <span class="sim-nav__section-title">SIMULADOR SENIAT</span>
-            <ul class="sim-nav__list">
-                <!-- Declaraciones -->
-                <li class="sim-nav__item <?= $activePage === 'declaraciones' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="#" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14 2 14 8 20 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Declaraciones</span>
-                    </a>
-                </li>
-                <!-- Historial / Planillas -->
-                <li class="sim-nav__item <?= $activePage === 'historial' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="#" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><polyline points="12 6 12 12 16 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Historial / Planillas</span>
-                    </a>
-                </li>
-            </ul>
+            <span class="sim-nav__section-title">SIMULADOR</span>
+            <a href="<?= base_url('/casos-sucesorales') ?>" class="sim-nav__link <?= $activePage === 'casos-sucesorales' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                </span>
+                <span class="sim-nav__text">Casos Sucesorales</span>
+            </a>
+            <a href="#" class="sim-nav__link <?= $activePage === 'generacion-rif' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </span>
+                <span class="sim-nav__text">Generación de R.S</span>
+            </a>
+            <a href="#" class="sim-nav__link <?= $activePage === 'historial' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </span>
+                <span class="sim-nav__text">Historial</span>
+            </a>
         </div>
 
         <!-- SECCIÓN: ACADÉMICO (Profesor) -->
         <div class="sim-nav__section">
             <span class="sim-nav__section-title">ACADÉMICO</span>
-            <ul class="sim-nav__list">
-                <!-- Mis Estudiantes -->
-                <li class="sim-nav__item <?= $activePage === 'mis-estudiantes' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="#" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M23 21v-2a4 4 0 00-3-3.87" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 3.13a4 4 0 010 7.75" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Mis Estudiantes</span>
-                    </a>
-                </li>
-                <!-- Calificaciones -->
-                <li class="sim-nav__item <?= $activePage === 'calificaciones' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="#" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Calificaciones</span>
-                    </a>
-                </li>
-                <!-- Marco Legal -->
-                <li class="sim-nav__item <?= $activePage === 'marco-legal' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="#" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 19.5A2.5 2.5 0 016.5 17H20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Marco Legal</span>
-                    </a>
-                </li>
-            </ul>
+            <a href="#" class="sim-nav__link <?= $activePage === 'mis-estudiantes' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </span>
+                <span class="sim-nav__text">Mis Estudiantes</span>
+            </a>
+            <a href="#" class="sim-nav__link <?= $activePage === 'calificaciones' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </span>
+                <span class="sim-nav__text">Calificaciones</span>
+            </a>
+            <a href="#" class="sim-nav__link <?= $activePage === 'marco-legal' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                </span>
+                <span class="sim-nav__text">Marco Legal</span>
+            </a>
+        </div>
+
+        <!-- SECCIÓN: REPORTES (Profesor) -->
+        <div class="sim-nav__section">
+            <span class="sim-nav__section-title">REPORTES</span>
+            <a href="#" class="sim-nav__link <?= $activePage === 'estadisticas' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                </span>
+                <span class="sim-nav__text">Estadísticas</span>
+                <span class="sim-nav__badge">Pronto</span>
+            </a>
         </div>
         <?php endif; ?>
 
@@ -152,7 +136,7 @@ $role = $_SESSION['role_id'] ?? 3;
                 <li class="sim-nav__item sim-nav__item--parent <?= in_array($activePage, ['nueva-declaracion', 'modo-guiado', 'practica-libre', 'evaluacion']) ? 'sim-nav__item--expanded' : '' ?>">
                     <button class="sim-nav__link" data-toggle="submenu">
                         <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" fill="currentColor"/></svg>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                         </span>
                         <span class="sim-nav__text">Nueva Declaración</span>
                         <span class="sim-nav__arrow">
@@ -178,66 +162,50 @@ $role = $_SESSION['role_id'] ?? 3;
                         </li>
                     </ul>
                 </li>
-
-                <!-- Historial / Planillas -->
-                <li class="sim-nav__item <?= $activePage === 'historial' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="#" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" fill="currentColor"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Historial / Planillas</span>
-                    </a>
-                </li>
             </ul>
+
+            <a href="#" class="sim-nav__link <?= $activePage === 'historial' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </span>
+                <span class="sim-nav__text">Historial / Planillas</span>
+            </a>
         </div>
 
         <!-- SECCIÓN: ACADÉMICO (Estudiante) -->
         <div class="sim-nav__section">
             <span class="sim-nav__section-title">ACADÉMICO</span>
-            <ul class="sim-nav__list">
-                <li class="sim-nav__item <?= $activePage === 'marco-legal' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="#" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" fill="currentColor"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Marco Legal</span>
-                    </a>
-                </li>
-                <li class="sim-nav__item <?= $activePage === 'calificaciones' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="#" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="currentColor"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Mis Calificaciones</span>
-                    </a>
-                </li>
-            </ul>
+            <a href="#" class="sim-nav__link <?= $activePage === 'marco-legal' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                </span>
+                <span class="sim-nav__text">Marco Legal</span>
+            </a>
+            <a href="#" class="sim-nav__link <?= $activePage === 'calificaciones' ? 'sim-nav__link--active' : '' ?>">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </span>
+                <span class="sim-nav__text">Mis Calificaciones</span>
+            </a>
         </div>
         <?php endif; ?>
-
-        <!-- ============================================================= -->
-        <!-- SECCIÓN: CUENTA (Todos los roles)                             -->
-        <!-- ============================================================= -->
-        <div class="sim-nav__section">
-            <span class="sim-nav__section-title">CUENTA</span>
-            <ul class="sim-nav__list">
-                <li class="sim-nav__item <?= $activePage === 'perfil' ? 'sim-nav__item--active' : '' ?>">
-                    <a href="<?= base_url('/perfil') ?>" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Perfil</span>
-                    </a>
-                </li>
-                <li class="sim-nav__item">
-                    <a href="<?= base_url('/logout') ?>" class="sim-nav__link">
-                        <span class="sim-nav__icon">
-                            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z" fill="currentColor"/></svg>
-                        </span>
-                        <span class="sim-nav__text">Cerrar Sesión</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
     </nav>
+
+    <!-- ============================================================= -->
+    <!-- FOOTER: Perfil & Cerrar Sesión (push to bottom)               -->
+    <!-- ============================================================= -->
+    <div class="sim-sidebar__footer">
+        <a href="<?= base_url('/perfil') ?>" class="sim-nav__link <?= $activePage === 'perfil' ? 'sim-nav__link--active' : '' ?>">
+            <span class="sim-nav__icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </span>
+            <span class="sim-nav__text">Perfil</span>
+        </a>
+        <a href="<?= base_url('/logout') ?>" class="sim-nav__link">
+            <span class="sim-nav__icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </span>
+            <span class="sim-nav__text">Cerrar Sesión</span>
+        </a>
+    </div>
 </aside>
