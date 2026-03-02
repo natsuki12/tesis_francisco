@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-03-2026 a las 06:22:45
+-- Tiempo de generación: 02-03-2026 a las 05:21:28
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -4981,6 +4981,7 @@ CREATE TABLE `sim_casos_estudios` (
   `profesor_id` bigint(20) UNSIGNED NOT NULL COMMENT 'profeesor que creo el caso',
   `causante_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Persona cuya sucesión se analiza en el caso',
   `representante_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Persona designada como representante de la sucesión ante el SENIAT',
+  `unidad_tributaria_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'UT sugerida según año de fallecimiento, seleccionada del catálogo',
   `titulo` varchar(150) NOT NULL,
   `descripcion` text DEFAULT NULL,
   `modalidad` enum('Practica_Libre','Evaluacion') NOT NULL COMMENT 'practica o evaluacion',
@@ -5006,6 +5007,256 @@ CREATE TABLE `sim_caso_asignaciones` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sim_caso_bienes_inmuebles`
+--
+
+CREATE TABLE `sim_caso_bienes_inmuebles` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_bien_inmueble_id` tinyint(3) UNSIGNED NOT NULL,
+  `es_vivienda_principal` tinyint(1) NOT NULL DEFAULT 0,
+  `es_bien_litigioso` tinyint(1) NOT NULL DEFAULT 0,
+  `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
+  `descripcion` text DEFAULT NULL,
+  `linderos` text DEFAULT NULL,
+  `superficie_construida` decimal(12,2) DEFAULT NULL,
+  `superficie_no_construida` decimal(12,2) DEFAULT NULL,
+  `area_superficie` decimal(12,2) DEFAULT NULL,
+  `direccion` text DEFAULT NULL,
+  `oficina_registro` varchar(255) DEFAULT NULL,
+  `nro_registro` varchar(50) DEFAULT NULL,
+  `libro` varchar(50) DEFAULT NULL,
+  `protocolo` varchar(50) DEFAULT NULL,
+  `fecha_registro` date DEFAULT NULL,
+  `trimestre` varchar(20) DEFAULT NULL,
+  `asiento_registral` varchar(50) DEFAULT NULL,
+  `matricula` varchar(50) DEFAULT NULL,
+  `folio_real_anio` varchar(20) DEFAULT NULL,
+  `valor_original` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Soft delete: NULL=activo, con fecha=eliminado',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bienes_litigiosos`
+--
+
+CREATE TABLE `sim_caso_bienes_litigiosos` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
+  `bien_tipo` enum('Inmueble','Mueble') NOT NULL COMMENT 'Tipo de bien: Inmueble o Mueble',
+  `bien_id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID del bien en la tabla correspondiente según bien_tipo',
+  `numero_expediente` varchar(100) DEFAULT NULL,
+  `tribunal_causa` varchar(255) DEFAULT NULL,
+  `partes_juicio` varchar(255) DEFAULT NULL,
+  `estado_juicio` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bienes_muebles`
+--
+
+CREATE TABLE `sim_caso_bienes_muebles` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
+  `categoria_bien_mueble_id` tinyint(3) UNSIGNED NOT NULL,
+  `tipo_bien_mueble_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'NULL para categorías sin subtipos (Plantaciones, Otros, etc.)',
+  `es_bien_litigioso` tinyint(1) NOT NULL DEFAULT 0,
+  `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
+  `descripcion` text DEFAULT NULL,
+  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Soft delete: NULL=activo, con fecha=eliminado',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bm_acciones`
+--
+
+CREATE TABLE `sim_caso_bm_acciones` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `empresa_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bm_banco`
+--
+
+CREATE TABLE `sim_caso_bm_banco` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `banco_id` smallint(5) UNSIGNED DEFAULT NULL,
+  `numero_cuenta` varchar(20) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bm_bonos`
+--
+
+CREATE TABLE `sim_caso_bm_bonos` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_bonos` varchar(60) DEFAULT NULL,
+  `numero_bonos` varchar(30) DEFAULT NULL,
+  `numero_serie` varchar(30) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bm_caja_ahorro`
+--
+
+CREATE TABLE `sim_caso_bm_caja_ahorro` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `empresa_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bm_cuentas_cobrar`
+--
+
+CREATE TABLE `sim_caso_bm_cuentas_cobrar` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `rif_cedula` varchar(12) DEFAULT NULL,
+  `apellidos_nombres` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bm_opciones_compra`
+--
+
+CREATE TABLE `sim_caso_bm_opciones_compra` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `nombre_oferente` varchar(40) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bm_prestaciones`
+--
+
+CREATE TABLE `sim_caso_bm_prestaciones` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `posee_banco` tinyint(1) NOT NULL DEFAULT 0,
+  `banco_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Solo si posee_banco = 1',
+  `numero_cuenta` varchar(20) DEFAULT NULL COMMENT 'Solo si posee_banco = 1',
+  `empresa_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bm_seguro`
+--
+
+CREATE TABLE `sim_caso_bm_seguro` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `empresa_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `numero_prima` varchar(15) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bm_semovientes`
+--
+
+CREATE TABLE `sim_caso_bm_semovientes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_semoviente_id` tinyint(3) UNSIGNED DEFAULT NULL,
+  `cantidad` int(10) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bm_transporte`
+--
+
+CREATE TABLE `sim_caso_bm_transporte` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `anio` varchar(4) DEFAULT NULL,
+  `marca` varchar(15) DEFAULT NULL,
+  `modelo` varchar(15) DEFAULT NULL,
+  `serial_placa` varchar(30) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_exenciones`
+--
+
+CREATE TABLE `sim_caso_exenciones` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo` varchar(255) DEFAULT NULL,
+  `descripcion` text DEFAULT NULL,
+  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_exoneraciones`
+--
+
+CREATE TABLE `sim_caso_exoneraciones` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo` varchar(255) DEFAULT NULL,
+  `descripcion` text DEFAULT NULL,
+  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `sim_caso_participantes`
 --
 
@@ -5015,8 +5266,510 @@ CREATE TABLE `sim_caso_participantes` (
   `persona_id` bigint(20) UNSIGNED NOT NULL,
   `rol_en_caso` enum('Heredero','Legatario') NOT NULL,
   `parentesco_id` int(10) UNSIGNED NOT NULL COMMENT 'Parentesco del participante con el causante',
-  `es_premuerto` tinyint(1) NOT NULL DEFAULT 0
+  `es_premuerto` tinyint(1) NOT NULL DEFAULT 0,
+  `premuerto_padre_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Si no es NULL, este participante hereda en representación del premuerto indicado'
 ) ;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_pasivos_deuda`
+--
+
+CREATE TABLE `sim_caso_pasivos_deuda` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_pasivo_deuda_id` tinyint(3) UNSIGNED NOT NULL,
+  `banco_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Aplica para Tarjetas, Hipotecario y Préstamos. NULL para Otros',
+  `numero_tdc` varchar(20) DEFAULT NULL COMMENT 'Solo para Tarjetas de Crédito',
+  `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
+  `descripcion` text DEFAULT NULL,
+  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_pasivos_gastos`
+--
+
+CREATE TABLE `sim_caso_pasivos_gastos` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_pasivo_gasto_id` tinyint(3) UNSIGNED NOT NULL,
+  `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
+  `descripcion` text DEFAULT NULL,
+  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_prorrogas`
+--
+
+CREATE TABLE `sim_caso_prorrogas` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
+  `fecha_solicitud` date NOT NULL,
+  `nro_resolucion` varchar(50) DEFAULT NULL,
+  `fecha_resolucion` date DEFAULT NULL,
+  `plazo_otorgado_dias` smallint(5) UNSIGNED DEFAULT NULL,
+  `fecha_vencimiento` date DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_tipoherencia_rel`
+--
+
+CREATE TABLE `sim_caso_tipoherencia_rel` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_herencia_id` tinyint(3) UNSIGNED NOT NULL,
+  `subtipo_testamento` enum('Abierto','Cerrado') DEFAULT NULL COMMENT 'Solo si tipo_herencia = Testamento',
+  `fecha_testamento` date DEFAULT NULL COMMENT 'Solo si tipo_herencia = Testamento',
+  `fecha_conclusion_inventario` date DEFAULT NULL COMMENT 'Solo si tipo_herencia = Beneficio de Inventario',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_bancos`
+--
+
+CREATE TABLE `sim_cat_bancos` (
+  `id` smallint(5) UNSIGNED NOT NULL,
+  `nombre` varchar(120) NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_cat_bancos`
+--
+
+INSERT INTO `sim_cat_bancos` (`id`, `nombre`, `activo`, `created_at`) VALUES
+(1, '100% BANCO', 1, '2026-03-02 02:35:37'),
+(2, 'BANCAMIGA', 1, '2026-03-02 02:35:37'),
+(3, 'BANCO ACTIVO', 1, '2026-03-02 02:35:37'),
+(4, 'BANCO AGRICOLA DE VENEZUELA', 1, '2026-03-02 02:35:37'),
+(5, 'BANCO CARONI', 1, '2026-03-02 02:35:37'),
+(6, 'BANCO CENTRAL DE VENEZUELA', 1, '2026-03-02 02:35:37'),
+(7, 'BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX', 1, '2026-03-02 02:35:37'),
+(8, 'BANCO DE LA FUERZA ARMADA NACIONAL BOLIVARIANA, BANCO UNIVERSAL', 1, '2026-03-02 02:35:37'),
+(9, 'BANCO DE LA GENTE EMPRENDEDORA (BANGENTE). C.A.', 1, '2026-03-02 02:35:37'),
+(10, 'BANCO DE VENEZUELA', 1, '2026-03-02 02:35:37'),
+(11, 'BANCO DEL CARIBE', 1, '2026-03-02 02:35:37'),
+(12, 'BANCO DEL TESORO', 1, '2026-03-02 02:35:37'),
+(13, 'BANCO DIGITAL DE LOS TRABAJADORES', 1, '2026-03-02 02:35:37'),
+(14, 'BANCO EXTERIOR', 1, '2026-03-02 02:35:37'),
+(15, 'BANCO INTERNACIONAL DE DESARROLLO', 1, '2026-03-02 02:35:37'),
+(16, 'BANCO MERCANTIL', 1, '2026-03-02 02:35:37'),
+(17, 'BANCO NACIONAL DE CREDITO, C.A. BANCO UNIVERSAL', 1, '2026-03-02 02:35:37'),
+(18, 'BANCO PLAZA, C.A., BANCO UNIVERSAL', 1, '2026-03-02 02:35:37'),
+(19, 'BANCO PROVINCIAL', 1, '2026-03-02 02:35:37'),
+(20, 'BANCO SOFITASA', 1, '2026-03-02 02:35:37'),
+(21, 'BANCO SOFITASA BANCO UNIVERSAL, C. A.', 1, '2026-03-02 02:35:37'),
+(22, 'BANCO VENEZOLANO DE CREDITO', 1, '2026-03-02 02:35:37'),
+(23, 'BANCRECER', 1, '2026-03-02 02:35:37'),
+(24, 'BANESCO BANCO UNIVERSAL, C.A.', 1, '2026-03-02 02:35:37'),
+(25, 'BANPLUS', 1, '2026-03-02 02:35:37'),
+(26, 'BFC BANCO FONDO COMUN C.A., BANCO UNIVERSAL', 1, '2026-03-02 02:35:37'),
+(27, 'DEL SUR BANCO UNIVERSAL, C.A.', 1, '2026-03-02 02:35:37'),
+(28, 'INSTITUTO MUNICIPAL DE CREDITO POPULAR', 1, '2026-03-02 02:35:37'),
+(29, 'MI BANCO, BANCO MICROFINANCIERO, C.A.', 1, '2026-03-02 02:35:37'),
+(30, 'NO APLICA', 1, '2026-03-02 02:35:37'),
+(31, 'OTROS BANCOS', 1, '2026-03-02 02:35:37');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_categorias_bien_mueble`
+--
+
+CREATE TABLE `sim_cat_categorias_bien_mueble` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
+  `nombre` varchar(60) NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0 es inactivo 1 activo',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_cat_categorias_bien_mueble`
+--
+
+INSERT INTO `sim_cat_categorias_bien_mueble` (`id`, `nombre`, `activo`, `created_at`) VALUES
+(1, 'Banco', 1, '2026-03-02 02:32:45'),
+(2, 'Seguro', 1, '2026-03-02 02:32:45'),
+(3, 'Transporte', 1, '2026-03-02 02:32:45'),
+(4, 'Opciones de Compra', 1, '2026-03-02 02:32:45'),
+(5, 'Cuentas y Efectos por Cobrar', 1, '2026-03-02 02:32:45'),
+(6, 'Semovientes', 1, '2026-03-02 02:32:45'),
+(7, 'Bonos', 1, '2026-03-02 02:32:45'),
+(8, 'Acciones', 1, '2026-03-02 02:32:45'),
+(9, 'Prestaciones Sociales', 1, '2026-03-02 02:32:45'),
+(10, 'Caja de Ahorro', 1, '2026-03-02 02:32:45'),
+(11, 'Plantaciones', 1, '2026-03-02 02:32:45'),
+(12, 'Otros', 1, '2026-03-02 02:32:45');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_grupos_tarifa`
+--
+
+CREATE TABLE `sim_cat_grupos_tarifa` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_cat_grupos_tarifa`
+--
+
+INSERT INTO `sim_cat_grupos_tarifa` (`id`, `nombre`, `activo`, `created_at`) VALUES
+(1, 'Ascendientes, Descendientes, Cónyuge e Hijos Adoptivos', 1, '2026-03-02 03:59:40'),
+(2, 'Hermanos, Sobrinos por Derecho de Representación', 1, '2026-03-02 03:59:40'),
+(3, 'Otros Colaterales de 3er y 4to Grado', 1, '2026-03-02 03:59:40'),
+(4, 'Afines, Otros Parientes y Extraños', 1, '2026-03-02 03:59:40');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_parentescos`
+--
+
+CREATE TABLE `sim_cat_parentescos` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `clave` varchar(50) NOT NULL,
+  `etiqueta` varchar(60) NOT NULL,
+  `activo` tinyint(1) DEFAULT 1,
+  `grupo_tarifa_id` tinyint(3) UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `sim_cat_parentescos`
+--
+
+INSERT INTO `sim_cat_parentescos` (`id`, `clave`, `etiqueta`, `activo`, `grupo_tarifa_id`) VALUES
+(1, 'Hijo', 'Hijo / Hija', 1, 1),
+(2, 'Nieto', 'Nieto / Nieta', 1, 1),
+(3, 'Bisnieto', 'Bisnieto / Bisnieta', 1, 1),
+(4, 'Madre', 'Madre', 1, 1),
+(5, 'Padre', 'Padre', 1, 1),
+(6, 'Abuelo', 'Abuelo / Abuela', 1, 1),
+(7, 'Hijo_Adoptivo', 'Hijo / Hija Adoptivo(a)', 1, 1),
+(8, 'Conyuge', 'Cónyuge', 1, 1),
+(9, 'Concubino', 'Concubino / Concubina', 1, 1),
+(10, 'Hermano_Simple', 'Hermano / Hermana (simple conjunción)', 1, 2),
+(11, 'Hermano_Doble', 'Hermano / Hermana (doble conjunción)', 1, 2),
+(12, 'Sobrino_Repr', 'Sobrino por Derecho de Representación', 1, 2),
+(13, 'Tio', 'Tío / Tía', 1, 3),
+(14, 'Sobrino', 'Sobrino / Sobrina', 1, 3),
+(15, 'Primo_Segundo', 'Primo / Prima Segundo(a)', 1, 3),
+(16, 'Otro_Pariente', 'Otro Pariente', 1, 4),
+(17, 'Extraño', 'Extraño / Sin parentesco', 1, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_tarifas_sucesion`
+--
+
+CREATE TABLE `sim_cat_tarifas_sucesion` (
+  `id` smallint(5) UNSIGNED NOT NULL,
+  `grupo_tarifa_id` tinyint(3) UNSIGNED NOT NULL,
+  `rango_desde_ut` decimal(10,2) NOT NULL,
+  `rango_hasta_ut` decimal(10,2) DEFAULT NULL COMMENT 'NULL para el último rango (a partir de 4000 UT)',
+  `porcentaje` decimal(5,2) NOT NULL,
+  `sustraendo_ut` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_cat_tarifas_sucesion`
+--
+
+INSERT INTO `sim_cat_tarifas_sucesion` (`id`, `grupo_tarifa_id`, `rango_desde_ut`, `rango_hasta_ut`, `porcentaje`, `sustraendo_ut`, `activo`, `created_at`) VALUES
+(1, 1, 0.00, 15.00, 1.00, 0.00, 1, '2026-03-02 03:59:40'),
+(2, 1, 15.01, 50.00, 2.50, 0.23, 1, '2026-03-02 03:59:40'),
+(3, 1, 50.01, 100.00, 5.00, 1.48, 1, '2026-03-02 03:59:40'),
+(4, 1, 100.01, 250.00, 7.50, 3.98, 1, '2026-03-02 03:59:40'),
+(5, 1, 250.01, 500.00, 10.00, 10.23, 1, '2026-03-02 03:59:40'),
+(6, 1, 500.01, 1000.00, 15.00, 35.23, 1, '2026-03-02 03:59:40'),
+(7, 1, 1000.01, 4000.00, 20.00, 85.23, 1, '2026-03-02 03:59:40'),
+(8, 1, 4000.01, NULL, 25.00, 285.23, 1, '2026-03-02 03:59:40'),
+(9, 2, 0.00, 15.00, 2.50, 0.00, 1, '2026-03-02 03:59:40'),
+(10, 2, 15.01, 50.00, 5.00, 0.38, 1, '2026-03-02 03:59:40'),
+(11, 2, 50.01, 100.00, 10.00, 2.88, 1, '2026-03-02 03:59:40'),
+(12, 2, 100.01, 250.00, 15.00, 7.88, 1, '2026-03-02 03:59:40'),
+(13, 2, 250.01, 500.00, 20.00, 20.38, 1, '2026-03-02 03:59:40'),
+(14, 2, 500.01, 1000.00, 25.00, 45.38, 1, '2026-03-02 03:59:40'),
+(15, 2, 1000.01, 4000.00, 30.00, 95.38, 1, '2026-03-02 03:59:40'),
+(16, 2, 4000.01, NULL, 40.00, 495.38, 1, '2026-03-02 03:59:40'),
+(17, 3, 0.00, 15.00, 6.00, 0.00, 1, '2026-03-02 03:59:40'),
+(18, 3, 15.01, 50.00, 12.50, 0.98, 1, '2026-03-02 03:59:40'),
+(19, 3, 50.01, 100.00, 20.00, 4.73, 1, '2026-03-02 03:59:40'),
+(20, 3, 100.01, 250.00, 25.00, 9.73, 1, '2026-03-02 03:59:40'),
+(21, 3, 250.01, 500.00, 30.00, 22.23, 1, '2026-03-02 03:59:40'),
+(22, 3, 500.01, 1000.00, 35.00, 47.23, 1, '2026-03-02 03:59:40'),
+(23, 3, 1000.01, 4000.00, 40.00, 97.23, 1, '2026-03-02 03:59:40'),
+(24, 3, 4000.01, NULL, 50.00, 497.23, 1, '2026-03-02 03:59:40'),
+(25, 4, 0.00, 15.00, 10.00, 0.00, 1, '2026-03-02 03:59:40'),
+(26, 4, 15.01, 50.00, 15.00, 0.75, 1, '2026-03-02 03:59:40'),
+(27, 4, 50.01, 100.00, 25.00, 5.75, 1, '2026-03-02 03:59:40'),
+(28, 4, 100.01, 250.00, 30.00, 10.75, 1, '2026-03-02 03:59:40'),
+(29, 4, 250.01, 500.00, 35.00, 23.25, 1, '2026-03-02 03:59:40'),
+(30, 4, 500.01, 1000.00, 40.00, 48.25, 1, '2026-03-02 03:59:40'),
+(31, 4, 1000.01, 4000.00, 45.00, 98.25, 1, '2026-03-02 03:59:40'),
+(32, 4, 4000.01, NULL, 55.00, 498.25, 1, '2026-03-02 03:59:40');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_tipoherencias`
+--
+
+CREATE TABLE `sim_cat_tipoherencias` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_cat_tipoherencias`
+--
+
+INSERT INTO `sim_cat_tipoherencias` (`id`, `nombre`, `descripcion`, `activo`, `created_at`, `updated_at`) VALUES
+(1, 'Testamento', 'Sucesión donde el causante dejó testamento (abierto o cerrado) que define la distribución de bienes', 1, '2026-03-01 18:13:33', '2026-03-01 18:13:33'),
+(2, 'Ab-Intestato', 'Sucesión sin testamento, la distribución se rige por el orden de suceder del Código Civil', 1, '2026-03-01 18:13:33', '2026-03-01 18:13:33'),
+(3, 'Pura y Simple', 'El heredero acepta la herencia sin condiciones, respondiendo con su patrimonio por las deudas del causante', 1, '2026-03-01 18:13:33', '2026-03-01 18:13:33'),
+(4, 'Presunción de Ausencia', 'Declaración judicial de ausencia del causante tras no tener noticias por tiempo prolongado', 1, '2026-03-01 18:13:33', '2026-03-01 18:13:33'),
+(5, 'Presunción de Muerte por Accidente', 'Declaración judicial de muerte presunta del causante a raíz de un accidente', 1, '2026-03-01 18:13:33', '2026-03-01 18:13:33'),
+(6, 'Beneficio de Inventario', 'El heredero acepta la herencia limitando su responsabilidad al valor de los bienes inventariados judicialmente', 1, '2026-03-01 18:13:33', '2026-03-01 18:13:33');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_tipos_bien_inmueble`
+--
+
+CREATE TABLE `sim_cat_tipos_bien_inmueble` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
+  `nombre` varchar(60) NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_cat_tipos_bien_inmueble`
+--
+
+INSERT INTO `sim_cat_tipos_bien_inmueble` (`id`, `nombre`, `activo`, `created_at`) VALUES
+(1, 'Anexo', 1, '2026-03-02 01:51:57'),
+(2, 'Apartamento', 1, '2026-03-02 01:51:57'),
+(3, 'Bienhechurías', 1, '2026-03-02 01:51:57'),
+(4, 'Casa', 1, '2026-03-02 01:51:57'),
+(5, 'Construcción destinado a Explotación', 1, '2026-03-02 01:51:57'),
+(6, 'Consultorio', 1, '2026-03-02 01:51:57'),
+(7, 'Edificio', 1, '2026-03-02 01:51:57'),
+(8, 'Galpón', 1, '2026-03-02 01:51:57'),
+(9, 'Hotel o Similar', 1, '2026-03-02 01:51:57'),
+(10, 'Inmueble en Construcción', 1, '2026-03-02 01:51:57'),
+(11, 'Local', 1, '2026-03-02 01:51:57'),
+(12, 'Maletero', 1, '2026-03-02 01:51:57'),
+(13, 'Mixto (Residencia/Apartamento/Comercial)', 1, '2026-03-02 01:51:57'),
+(14, 'Oficina', 1, '2026-03-02 01:51:57'),
+(15, 'Otros Especifique', 1, '2026-03-02 01:51:57'),
+(16, 'Parcela', 1, '2026-03-02 01:51:57'),
+(17, 'Puesto de Estacionamiento', 1, '2026-03-02 01:51:57'),
+(18, 'Quinta', 1, '2026-03-02 01:51:57'),
+(19, 'Resort', 1, '2026-03-02 01:51:57'),
+(20, 'Terreno', 1, '2026-03-02 01:51:57'),
+(21, 'Townhouse', 1, '2026-03-02 01:51:57');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_tipos_bien_mueble`
+--
+
+CREATE TABLE `sim_cat_tipos_bien_mueble` (
+  `id` smallint(5) UNSIGNED NOT NULL,
+  `categoria_bien_mueble_id` tinyint(3) UNSIGNED NOT NULL,
+  `nombre` varchar(80) NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_cat_tipos_bien_mueble`
+--
+
+INSERT INTO `sim_cat_tipos_bien_mueble` (`id`, `categoria_bien_mueble_id`, `nombre`, `activo`, `created_at`) VALUES
+(1, 1, 'Acciones', 1, '2026-03-02 02:33:41'),
+(2, 1, 'Cajas de Ahorro', 1, '2026-03-02 02:33:41'),
+(3, 1, 'Cuentas Bancarias', 1, '2026-03-02 02:33:41'),
+(4, 1, 'Fideicomiso', 1, '2026-03-02 02:33:41'),
+(5, 1, 'Inventario Caja de Seguridad', 1, '2026-03-02 02:33:41'),
+(6, 1, 'Prestaciones Sociales', 1, '2026-03-02 02:33:41'),
+(7, 2, 'Caja de Ahorro', 1, '2026-03-02 02:33:41'),
+(8, 2, 'Montepío', 1, '2026-03-02 02:33:41'),
+(9, 2, 'Seguro de Vida', 1, '2026-03-02 02:33:41'),
+(10, 3, 'Aéreos', 1, '2026-03-02 02:33:41'),
+(11, 3, 'Maquinaria', 1, '2026-03-02 02:33:41'),
+(12, 3, 'Moto', 1, '2026-03-02 02:33:41'),
+(13, 3, 'Motonave', 1, '2026-03-02 02:33:41'),
+(14, 3, 'Naves', 1, '2026-03-02 02:33:41'),
+(15, 3, 'Vehículos', 1, '2026-03-02 02:33:41'),
+(16, 5, 'Asociación Civil', 1, '2026-03-02 02:33:41'),
+(17, 5, 'Clubes', 1, '2026-03-02 02:33:41'),
+(18, 5, 'Cuentas y Efectos por Cobrar', 1, '2026-03-02 02:33:41'),
+(19, 8, 'Cotizadas en la Bolsa de Valores', 1, '2026-03-02 02:33:41'),
+(20, 8, 'En Clubes', 1, '2026-03-02 02:33:41'),
+(21, 8, 'No Cotizadas en la Bolsa de Valores', 1, '2026-03-02 02:33:41'),
+(22, 8, 'Sociedad Mercantiles', 1, '2026-03-02 02:33:41');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_tipos_pasivo_deuda`
+--
+
+CREATE TABLE `sim_cat_tipos_pasivo_deuda` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
+  `nombre` varchar(60) NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_cat_tipos_pasivo_deuda`
+--
+
+INSERT INTO `sim_cat_tipos_pasivo_deuda` (`id`, `nombre`, `activo`, `created_at`) VALUES
+(1, 'Tarjetas de Crédito', 1, '2026-03-02 03:03:33'),
+(2, 'Crédito Hipotecario', 1, '2026-03-02 03:03:33'),
+(3, 'Préstamos, Cuentas y Efectos por Pagar', 1, '2026-03-02 03:03:33'),
+(4, 'Otros', 1, '2026-03-02 03:03:33');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_tipos_pasivo_gasto`
+--
+
+CREATE TABLE `sim_cat_tipos_pasivo_gasto` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
+  `nombre` varchar(60) NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_cat_tipos_pasivo_gasto`
+--
+
+INSERT INTO `sim_cat_tipos_pasivo_gasto` (`id`, `nombre`, `activo`, `created_at`) VALUES
+(1, 'Exequias', 1, '2026-03-02 03:03:33'),
+(2, 'Servicios Funerarios', 1, '2026-03-02 03:03:33'),
+(3, 'Apertura de Testamento', 1, '2026-03-02 03:03:33'),
+(4, 'Avalúo', 1, '2026-03-02 03:03:33'),
+(5, 'Declaración de Herencia', 1, '2026-03-02 03:03:33'),
+(6, 'Honorarios', 1, '2026-03-02 03:03:33'),
+(7, 'Otros (Especifique)', 1, '2026-03-02 03:03:33');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_tipos_semoviente`
+--
+
+CREATE TABLE `sim_cat_tipos_semoviente` (
+  `id` tinyint(3) UNSIGNED NOT NULL,
+  `nombre` varchar(60) NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_cat_tipos_semoviente`
+--
+
+INSERT INTO `sim_cat_tipos_semoviente` (`id`, `nombre`, `activo`, `created_at`) VALUES
+(1, 'Abejas', 1, '2026-03-02 02:36:21'),
+(2, 'Aves', 1, '2026-03-02 02:36:21'),
+(3, 'Caracoles', 1, '2026-03-02 02:36:21'),
+(4, 'Conejos o Liebres', 1, '2026-03-02 02:36:21'),
+(5, 'Ganado Vacuno o Bovino', 1, '2026-03-02 02:36:21'),
+(6, 'Ganado Caprino', 1, '2026-03-02 02:36:21'),
+(7, 'Ganado Equino o Caballar', 1, '2026-03-02 02:36:21'),
+(8, 'Ganado Ovino', 1, '2026-03-02 02:36:21'),
+(9, 'Ganado Porcino', 1, '2026-03-02 02:36:21'),
+(10, 'Peces', 1, '2026-03-02 02:36:21'),
+(11, 'Otros (Especifique)', 1, '2026-03-02 02:36:21');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_unidades_tributarias`
+--
+
+CREATE TABLE `sim_cat_unidades_tributarias` (
+  `id` smallint(5) UNSIGNED NOT NULL,
+  `anio` smallint(5) UNSIGNED NOT NULL,
+  `valor` decimal(15,2) NOT NULL,
+  `fecha_gaceta` date DEFAULT NULL COMMENT 'Fecha de publicación en Gaceta Oficial',
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_cat_unidades_tributarias`
+--
+
+INSERT INTO `sim_cat_unidades_tributarias` (`id`, `anio`, `valor`, `fecha_gaceta`, `activo`, `created_at`) VALUES
+(1, 2001, 11800.00, NULL, 1, '2026-03-02 03:51:23'),
+(2, 2002, 14800.00, NULL, 1, '2026-03-02 03:51:23'),
+(3, 2003, 19400.00, NULL, 1, '2026-03-02 03:51:23'),
+(4, 2004, 24700.00, NULL, 1, '2026-03-02 03:51:23'),
+(5, 2005, 29400.00, NULL, 1, '2026-03-02 03:51:23'),
+(6, 2006, 33600.00, NULL, 1, '2026-03-02 03:51:23'),
+(7, 2007, 37632.00, NULL, 1, '2026-03-02 03:51:23'),
+(8, 2008, 46000.00, NULL, 1, '2026-03-02 03:51:23'),
+(9, 2009, 55000.00, NULL, 1, '2026-03-02 03:51:23'),
+(10, 2010, 65000.00, NULL, 1, '2026-03-02 03:51:23'),
+(11, 2011, 76000.00, NULL, 1, '2026-03-02 03:51:23'),
+(12, 2012, 90000.00, NULL, 1, '2026-03-02 03:51:23'),
+(13, 2013, 107000.00, NULL, 1, '2026-03-02 03:51:23'),
+(14, 2014, 127000.00, NULL, 1, '2026-03-02 03:51:23'),
+(15, 2015, 150000.00, NULL, 1, '2026-03-02 03:51:23'),
+(16, 2016, 177000.00, NULL, 1, '2026-03-02 03:51:23'),
+(17, 2017, 300000.00, NULL, 1, '2026-03-02 03:51:23'),
+(18, 2018, 500.00, NULL, 1, '2026-03-02 03:51:23'),
+(19, 2019, 50000.00, NULL, 1, '2026-03-02 03:51:23'),
+(20, 2020, 1500.00, NULL, 1, '2026-03-02 03:51:23'),
+(21, 2021, 0.02, NULL, 1, '2026-03-02 03:51:23'),
+(22, 2022, 0.40, NULL, 1, '2026-03-02 03:51:23'),
+(23, 2023, 9.00, NULL, 1, '2026-03-02 03:51:23'),
+(24, 2024, 9.00, NULL, 1, '2026-03-02 03:51:23'),
+(25, 2025, 9.00, NULL, 1, '2026-03-02 03:51:23');
 
 -- --------------------------------------------------------
 
@@ -5029,6 +5782,21 @@ CREATE TABLE `sim_causante_datos_fiscales` (
   `domiciliado_pais` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'SI = domiciliado en Venezuela, NO = exterior',
   `fecha_cierre_fiscal` date NOT NULL COMMENT 'Fecha de cierre del ejercicio fiscal de la sucesión'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Datos fiscales del causante para el formulario RIF. Solo existe cuando sim_persona actúa como causante en un caso.';
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_empresas`
+--
+
+CREATE TABLE `sim_empresas` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `rif` varchar(12) NOT NULL COMMENT 'Formato: J-12345678-9',
+  `razon_social` varchar(255) NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -5051,6 +5819,222 @@ CREATE TABLE `sim_intentos` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Intentos de los estudiantes por caso. Observaciones se sobreescriben. Intentos cancelados incrementan numero_intento.';
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bienes_inmuebles`
+--
+
+CREATE TABLE `sim_intento_bienes_inmuebles` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `intento_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_bien_inmueble_id` tinyint(3) UNSIGNED NOT NULL,
+  `es_vivienda_principal` tinyint(1) NOT NULL DEFAULT 0,
+  `es_bien_litigioso` tinyint(1) NOT NULL DEFAULT 0,
+  `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
+  `descripcion` text DEFAULT NULL,
+  `linderos` text DEFAULT NULL,
+  `superficie_construida` decimal(12,2) DEFAULT NULL,
+  `superficie_no_construida` decimal(12,2) DEFAULT NULL,
+  `area_superficie` decimal(12,2) DEFAULT NULL,
+  `direccion` text DEFAULT NULL,
+  `oficina_registro` varchar(255) DEFAULT NULL,
+  `nro_registro` varchar(50) DEFAULT NULL,
+  `libro` varchar(50) DEFAULT NULL,
+  `protocolo` varchar(50) DEFAULT NULL,
+  `fecha_registro` date DEFAULT NULL,
+  `trimestre` varchar(20) DEFAULT NULL,
+  `asiento_registral` varchar(50) DEFAULT NULL,
+  `matricula` varchar(50) DEFAULT NULL,
+  `folio_real_anio` varchar(20) DEFAULT NULL,
+  `valor_original` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Soft delete: NULL=activo, con fecha=eliminado',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bienes_litigiosos`
+--
+
+CREATE TABLE `sim_intento_bienes_litigiosos` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `intento_id` bigint(20) UNSIGNED NOT NULL,
+  `bien_tipo` enum('Inmueble','Mueble') NOT NULL COMMENT 'Tipo de bien: Inmueble o Mueble',
+  `bien_id` bigint(20) UNSIGNED NOT NULL COMMENT 'ID del bien en la tabla correspondiente según bien_tipo',
+  `numero_expediente` varchar(100) DEFAULT NULL,
+  `tribunal_causa` varchar(255) DEFAULT NULL,
+  `partes_juicio` varchar(255) DEFAULT NULL,
+  `estado_juicio` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bienes_muebles`
+--
+
+CREATE TABLE `sim_intento_bienes_muebles` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `intento_id` bigint(20) UNSIGNED NOT NULL,
+  `categoria_bien_mueble_id` tinyint(3) UNSIGNED NOT NULL,
+  `tipo_bien_mueble_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'NULL para categorías sin subtipos (Plantaciones, Otros, etc.)',
+  `es_bien_litigioso` tinyint(1) NOT NULL DEFAULT 0,
+  `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
+  `descripcion` text DEFAULT NULL,
+  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Soft delete: NULL=activo, con fecha=eliminado',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bm_acciones`
+--
+
+CREATE TABLE `sim_intento_bm_acciones` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `empresa_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bm_banco`
+--
+
+CREATE TABLE `sim_intento_bm_banco` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `banco_id` smallint(5) UNSIGNED DEFAULT NULL,
+  `numero_cuenta` varchar(20) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bm_bonos`
+--
+
+CREATE TABLE `sim_intento_bm_bonos` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_bonos` varchar(60) DEFAULT NULL,
+  `numero_bonos` varchar(30) DEFAULT NULL,
+  `numero_serie` varchar(30) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bm_caja_ahorro`
+--
+
+CREATE TABLE `sim_intento_bm_caja_ahorro` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `empresa_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bm_cuentas_cobrar`
+--
+
+CREATE TABLE `sim_intento_bm_cuentas_cobrar` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `rif_cedula` varchar(12) DEFAULT NULL,
+  `apellidos_nombres` varchar(100) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bm_opciones_compra`
+--
+
+CREATE TABLE `sim_intento_bm_opciones_compra` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `nombre_oferente` varchar(40) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bm_prestaciones`
+--
+
+CREATE TABLE `sim_intento_bm_prestaciones` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `posee_banco` tinyint(1) NOT NULL DEFAULT 0,
+  `banco_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Solo si posee_banco = 1',
+  `numero_cuenta` varchar(20) DEFAULT NULL COMMENT 'Solo si posee_banco = 1',
+  `empresa_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bm_seguro`
+--
+
+CREATE TABLE `sim_intento_bm_seguro` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `empresa_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `numero_prima` varchar(15) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bm_semovientes`
+--
+
+CREATE TABLE `sim_intento_bm_semovientes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_semoviente_id` tinyint(3) UNSIGNED DEFAULT NULL,
+  `cantidad` int(10) UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bm_transporte`
+--
+
+CREATE TABLE `sim_intento_bm_transporte` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_mueble_id` bigint(20) UNSIGNED NOT NULL,
+  `anio` varchar(4) DEFAULT NULL,
+  `marca` varchar(15) DEFAULT NULL,
+  `modelo` varchar(15) DEFAULT NULL,
+  `serial_placa` varchar(30) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -5124,6 +6108,40 @@ CREATE TABLE `sim_intento_estados` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sim_intento_exenciones`
+--
+
+CREATE TABLE `sim_intento_exenciones` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `intento_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo` varchar(255) DEFAULT NULL,
+  `descripcion` text DEFAULT NULL,
+  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_exoneraciones`
+--
+
+CREATE TABLE `sim_intento_exoneraciones` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `intento_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo` varchar(255) DEFAULT NULL,
+  `descripcion` text DEFAULT NULL,
+  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `sim_intento_observaciones`
 --
 
@@ -5137,55 +6155,96 @@ CREATE TABLE `sim_intento_observaciones` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sim_intento_pasivos_deuda`
+--
+
+CREATE TABLE `sim_intento_pasivos_deuda` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `intento_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_pasivo_deuda_id` tinyint(3) UNSIGNED NOT NULL,
+  `banco_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Aplica para Tarjetas, Hipotecario y Préstamos. NULL para Otros',
+  `numero_tdc` varchar(20) DEFAULT NULL COMMENT 'Solo para Tarjetas de Crédito',
+  `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
+  `descripcion` text DEFAULT NULL,
+  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_pasivos_gastos`
+--
+
+CREATE TABLE `sim_intento_pasivos_gastos` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `intento_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_pasivo_gasto_id` tinyint(3) UNSIGNED NOT NULL,
+  `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
+  `descripcion` text DEFAULT NULL,
+  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_prorrogas`
+--
+
+CREATE TABLE `sim_intento_prorrogas` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `intento_id` bigint(20) UNSIGNED NOT NULL,
+  `fecha_solicitud` date NOT NULL,
+  `nro_resolucion` varchar(50) DEFAULT NULL,
+  `fecha_resolucion` date DEFAULT NULL,
+  `plazo_otorgado_dias` smallint(5) UNSIGNED DEFAULT NULL,
+  `fecha_vencimiento` date DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `sim_intento_relaciones`
 --
 
 CREATE TABLE `sim_intento_relaciones` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `intento_id` bigint(20) UNSIGNED NOT NULL,
-  `rol` enum('Heredero','Representante') NOT NULL,
+  `rol` enum('Heredero','Legatario','Representante') NOT NULL,
   `tipo_cedula` enum('V','E','No_Indica') NOT NULL,
   `cedula` varchar(20) DEFAULT NULL COMMENT 'NULL si tipo_cedula es No_Indica o si presenta pasaporte',
   `pasaporte` varchar(20) DEFAULT NULL COMMENT 'NULL si tipo_cedula es V o No_Indica',
-  `nombres` varchar(200) NOT NULL COMMENT 'Nombres y apellidos juntos tal como los escribe el estudiante',
+  `nombres` varchar(100) NOT NULL COMMENT 'nombres de persona',
+  `apellidos` varchar(100) DEFAULT NULL COMMENT 'Apellidos separados del nombre',
+  `fecha_nacimiento` date DEFAULT NULL,
+  `parentesco_id` int(10) UNSIGNED DEFAULT NULL,
+  `es_premuerto` tinyint(1) NOT NULL DEFAULT 0,
+  `fecha_fallecimiento` date DEFAULT NULL COMMENT 'Solo si es_premuerto = 1',
+  `premuerto_padre_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Si no es NULL, este heredero representa al premuerto indicado',
   `orden` tinyint(3) UNSIGNED NOT NULL COMMENT 'Orden de aparición en la planilla'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Herederos y representante ingresados por el estudiante en su intento. Espejo de sim_caso_participantes.';
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `sim_parentescos`
+-- Estructura de tabla para la tabla `sim_intento_tipoherencias`
 --
 
-CREATE TABLE `sim_parentescos` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `clave` varchar(50) NOT NULL,
-  `etiqueta` varchar(60) NOT NULL,
-  `activo` tinyint(1) DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `sim_parentescos`
---
-
-INSERT INTO `sim_parentescos` (`id`, `clave`, `etiqueta`, `activo`) VALUES
-(1, 'Hijo', 'Hijo / Hija', 1),
-(2, 'Nieto', 'Nieto / Nieta', 1),
-(3, 'Bisnieto', 'Bisnieto / Bisnieta', 1),
-(4, 'Madre', 'Madre', 1),
-(5, 'Padre', 'Padre', 1),
-(6, 'Abuelo', 'Abuelo / Abuela', 1),
-(7, 'Hijo_Adoptivo', 'Hijo / Hija Adoptivo(a)', 1),
-(8, 'Conyuge', 'Cónyuge', 1),
-(9, 'Concubino', 'Concubino / Concubina', 1),
-(10, 'Hermano_Simple', 'Hermano / Hermana (simple conjunción)', 1),
-(11, 'Hermano_Doble', 'Hermano / Hermana (doble conjunción)', 1),
-(12, 'Sobrino_Repr', 'Sobrino por Derecho de Representación', 1),
-(13, 'Tio', 'Tío / Tía', 1),
-(14, 'Sobrino', 'Sobrino / Sobrina', 1),
-(15, 'Primo_Segundo', 'Primo / Prima Segundo(a)', 1),
-(16, 'Otro_Pariente', 'Otro Pariente', 1),
-(17, 'Extraño', 'Extraño / Sin parentesco', 1);
+CREATE TABLE `sim_intento_tipoherencias` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `intento_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_herencia_id` tinyint(3) UNSIGNED NOT NULL,
+  `subtipo_testamento` enum('Abierto','Cerrado') DEFAULT NULL COMMENT 'Solo si tipo_herencia = Testamento',
+  `fecha_testamento` date DEFAULT NULL COMMENT 'Solo si tipo_herencia = Testamento',
+  `fecha_conclusion_inventario` date DEFAULT NULL COMMENT 'Solo si tipo_herencia = Beneficio de Inventario',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -5454,7 +6513,8 @@ ALTER TABLE `sim_casos_estudios`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_casos_profesor` (`profesor_id`),
   ADD KEY `fk_caso_causante` (`causante_id`),
-  ADD KEY `fk_caso_representante` (`representante_id`);
+  ADD KEY `fk_caso_representante` (`representante_id`),
+  ADD KEY `fk_ce_ut` (`unidad_tributaria_id`);
 
 --
 -- Indices de la tabla `sim_caso_asignaciones`
@@ -5465,19 +6525,258 @@ ALTER TABLE `sim_caso_asignaciones`
   ADD KEY `fk_sca_estudiante` (`estudiante_id`);
 
 --
+-- Indices de la tabla `sim_caso_bienes_inmuebles`
+--
+ALTER TABLE `sim_caso_bienes_inmuebles`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_cbi_caso` (`caso_estudio_id`),
+  ADD KEY `fk_cbi_tipo` (`tipo_bien_inmueble_id`);
+
+--
+-- Indices de la tabla `sim_caso_bienes_litigiosos`
+--
+ALTER TABLE `sim_caso_bienes_litigiosos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_caso_bien_litigioso` (`caso_estudio_id`,`bien_tipo`,`bien_id`);
+
+--
+-- Indices de la tabla `sim_caso_bienes_muebles`
+--
+ALTER TABLE `sim_caso_bienes_muebles`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_cbm_caso` (`caso_estudio_id`),
+  ADD KEY `fk_cbm_categoria` (`categoria_bien_mueble_id`),
+  ADD KEY `fk_cbm_tipo` (`tipo_bien_mueble_id`);
+
+--
+-- Indices de la tabla `sim_caso_bm_acciones`
+--
+ALTER TABLE `sim_caso_bm_acciones`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_cbma_bien` (`bien_mueble_id`),
+  ADD KEY `fk_cbma_empresa` (`empresa_id`);
+
+--
+-- Indices de la tabla `sim_caso_bm_banco`
+--
+ALTER TABLE `sim_caso_bm_banco`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_cbmb_bien` (`bien_mueble_id`),
+  ADD KEY `fk_cbmb_banco` (`banco_id`);
+
+--
+-- Indices de la tabla `sim_caso_bm_bonos`
+--
+ALTER TABLE `sim_caso_bm_bonos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_cbmbo_bien` (`bien_mueble_id`);
+
+--
+-- Indices de la tabla `sim_caso_bm_caja_ahorro`
+--
+ALTER TABLE `sim_caso_bm_caja_ahorro`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_cbmca_bien` (`bien_mueble_id`),
+  ADD KEY `fk_cbmca_empresa` (`empresa_id`);
+
+--
+-- Indices de la tabla `sim_caso_bm_cuentas_cobrar`
+--
+ALTER TABLE `sim_caso_bm_cuentas_cobrar`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_cbmcc_bien` (`bien_mueble_id`);
+
+--
+-- Indices de la tabla `sim_caso_bm_opciones_compra`
+--
+ALTER TABLE `sim_caso_bm_opciones_compra`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_cbmoc_bien` (`bien_mueble_id`);
+
+--
+-- Indices de la tabla `sim_caso_bm_prestaciones`
+--
+ALTER TABLE `sim_caso_bm_prestaciones`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_cbmp_bien` (`bien_mueble_id`),
+  ADD KEY `fk_cbmp_banco` (`banco_id`),
+  ADD KEY `fk_cbmp_empresa` (`empresa_id`);
+
+--
+-- Indices de la tabla `sim_caso_bm_seguro`
+--
+ALTER TABLE `sim_caso_bm_seguro`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_cbms_bien` (`bien_mueble_id`),
+  ADD KEY `fk_cbms_empresa` (`empresa_id`);
+
+--
+-- Indices de la tabla `sim_caso_bm_semovientes`
+--
+ALTER TABLE `sim_caso_bm_semovientes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_cbmsem_bien` (`bien_mueble_id`),
+  ADD KEY `fk_cbmsem_tipo` (`tipo_semoviente_id`);
+
+--
+-- Indices de la tabla `sim_caso_bm_transporte`
+--
+ALTER TABLE `sim_caso_bm_transporte`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_cbmt_bien` (`bien_mueble_id`);
+
+--
+-- Indices de la tabla `sim_caso_exenciones`
+--
+ALTER TABLE `sim_caso_exenciones`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_ce_caso` (`caso_estudio_id`);
+
+--
+-- Indices de la tabla `sim_caso_exoneraciones`
+--
+ALTER TABLE `sim_caso_exoneraciones`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_cex_caso` (`caso_estudio_id`);
+
+--
 -- Indices de la tabla `sim_caso_participantes`
 --
 ALTER TABLE `sim_caso_participantes`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uq_caso_persona_rol` (`caso_estudio_id`,`persona_id`,`rol_en_caso`),
   ADD KEY `fk_cp_persona` (`persona_id`),
-  ADD KEY `fk_cp_parentesco` (`parentesco_id`);
+  ADD KEY `fk_cp_parentesco` (`parentesco_id`),
+  ADD KEY `fk_cp_premuerto_padre` (`premuerto_padre_id`);
+
+--
+-- Indices de la tabla `sim_caso_pasivos_deuda`
+--
+ALTER TABLE `sim_caso_pasivos_deuda`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_cpd_caso` (`caso_estudio_id`),
+  ADD KEY `fk_cpd_tipo` (`tipo_pasivo_deuda_id`),
+  ADD KEY `fk_cpd_banco` (`banco_id`);
+
+--
+-- Indices de la tabla `sim_caso_pasivos_gastos`
+--
+ALTER TABLE `sim_caso_pasivos_gastos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_cpg_caso` (`caso_estudio_id`),
+  ADD KEY `fk_cpg_tipo` (`tipo_pasivo_gasto_id`);
+
+--
+-- Indices de la tabla `sim_caso_prorrogas`
+--
+ALTER TABLE `sim_caso_prorrogas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_cpr_caso` (`caso_estudio_id`);
+
+--
+-- Indices de la tabla `sim_caso_tipoherencia_rel`
+--
+ALTER TABLE `sim_caso_tipoherencia_rel`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_caso_tipo_herencia` (`caso_estudio_id`,`tipo_herencia_id`),
+  ADD KEY `fk_cthr_tipo` (`tipo_herencia_id`);
+
+--
+-- Indices de la tabla `sim_cat_bancos`
+--
+ALTER TABLE `sim_cat_bancos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `sim_cat_categorias_bien_mueble`
+--
+ALTER TABLE `sim_cat_categorias_bien_mueble`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `sim_cat_grupos_tarifa`
+--
+ALTER TABLE `sim_cat_grupos_tarifa`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `sim_cat_parentescos`
+--
+ALTER TABLE `sim_cat_parentescos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `clave` (`clave`),
+  ADD KEY `fk_par_grupo_tarifa` (`grupo_tarifa_id`);
+
+--
+-- Indices de la tabla `sim_cat_tarifas_sucesion`
+--
+ALTER TABLE `sim_cat_tarifas_sucesion`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_ts_grupo` (`grupo_tarifa_id`);
+
+--
+-- Indices de la tabla `sim_cat_tipoherencias`
+--
+ALTER TABLE `sim_cat_tipoherencias`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `sim_cat_tipos_bien_inmueble`
+--
+ALTER TABLE `sim_cat_tipos_bien_inmueble`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `sim_cat_tipos_bien_mueble`
+--
+ALTER TABLE `sim_cat_tipos_bien_mueble`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_categoria_tipo_mueble` (`categoria_bien_mueble_id`,`nombre`);
+
+--
+-- Indices de la tabla `sim_cat_tipos_pasivo_deuda`
+--
+ALTER TABLE `sim_cat_tipos_pasivo_deuda`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `sim_cat_tipos_pasivo_gasto`
+--
+ALTER TABLE `sim_cat_tipos_pasivo_gasto`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `sim_cat_tipos_semoviente`
+--
+ALTER TABLE `sim_cat_tipos_semoviente`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `sim_cat_unidades_tributarias`
+--
+ALTER TABLE `sim_cat_unidades_tributarias`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `anio` (`anio`);
 
 --
 -- Indices de la tabla `sim_causante_datos_fiscales`
 --
 ALTER TABLE `sim_causante_datos_fiscales`
   ADD PRIMARY KEY (`sim_persona_id`);
+
+--
+-- Indices de la tabla `sim_empresas`
+--
+ALTER TABLE `sim_empresas`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `rif` (`rif`);
 
 --
 -- Indices de la tabla `sim_intentos`
@@ -5488,6 +6787,107 @@ ALTER TABLE `sim_intentos`
   ADD UNIQUE KEY `rif_sucesoral` (`rif_sucesoral`),
   ADD UNIQUE KEY `numero_control` (`numero_control`),
   ADD KEY `fk_si_caso` (`caso_estudio_id`);
+
+--
+-- Indices de la tabla `sim_intento_bienes_inmuebles`
+--
+ALTER TABLE `sim_intento_bienes_inmuebles`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_ibi_intento` (`intento_id`),
+  ADD KEY `fk_ibi_tipo` (`tipo_bien_inmueble_id`);
+
+--
+-- Indices de la tabla `sim_intento_bienes_litigiosos`
+--
+ALTER TABLE `sim_intento_bienes_litigiosos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_intento_bien_litigioso` (`intento_id`,`bien_tipo`,`bien_id`);
+
+--
+-- Indices de la tabla `sim_intento_bienes_muebles`
+--
+ALTER TABLE `sim_intento_bienes_muebles`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_ibm_intento` (`intento_id`),
+  ADD KEY `fk_ibm_categoria` (`categoria_bien_mueble_id`),
+  ADD KEY `fk_ibm_tipo` (`tipo_bien_mueble_id`);
+
+--
+-- Indices de la tabla `sim_intento_bm_acciones`
+--
+ALTER TABLE `sim_intento_bm_acciones`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ibma_bien` (`bien_mueble_id`),
+  ADD KEY `fk_ibma_empresa` (`empresa_id`);
+
+--
+-- Indices de la tabla `sim_intento_bm_banco`
+--
+ALTER TABLE `sim_intento_bm_banco`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ibmb_bien` (`bien_mueble_id`),
+  ADD KEY `fk_ibmb_banco` (`banco_id`);
+
+--
+-- Indices de la tabla `sim_intento_bm_bonos`
+--
+ALTER TABLE `sim_intento_bm_bonos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ibmbo_bien` (`bien_mueble_id`);
+
+--
+-- Indices de la tabla `sim_intento_bm_caja_ahorro`
+--
+ALTER TABLE `sim_intento_bm_caja_ahorro`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ibmca_bien` (`bien_mueble_id`),
+  ADD KEY `fk_ibmca_empresa` (`empresa_id`);
+
+--
+-- Indices de la tabla `sim_intento_bm_cuentas_cobrar`
+--
+ALTER TABLE `sim_intento_bm_cuentas_cobrar`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ibmcc_bien` (`bien_mueble_id`);
+
+--
+-- Indices de la tabla `sim_intento_bm_opciones_compra`
+--
+ALTER TABLE `sim_intento_bm_opciones_compra`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ibmoc_bien` (`bien_mueble_id`);
+
+--
+-- Indices de la tabla `sim_intento_bm_prestaciones`
+--
+ALTER TABLE `sim_intento_bm_prestaciones`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ibmp_bien` (`bien_mueble_id`),
+  ADD KEY `fk_ibmp_banco` (`banco_id`),
+  ADD KEY `fk_ibmp_empresa` (`empresa_id`);
+
+--
+-- Indices de la tabla `sim_intento_bm_seguro`
+--
+ALTER TABLE `sim_intento_bm_seguro`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ibms_bien` (`bien_mueble_id`),
+  ADD KEY `fk_ibms_empresa` (`empresa_id`);
+
+--
+-- Indices de la tabla `sim_intento_bm_semovientes`
+--
+ALTER TABLE `sim_intento_bm_semovientes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ibmsem_bien` (`bien_mueble_id`),
+  ADD KEY `fk_ibmsem_tipo` (`tipo_semoviente_id`);
+
+--
+-- Indices de la tabla `sim_intento_bm_transporte`
+--
+ALTER TABLE `sim_intento_bm_transporte`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ibmt_bien` (`bien_mueble_id`);
 
 --
 -- Indices de la tabla `sim_intento_datos_basicos`
@@ -5518,6 +6918,20 @@ ALTER TABLE `sim_intento_estados`
   ADD KEY `fk_sie_intento` (`intento_id`);
 
 --
+-- Indices de la tabla `sim_intento_exenciones`
+--
+ALTER TABLE `sim_intento_exenciones`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_ie_intento` (`intento_id`);
+
+--
+-- Indices de la tabla `sim_intento_exoneraciones`
+--
+ALTER TABLE `sim_intento_exoneraciones`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_iex_intento` (`intento_id`);
+
+--
 -- Indices de la tabla `sim_intento_observaciones`
 --
 ALTER TABLE `sim_intento_observaciones`
@@ -5525,18 +6939,45 @@ ALTER TABLE `sim_intento_observaciones`
   ADD KEY `fk_sio_intento` (`intento_id`);
 
 --
+-- Indices de la tabla `sim_intento_pasivos_deuda`
+--
+ALTER TABLE `sim_intento_pasivos_deuda`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_ipd_intento` (`intento_id`),
+  ADD KEY `fk_ipd_tipo` (`tipo_pasivo_deuda_id`),
+  ADD KEY `fk_ipd_banco` (`banco_id`);
+
+--
+-- Indices de la tabla `sim_intento_pasivos_gastos`
+--
+ALTER TABLE `sim_intento_pasivos_gastos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_ipg_intento` (`intento_id`),
+  ADD KEY `fk_ipg_tipo` (`tipo_pasivo_gasto_id`);
+
+--
+-- Indices de la tabla `sim_intento_prorrogas`
+--
+ALTER TABLE `sim_intento_prorrogas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_ip_intento` (`intento_id`);
+
+--
 -- Indices de la tabla `sim_intento_relaciones`
 --
 ALTER TABLE `sim_intento_relaciones`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_sir_intento` (`intento_id`);
+  ADD KEY `fk_sir_intento` (`intento_id`),
+  ADD KEY `fk_sir_parentesco` (`parentesco_id`),
+  ADD KEY `fk_sir_premuerto_padre` (`premuerto_padre_id`);
 
 --
--- Indices de la tabla `sim_parentescos`
+-- Indices de la tabla `sim_intento_tipoherencias`
 --
-ALTER TABLE `sim_parentescos`
+ALTER TABLE `sim_intento_tipoherencias`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `clave` (`clave`);
+  ADD UNIQUE KEY `uq_intento_tipo_herencia` (`intento_id`,`tipo_herencia_id`),
+  ADD KEY `fk_ith_tipo` (`tipo_herencia_id`);
 
 --
 -- Indices de la tabla `sim_personas`
@@ -5706,15 +7147,279 @@ ALTER TABLE `sim_caso_asignaciones`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `sim_caso_bienes_inmuebles`
+--
+ALTER TABLE `sim_caso_bienes_inmuebles`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bienes_litigiosos`
+--
+ALTER TABLE `sim_caso_bienes_litigiosos`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bienes_muebles`
+--
+ALTER TABLE `sim_caso_bienes_muebles`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bm_acciones`
+--
+ALTER TABLE `sim_caso_bm_acciones`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bm_banco`
+--
+ALTER TABLE `sim_caso_bm_banco`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bm_bonos`
+--
+ALTER TABLE `sim_caso_bm_bonos`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bm_caja_ahorro`
+--
+ALTER TABLE `sim_caso_bm_caja_ahorro`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bm_cuentas_cobrar`
+--
+ALTER TABLE `sim_caso_bm_cuentas_cobrar`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bm_opciones_compra`
+--
+ALTER TABLE `sim_caso_bm_opciones_compra`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bm_prestaciones`
+--
+ALTER TABLE `sim_caso_bm_prestaciones`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bm_seguro`
+--
+ALTER TABLE `sim_caso_bm_seguro`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bm_semovientes`
+--
+ALTER TABLE `sim_caso_bm_semovientes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bm_transporte`
+--
+ALTER TABLE `sim_caso_bm_transporte`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_exenciones`
+--
+ALTER TABLE `sim_caso_exenciones`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_exoneraciones`
+--
+ALTER TABLE `sim_caso_exoneraciones`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `sim_caso_participantes`
 --
 ALTER TABLE `sim_caso_participantes`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `sim_caso_pasivos_deuda`
+--
+ALTER TABLE `sim_caso_pasivos_deuda`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_pasivos_gastos`
+--
+ALTER TABLE `sim_caso_pasivos_gastos`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_prorrogas`
+--
+ALTER TABLE `sim_caso_prorrogas`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_tipoherencia_rel`
+--
+ALTER TABLE `sim_caso_tipoherencia_rel`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_bancos`
+--
+ALTER TABLE `sim_cat_bancos`
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_categorias_bien_mueble`
+--
+ALTER TABLE `sim_cat_categorias_bien_mueble`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_grupos_tarifa`
+--
+ALTER TABLE `sim_cat_grupos_tarifa`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_tarifas_sucesion`
+--
+ALTER TABLE `sim_cat_tarifas_sucesion`
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_tipoherencias`
+--
+ALTER TABLE `sim_cat_tipoherencias`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_tipos_bien_inmueble`
+--
+ALTER TABLE `sim_cat_tipos_bien_inmueble`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_tipos_bien_mueble`
+--
+ALTER TABLE `sim_cat_tipos_bien_mueble`
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_tipos_pasivo_deuda`
+--
+ALTER TABLE `sim_cat_tipos_pasivo_deuda`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_tipos_pasivo_gasto`
+--
+ALTER TABLE `sim_cat_tipos_pasivo_gasto`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_tipos_semoviente`
+--
+ALTER TABLE `sim_cat_tipos_semoviente`
+  MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_unidades_tributarias`
+--
+ALTER TABLE `sim_cat_unidades_tributarias`
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_empresas`
+--
+ALTER TABLE `sim_empresas`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `sim_intentos`
 --
 ALTER TABLE `sim_intentos`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bienes_inmuebles`
+--
+ALTER TABLE `sim_intento_bienes_inmuebles`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bienes_litigiosos`
+--
+ALTER TABLE `sim_intento_bienes_litigiosos`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bienes_muebles`
+--
+ALTER TABLE `sim_intento_bienes_muebles`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bm_acciones`
+--
+ALTER TABLE `sim_intento_bm_acciones`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bm_banco`
+--
+ALTER TABLE `sim_intento_bm_banco`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bm_bonos`
+--
+ALTER TABLE `sim_intento_bm_bonos`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bm_caja_ahorro`
+--
+ALTER TABLE `sim_intento_bm_caja_ahorro`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bm_cuentas_cobrar`
+--
+ALTER TABLE `sim_intento_bm_cuentas_cobrar`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bm_opciones_compra`
+--
+ALTER TABLE `sim_intento_bm_opciones_compra`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bm_prestaciones`
+--
+ALTER TABLE `sim_intento_bm_prestaciones`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bm_seguro`
+--
+ALTER TABLE `sim_intento_bm_seguro`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bm_semovientes`
+--
+ALTER TABLE `sim_intento_bm_semovientes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bm_transporte`
+--
+ALTER TABLE `sim_intento_bm_transporte`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -5736,15 +7441,51 @@ ALTER TABLE `sim_intento_estados`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `sim_intento_exenciones`
+--
+ALTER TABLE `sim_intento_exenciones`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_exoneraciones`
+--
+ALTER TABLE `sim_intento_exoneraciones`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `sim_intento_observaciones`
 --
 ALTER TABLE `sim_intento_observaciones`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `sim_intento_pasivos_deuda`
+--
+ALTER TABLE `sim_intento_pasivos_deuda`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_pasivos_gastos`
+--
+ALTER TABLE `sim_intento_pasivos_gastos`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_prorrogas`
+--
+ALTER TABLE `sim_intento_prorrogas`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `sim_intento_relaciones`
 --
 ALTER TABLE `sim_intento_relaciones`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_tipoherencias`
+--
+ALTER TABLE `sim_intento_tipoherencias`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -5865,7 +7606,8 @@ ALTER TABLE `sim_actas_defunciones`
 ALTER TABLE `sim_casos_estudios`
   ADD CONSTRAINT `fk_caso_causante` FOREIGN KEY (`causante_id`) REFERENCES `sim_personas` (`id`),
   ADD CONSTRAINT `fk_caso_representante` FOREIGN KEY (`representante_id`) REFERENCES `sim_personas` (`id`),
-  ADD CONSTRAINT `fk_casos_profesor` FOREIGN KEY (`profesor_id`) REFERENCES `profesores` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_casos_profesor` FOREIGN KEY (`profesor_id`) REFERENCES `profesores` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_ce_ut` FOREIGN KEY (`unidad_tributaria_id`) REFERENCES `sim_cat_unidades_tributarias` (`id`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `sim_caso_asignaciones`
@@ -5875,12 +7617,159 @@ ALTER TABLE `sim_caso_asignaciones`
   ADD CONSTRAINT `fk_sca_estudiante` FOREIGN KEY (`estudiante_id`) REFERENCES `estudiantes` (`id`);
 
 --
+-- Filtros para la tabla `sim_caso_bienes_inmuebles`
+--
+ALTER TABLE `sim_caso_bienes_inmuebles`
+  ADD CONSTRAINT `fk_cbi_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`),
+  ADD CONSTRAINT `fk_cbi_tipo` FOREIGN KEY (`tipo_bien_inmueble_id`) REFERENCES `sim_cat_tipos_bien_inmueble` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_caso_bienes_litigiosos`
+--
+ALTER TABLE `sim_caso_bienes_litigiosos`
+  ADD CONSTRAINT `fk_cbl_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`);
+
+--
+-- Filtros para la tabla `sim_caso_bienes_muebles`
+--
+ALTER TABLE `sim_caso_bienes_muebles`
+  ADD CONSTRAINT `fk_cbm_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`),
+  ADD CONSTRAINT `fk_cbm_categoria` FOREIGN KEY (`categoria_bien_mueble_id`) REFERENCES `sim_cat_categorias_bien_mueble` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cbm_tipo` FOREIGN KEY (`tipo_bien_mueble_id`) REFERENCES `sim_cat_tipos_bien_mueble` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_caso_bm_acciones`
+--
+ALTER TABLE `sim_caso_bm_acciones`
+  ADD CONSTRAINT `fk_cbma_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_caso_bienes_muebles` (`id`),
+  ADD CONSTRAINT `fk_cbma_empresa` FOREIGN KEY (`empresa_id`) REFERENCES `sim_empresas` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_caso_bm_banco`
+--
+ALTER TABLE `sim_caso_bm_banco`
+  ADD CONSTRAINT `fk_cbmb_banco` FOREIGN KEY (`banco_id`) REFERENCES `sim_cat_bancos` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cbmb_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_caso_bienes_muebles` (`id`);
+
+--
+-- Filtros para la tabla `sim_caso_bm_bonos`
+--
+ALTER TABLE `sim_caso_bm_bonos`
+  ADD CONSTRAINT `fk_cbmbo_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_caso_bienes_muebles` (`id`);
+
+--
+-- Filtros para la tabla `sim_caso_bm_caja_ahorro`
+--
+ALTER TABLE `sim_caso_bm_caja_ahorro`
+  ADD CONSTRAINT `fk_cbmca_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_caso_bienes_muebles` (`id`),
+  ADD CONSTRAINT `fk_cbmca_empresa` FOREIGN KEY (`empresa_id`) REFERENCES `sim_empresas` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_caso_bm_cuentas_cobrar`
+--
+ALTER TABLE `sim_caso_bm_cuentas_cobrar`
+  ADD CONSTRAINT `fk_cbmcc_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_caso_bienes_muebles` (`id`);
+
+--
+-- Filtros para la tabla `sim_caso_bm_opciones_compra`
+--
+ALTER TABLE `sim_caso_bm_opciones_compra`
+  ADD CONSTRAINT `fk_cbmoc_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_caso_bienes_muebles` (`id`);
+
+--
+-- Filtros para la tabla `sim_caso_bm_prestaciones`
+--
+ALTER TABLE `sim_caso_bm_prestaciones`
+  ADD CONSTRAINT `fk_cbmp_banco` FOREIGN KEY (`banco_id`) REFERENCES `sim_cat_bancos` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cbmp_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_caso_bienes_muebles` (`id`),
+  ADD CONSTRAINT `fk_cbmp_empresa` FOREIGN KEY (`empresa_id`) REFERENCES `sim_empresas` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_caso_bm_seguro`
+--
+ALTER TABLE `sim_caso_bm_seguro`
+  ADD CONSTRAINT `fk_cbms_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_caso_bienes_muebles` (`id`),
+  ADD CONSTRAINT `fk_cbms_empresa` FOREIGN KEY (`empresa_id`) REFERENCES `sim_empresas` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_caso_bm_semovientes`
+--
+ALTER TABLE `sim_caso_bm_semovientes`
+  ADD CONSTRAINT `fk_cbmsem_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_caso_bienes_muebles` (`id`),
+  ADD CONSTRAINT `fk_cbmsem_tipo` FOREIGN KEY (`tipo_semoviente_id`) REFERENCES `sim_cat_tipos_semoviente` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_caso_bm_transporte`
+--
+ALTER TABLE `sim_caso_bm_transporte`
+  ADD CONSTRAINT `fk_cbmt_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_caso_bienes_muebles` (`id`);
+
+--
+-- Filtros para la tabla `sim_caso_exenciones`
+--
+ALTER TABLE `sim_caso_exenciones`
+  ADD CONSTRAINT `fk_ce_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`);
+
+--
+-- Filtros para la tabla `sim_caso_exoneraciones`
+--
+ALTER TABLE `sim_caso_exoneraciones`
+  ADD CONSTRAINT `fk_cex_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`);
+
+--
 -- Filtros para la tabla `sim_caso_participantes`
 --
 ALTER TABLE `sim_caso_participantes`
   ADD CONSTRAINT `fk_cp_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`),
-  ADD CONSTRAINT `fk_cp_parentesco` FOREIGN KEY (`parentesco_id`) REFERENCES `sim_parentescos` (`id`),
-  ADD CONSTRAINT `fk_cp_persona` FOREIGN KEY (`persona_id`) REFERENCES `sim_personas` (`id`);
+  ADD CONSTRAINT `fk_cp_parentesco` FOREIGN KEY (`parentesco_id`) REFERENCES `sim_cat_parentescos` (`id`),
+  ADD CONSTRAINT `fk_cp_persona` FOREIGN KEY (`persona_id`) REFERENCES `sim_personas` (`id`),
+  ADD CONSTRAINT `fk_cp_premuerto_padre` FOREIGN KEY (`premuerto_padre_id`) REFERENCES `sim_caso_participantes` (`id`);
+
+--
+-- Filtros para la tabla `sim_caso_pasivos_deuda`
+--
+ALTER TABLE `sim_caso_pasivos_deuda`
+  ADD CONSTRAINT `fk_cpd_banco` FOREIGN KEY (`banco_id`) REFERENCES `sim_cat_bancos` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cpd_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`),
+  ADD CONSTRAINT `fk_cpd_tipo` FOREIGN KEY (`tipo_pasivo_deuda_id`) REFERENCES `sim_cat_tipos_pasivo_deuda` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_caso_pasivos_gastos`
+--
+ALTER TABLE `sim_caso_pasivos_gastos`
+  ADD CONSTRAINT `fk_cpg_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`),
+  ADD CONSTRAINT `fk_cpg_tipo` FOREIGN KEY (`tipo_pasivo_gasto_id`) REFERENCES `sim_cat_tipos_pasivo_gasto` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_caso_prorrogas`
+--
+ALTER TABLE `sim_caso_prorrogas`
+  ADD CONSTRAINT `fk_cpr_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`);
+
+--
+-- Filtros para la tabla `sim_caso_tipoherencia_rel`
+--
+ALTER TABLE `sim_caso_tipoherencia_rel`
+  ADD CONSTRAINT `fk_cthr_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`),
+  ADD CONSTRAINT `fk_cthr_tipo` FOREIGN KEY (`tipo_herencia_id`) REFERENCES `sim_cat_tipoherencias` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_cat_parentescos`
+--
+ALTER TABLE `sim_cat_parentescos`
+  ADD CONSTRAINT `fk_par_grupo_tarifa` FOREIGN KEY (`grupo_tarifa_id`) REFERENCES `sim_cat_grupos_tarifa` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_cat_tarifas_sucesion`
+--
+ALTER TABLE `sim_cat_tarifas_sucesion`
+  ADD CONSTRAINT `fk_ts_grupo` FOREIGN KEY (`grupo_tarifa_id`) REFERENCES `sim_cat_grupos_tarifa` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_cat_tipos_bien_mueble`
+--
+ALTER TABLE `sim_cat_tipos_bien_mueble`
+  ADD CONSTRAINT `fk_ctbm_categoria` FOREIGN KEY (`categoria_bien_mueble_id`) REFERENCES `sim_cat_categorias_bien_mueble` (`id`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `sim_causante_datos_fiscales`
@@ -5894,6 +7783,94 @@ ALTER TABLE `sim_causante_datos_fiscales`
 ALTER TABLE `sim_intentos`
   ADD CONSTRAINT `fk_si_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`),
   ADD CONSTRAINT `fk_si_estudiante` FOREIGN KEY (`estudiante_id`) REFERENCES `estudiantes` (`id`);
+
+--
+-- Filtros para la tabla `sim_intento_bienes_inmuebles`
+--
+ALTER TABLE `sim_intento_bienes_inmuebles`
+  ADD CONSTRAINT `fk_ibi_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`),
+  ADD CONSTRAINT `fk_ibi_tipo` FOREIGN KEY (`tipo_bien_inmueble_id`) REFERENCES `sim_cat_tipos_bien_inmueble` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_intento_bienes_litigiosos`
+--
+ALTER TABLE `sim_intento_bienes_litigiosos`
+  ADD CONSTRAINT `fk_ibl_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`);
+
+--
+-- Filtros para la tabla `sim_intento_bienes_muebles`
+--
+ALTER TABLE `sim_intento_bienes_muebles`
+  ADD CONSTRAINT `fk_ibm_categoria` FOREIGN KEY (`categoria_bien_mueble_id`) REFERENCES `sim_cat_categorias_bien_mueble` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_ibm_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`),
+  ADD CONSTRAINT `fk_ibm_tipo` FOREIGN KEY (`tipo_bien_mueble_id`) REFERENCES `sim_cat_tipos_bien_mueble` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_intento_bm_acciones`
+--
+ALTER TABLE `sim_intento_bm_acciones`
+  ADD CONSTRAINT `fk_ibma_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_intento_bienes_muebles` (`id`),
+  ADD CONSTRAINT `fk_ibma_empresa` FOREIGN KEY (`empresa_id`) REFERENCES `sim_empresas` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_intento_bm_banco`
+--
+ALTER TABLE `sim_intento_bm_banco`
+  ADD CONSTRAINT `fk_ibmb_banco` FOREIGN KEY (`banco_id`) REFERENCES `sim_cat_bancos` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_ibmb_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_intento_bienes_muebles` (`id`);
+
+--
+-- Filtros para la tabla `sim_intento_bm_bonos`
+--
+ALTER TABLE `sim_intento_bm_bonos`
+  ADD CONSTRAINT `fk_ibmbo_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_intento_bienes_muebles` (`id`);
+
+--
+-- Filtros para la tabla `sim_intento_bm_caja_ahorro`
+--
+ALTER TABLE `sim_intento_bm_caja_ahorro`
+  ADD CONSTRAINT `fk_ibmca_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_intento_bienes_muebles` (`id`),
+  ADD CONSTRAINT `fk_ibmca_empresa` FOREIGN KEY (`empresa_id`) REFERENCES `sim_empresas` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_intento_bm_cuentas_cobrar`
+--
+ALTER TABLE `sim_intento_bm_cuentas_cobrar`
+  ADD CONSTRAINT `fk_ibmcc_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_intento_bienes_muebles` (`id`);
+
+--
+-- Filtros para la tabla `sim_intento_bm_opciones_compra`
+--
+ALTER TABLE `sim_intento_bm_opciones_compra`
+  ADD CONSTRAINT `fk_ibmoc_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_intento_bienes_muebles` (`id`);
+
+--
+-- Filtros para la tabla `sim_intento_bm_prestaciones`
+--
+ALTER TABLE `sim_intento_bm_prestaciones`
+  ADD CONSTRAINT `fk_ibmp_banco` FOREIGN KEY (`banco_id`) REFERENCES `sim_cat_bancos` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_ibmp_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_intento_bienes_muebles` (`id`),
+  ADD CONSTRAINT `fk_ibmp_empresa` FOREIGN KEY (`empresa_id`) REFERENCES `sim_empresas` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_intento_bm_seguro`
+--
+ALTER TABLE `sim_intento_bm_seguro`
+  ADD CONSTRAINT `fk_ibms_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_intento_bienes_muebles` (`id`),
+  ADD CONSTRAINT `fk_ibms_empresa` FOREIGN KEY (`empresa_id`) REFERENCES `sim_empresas` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_intento_bm_semovientes`
+--
+ALTER TABLE `sim_intento_bm_semovientes`
+  ADD CONSTRAINT `fk_ibmsem_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_intento_bienes_muebles` (`id`),
+  ADD CONSTRAINT `fk_ibmsem_tipo` FOREIGN KEY (`tipo_semoviente_id`) REFERENCES `sim_cat_tipos_semoviente` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_intento_bm_transporte`
+--
+ALTER TABLE `sim_intento_bm_transporte`
+  ADD CONSTRAINT `fk_ibmt_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_intento_bienes_muebles` (`id`);
 
 --
 -- Filtros para la tabla `sim_intento_datos_basicos`
@@ -5921,16 +7898,58 @@ ALTER TABLE `sim_intento_estados`
   ADD CONSTRAINT `fk_sie_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`);
 
 --
+-- Filtros para la tabla `sim_intento_exenciones`
+--
+ALTER TABLE `sim_intento_exenciones`
+  ADD CONSTRAINT `fk_ie_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`);
+
+--
+-- Filtros para la tabla `sim_intento_exoneraciones`
+--
+ALTER TABLE `sim_intento_exoneraciones`
+  ADD CONSTRAINT `fk_iex_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`);
+
+--
 -- Filtros para la tabla `sim_intento_observaciones`
 --
 ALTER TABLE `sim_intento_observaciones`
   ADD CONSTRAINT `fk_sio_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`);
 
 --
+-- Filtros para la tabla `sim_intento_pasivos_deuda`
+--
+ALTER TABLE `sim_intento_pasivos_deuda`
+  ADD CONSTRAINT `fk_ipd_banco` FOREIGN KEY (`banco_id`) REFERENCES `sim_cat_bancos` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_ipd_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`),
+  ADD CONSTRAINT `fk_ipd_tipo` FOREIGN KEY (`tipo_pasivo_deuda_id`) REFERENCES `sim_cat_tipos_pasivo_deuda` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_intento_pasivos_gastos`
+--
+ALTER TABLE `sim_intento_pasivos_gastos`
+  ADD CONSTRAINT `fk_ipg_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`),
+  ADD CONSTRAINT `fk_ipg_tipo` FOREIGN KEY (`tipo_pasivo_gasto_id`) REFERENCES `sim_cat_tipos_pasivo_gasto` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_intento_prorrogas`
+--
+ALTER TABLE `sim_intento_prorrogas`
+  ADD CONSTRAINT `fk_ip_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`);
+
+--
 -- Filtros para la tabla `sim_intento_relaciones`
 --
 ALTER TABLE `sim_intento_relaciones`
-  ADD CONSTRAINT `fk_sir_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`);
+  ADD CONSTRAINT `fk_sir_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`),
+  ADD CONSTRAINT `fk_sir_parentesco` FOREIGN KEY (`parentesco_id`) REFERENCES `sim_cat_parentescos` (`id`),
+  ADD CONSTRAINT `fk_sir_premuerto_padre` FOREIGN KEY (`premuerto_padre_id`) REFERENCES `sim_intento_relaciones` (`id`);
+
+--
+-- Filtros para la tabla `sim_intento_tipoherencias`
+--
+ALTER TABLE `sim_intento_tipoherencias`
+  ADD CONSTRAINT `fk_ith_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`),
+  ADD CONSTRAINT `fk_ith_tipo` FOREIGN KEY (`tipo_herencia_id`) REFERENCES `sim_cat_tipoherencias` (`id`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `sim_personas`
