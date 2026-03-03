@@ -29,22 +29,7 @@ class ComposerStaticInit11cd09396fd94ae80115f1686c5a0412
     );
 
     public static $classMap = array (
-        'App\\Core\\App' => __DIR__ . '/../..' . '/src/Core/App.php',
-        'App\\Core\\Controller' => __DIR__ . '/../..' . '/src/Core/Controller.php',
-        'App\\Core\\Csrf' => __DIR__ . '/../..' . '/src/Core/Csrf.php',
-        'App\\Core\\DB' => __DIR__ . '/../..' . '/src/Core/DB.php',
-        'App\\Core\\Mailer' => __DIR__ . '/../..' . '/src/Core/Mailer.php',
-        'App\\Core\\Router' => __DIR__ . '/../..' . '/src/Core/Router.php',
-        'App\\Modules\\Auth\\Controllers\\LoginController' => __DIR__ . '/../..' . '/src/Modules/Auth/Controllers/LoginController.php',
-        'App\\Modules\\Auth\\Controllers\\RegisterController' => __DIR__ . '/../..' . '/src/Modules/Auth/Controllers/RegisterController.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'PHPMailer\\PHPMailer\\DSNConfigurator' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/DSNConfigurator.php',
-        'PHPMailer\\PHPMailer\\Exception' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/Exception.php',
-        'PHPMailer\\PHPMailer\\OAuth' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/OAuth.php',
-        'PHPMailer\\PHPMailer\\OAuthTokenProvider' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/OAuthTokenProvider.php',
-        'PHPMailer\\PHPMailer\\PHPMailer' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/PHPMailer.php',
-        'PHPMailer\\PHPMailer\\POP3' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/POP3.php',
-        'PHPMailer\\PHPMailer\\SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/SMTP.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

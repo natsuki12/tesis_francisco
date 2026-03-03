@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-03-2026 a las 05:21:28
+-- Tiempo de generación: 03-03-2026 a las 17:54:03
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -67,7 +67,13 @@ INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento
 (22, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 01:51:40'),
 (23, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 03:51:11'),
 (24, NULL, 'admin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 05:19:08'),
-(25, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 05:20:20');
+(25, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 05:20:20'),
+(26, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-02 04:22:40'),
+(27, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-02 05:04:56'),
+(28, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 04:26:52'),
+(29, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 04:37:20'),
+(30, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 04:37:34'),
+(31, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 16:26:07');
 
 -- --------------------------------------------------------
 
@@ -4892,23 +4898,6 @@ INSERT INTO `profesores` (`id`, `persona_id`, `titulo`, `firma_digital`, `create
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `profesores_autorizados`
---
-
-CREATE TABLE `profesores_autorizados` (
-  `id` bigint(20) NOT NULL,
-  `email` varchar(150) NOT NULL COMMENT 'Debe coincidir con users.email',
-  `estatus_registro` enum('pendiente','completado') NOT NULL DEFAULT 'pendiente',
-  `condicion` enum('activo','retirado') NOT NULL DEFAULT 'activo',
-  `observaciones` varchar(255) DEFAULT NULL,
-  `created_by` bigint(20) UNSIGNED DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `roles`
 --
 
@@ -4984,8 +4973,6 @@ CREATE TABLE `sim_casos_estudios` (
   `unidad_tributaria_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'UT sugerida según año de fallecimiento, seleccionada del catálogo',
   `titulo` varchar(150) NOT NULL,
   `descripcion` text DEFAULT NULL,
-  `modalidad` enum('Practica_Libre','Evaluacion') NOT NULL COMMENT 'practica o evaluacion',
-  `max_intentos` tinyint(3) UNSIGNED NOT NULL DEFAULT 0 COMMENT '0 es ilimitados',
   `estado` enum('Borrador','Publicado','Inactivo','Eliminado') NOT NULL DEFAULT 'Borrador' COMMENT 'Borrador=en construcción, Publicado=visible para estudiantes, Inactivo=oculto, Eliminado=papelera',
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -4999,9 +4986,11 @@ CREATE TABLE `sim_casos_estudios` (
 
 CREATE TABLE `sim_caso_asignaciones` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
+  `config_id` bigint(20) UNSIGNED NOT NULL,
   `estudiante_id` bigint(20) UNSIGNED NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `estado` enum('Pendiente','En_Progreso','Completado','Vencido') NOT NULL DEFAULT 'Pendiente',
+  `fecha_completado` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5218,6 +5207,23 @@ CREATE TABLE `sim_caso_bm_transporte` (
   `modelo` varchar(15) DEFAULT NULL,
   `serial_placa` varchar(30) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_configs`
+--
+
+CREATE TABLE `sim_caso_configs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `caso_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Caso al que pertenece esta config',
+  `profesor_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Profesor que creó la asignación',
+  `modalidad` enum('Practica_Libre','Evaluacion') NOT NULL,
+  `max_intentos` tinyint(3) UNSIGNED NOT NULL DEFAULT 0 COMMENT '0 = ilimitados',
+  `fecha_limite` timestamp NULL DEFAULT NULL COMMENT 'Solo aplica si modalidad = Evaluacion',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -6473,14 +6479,6 @@ ALTER TABLE `profesores`
   ADD UNIQUE KEY `unique_persona_profesor` (`persona_id`);
 
 --
--- Indices de la tabla `profesores_autorizados`
---
-ALTER TABLE `profesores_autorizados`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `profesores_autorizados_email_unique` (`email`),
-  ADD KEY `fk_profesores_autorizados_admin` (`created_by`);
-
---
 -- Indices de la tabla `roles`
 --
 ALTER TABLE `roles`
@@ -6521,7 +6519,7 @@ ALTER TABLE `sim_casos_estudios`
 --
 ALTER TABLE `sim_caso_asignaciones`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_caso_estudiante` (`caso_estudio_id`,`estudiante_id`),
+  ADD UNIQUE KEY `uq_config_estudiante` (`config_id`,`estudiante_id`),
   ADD KEY `fk_sca_estudiante` (`estudiante_id`);
 
 --
@@ -6624,6 +6622,14 @@ ALTER TABLE `sim_caso_bm_semovientes`
 ALTER TABLE `sim_caso_bm_transporte`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uq_cbmt_bien` (`bien_mueble_id`);
+
+--
+-- Indices de la tabla `sim_caso_configs`
+--
+ALTER TABLE `sim_caso_configs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_scc_caso` (`caso_id`),
+  ADD KEY `fk_scc_profesor` (`profesor_id`);
 
 --
 -- Indices de la tabla `sim_caso_exenciones`
@@ -7024,7 +7030,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `bitacora_accesos`
 --
 ALTER TABLE `bitacora_accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -7109,12 +7115,6 @@ ALTER TABLE `personas`
 --
 ALTER TABLE `profesores`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT de la tabla `profesores_autorizados`
---
-ALTER TABLE `profesores_autorizados`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -7222,6 +7222,12 @@ ALTER TABLE `sim_caso_bm_semovientes`
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_transporte`
 --
 ALTER TABLE `sim_caso_bm_transporte`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_configs`
+--
+ALTER TABLE `sim_caso_configs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -7580,12 +7586,6 @@ ALTER TABLE `profesores`
   ADD CONSTRAINT `fk_profesores_personas` FOREIGN KEY (`persona_id`) REFERENCES `personas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `profesores_autorizados`
---
-ALTER TABLE `profesores_autorizados`
-  ADD CONSTRAINT `fk_profesores_autorizados_admin` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL;
-
---
 -- Filtros para la tabla `secciones`
 --
 ALTER TABLE `secciones`
@@ -7613,7 +7613,7 @@ ALTER TABLE `sim_casos_estudios`
 -- Filtros para la tabla `sim_caso_asignaciones`
 --
 ALTER TABLE `sim_caso_asignaciones`
-  ADD CONSTRAINT `fk_sca_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`),
+  ADD CONSTRAINT `fk_sca_config` FOREIGN KEY (`config_id`) REFERENCES `sim_caso_configs` (`id`),
   ADD CONSTRAINT `fk_sca_estudiante` FOREIGN KEY (`estudiante_id`) REFERENCES `estudiantes` (`id`);
 
 --
@@ -7703,6 +7703,13 @@ ALTER TABLE `sim_caso_bm_semovientes`
 --
 ALTER TABLE `sim_caso_bm_transporte`
   ADD CONSTRAINT `fk_cbmt_bien` FOREIGN KEY (`bien_mueble_id`) REFERENCES `sim_caso_bienes_muebles` (`id`);
+
+--
+-- Filtros para la tabla `sim_caso_configs`
+--
+ALTER TABLE `sim_caso_configs`
+  ADD CONSTRAINT `fk_scc_caso` FOREIGN KEY (`caso_id`) REFERENCES `sim_casos_estudios` (`id`),
+  ADD CONSTRAINT `fk_scc_profesor` FOREIGN KEY (`profesor_id`) REFERENCES `profesores` (`id`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `sim_caso_exenciones`

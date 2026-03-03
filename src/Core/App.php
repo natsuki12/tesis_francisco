@@ -46,6 +46,11 @@ final class App
      */
     public function env(string $key, ?string $default = null): ?string
     {
+        // Usar $_ENV por defecto porque putenv/getenv no son thread-safe en XAMPP/Windows Apache
+        if (isset($_ENV[$key])) {
+            return $_ENV[$key];
+        }
+
         $val = getenv($key);
         if ($val === false) {
             return $default;
@@ -56,7 +61,8 @@ final class App
     public function envBool(string $key, bool $default = false): bool
     {
         $val = $this->env($key);
-        if ($val === null) return $default;
+        if ($val === null)
+            return $default;
 
         $val = strtolower(trim($val));
         return in_array($val, ['1', 'true', 'yes', 'on'], true);
@@ -89,14 +95,14 @@ final class App
     public function run(): void
     {
         $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-        
+
         // Obtenemos la URI
         $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 
         // =========================================================
         // 🚀 FIX AUTOMÁTICO PARA XAMPP Y RUTAS RELATIVAS
         // =========================================================
-        
+
         // 1. Obtenemos la carpeta donde está fisicamente el index.php
         $scriptDir = dirname($_SERVER['SCRIPT_NAME']);
         $scriptDir = str_replace('\\', '/', $scriptDir);
@@ -105,10 +111,10 @@ final class App
         // CASO A: Si la URL incluye "/public"
         if ($scriptDir !== '/' && strpos($uri, $scriptDir) === 0) {
             $uri = substr($uri, strlen($scriptDir));
-        } 
+        }
         // CASO B: Si la URL está limpia por .htaccess
         else {
-            $baseDir = dirname($scriptDir); 
+            $baseDir = dirname($scriptDir);
             if ($baseDir !== '/' && $baseDir !== '.' && strpos($uri, $baseDir) === 0) {
                 $uri = substr($uri, strlen($baseDir));
             }
@@ -133,11 +139,11 @@ final class App
         // Ocultar errores en pantalla si no estamos en debug
         ini_set('display_errors', $debug ? '1' : '0');
         ini_set('display_startup_errors', $debug ? '1' : '0');
-        
+
         // Siempre registrar errores en el archivo log
         ini_set('log_errors', '1');
         $logFile = $this->basePath('storage/logs/app_errors.log');
-        
+
         // Crear carpeta de logs si no existe
         if (!is_dir(dirname($logFile))) {
             mkdir(dirname($logFile), 0775, true);
@@ -254,7 +260,8 @@ final class App
 
             [$key, $value] = array_map('trim', explode('=', $line, 2));
 
-            if ($key === '') continue;
+            if ($key === '')
+                continue;
 
             $value = trim($value);
             if (
@@ -264,12 +271,13 @@ final class App
                 $value = substr($value, 1, -1);
             }
 
-            if (getenv($key) !== false) {
+            if (isset($_ENV[$key])) {
                 continue;
             }
 
             $_ENV[$key] = $value;
-            putenv($key . '=' . $value);
+            // No usamos putenv() porque NO es thread-safe en Apache Windows (causaba race conditions)
+            // putenv($key . '=' . $value);
         }
     }
 }

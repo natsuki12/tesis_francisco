@@ -27,7 +27,9 @@ class DB
      * Constructor privado para evitar instanciación directa (new DB()).
      * Parte esencial del patrón Singleton.
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
      * Obtiene la instancia de la conexión a la base de datos.
@@ -42,27 +44,27 @@ class DB
         }
 
         // --- 1. CONFIGURACIÓN ---
-        // Obtenemos variables cargadas previamente por App.php
-        $host    = getenv('DB_HOST') ?: '127.0.0.1';
-        $db      = getenv('DB_NAME') ?: 'sistema_seniat';
-        $user    = getenv('DB_USER') ?: 'root';
-        $pass    = getenv('DB_PASS') ?: '';
-        $charset = getenv('DB_CHARSET') ?: 'utf8mb4'; // utf8mb4 es más seguro que utf8
-        $debug   = getenv('APP_DEBUG'); // 'true' o 'false'
+        // Obtenemos variables cargadas previamente en $_ENV (evitando getenv por razones de thread-safety en Apache Windows)
+        $host = $_ENV['DB_HOST'] ?? '127.0.0.1';
+        $db = $_ENV['DB_NAME'] ?? 'sistema_seniat';
+        $user = $_ENV['DB_USER'] ?? 'root';
+        $pass = $_ENV['DB_PASS'] ?? '';
+        $charset = $_ENV['DB_CHARSET'] ?? 'utf8mb4'; // utf8mb4 es más seguro que utf8
+        $debug = $_ENV['APP_DEBUG'] ?? 'false'; // 'true' o 'false'
 
         // Data Source Name (Cadena de conexión)
         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 
         // Opciones de Hardening (Blindaje)
         $options = [
-            // Lanzar excepciones reales en lugar de errores silenciosos
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            // Usar arrays asociativos (más limpio para trabajar)
+                // Lanzar excepciones reales en lugar de errores silenciosos
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                // Usar arrays asociativos (más limpio para trabajar)
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            // 🚫 CRÍTICO: Desactivar emulación. 
-            // Esto obliga a que la separación de datos/consulta la haga MySQL y no PHP.
-            // Es la barrera real contra Inyección SQL.
-            PDO::ATTR_EMULATE_PREPARES   => false,
+                // 🚫 CRÍTICO: Desactivar emulación. 
+                // Esto obliga a que la separación de datos/consulta la haga MySQL y no PHP.
+                // Es la barrera real contra Inyección SQL.
+            PDO::ATTR_EMULATE_PREPARES => false,
         ];
 
         // --- 2. INTENTO DE CONEXIÓN ---
@@ -71,9 +73,9 @@ class DB
             return self::$instance;
 
         } catch (PDOException $e) {
-            
+
             // --- 3. MANEJO DE ERRORES INTELIGENTE ---
-            
+
             // A) Logueamos el error técnico siempre (Privado para el admin)
             // Usamos error_log estándar, que App.php ya redirigió a storage/logs/app_errors.log
             error_log("[CRITICAL DB ERROR] " . $e->getMessage());
@@ -81,7 +83,7 @@ class DB
             // B) Respuesta al Usuario
             // Si App.php ya cargó, preferimos lanzar la excepción y que el Handler global se encargue.
             // Pero si la DB falla al inicio, hacemos un fallback manual.
-            
+
             http_response_code(500);
 
             if ($debug === 'true' || $debug === '1') {
@@ -93,19 +95,18 @@ class DB
                 echo "</div>";
                 exit; // Detener ejecución
             } else {
-                // MODO PRODUCCIÓN: Mensaje genérico seguro
-                // No damos pistas de qué motor usamos ni usuarios.
-                echo "<div style='text-align:center; padding:50px; font-family:sans-serif;'>";
-                echo "<h1 style='color:#555'>Servicio no disponible</h1>";
-                echo "<p style='color:#777'>Estamos experimentando problemas técnicos. Por favor intente más tarde.</p>";
-                echo "</div>";
+                http_response_code(500);
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'DB Connection Error: ' . $e->getMessage()]);
                 exit; // Detener ejecución
             }
         }
     }
-    
+
     /**
      * Evita que clonen el objeto (Singleton)
      */
-    private function __clone() {}
+    private function __clone()
+    {
+    }
 }

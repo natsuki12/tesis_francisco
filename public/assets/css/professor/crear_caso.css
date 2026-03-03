@@ -409,6 +409,126 @@
     grid-column: span 3;
 }
 
+.cc-grid--1 {
+    grid-template-columns: 1fr;
+}
+
+/* ===== ADDRESS LAYOUT (SENIAT Strict Table Grid) ===== */
+.cc-addr-table {
+    display: flex;
+    flex-direction: column;
+    margin: 16px;
+    border: 1px solid var(--cc-slate-300);
+    border-radius: var(--cc-radius-md);
+    overflow: hidden;
+    background: var(--cc-white);
+}
+
+.cc-addr-table.cc-mt-0 {
+    margin-top: 0;
+}
+
+.cc-addr-tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--cc-slate-300);
+}
+
+.cc-addr-tr:last-child {
+    border-bottom: none;
+}
+
+.cc-addr-tr--4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.cc-addr-th {
+    padding: 8px 12px;
+    background: #f1f5f9;
+    /* Slate 100 */
+    border-right: 1px solid var(--cc-slate-300);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cc-addr-th:last-child {
+    border-right: none;
+}
+
+.cc-addr-th span {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--cc-slate-600);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: center;
+}
+
+.cc-addr-td {
+    padding: 10px 12px;
+    background: var(--cc-white);
+    border-right: 1px solid var(--cc-slate-300);
+}
+
+.cc-addr-td:last-child {
+    border-right: none;
+}
+
+/* Radio buttons inside TH */
+.cc-addr-radios--inline {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 100%;
+}
+
+.cc-radio-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--cc-slate-600);
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all var(--cc-transition);
+    white-space: nowrap;
+}
+
+.cc-radio-pill:hover {
+    color: var(--cc-blue);
+}
+
+.cc-radio-pill input[type="radio"] {
+    width: 12px;
+    height: 12px;
+    accent-color: var(--cc-blue);
+    margin: 0;
+    cursor: pointer;
+}
+
+.cc-radio-pill:has(input:checked) {
+    color: var(--cc-blue);
+}
+
+/* Helper utilities for overrides */
+.cc-p-4 {
+    padding: 16px;
+}
+
+.cc-border-b {
+    border-bottom: 1px solid var(--cc-slate-200);
+}
+
+.cc-select-lg {
+    font-size: 14px;
+    padding: 10px 14px;
+    font-weight: 500;
+}
+
 /* ===== FORM FIELDS ===== */
 .cc-field {
     display: flex;

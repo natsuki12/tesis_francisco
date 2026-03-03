@@ -26,8 +26,10 @@ if (!function_exists('e')) {
 // =============================================================================
 
 if (!function_exists('asset')) {
-    function asset(string $path): string {
-        $base = rtrim(getenv('APP_BASE') ?: '', '/');
+    function asset(string $path): string
+    {
+        $appBase = $_ENV['APP_BASE'] ?? getenv('APP_BASE');
+        $base = rtrim((string) $appBase, '/');
         return $base . '/assets/' . ltrim($path, '/');
     }
 }
@@ -35,7 +37,8 @@ if (!function_exists('asset')) {
 if (!function_exists('base_url')) {
     function base_url(string $path = ''): string
     {
-        $base = rtrim(getenv('APP_BASE') ?: '', '/');
+        $appBase = $_ENV['APP_BASE'] ?? getenv('APP_BASE');
+        $base = rtrim((string) $appBase, '/');
         $path = ltrim($path, '/');
 
         if ($base === '') {

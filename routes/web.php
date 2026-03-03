@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Modules\Auth\Controllers\RegisterController;
 use App\Modules\Auth\Controllers\LoginController;
 use App\Modules\Auth\Controllers\PasswordRecoveryController;
+use App\Modules\Professor\Controllers\Crear_Caso\Direcciones\LocationController;
 
 /** @var \App\Core\App $app */
 /** @var \App\Core\Router $router */
@@ -49,8 +50,9 @@ $router->get('/registro/parte3', [RegisterController::class, 'showPart3']);
 // =============================================================================
 // 🎓 RUTAS DEL SIMULADOR (PROTEGIDAS - Requieren login)
 // =============================================================================
-$requireAuth = function() {
-    if (session_status() === PHP_SESSION_NONE) session_start();
+$requireAuth = function () {
+    if (session_status() === PHP_SESSION_NONE)
+        session_start();
     if (empty($_SESSION['logged_in'])) {
         header('Location: ' . base_url('/login'));
         exit;
@@ -58,44 +60,76 @@ $requireAuth = function() {
 };
 
 // Verificador de rol: redirige a /home si el rol no coincide
-$requireRole = function(int $allowedRole) {
-    if (session_status() === PHP_SESSION_NONE) session_start();
-    $role = (int)($_SESSION['role_id'] ?? 3);
+$requireRole = function (int $allowedRole) {
+    if (session_status() === PHP_SESSION_NONE)
+        session_start();
+    $role = (int) ($_SESSION['role_id'] ?? 3);
     if ($role !== $allowedRole) {
         header('Location: ' . base_url('/home'));
         exit;
     }
 };
 
-$router->get('/simulador_index_antiguo', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/legacy/index_old'); });
+$router->get('/simulador_index_antiguo', function () use ($app, $requireAuth) {
+    $requireAuth();
+    return $app->view('simulator/legacy/index_old');
+});
 
 // /home muestra el dashboard correcto según el rol
-$router->get('/home', function() use ($app, $requireAuth) {
+$router->get('/home', function () use ($app, $requireAuth) {
     $requireAuth();
-    $role = (int)($_SESSION['role_id'] ?? 3);
-    return match($role) {
+    $role = (int) ($_SESSION['role_id'] ?? 3);
+    return match ($role) {
         1 => $app->view('admin/home_admin'),
         2 => $app->view('professor/home_professor'),
         default => $app->view('student/home_st'),
     };
 });
 
-$router->get('/simulador_inicio', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/steps/step_01_seniat_index'); });
-$router->get('/step_01_seniat_index', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/steps/step_01_seniat_index'); });
-$router->get('/inscripcion_rif', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/legacy/inscripcion_rif'); });
-$router->get('/consulta_rif', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/legacy/consulta_rif'); });
-$router->get('/servicios_declaracion', function() use ($app, $requireAuth) { $requireAuth(); return $app->view('simulator/steps/servicios_declaracion'); });
+$router->get('/simulador_inicio', function () use ($app, $requireAuth) {
+    $requireAuth();
+    return $app->view('simulator/steps/step_01_seniat_index');
+});
+$router->get('/step_01_seniat_index', function () use ($app, $requireAuth) {
+    $requireAuth();
+    return $app->view('simulator/steps/step_01_seniat_index');
+});
+$router->get('/inscripcion_rif', function () use ($app, $requireAuth) {
+    $requireAuth();
+    return $app->view('simulator/legacy/inscripcion_rif');
+});
+$router->get('/consulta_rif', function () use ($app, $requireAuth) {
+    $requireAuth();
+    return $app->view('simulator/legacy/consulta_rif');
+});
+$router->get('/servicios_declaracion', function () use ($app, $requireAuth) {
+    $requireAuth();
+    return $app->view('simulator/steps/servicios_declaracion');
+});
 
 // Casos Sucesorales (Profesor)
-$router->get('/casos-sucesorales', function() use ($app, $requireAuth, $requireRole) { $requireAuth(); $requireRole(2); return $app->view('professor/casos_sucesorales'); });
-$router->get('/crear-caso', function() use ($app, $requireAuth, $requireRole) { $requireAuth(); $requireRole(2); return $app->view('professor/crear_caso'); });
+$router->get('/casos-sucesorales', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return $app->view('professor/casos_sucesorales');
+});
+$router->get('/crear-caso', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return $app->view('professor/crear_caso');
+});
 
 // Perfil
 // $router->get('/simulador_profile', fn() => $app->view('student/profile_st')); 
 // $router->get('/perfil', fn() => $app->view('student/profile_st'));
 
 // Ruta dinámica de prueba (puedes borrarla luego)
-$router->get('/users/{id}', fn($id) => "Usuario: " . htmlspecialchars((string)$id, ENT_QUOTES, 'UTF-8'));
+$router->get('/users/{id}', fn($id) => "Usuario: " . htmlspecialchars((string) $id, ENT_QUOTES, 'UTF-8'));
 
-// Ruta para prueba SENIAT copiada
-$router->get('/pruebaonsc', [\App\Modules\prueba\PruebaController::class, 'seniat']);
+
+// Rutas de API Profesor
+$router->get('/api/estados', [LocationController::class, 'getEstados']);
+$router->get('/api/municipios', [LocationController::class, 'getMunicipios']);
+$router->get('/api/parroquias', [LocationController::class, 'getParroquias']);
+$router->get('/api/ciudades', [LocationController::class, 'getCiudades']);
+$router->get('/api/zonas-postales', [LocationController::class, 'getZonasPostales']);

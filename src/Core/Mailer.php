@@ -22,12 +22,12 @@ class Mailer
         }
 
         // 2. CARGA DE VARIABLES DE ENTORNO
-        $host = getenv('SMTP_HOST');
-        $user = getenv('SMTP_USER');
-        $pass = getenv('SMTP_PASS');
-        $port = getenv('SMTP_PORT');
-        $fromName = getenv('SMTP_FROM_NAME') ?: 'Sistema';
-        $env  = getenv('APP_ENV') ?: 'production'; // Detectar si estamos en local
+        $host = $_ENV['SMTP_HOST'] ?? '';
+        $user = $_ENV['SMTP_USER'] ?? '';
+        $pass = $_ENV['SMTP_PASS'] ?? '';
+        $port = $_ENV['SMTP_PORT'] ?? '';
+        $fromName = $_ENV['SMTP_FROM_NAME'] ?? 'Sistema';
+        $env = $_ENV['APP_ENV'] ?? 'production'; // Detectar si estamos en local
 
         // 3. VALIDACIÓN DE CONFIGURACIÓN
         // Si falta algo en el .env, fallamos rápido para no colgar el sistema
@@ -41,16 +41,16 @@ class Mailer
         try {
             // --- CONFIGURACIÓN DEL SERVIDOR ---
             $mail->isSMTP();
-            $mail->Host       = $host;
-            $mail->SMTPAuth   = true;
-            $mail->Username   = $user;
-            $mail->Password   = $pass;
+            $mail->Host = $host;
+            $mail->SMTPAuth = true;
+            $mail->Username = $user;
+            $mail->Password = $pass;
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = (int) $port;
-            
+            $mail->Port = (int) $port;
+
             // Configuración Global
-            $mail->CharSet    = 'UTF-8';
-            $mail->Timeout    = 10; // Evita que la web se quede cargando infinito si Gmail no responde
+            $mail->CharSet = 'UTF-8';
+            $mail->Timeout = 10; // Evita que la web se quede cargando infinito si Gmail no responde
             $mail->isHTML(true);
 
             // 4. FIX PARA XAMPP / REDES UNIVERSITARIAS (Solo en local)
@@ -58,8 +58,8 @@ class Mailer
             if ($env === 'local') {
                 $mail->SMTPOptions = [
                     'ssl' => [
-                        'verify_peer'       => false,
-                        'verify_peer_name'  => false,
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
                         'allow_self_signed' => true,
                     ],
                 ];
@@ -74,8 +74,8 @@ class Mailer
 
             // --- CONTENIDO ---
             $mail->Subject = $subject;
-            $mail->Body    = $body;
-            
+            $mail->Body = $body;
+
             // 5. MEJORA EN TEXTO PLANO
             // Convierte HTML a texto plano limpio para clientes antiguos
             $mail->AltBody = trim(html_entity_decode(strip_tags($body)));
