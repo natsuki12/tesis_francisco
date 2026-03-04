@@ -7,7 +7,7 @@ export function renderSummary() {
     s('sumTitulo', caseData.caso.titulo || 'Sin título');
     const modalBadge = document.getElementById('sumModalidad');
     if (modalBadge) {
-        modalBadge.innerHTML = caseData.caso.modalidad === 'Evaluacion'
+        modalBadge.innerHTML = caseData.config.modalidad === 'Evaluacion'
             ? '<span class="cc-badge cc-badge--amber">Evaluación</span>'
             : '<span class="cc-badge cc-badge--blue">Práctica Libre</span>';
     }
@@ -17,6 +17,7 @@ export function renderSummary() {
     s('sumCausante', causante);
     s('sumHerederos', caseData.herederos.length);
     s('sumHerencia', caseData.herencia.tipos.length > 0 ? caseData.herencia.tipos.join(', ') : 'Sin definir');
+    s('sumUT', 'Sin definir');
 
     const totalInm = caseData.bienes_inmuebles.reduce((s, b) => s + (parseFloat(b.valor_declarado) || 0), 0);
     const totalMue = Object.values(caseData.bienes_muebles).reduce((s, arr) => {

@@ -1115,6 +1115,26 @@
     gap: 8px;
     max-height: 260px;
     overflow-y: auto;
+    padding-right: 6px;
+}
+
+/* Custom Scrollbar for students grid */
+.cc-students-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cc-students-grid::-webkit-scrollbar-track {
+    background: var(--cc-slate-100);
+    border-radius: 4px;
+}
+
+.cc-students-grid::-webkit-scrollbar-thumb {
+    background: var(--cc-slate-300);
+    border-radius: 4px;
+}
+
+.cc-students-grid::-webkit-scrollbar-thumb:hover {
+    background: var(--cc-slate-400);
 }
 
 .cc-student-card {
@@ -1299,4 +1319,22 @@
     .cc-type-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+}
+
+/* ===== CONDITIONAL BLOCKS (litigioso, testamento, etc.) ===== */
+.cc-conditional-block {
+    padding: 16px;
+    background: var(--cc-slate-50);
+    border: 1px dashed var(--cc-slate-300);
+    border-radius: var(--cc-radius-sm);
+}
+
+/* ===== SECTION SUBTITLES (Datos Registrales, Parroquia de Registro, etc.) ===== */
+.cc-section-subtitle {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cc-slate-700);
+    margin: 0 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--cc-slate-200);
 }

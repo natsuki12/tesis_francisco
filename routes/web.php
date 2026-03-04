@@ -6,6 +6,7 @@ use App\Modules\Auth\Controllers\RegisterController;
 use App\Modules\Auth\Controllers\LoginController;
 use App\Modules\Auth\Controllers\PasswordRecoveryController;
 use App\Modules\Professor\Controllers\Crear_Caso\Direcciones\LocationController;
+use App\Modules\Professor\Controllers\Crear_Caso\CatalogController;
 
 /** @var \App\Core\App $app */
 /** @var \App\Core\Router $router */
@@ -133,3 +134,17 @@ $router->get('/api/municipios', [LocationController::class, 'getMunicipios']);
 $router->get('/api/parroquias', [LocationController::class, 'getParroquias']);
 $router->get('/api/ciudades', [LocationController::class, 'getCiudades']);
 $router->get('/api/zonas-postales', [LocationController::class, 'getZonasPostales']);
+
+// Rutas de Catálogos Dinámicos (Crear Caso)
+$router->get('/api/unidades-tributarias', [CatalogController::class, 'getUnidadesTributarias']);
+$router->get('/api/tipos-herencia', [CatalogController::class, 'getTiposHerencia']);
+$router->get('/api/paises', [CatalogController::class, 'getPaises']);
+$router->get('/api/parentescos', [CatalogController::class, 'getParentescos']);
+$router->get('/api/tipos-bien-inmueble', [CatalogController::class, 'getTiposBienInmueble']);
+$router->get('/api/categorias-bien-mueble', [CatalogController::class, 'getCategoriasBienMueble']);
+$router->get('/api/tipos-bien-mueble', [CatalogController::class, 'getTiposBienMueble']);
+$router->get('/api/bancos', [CatalogController::class, 'getBancos']);
+$router->get('/api/empresas', [CatalogController::class, 'getEmpresas']);
+$router->get('/api/tipos-semoviente', [CatalogController::class, 'getTiposSemoviente']);
+$router->get('/api/tipos-pasivo-deuda', [CatalogController::class, 'getTiposPasivoDeuda']);
+$router->get('/api/tipos-pasivo-gasto', [CatalogController::class, 'getTiposPasivoGasto']);

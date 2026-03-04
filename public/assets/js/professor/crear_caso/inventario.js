@@ -1,63 +1,64 @@
 import { $, show, hide, formatBs } from './utils.js';
-import { caseData, CATEGORIAS_MUEBLE, UIState } from './state.js';
+import { caseData, UIState } from './state.js';
 import { openModal, removeItem, removeMueble } from './modal.js';
+import { getCatalogs } from './catalogos.js';
 
 export function renderInventario() {
-    updateTabCounts();
-    renderCurrentTab();
-    renderMuebleSubtabs();
+  updateTabCounts();
+  renderCurrentTab();
+  renderMuebleSubtabs();
 }
 
 function updateTabCounts() {
-    const el = (id, n) => { const e = document.getElementById(id); if (e) e.textContent = n; };
-    el('countInmuebles', caseData.bienes_inmuebles.length);
-    const mTotal = Object.values(caseData.bienes_muebles).reduce((s, arr) => s + (Array.isArray(arr) ? arr.length : 0), 0);
-    el('countMuebles', mTotal);
-    el('countPasivos', (caseData.pasivos_deuda.length + caseData.pasivos_gastos.length));
-    el('countExenciones', (caseData.exenciones.length + caseData.exoneraciones.length));
+  const el = (id, n) => { const e = document.getElementById(id); if (e) e.textContent = n; };
+  el('countInmuebles', caseData.bienes_inmuebles.length);
+  const mTotal = Object.values(caseData.bienes_muebles).reduce((s, arr) => s + (Array.isArray(arr) ? arr.length : 0), 0);
+  el('countMuebles', mTotal);
+  el('countPasivos', (caseData.pasivos_deuda.length + caseData.pasivos_gastos.length));
+  el('countExenciones', (caseData.exenciones.length + caseData.exoneraciones.length));
 }
 
 function renderCurrentTab() {
-    // Inmuebles
-    const iEmpty = $('#inmueblesEmpty');
-    const iList = $('#inmueblesList');
-    if (caseData.bienes_inmuebles.length === 0) {
-        show(iEmpty); hide(iList);
-    } else {
-        hide(iEmpty); show(iList);
-        iList.innerHTML = caseData.bienes_inmuebles.map((b, i) => renderItemCard(b, 'bienes_inmuebles', i, '🏠')).join('') +
-            `<button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('inmueble')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Agregar Inmueble</button>`;
-    }
+  // Inmuebles
+  const iEmpty = $('#inmueblesEmpty');
+  const iList = $('#inmueblesList');
+  if (caseData.bienes_inmuebles.length === 0) {
+    show(iEmpty); hide(iList);
+  } else {
+    hide(iEmpty); show(iList);
+    iList.innerHTML = caseData.bienes_inmuebles.map((b, i) => renderItemCard(b, 'bienes_inmuebles', i, '🏠')).join('') +
+      `<button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('inmueble')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Agregar Inmueble</button>`;
+  }
 
-    // Muebles
-    renderMueblesList();
+  // Muebles
+  renderMueblesList();
 
-    // Deudas
-    renderListSection('pasivos_deuda', 'deudasEmpty', 'deudasList', 'pasivo_deuda', 'Agregar Deuda', item => item.subtipo || item.tipo_deuda || 'Deuda');
-    // Gastos
-    renderListSection('pasivos_gastos', 'gastosEmpty', 'gastosList', 'pasivo_gasto', 'Agregar Gasto', item => item.tipo_gasto || 'Gasto');
-    // Exenciones
-    renderListSection('exenciones', 'exencionesEmpty', 'exencionesList', 'exencion', 'Agregar Exención', item => item.tipo_exencion || 'Exención');
-    // Exoneraciones
-    renderListSection('exoneraciones', 'exoneracionesEmpty', 'exoneracionesList', 'exoneracion', 'Agregar Exoneración', item => item.tipo_exoneracion || 'Exoneración');
+  // Deudas
+  renderListSection('pasivos_deuda', 'deudasEmpty', 'deudasList', 'pasivo_deuda', 'Agregar Deuda', item => item.subtipo || item.tipo_deuda || 'Deuda');
+  // Gastos
+  renderListSection('pasivos_gastos', 'gastosEmpty', 'gastosList', 'pasivo_gasto', 'Agregar Gasto', item => item.tipo_gasto || 'Gasto');
+  // Exenciones
+  renderListSection('exenciones', 'exencionesEmpty', 'exencionesList', 'exencion', 'Agregar Exención', item => item.tipo_exencion || 'Exención');
+  // Exoneraciones
+  renderListSection('exoneraciones', 'exoneracionesEmpty', 'exoneracionesList', 'exoneracion', 'Agregar Exoneración', item => item.tipo_exoneracion || 'Exoneración');
 }
 
 function renderListSection(dataKey, emptyId, listId, modalType, btnText, nameGetter) {
-    const empty = document.getElementById(emptyId);
-    const list = document.getElementById(listId);
-    const items = caseData[dataKey] || [];
-    if (items.length === 0) {
-        show(empty); hide(list);
-    } else {
-        hide(empty); show(list);
-        list.innerHTML = items.map((item, i) => renderItemCard(item, dataKey, i, '💼', nameGetter(item))).join('') +
-            `<button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('${modalType}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> ${btnText}</button>`;
-    }
+  const empty = document.getElementById(emptyId);
+  const list = document.getElementById(listId);
+  const items = caseData[dataKey] || [];
+  if (items.length === 0) {
+    show(empty); hide(list);
+  } else {
+    hide(empty); show(list);
+    list.innerHTML = items.map((item, i) => renderItemCard(item, dataKey, i, '💼', nameGetter(item))).join('') +
+      `<button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('${modalType}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> ${btnText}</button>`;
+  }
 }
 
 function renderItemCard(item, collection, index, emoji, name) {
-    const displayName = name || item.tipo || item.descripcion || 'Sin tipo';
-    return `<div class="cc-item-card">
+  const displayName = name || item.tipo || item.descripcion || 'Sin tipo';
+  return `<div class="cc-item-card">
     <div class="cc-item-card__left">
       <div class="cc-item-card__icon">${emoji}</div>
       <div>
@@ -77,47 +78,56 @@ function renderItemCard(item, collection, index, emoji, name) {
 }
 
 function renderMuebleSubtabs() {
-    const container = $('#muebleSubtabs');
-    if (!container) return;
-    container.innerHTML = CATEGORIAS_MUEBLE.map(c => {
-        const count = (caseData.bienes_muebles[c.key] || []).length;
-        return `<button class="cc-subtab${UIState.currentSubTab === c.key ? ' is-active' : ''}" data-subtab="${c.key}">
-      <span class="cc-subtab__emoji">${c.icon}</span>
-      <span class="cc-subtab__label">${c.label}</span>
+  const container = $('#muebleSubtabs');
+  if (!container) return;
+  const cats = getCatalogs().categoriasBienMueble || [];
+
+  if (!UIState.currentSubTab && cats.length > 0) {
+    UIState.currentSubTab = cats[0].categoria_bien_mueble_id;
+  }
+
+  container.innerHTML = cats.map(c => {
+    const id = c.categoria_bien_mueble_id;
+    const count = (caseData.bienes_muebles[id] || []).length;
+    const isActive = (UIState.currentSubTab == id);
+    return `<button class="cc-subtab${isActive ? ' is-active' : ''}" data-subtab="${id}">
+      <span class="cc-subtab__emoji">📦</span>
+      <span class="cc-subtab__label">${c.nombre}</span>
       ${count > 0 ? `<span class="cc-subtab__count">${count}</span>` : ''}
     </button>`;
-    }).join('');
+  }).join('');
 
-    container.querySelectorAll('.cc-subtab').forEach(btn => {
-        btn.addEventListener('click', () => {
-            UIState.currentSubTab = btn.dataset.subtab;
-            renderMuebleSubtabs();
-            renderMueblesList();
-        });
+  container.querySelectorAll('.cc-subtab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      UIState.currentSubTab = btn.dataset.subtab;
+      renderMuebleSubtabs();
+      renderMueblesList();
     });
+  });
 }
 
 function renderMueblesList() {
-    const cat = CATEGORIAS_MUEBLE.find(c => c.key === UIState.currentSubTab);
-    const title = $('#muebleSubtitle');
-    const desc = $('#muebleSubdesc');
-    const emptyEl = $('#mueblesEmpty');
-    const emptyText = $('#mueblesEmptyText');
-    const list = $('#mueblesList');
+  const cats = getCatalogs().categoriasBienMueble || [];
+  const cat = cats.find(c => c.categoria_bien_mueble_id == UIState.currentSubTab);
+  const title = $('#muebleSubtitle');
+  const desc = $('#muebleSubdesc');
+  const emptyEl = $('#mueblesEmpty');
+  const emptyText = $('#mueblesEmptyText');
+  const list = $('#mueblesList');
 
-    if (title) title.textContent = cat ? cat.label : '';
-    if (desc) desc.textContent = cat ? `Bienes muebles de tipo "${cat.label}"` : '';
-    if (emptyText) emptyText.textContent = cat ? `No hay registros de ${cat.label}` : '';
+  if (title) title.textContent = cat ? cat.nombre : '';
+  if (desc) desc.textContent = cat ? `Bienes muebles de tipo "${cat.nombre}"` : '';
+  if (emptyText) emptyText.textContent = cat ? `No hay registros de ${cat.nombre}` : '';
 
-    const items = caseData.bienes_muebles[UIState.currentSubTab] || [];
-    if (items.length === 0) {
-        show(emptyEl); hide(list);
-    } else {
-        hide(emptyEl); show(list);
-        list.innerHTML = items.map((b, i) => {
-            return `<div class="cc-item-card">
+  const items = caseData.bienes_muebles[UIState.currentSubTab] || [];
+  if (items.length === 0) {
+    show(emptyEl); hide(list);
+  } else {
+    hide(emptyEl); show(list);
+    list.innerHTML = items.map((b, i) => {
+      return `<div class="cc-item-card">
         <div class="cc-item-card__left">
-          <div class="cc-item-card__icon">${cat ? cat.icon : '📦'}</div>
+          <div class="cc-item-card__icon">📦</div>
           <div>
             <div class="cc-item-card__name">${b.descripcion || 'Sin descripción'}</div>
             <div class="cc-item-card__meta"><span>${b.porcentaje || 100}%</span></div>
@@ -128,7 +138,7 @@ function renderMueblesList() {
           <button class="cc-btn--icon-danger" onclick="CC.removeMueble('${UIState.currentSubTab}', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
         </div>
       </div>`;
-        }).join('') +
-            `<button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('mueble')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Agregar</button>`;
-    }
+    }).join('') +
+      `<button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('mueble')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Agregar</button>`;
+  }
 }
