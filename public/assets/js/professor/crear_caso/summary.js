@@ -1,5 +1,6 @@
 import { $, show, hide, formatBs } from './utils.js';
-import { caseData, MOCK_STUDENTS } from './state.js';
+import { caseData } from './state.js';
+import { getCatalogs } from './catalogos.js';
 
 export function renderSummary() {
     const s = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
@@ -36,20 +37,29 @@ export function renderStudents(filter = '') {
     const grid = $('#studentsGrid');
     if (!grid) return;
 
-    const filtered = MOCK_STUDENTS.filter(s =>
-        s.nombre.toLowerCase().includes(filter.toLowerCase()) || s.cedula.includes(filter)
+    const allStudents = getCatalogs().estudiantes || [];
+
+    const filtered = allStudents.filter(s =>
+        `${s.nombres} ${s.apellidos}`.toLowerCase().includes(filter.toLowerCase()) ||
+        (s.cedula || '').includes(filter)
     );
 
     grid.innerHTML = filtered.map(s => {
-        const selected = caseData.estudiantes_asignados.includes(s.id);
-        return `<button class="cc-student-card${selected ? ' is-selected' : ''}" data-student-id="${s.id}">
-      <div class="cc-student-avatar">${selected ? '✓' : s.nombre.charAt(0)}</div>
+        const selected = caseData.estudiantes_asignados.includes(s.estudiante_id);
+        const nombre = `${s.nombres} ${s.apellidos}`;
+        const cedula = `V-${s.cedula}`;
+        return `<button class="cc-student-card${selected ? ' is-selected' : ''}" data-student-id="${s.estudiante_id}">
+      <div class="cc-student-avatar">${selected ? '✓' : nombre.charAt(0)}</div>
       <div>
-        <div class="cc-student-name">${s.nombre}</div>
-        <div class="cc-student-ci">${s.cedula}</div>
+        <div class="cc-student-name">${nombre}</div>
+        <div class="cc-student-ci">${cedula} · ${s.seccion}</div>
       </div>
     </button>`;
     }).join('');
+
+    if (filtered.length === 0) {
+        grid.innerHTML = '<p style="text-align:center;color:var(--cc-slate-400);padding:20px;">No se encontraron estudiantes</p>';
+    }
 
     grid.querySelectorAll('.cc-student-card').forEach(card => {
         card.addEventListener('click', () => {

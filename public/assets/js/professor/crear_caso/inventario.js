@@ -34,9 +34,21 @@ function renderCurrentTab() {
   renderMueblesList();
 
   // Deudas
-  renderListSection('pasivos_deuda', 'deudasEmpty', 'deudasList', 'pasivo_deuda', 'Agregar Deuda', item => item.subtipo || item.tipo_deuda || 'Deuda');
+  renderListSection('pasivos_deuda', 'deudasEmpty', 'deudasList', 'pasivo_deuda', 'Agregar Deuda', item => {
+    if (item.tipo_pasivo_deuda_id) {
+      const tipo = (getCatalogs().tiposPasivoDeuda || []).find(t => t.tipo_pasivo_deuda_id == item.tipo_pasivo_deuda_id);
+      if (tipo) return tipo.nombre;
+    }
+    return item.subtipo || item.tipo_deuda || 'Deuda';
+  });
   // Gastos
-  renderListSection('pasivos_gastos', 'gastosEmpty', 'gastosList', 'pasivo_gasto', 'Agregar Gasto', item => item.tipo_gasto || 'Gasto');
+  renderListSection('pasivos_gastos', 'gastosEmpty', 'gastosList', 'pasivo_gasto', 'Agregar Gasto', item => {
+    if (item.tipo_pasivo_gasto_id) {
+      const tipo = (getCatalogs().tiposPasivoGasto || []).find(t => t.tipo_pasivo_gasto_id == item.tipo_pasivo_gasto_id);
+      if (tipo) return tipo.nombre;
+    }
+    return item.tipo_gasto || 'Gasto';
+  });
   // Exenciones
   renderListSection('exenciones', 'exencionesEmpty', 'exencionesList', 'exencion', 'Agregar Exención', item => item.tipo_exencion || 'Exención');
   // Exoneraciones
@@ -57,7 +69,46 @@ function renderListSection(dataKey, emptyId, listId, modalType, btnText, nameGet
 }
 
 function renderItemCard(item, collection, index, emoji, name) {
-  const displayName = name || item.tipo || item.descripcion || 'Sin tipo';
+  let displayName = name || item.descripcion || 'Sin tipo';
+
+  // Handle array of IDs for inmuebles
+  if (collection === 'bienes_inmuebles' && Array.isArray(item.tipo_bien_inmueble_id)) {
+    const catalogs = getCatalogs().tiposBienInmueble || [];
+    const names = item.tipo_bien_inmueble_id.map(id => {
+      const found = catalogs.find(t => t.tipo_bien_inmueble_id == id);
+      return found ? found.nombre : '';
+    }).filter(n => n);
+
+    if (names.length > 0) {
+      displayName = names.join(', ');
+    }
+  } else if (item.tipo) {
+    displayName = item.tipo;
+  }
+  const inmuebleDetails = collection === 'bienes_inmuebles' ? `
+        <div class="cc-item-card__meta" style="margin-top: 4px; font-size: 11px;">
+          ${item.direccion ? `<span style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${item.direccion}">📍 ${item.direccion}</span>` : ''}
+          ${item.nro_registro ? `<span>📑 Reg: ${item.nro_registro} ${item.fecha_registro ? `(${item.fecha_registro})` : ''}</span>` : ''}
+        </div>` : '';
+
+  const deudaDetails = collection === 'pasivos_deuda' ? `
+        <div class="cc-item-card__meta" style="margin-top: 4px; font-size: 11px;">
+          ${item.banco_id ? `<span style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="Institución Bancaria">🏦 ${(getCatalogs().bancos.find(b => b.banco_id == item.banco_id) || {}).nombre || ''}</span>` : ''}
+          ${item.numero_tdc ? `<span style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">💳 TDC: ${item.numero_tdc}</span>` : ''}
+        </div>` : '';
+
+  const editButton = collection === 'bienes_inmuebles'
+    ? `<button class="cc-btn--icon-edit" onclick="CC.openModal('inmueble', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
+    : collection === 'pasivos_deuda'
+      ? `<button class="cc-btn--icon-edit" onclick="CC.openModal('pasivo_deuda', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
+      : collection === 'pasivos_gastos'
+        ? `<button class="cc-btn--icon-edit" onclick="CC.openModal('pasivo_gasto', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
+        : collection === 'exenciones'
+          ? `<button class="cc-btn--icon-edit" onclick="CC.openModal('exencion', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
+          : collection === 'exoneraciones'
+            ? `<button class="cc-btn--icon-edit" onclick="CC.openModal('exoneracion', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
+            : '';
+
   return `<div class="cc-item-card">
     <div class="cc-item-card__left">
       <div class="cc-item-card__icon">${emoji}</div>
@@ -68,10 +119,13 @@ function renderItemCard(item, collection, index, emoji, name) {
           ${item.vivienda_principal === 'Si' ? '<span class="cc-badge cc-badge--green">Viv. Principal</span>' : ''}
           ${item.bien_litigioso === 'Si' ? '<span class="cc-badge cc-badge--red">Litigioso</span>' : ''}
         </div>
+        ${inmuebleDetails}
+        ${deudaDetails}
       </div>
     </div>
     <div class="cc-item-card__right">
       <span class="cc-item-card__value">${formatBs(item.valor_declarado)}</span>
+      ${editButton}
       <button class="cc-btn--icon-danger" onclick="CC.removeItem('${collection}', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
     </div>
   </div>`;
@@ -91,9 +145,8 @@ function renderMuebleSubtabs() {
     const count = (caseData.bienes_muebles[id] || []).length;
     const isActive = (UIState.currentSubTab == id);
     return `<button class="cc-subtab${isActive ? ' is-active' : ''}" data-subtab="${id}">
-      <span class="cc-subtab__emoji">📦</span>
       <span class="cc-subtab__label">${c.nombre}</span>
-      ${count > 0 ? `<span class="cc-subtab__count">${count}</span>` : ''}
+     ${count > 0 ? `<span class="cc-subtab__count">${count}</span>` : ''}
     </button>`;
   }).join('');
 
@@ -117,7 +170,7 @@ function renderMueblesList() {
 
   if (title) title.textContent = cat ? cat.nombre : '';
   if (desc) desc.textContent = cat ? `Bienes muebles de tipo "${cat.nombre}"` : '';
-  if (emptyText) emptyText.textContent = cat ? `No hay registros de ${cat.nombre}` : '';
+  if (emptyText) emptyText.textContent = cat ? `No hay registros de ${cat.nombre} ` : '';
 
   const items = caseData.bienes_muebles[UIState.currentSubTab] || [];
   if (items.length === 0) {
@@ -125,20 +178,67 @@ function renderMueblesList() {
   } else {
     hide(emptyEl); show(list);
     list.innerHTML = items.map((b, i) => {
+      // Resolve tipo name from catalog
+      const tipos = getCatalogs().tiposBienMueble[UIState.currentSubTab] || [];
+      const tipoObj = tipos.find(t => t.tipo_bien_mueble_id == b.tipo_bien_mueble_id);
+      const tipoName = tipoObj ? tipoObj.nombre : '';
+      const displayName = tipoName || b.descripcion || 'Sin descripción';
+
+      // Category-specific meta
+      const catObj = cats.find(c => c.categoria_bien_mueble_id == UIState.currentSubTab);
+      const catName = catObj ? catObj.nombre.toLowerCase() : '';
+      let extraMeta = '';
+
+      if (catName.includes('banco') && b.banco_id) {
+        const banco = (getCatalogs().bancos || []).find(x => x.banco_id == b.banco_id);
+        extraMeta += banco ? `<span>🏦 ${banco.nombre}</span>` : '';
+        if (b.numero_cuenta) extraMeta += `<span>N° ${b.numero_cuenta}</span>`;
+      } else if (catName.includes('transporte')) {
+        if (b.marca) extraMeta += `<span>${b.marca} ${b.modelo || ''} ${b.anio || ''}</span>`;
+        if (b.serial_placa) extraMeta += `<span>🔖 ${b.serial_placa}</span>`;
+      } else if (catName.includes('seguro')) {
+        if (b.razon_social) extraMeta += `<span>📋 ${b.razon_social}</span>`;
+        if (b.numero_prima) extraMeta += `<span>Prima: ${b.numero_prima}</span>`;
+      } else if (catName.includes('acciones') || catName.includes('caja de ahorro')) {
+        if (b.razon_social) extraMeta += `<span>🏢 ${b.razon_social}</span>`;
+        if (b.rif_empresa) extraMeta += `<span>RIF: ${b.rif_empresa}</span>`;
+      } else if (catName.includes('prestaciones')) {
+        if (b.razon_social) extraMeta += `<span>🏢 ${b.razon_social}</span>`;
+        if (b.posee_banco === 'SI') {
+          const banco = (getCatalogs().bancos || []).find(x => x.banco_id == b.banco_id);
+          if (banco) extraMeta += `<span>🏦 ${banco.nombre}</span>`;
+        }
+      } else if (catName.includes('cobrar')) {
+        if (b.apellidos_nombres) extraMeta += `<span>👤 ${b.apellidos_nombres}</span>`;
+      } else if (catName.includes('bonos')) {
+        if (b.tipo_bonos) extraMeta += `<span>${b.tipo_bonos}</span>`;
+      } else if (catName.includes('semovientes')) {
+        const tipo = (getCatalogs().tiposSemoviente || []).find(x => x.tipo_semoviente_id == b.tipo_semoviente_id);
+        if (tipo) extraMeta += `<span>${tipo.nombre}</span>`;
+        if (b.cantidad) extraMeta += `<span>Cant: ${b.cantidad}</span>`;
+      } else if (catName.includes('compra')) {
+        if (b.nombre_oferente) extraMeta += `<span>👤 ${b.nombre_oferente}</span>`;
+      }
+
       return `<div class="cc-item-card">
         <div class="cc-item-card__left">
-          <div class="cc-item-card__icon">📦</div>
           <div>
-            <div class="cc-item-card__name">${b.descripcion || 'Sin descripción'}</div>
-            <div class="cc-item-card__meta"><span>${b.porcentaje || 100}%</span></div>
+            <div class="cc-item-card__name">${displayName}</div>
+            <div class="cc-item-card__meta">
+              <span>${b.porcentaje || 100}%</span>
+              ${b.bien_litigioso === 'Si' ? '<span class="cc-badge cc-badge--red">Litigioso</span>' : ''}
+            </div>
+            ${extraMeta ? `<div class="cc-item-card__meta" style="margin-top:4px;font-size:11px;">${extraMeta}</div>` : ''}
           </div>
         </div>
         <div class="cc-item-card__right">
           <span class="cc-item-card__value">${formatBs(b.valor_declarado)}</span>
+          <button class="cc-btn--icon-edit" onclick="CC.openModal('mueble', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
           <button class="cc-btn--icon-danger" onclick="CC.removeMueble('${UIState.currentSubTab}', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
         </div>
       </div>`;
     }).join('') +
-      `<button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('mueble')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Agregar</button>`;
+      `<button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('mueble')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg> Agregar</button>`;
   }
 }
+

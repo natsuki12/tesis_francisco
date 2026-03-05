@@ -389,6 +389,10 @@
     gap: 14px;
 }
 
+.cc-grid--compact {
+    gap: 6px;
+}
+
 .cc-grid--2 {
     grid-template-columns: 1fr 1fr;
 }
@@ -610,6 +614,12 @@
     font-size: 13px;
     font-weight: 500;
     color: var(--cc-slate-700);
+}
+
+.cc-check-card--compact {
+    padding: 6px 8px;
+    font-size: 11.5px;
+    gap: 6px;
 }
 
 .cc-check-card:hover {

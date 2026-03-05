@@ -15,7 +15,9 @@ const catalogsCache = {
     empresas: [],
     tiposSemoviente: [],
     tiposPasivoDeuda: [],
-    tiposPasivoGasto: []
+    tiposPasivoGasto: [],
+    secciones: [],
+    estudiantes: []
 };
 
 async function fetchCatalog(endpoint, errorMessage) {
@@ -50,7 +52,9 @@ export async function initCatalogos() {
         empresas,
         semovientes,
         deudas,
-        gastos
+        gastos,
+        secciones,
+        estudiantes
     ] = await Promise.all([
         fetchCatalog('unidades-tributarias', 'Error cargando Unidades Tributarias'),
         fetchCatalog('tipos-herencia', 'Error cargando Tipos Herencia'),
@@ -62,7 +66,9 @@ export async function initCatalogos() {
         fetchCatalog('empresas', 'Error cargando Empresas'),
         fetchCatalog('tipos-semoviente', 'Error cargando Tipos Semoviente'),
         fetchCatalog('tipos-pasivo-deuda', 'Error cargando Tipos Pasivo Deuda'),
-        fetchCatalog('tipos-pasivo-gasto', 'Error cargando Tipos Pasivo Gasto')
+        fetchCatalog('tipos-pasivo-gasto', 'Error cargando Tipos Pasivo Gasto'),
+        fetchCatalog('secciones-profesor', 'Error cargando Secciones'),
+        fetchCatalog('estudiantes-profesor', 'Error cargando Estudiantes')
     ]);
 
     catalogsCache.unidadesTributarias = ut;
@@ -76,6 +82,8 @@ export async function initCatalogos() {
     catalogsCache.tiposSemoviente = semovientes;
     catalogsCache.tiposPasivoDeuda = deudas;
     catalogsCache.tiposPasivoGasto = gastos;
+    catalogsCache.secciones = secciones;
+    catalogsCache.estudiantes = estudiantes;
 
     if (muebleCategorias) {
         const promises = muebleCategorias.map(async cat => {
@@ -91,4 +99,16 @@ export async function initCatalogos() {
 
 export function getCatalogs() {
     return catalogsCache;
+}
+
+export function loadSeccionesSelect() {
+    const select = document.getElementById('selectSeccion');
+    if (!select) return;
+    const secciones = catalogsCache.secciones || [];
+    if (secciones.length === 0) {
+        select.innerHTML = '<option value="">No hay secciones disponibles</option>';
+        return;
+    }
+    select.innerHTML = '<option value="">Seleccione una secci\u00f3n...</option>' +
+        secciones.map(s => `<option value="${s.id}">${s.seccion} — ${s.periodo}</option>`).join('');
 }

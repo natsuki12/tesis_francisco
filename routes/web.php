@@ -148,3 +148,6 @@ $router->get('/api/empresas', [CatalogController::class, 'getEmpresas']);
 $router->get('/api/tipos-semoviente', [CatalogController::class, 'getTiposSemoviente']);
 $router->get('/api/tipos-pasivo-deuda', [CatalogController::class, 'getTiposPasivoDeuda']);
 $router->get('/api/tipos-pasivo-gasto', [CatalogController::class, 'getTiposPasivoGasto']);
+$router->get('/api/secciones-profesor', [CatalogController::class, 'getSeccionesProfesor']);
+$router->get('/api/estudiantes-profesor', [CatalogController::class, 'getEstudiantesProfesor']);
+$router->get('/api/buscar-empresa-rif', [CatalogController::class, 'buscarEmpresaPorRif']);

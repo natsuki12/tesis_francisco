@@ -7,24 +7,6 @@
  * Por ahora se mantienen temporalmente las que aún no tienen endpoint.
  */
 
-// ── Constantes temporales (se eliminarán en Fase 2 al migrar a catálogos dinámicos) ──
-
-export const MOCK_STUDENTS = [
-    { id: 1, nombre: "María García", cedula: "V-28.456.789" },
-    { id: 2, nombre: "Carlos Rodríguez", cedula: "V-27.123.456" },
-    { id: 3, nombre: "Ana Martínez", cedula: "V-29.876.543" },
-    { id: 4, nombre: "José López", cedula: "V-26.543.210" },
-    { id: 5, nombre: "Laura Pérez", cedula: "V-30.111.222" },
-    { id: 6, nombre: "Diego Hernández", cedula: "V-28.333.444" },
-    { id: 7, nombre: "Valentina Díaz", cedula: "V-27.555.666" },
-    { id: 8, nombre: "Andrés Morales", cedula: "V-29.777.888" },
-    { id: 9, nombre: "Sofía Herrera", cedula: "V-28.999.111" },
-    { id: 10, nombre: "Miguel Castro", cedula: "V-26.222.333" },
-    { id: 11, nombre: "Camila Rojas", cedula: "V-30.444.555" },
-    { id: 12, nombre: "Gabriel Silva", cedula: "V-27.666.777" },
-    { id: 13, nombre: "Isabella Romero", cedula: "V-29.123.987" },
-    { id: 14, nombre: "Lucas Medina", cedula: "V-28.567.432" }
-];
 
 // ── State reactivo ──
 
@@ -162,6 +144,10 @@ export const caseData = createReactiveState({
     exoneraciones: [],
 
     // ── Sección 13: Prórrogas (→ sim_caso_prorrogas) ──
+    prorroga: {
+        fecha_solicitud: '', nro_resolucion: '', fecha_resolucion: '',
+        plazo_dias: '', fecha_vencimiento: ''
+    },
     prorrogas: [],
 
     estudiantes_asignados: [],

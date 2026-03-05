@@ -84,4 +84,41 @@ class CatalogController
         $model = new CatalogModel();
         $this->jsonResponse($model->getTiposPasivoGasto());
     }
+
+    public function getSeccionesProfesor()
+    {
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
+        $userId = (int) ($_SESSION['user_id'] ?? 0);
+        $model = new CatalogModel();
+        $this->jsonResponse($model->getSeccionesByProfesor($userId));
+    }
+
+    public function buscarEmpresaPorRif()
+    {
+        $rif = trim($_GET['rif'] ?? '');
+        if (empty($rif)) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'RIF requerido']);
+            exit;
+        }
+        $model = new CatalogModel();
+        $result = $model->getEmpresaByRif($rif);
+        if ($result) {
+            $this->jsonResponse($result);
+        } else {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'No se encontró el RIF ingresado']);
+            exit;
+        }
+    }
+
+    public function getEstudiantesProfesor()
+    {
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
+        $userId = (int) ($_SESSION['user_id'] ?? 0);
+        $model = new CatalogModel();
+        $this->jsonResponse($model->getEstudiantesByProfesor($userId));
+    }
 }

@@ -4,8 +4,9 @@ import { renderHerenciaCheckboxes, initRepresentanteLogic } from './herederos.js
 import { fetchEstados, initAddressListeners, saveDireccion, renderDirecciones, editDireccion, deleteDireccion } from './direccion.js';
 import { initStepperClicks, setStep, nextStep, prevStep } from './navigation.js';
 import { initStudentSearch } from './summary.js';
+import { initCatalogos, getCatalogs, loadSeccionesSelect } from './catalogos.js';
 import { openModal, closeModal, saveModal, removeItem, removeMueble } from './modal.js';
-import { initCatalogos, getCatalogs } from './catalogos.js';
+import { saveProrroga, renderProrrogas, deleteProrroga, editProrroga } from './prorroga.js'; // Multiples prorrogas
 
 // Asignamos callbacks globales para el HTML onClick
 window.CC = {
@@ -13,6 +14,7 @@ window.CC = {
     openModal, closeModal, saveModal,
     removeItem, removeMueble,
     saveDireccion, editDireccion, deleteDireccion,
+    saveProrroga, deleteProrroga, editProrroga,
     publish: () => alert('Caso publicado exitosamente (pendiente integración con backend).')
 };
 
@@ -115,11 +117,13 @@ async function init() {
     initStudentSearch();
     await initCatalogos();
     renderSelects();
+    loadSeccionesSelect();
     renderHerenciaCheckboxes();
     initRepresentanteLogic();
     initAddressListeners();
     fetchEstados();
     renderDirecciones();
+    renderProrrogas();
     setStep(0);
 
     const btnSaveDraft = $('#btnSaveDraft');

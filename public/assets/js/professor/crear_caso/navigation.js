@@ -1,5 +1,5 @@
 import { $, $$, show, hide, formatBs } from './utils.js';
-import { caseData, UIState, MOCK_STUDENTS } from './state.js';
+import { caseData, UIState } from './state.js';
 import { renderHerederos } from './herederos.js';
 import { renderInventario } from './inventario.js';
 import { renderSummary, renderStudents } from './summary.js';

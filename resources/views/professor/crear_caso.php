@@ -542,6 +542,78 @@ ob_start();
     </div>
   </div>
 
+  <!-- Prórrogas -->
+  <div class="cc-card cc-mt" id="card_prorrogas">
+    <div class="cc-card__header cc-card__toggle">
+      <div>
+        <h3>Prórrogas</h3>
+        <p>Registrar prórrogas concedidas para este caso</p>
+      </div>
+      <svg class="cc-card__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </div>
+    <div class="cc-card__body cc-card__collapse">
+
+      <!-- Listado de Prórrogas -->
+      <div id="prorrogasTableContainer" style="display:none; margin-bottom: 20px;">
+        <div class="cc-table-wrap">
+          <table class="cc-table">
+            <thead>
+              <tr>
+                <th>F. Solicitud</th>
+                <th>Nro Resolución</th>
+                <th>F. Resolución</th>
+                <th>Plazo (días)</th>
+                <th>F. Vencimiento</th>
+                <th class="cc-th-action">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="prorrogasTableBody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="cc-grid cc-grid--2">
+        <!-- Fila 1 -->
+        <div class="cc-field">
+          <label>Fecha de Solicitud <span class="req">*</span></label>
+          <input type="date" data-bind="prorroga.fecha_solicitud">
+        </div>
+        <div class="cc-field">
+          <label>Nro de Resolución <span class="req">*</span></label>
+          <input type="text" data-bind="prorroga.nro_resolucion" placeholder="Nro de Resolución">
+        </div>
+
+        <!-- Fila 2 -->
+        <div class="cc-field">
+          <label>Fecha de Resolución <span class="req">*</span></label>
+          <input type="date" data-bind="prorroga.fecha_resolucion">
+        </div>
+        <div class="cc-field">
+          <label>Plazo Otorgado (días) <span class="req">*</span></label>
+          <input type="number" data-bind="prorroga.plazo_dias" placeholder="Ej: 30" min="1">
+        </div>
+
+        <!-- Fila 3 -->
+        <div class="cc-field">
+          <label>Fecha de Vencimiento <span class="req">*</span></label>
+          <input type="date" data-bind="prorroga.fecha_vencimiento">
+        </div>
+        <div></div>
+
+        <!-- Fila 4 -->
+        <div class="cc-field cc-span-2 cc-text-right" style="margin-top: 10px;">
+          <button type="button" class="cc-btn cc-btn--outline cc-btn--sm" style="width: max-content; margin-left: auto;"
+            onclick="CC.saveProrroga()" id="btnSaveProrroga">+ Agregar Prórroga</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- =============================================================== -->
@@ -1066,10 +1138,8 @@ ob_start();
       <div class="cc-p-4" id="bloqueSeccion" style="display:none;">
         <div class="cc-field">
           <label>Sección <span class="req">*</span></label>
-          <select data-bind="config.seccion_id" style="max-width: 400px;">
-            <option value="">Seleccione una sección...</option>
-            <option value="1">Sección A - 2026</option>
-            <option value="2">Sección B - 2026</option>
+          <select data-bind="config.seccion_id" id="selectSeccion" style="max-width: 400px;">
+            <option value="">Cargando secciones...</option>
           </select>
         </div>
       </div>
