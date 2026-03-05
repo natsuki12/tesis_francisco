@@ -7,6 +7,7 @@ use App\Modules\Auth\Controllers\LoginController;
 use App\Modules\Auth\Controllers\PasswordRecoveryController;
 use App\Modules\Professor\Controllers\Crear_Caso\Direcciones\LocationController;
 use App\Modules\Professor\Controllers\Crear_Caso\CatalogController;
+use App\Modules\Professor\Controllers\Casos\CasosController;
 
 /** @var \App\Core\App $app */
 /** @var \App\Core\Router $router */
@@ -109,11 +110,7 @@ $router->get('/servicios_declaracion', function () use ($app, $requireAuth) {
 });
 
 // Casos Sucesorales (Profesor)
-$router->get('/casos-sucesorales', function () use ($app, $requireAuth, $requireRole) {
-    $requireAuth();
-    $requireRole(2);
-    return $app->view('professor/casos_sucesorales');
-});
+$router->get('/casos-sucesorales', [CasosController::class, 'index']);
 $router->get('/crear-caso', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
