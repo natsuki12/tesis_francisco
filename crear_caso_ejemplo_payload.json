@@ -1,0 +1,568 @@
+{
+  "_meta": {
+    "version": "3.0",
+    "descripcion": "JSON modelo para POST /api/casos/guardar-borrador y POST /api/casos/publicar. Cada sección mapea a una tabla específica de la BD.",
+    "cambios_v3": [
+      "Agregado tipo_sucesion ('Con_Cedula' | 'Sin_Cedula') en caso.",
+      "acta_defuncion ahora tiene campos condicionales: Con_Cedula solo requiere fecha_fallecimiento; Sin_Cedula requiere todos los campos.",
+      "bienes_inmuebles: tipo_bien_inmueble_id reemplazado por tipos_bien_inmueble_ids (array) → tabla pivote sim_caso_bien_inmueble_tipo_rel.",
+      "unidad_tributaria_id se resuelve dinámicamente cruzando fecha_fallecimiento con sim_cat_unidades_tributarias. No hay campo valor_ut editable.",
+      "Se incluyen dos ejemplos completos: Ejemplo A (Con_Cedula) y Ejemplo B (Sin_Cedula) para acta_defuncion."
+    ],
+    "notas": [
+      "Los campos _ref_index son índices temporales (zero-based) del array, NO IDs de BD. El backend los resuelve a IDs reales después de insertar.",
+      "Los campos de empresa (rif_empresa, razon_social) se envían como texto. El backend busca en sim_empresas por RIF: si existe, reutiliza el empresa_id; si no, crea la empresa con activo=1.",
+      "profesor_id y created_by se toman de la sesión del usuario, NUNCA del JSON.",
+      "Los campos de auditoría (created_at, updated_at, deleted_at) los maneja la BD automáticamente.",
+      "premuerto_padre_id usa _ref_index (índice zero-based del array herederos). El backend resuelve al ID real de sim_caso_participantes."
+    ]
+  },
+
+  "caso": {
+    "_tabla": "sim_casos_estudios",
+    "titulo": "Sucesión Ab-Intestato - Familia Pérez Rodríguez",
+    "descripcion": "Caso práctico de sucesión ab-intestato con patrimonio mixto (inmuebles, vehículos, cuentas bancarias) y dos herederos premuertos con representación. Incluye vivienda principal exenta y deudas hipotecarias.",
+    "tipo_sucesion": "Con_Cedula",
+    "unidad_tributaria_id": null,
+    "_nota_ut": "El backend resuelve unidad_tributaria_id automáticamente: SELECT id FROM sim_cat_unidades_tributarias WHERE anio = YEAR(acta_defuncion.fecha_fallecimiento). Si el profesor necesita sobrescribirla, se puede enviar explícitamente.",
+    "estado": "Borrador"
+  },
+
+  "config": {
+    "_tabla": "sim_caso_configs",
+    "_nota": "profesor_id se toma de sesión. caso_id se genera en Paso 2.",
+    "modalidad": "Evaluacion",
+    "max_intentos": 3,
+    "fecha_limite": "2026-04-15T23:59:00",
+    "estudiantes_asignados": [1, 3, 5, 6, 8]
+  },
+
+  "tipos_herencia": {
+    "_tabla": "sim_caso_tipoherencia_rel",
+    "_nota": "Un registro por cada tipo. campos condicionales son NULL si no aplican al tipo.",
+    "items": [
+      {
+        "tipo_herencia_id": 2,
+        "subtipo_testamento": null,
+        "fecha_testamento": null,
+        "fecha_conclusion_inventario": null
+      },
+      {
+        "tipo_herencia_id": 3,
+        "subtipo_testamento": null,
+        "fecha_testamento": null,
+        "fecha_conclusion_inventario": null
+      }
+    ]
+  },
+
+  "causante": {
+    "_tabla": "sim_personas",
+    "_nota": "created_by = profesor_id de sesión. Si tipo_sucesion='Sin_Cedula', tipo_cedula='No_Aplica' y cedula=null.",
+    "tipo_cedula": "V",
+    "cedula": "8456123",
+    "pasaporte": null,
+    "rif_personal": "V-08456123-5",
+    "nombres": "Carlos Eduardo",
+    "apellidos": "Pérez Morales",
+    "sexo": "M",
+    "estado_civil": "Casado",
+    "fecha_nacimiento": "1955-03-12",
+    "nacionalidad": 1
+  },
+
+  "causante_fiscal": {
+    "_tabla": "sim_causante_datos_fiscales",
+    "_nota": "sim_persona_id = causante_id generado en Paso 1.",
+    "domiciliado_pais": 1,
+    "fecha_cierre_fiscal": "2025-11-20"
+  },
+
+  "acta_defuncion": {
+    "_tabla": "sim_actas_defunciones",
+    "_nota_condicional": "Los campos obligatorios dependen de caso.tipo_sucesion. Ver ejemplos A y B.",
+    "_ejemplo_A_Con_Cedula": {
+      "_descripcion": "Cuando tipo_sucesion='Con_Cedula': solo fecha_fallecimiento es obligatoria. El resto es opcional porque el causante ya tiene cédula/RIF y no necesita inscripción por acta.",
+      "fecha_fallecimiento": "2025-11-20",
+      "numero_acta": null,
+      "year_acta": null,
+      "parroquia_registro_id": null
+    },
+    "_ejemplo_B_Sin_Cedula": {
+      "_descripcion": "Cuando tipo_sucesion='Sin_Cedula': TODOS los campos son obligatorios. El estudiante necesitará estos datos para inscribir al causante ante el SENIAT mediante acta de defunción.",
+      "fecha_fallecimiento": "2025-11-20",
+      "numero_acta": "1247",
+      "year_acta": 2025,
+      "parroquia_registro_id": 342
+    },
+    "_valor_real_de_este_ejemplo": "Como caso.tipo_sucesion='Con_Cedula' en este JSON, el valor enviado sería:",
+    "fecha_fallecimiento": "2025-11-20",
+    "numero_acta": null,
+    "year_acta": null,
+    "parroquia_registro_id": null
+  },
+
+  "domicilio_causante": {
+    "_tabla": "sim_persona_direcciones",
+    "_nota": "sim_persona_id = causante_id. Valores ENUM deben coincidir exactamente con la BD (capitalizados, con guion bajo).",
+    "tipo_direccion": "Domicilio_Fiscal",
+    "tipo_vialidad": "Avenida",
+    "nombre_vialidad": "Bolívar",
+    "tipo_inmueble": "Edificio",
+    "nro_inmueble": "Torre Parque Central",
+    "tipo_nivel": "Apartamento",
+    "nro_nivel": "8-A",
+    "tipo_sector": "Urbanizacion",
+    "nombre_sector": "Los Caobos",
+    "estado_id": 7,
+    "municipio_id": 45,
+    "parroquia_id": 203,
+    "ciudad_id": 112,
+    "codigo_postal_id": 89,
+    "telefono_fijo": "02125551234",
+    "telefono_celular": "04141234567",
+    "fax": null,
+    "punto_referencia": "Frente al Parque Los Caobos, edificio de fachada azul"
+  },
+
+  "representante": {
+    "_tabla": "sim_personas",
+    "_nota": "Se inserta como persona independiente. representante_id en sim_casos_estudios apunta a este registro. Si comparte cédula con un heredero, se crean registros separados en sim_personas.",
+    "tipo_cedula": "V",
+    "cedula": "15789432",
+    "pasaporte": null,
+    "rif_personal": null,
+    "nombres": "María Elena",
+    "apellidos": "Pérez García",
+    "sexo": "F",
+    "estado_civil": "Casado",
+    "fecha_nacimiento": "1980-07-25",
+    "nacionalidad": 1
+  },
+
+  "herederos": {
+    "_tabla_persona": "sim_personas",
+    "_tabla_participante": "sim_caso_participantes",
+    "_tabla_acta_premuerto": "sim_actas_defunciones (solo si es_premuerto=true)",
+    "_nota": "Cada heredero genera 1 INSERT en sim_personas + 1 INSERT en sim_caso_participantes. Si es_premuerto=true, también 1 INSERT en sim_actas_defunciones con solo fecha_fallecimiento (resto NULL).",
+    "items": [
+      {
+        "_ref_index": 0,
+        "persona": {
+          "tipo_cedula": "V",
+          "cedula": "10234567",
+          "pasaporte": null,
+          "rif_personal": null,
+          "nombres": "Ana Luisa",
+          "apellidos": "Martínez de Pérez",
+          "sexo": "F",
+          "estado_civil": "Viudo",
+          "fecha_nacimiento": "1958-09-03",
+          "nacionalidad": 1
+        },
+        "rol_en_caso": "Heredero",
+        "parentesco_id": 1,
+        "es_premuerto": false,
+        "fecha_fallecimiento": null,
+        "premuerto_padre_id": null
+      },
+      {
+        "_ref_index": 1,
+        "persona": {
+          "tipo_cedula": "V",
+          "cedula": "15789432",
+          "pasaporte": null,
+          "rif_personal": null,
+          "nombres": "María Elena",
+          "apellidos": "Pérez García",
+          "sexo": "F",
+          "estado_civil": "Casado",
+          "fecha_nacimiento": "1980-07-25",
+          "nacionalidad": 1
+        },
+        "rol_en_caso": "Heredero",
+        "parentesco_id": 5,
+        "es_premuerto": false,
+        "fecha_fallecimiento": null,
+        "premuerto_padre_id": null
+      },
+      {
+        "_ref_index": 2,
+        "persona": {
+          "tipo_cedula": "V",
+          "cedula": "16890123",
+          "pasaporte": null,
+          "rif_personal": null,
+          "nombres": "José Carlos",
+          "apellidos": "Pérez García",
+          "sexo": "M",
+          "estado_civil": "Soltero",
+          "fecha_nacimiento": "1983-01-18",
+          "nacionalidad": 1
+        },
+        "rol_en_caso": "Heredero",
+        "parentesco_id": 5,
+        "es_premuerto": true,
+        "fecha_fallecimiento": "2024-06-15",
+        "premuerto_padre_id": null
+      },
+      {
+        "_ref_index": 3,
+        "persona": {
+          "tipo_cedula": "V",
+          "cedula": "28456789",
+          "pasaporte": null,
+          "rif_personal": null,
+          "nombres": "Daniela Sofía",
+          "apellidos": "Pérez Rivas",
+          "sexo": "F",
+          "estado_civil": "Soltero",
+          "fecha_nacimiento": "2005-06-10",
+          "nacionalidad": 1
+        },
+        "rol_en_caso": "Heredero",
+        "parentesco_id": 5,
+        "es_premuerto": false,
+        "fecha_fallecimiento": null,
+        "premuerto_padre_id": 2
+      }
+    ]
+  },
+
+  "bienes_inmuebles": {
+    "_tabla": "sim_caso_bienes_inmuebles",
+    "_tabla_tipos": "sim_caso_bien_inmueble_tipo_rel (M:N — un inmueble puede tener varios tipos)",
+    "_tabla_litigioso": "sim_caso_bienes_litigiosos (solo si es_bien_litigioso=true)",
+    "_nota_v3": "tipo_bien_inmueble_id (singular) fue reemplazado por tipos_bien_inmueble_ids (array). El backend inserta un registro en sim_caso_bien_inmueble_tipo_rel por cada ID del array.",
+    "items": [
+      {
+        "tipos_bien_inmueble_ids": [4],
+        "es_vivienda_principal": true,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Casa de dos plantas, 4 habitaciones, 3 baños, sala, comedor, cocina, estacionamiento para 2 vehículos.",
+        "linderos": "Norte: calle Los Pinos; Sur: casa familia Rodríguez; Este: avenida principal; Oeste: terreno baldío municipal.",
+        "superficie_construida": 280.00,
+        "superficie_no_construida": 120.00,
+        "area_superficie": 400.00,
+        "direccion": "Calle Los Pinos, Nro. 45, Urbanización Las Acacias, Municipio Libertador, Caracas",
+        "oficina_registro": "Registro Público del Primer Circuito del Municipio Libertador",
+        "nro_registro": "2010.234",
+        "libro": "Folio Real",
+        "protocolo": "Primero",
+        "fecha_registro": "2010-05-15",
+        "trimestre": "2do Trimestre",
+        "asiento_registral": "45",
+        "matricula": "214.1.1.3.4567",
+        "folio_real_anio": "2010",
+        "valor_original": 850000.00,
+        "valor_declarado": 2500000.00,
+        "litigioso": null
+      },
+      {
+        "tipos_bien_inmueble_ids": [2, 7],
+        "_nota_tipos_multiples": "Ejemplo de inmueble con dos tipos simultáneos: Apartamento (2) + Local Comercial (7). El backend inserta 2 registros en sim_caso_bien_inmueble_tipo_rel.",
+        "es_vivienda_principal": false,
+        "es_bien_litigioso": true,
+        "porcentaje": 50.00,
+        "descripcion": "Apartamento en piso 12 con local comercial en planta baja, 2 habitaciones, 1 baño, vista al mar.",
+        "linderos": "Según documento de condominio registrado.",
+        "superficie_construida": 85.00,
+        "superficie_no_construida": 0.00,
+        "area_superficie": 85.00,
+        "direccion": "Av. Principal de Lechería, Edificio Mar Azul, Piso 12, Apto 12-B, Lechería, Estado Anzoátegui",
+        "oficina_registro": "Registro Público del Municipio Urbaneja",
+        "nro_registro": "2015.089",
+        "libro": "Folio Real",
+        "protocolo": "Primero",
+        "fecha_registro": "2015-08-22",
+        "trimestre": "3er Trimestre",
+        "asiento_registral": "12",
+        "matricula": "232.1.1.5.2345",
+        "folio_real_anio": "2015",
+        "valor_original": 420000.00,
+        "valor_declarado": 950000.00,
+        "litigioso": {
+          "numero_expediente": "AP31-V-2024-000456",
+          "tribunal_causa": "Juzgado Tercero de Primera Instancia en lo Civil, Municipio Urbaneja",
+          "partes_juicio": "Pérez García vs. Rodríguez Mendoza (copropietario del 50% restante)",
+          "estado_juicio": "En curso - fase probatoria"
+        }
+      }
+    ]
+  },
+
+  "bienes_muebles": {
+    "_tabla_base": "sim_caso_bienes_muebles",
+    "_tablas_detalle": "sim_caso_bm_{categoria} según categoria_bien_mueble_id",
+    "_tabla_litigioso": "sim_caso_bienes_litigiosos (solo si es_bien_litigioso=true, con bien_tipo='Mueble')",
+    "_nota_empresa": "rif_empresa + razon_social: el backend busca en sim_empresas por RIF. Si existe, reutiliza empresa_id. Si no, INSERT con activo=1 y usa el nuevo ID.",
+    "items": [
+      {
+        "_categoria": "banco",
+        "categoria_bien_mueble_id": 1,
+        "tipo_bien_mueble_id": 2,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Cuenta de ahorro en Banesco, saldo al fallecimiento.",
+        "valor_declarado": 185000.00,
+        "detalle_banco": {
+          "_tabla": "sim_caso_bm_banco",
+          "banco_id": 5,
+          "numero_cuenta": "01340123456789012345"
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "banco",
+        "categoria_bien_mueble_id": 1,
+        "tipo_bien_mueble_id": 1,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Cuenta corriente en Banco de Venezuela.",
+        "valor_declarado": 42000.00,
+        "detalle_banco": {
+          "_tabla": "sim_caso_bm_banco",
+          "banco_id": 3,
+          "numero_cuenta": "01020345678901234567"
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "seguro",
+        "categoria_bien_mueble_id": 2,
+        "tipo_bien_mueble_id": 5,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Seguro de vida en Seguros Caracas.",
+        "valor_declarado": 50000.00,
+        "detalle_seguro": {
+          "_tabla": "sim_caso_bm_seguro",
+          "rif_empresa": "J-00012345-6",
+          "razon_social": "Seguros Caracas de Liberty Mutual, C.A.",
+          "numero_prima": "SV-2023-0891"
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "transporte",
+        "categoria_bien_mueble_id": 3,
+        "tipo_bien_mueble_id": 8,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Camioneta Toyota Hilux, color blanco, uso particular.",
+        "valor_declarado": 35000.00,
+        "detalle_transporte": {
+          "_tabla": "sim_caso_bm_transporte",
+          "anio": "2019",
+          "marca": "Toyota",
+          "modelo": "Hilux 4x4",
+          "serial_placa": "AC123BD"
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "opciones_compra",
+        "categoria_bien_mueble_id": 4,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Opción de compra sobre local comercial en C.C. Sambil.",
+        "valor_declarado": 120000.00,
+        "detalle_opciones_compra": {
+          "_tabla": "sim_caso_bm_opciones_compra",
+          "nombre_oferente": "Inversiones Sambil C.A."
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "cuentas_cobrar",
+        "categoria_bien_mueble_id": 5,
+        "tipo_bien_mueble_id": 10,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Deuda pendiente por cobrar a socio comercial.",
+        "valor_declarado": 30000.00,
+        "detalle_cuentas_cobrar": {
+          "_tabla": "sim_caso_bm_cuentas_cobrar",
+          "rif_cedula": "V-12345678",
+          "apellidos_nombres": "González Ramírez, Pedro José"
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "semovientes",
+        "categoria_bien_mueble_id": 6,
+        "tipo_bien_mueble_id": 15,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Ganado vacuno en finca La Esperanza, Barinas.",
+        "valor_declarado": 120000.00,
+        "detalle_semovientes": {
+          "_tabla": "sim_caso_bm_semovientes",
+          "tipo_semoviente_id": 1,
+          "cantidad": 45
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "bonos",
+        "categoria_bien_mueble_id": 7,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Bonos de la deuda pública nacional serie A.",
+        "valor_declarado": 25000.00,
+        "detalle_bonos": {
+          "_tabla": "sim_caso_bm_bonos",
+          "tipo_bonos": "Bonos de Deuda Pública",
+          "numero_bonos": "500",
+          "numero_serie": "BDP-2022-A-0045"
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "acciones",
+        "categoria_bien_mueble_id": 8,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "500 acciones de Empresas Polar S.A.",
+        "valor_declarado": 75000.00,
+        "detalle_acciones": {
+          "_tabla": "sim_caso_bm_acciones",
+          "rif_empresa": "J-00006860-9",
+          "razon_social": "Empresas Polar S.A."
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "prestaciones",
+        "categoria_bien_mueble_id": 9,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Prestaciones sociales acumuladas en Empresas Polar S.A.",
+        "valor_declarado": 95000.00,
+        "detalle_prestaciones": {
+          "_tabla": "sim_caso_bm_prestaciones",
+          "posee_banco": true,
+          "banco_id": 5,
+          "numero_cuenta": "01340123456789099999",
+          "rif_empresa": "J-00006860-9",
+          "razon_social": "Empresas Polar S.A."
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "caja_ahorro",
+        "categoria_bien_mueble_id": 10,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Caja de ahorro de empleados de Empresas Polar.",
+        "valor_declarado": 18000.00,
+        "detalle_caja_ahorro": {
+          "_tabla": "sim_caso_bm_caja_ahorro",
+          "rif_empresa": "J-00006860-9",
+          "razon_social": "Empresas Polar S.A."
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "plantaciones",
+        "categoria_bien_mueble_id": 11,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Plantación de cacao en Barlovento, Miranda. 5 hectáreas en producción.",
+        "valor_declarado": 200000.00,
+        "litigioso": null
+      },
+      {
+        "_categoria": "otros",
+        "categoria_bien_mueble_id": 12,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": true,
+        "porcentaje": 50.00,
+        "descripcion": "Colección de arte (12 cuadros) valorada por perito certificado.",
+        "valor_declarado": 85000.00,
+        "litigioso": {
+          "numero_expediente": "AP31-V-2025-000123",
+          "tribunal_causa": "Juzgado Segundo de Primera Instancia Civil, Caracas",
+          "partes_juicio": "Sucesión Pérez vs. Galería Nacional (disputa de autenticidad)",
+          "estado_juicio": "En curso - fase de experticia"
+        }
+      }
+    ]
+  },
+
+  "pasivos_deuda": {
+    "_tabla": "sim_caso_pasivos_deuda",
+    "items": [
+      {
+        "tipo_pasivo_deuda_id": 2,
+        "banco_id": 8,
+        "numero_tdc": null,
+        "porcentaje": 100.00,
+        "descripcion": "Crédito hipotecario vigente sobre apartamento en Lechería. Saldo pendiente al momento del fallecimiento.",
+        "valor_declarado": 280000.00
+      },
+      {
+        "tipo_pasivo_deuda_id": 1,
+        "banco_id": 5,
+        "numero_tdc": "4966XXXXXXXX1234",
+        "porcentaje": 100.00,
+        "descripcion": "Tarjeta de crédito Visa Gold Banesco. Saldo al cierre del mes de fallecimiento.",
+        "valor_declarado": 12500.00
+      }
+    ]
+  },
+
+  "pasivos_gastos": {
+    "_tabla": "sim_caso_pasivos_gastos",
+    "items": [
+      {
+        "tipo_pasivo_gasto_id": 1,
+        "porcentaje": 100.00,
+        "descripcion": "Servicios funerarios completos - Funeraria La Paz, C.A.",
+        "valor_declarado": 8500.00
+      },
+      {
+        "tipo_pasivo_gasto_id": 5,
+        "porcentaje": 100.00,
+        "descripcion": "Honorarios profesionales del abogado para la declaración sucesoral.",
+        "valor_declarado": 15000.00
+      }
+    ]
+  },
+
+  "exenciones": {
+    "_tabla": "sim_caso_exenciones",
+    "items": [
+      {
+        "tipo": "Vivienda Principal",
+        "descripcion": "Casa ubicada en Calle Los Pinos Nro. 45, Urb. Las Acacias, declarada como vivienda principal del causante según artículo 8 numeral 3 de la Ley de Impuesto sobre Sucesiones.",
+        "valor_declarado": 2500000.00
+      }
+    ]
+  },
+
+  "exoneraciones": {
+    "_tabla": "sim_caso_exoneraciones",
+    "items": []
+  },
+
+  "prorrogas": {
+    "_tabla": "sim_caso_prorrogas",
+    "items": [
+      {
+        "fecha_solicitud": "2025-12-10",
+        "nro_resolucion": "SNAT/2025/RES-00456",
+        "fecha_resolucion": "2025-12-20",
+        "plazo_otorgado_dias": 60,
+        "fecha_vencimiento": "2026-02-18"
+      }
+    ]
+  }
+}

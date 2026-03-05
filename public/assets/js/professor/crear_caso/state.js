@@ -7,10 +7,84 @@
  * Por ahora se mantienen temporalmente las que aún no tienen endpoint.
  */
 
+const STORAGE_KEY = 'crearCaso_caseData';
+const STORAGE_KEY_STEP = 'crearCaso_currentStep';
+
+let _saveTimer = null;
+export function saveCaseData() {
+    clearTimeout(_saveTimer);
+    _saveTimer = setTimeout(() => {
+        try {
+            const plain = JSON.parse(JSON.stringify(caseData));
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(plain));
+            sessionStorage.setItem(STORAGE_KEY_STEP, UIState.currentStep.toString());
+        } catch (e) { /* silently fail */ }
+    }, 300);
+}
+
+export function loadCaseData() {
+    try {
+        const saved = sessionStorage.getItem(STORAGE_KEY);
+        if (!saved) return false;
+        const parsed = JSON.parse(saved);
+        // Restore each top-level key into the reactive proxy
+        for (const key of Object.keys(parsed)) {
+            if (key in caseData) {
+                if (Array.isArray(parsed[key])) {
+                    caseData[key].length = 0;
+                    parsed[key].forEach(item => caseData[key].push(item));
+                } else if (typeof parsed[key] === 'object' && parsed[key] !== null) {
+                    Object.assign(caseData[key], parsed[key]);
+                } else {
+                    caseData[key] = parsed[key];
+                }
+            }
+        }
+        // Restore step
+        const savedStep = sessionStorage.getItem(STORAGE_KEY_STEP);
+        if (savedStep !== null) UIState.currentStep = parseInt(savedStep, 10) || 0;
+        return true;
+    } catch (e) { return false; }
+}
+
+export function clearSavedCaseData() {
+    sessionStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY_STEP);
+}
 
 // ── State reactivo ──
 
-function createReactiveState(initial, onChange) {
+const ARRAY_MUTATORS = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'];
+
+function makeReactive(obj, onChange) {
+    if (obj === null || typeof obj !== 'object') return obj;
+
+    // Para arrays: interceptar métodos mutadores
+    if (Array.isArray(obj)) {
+        const handler = {
+            get(target, prop, receiver) {
+                const value = Reflect.get(target, prop, receiver);
+                if (ARRAY_MUTATORS.includes(prop)) {
+                    return function (...args) {
+                        const result = Array.prototype[prop].apply(target, args);
+                        onChange(prop);
+                        return result;
+                    };
+                }
+                return value;
+            },
+            set(target, prop, value) {
+                target[prop] = (typeof value === 'object' && value !== null && !Array.isArray(value))
+                    ? makeReactive(value, onChange)
+                    : value;
+                onChange(prop);
+                return true;
+            }
+        };
+        return new Proxy(obj, handler);
+    }
+
+    // Para objetos planos: interceptar set
     const handler = {
         set(target, prop, value) {
             target[prop] = value;
@@ -18,15 +92,23 @@ function createReactiveState(initial, onChange) {
             return true;
         }
     };
-    for (const key of Object.keys(initial)) {
-        if (typeof initial[key] === 'object' && initial[key] !== null) {
-            initial[key] = new Proxy(initial[key], handler);
+
+    for (const key of Object.keys(obj)) {
+        if (Array.isArray(obj[key])) {
+            obj[key] = makeReactive(obj[key], onChange);
+        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+            obj[key] = new Proxy(obj[key], handler);
         }
     }
-    return new Proxy(initial, handler);
+    return new Proxy(obj, handler);
+}
+
+function createReactiveState(initial, onChange) {
+    return makeReactive(initial, onChange);
 }
 
 const onStateChange = (prop) => {
+    saveCaseData();
     const { $, show, hide } = document.ccHelpers; // Inject helpers for binding
     if (!$) return;
     const flField = $('#fieldFechaLimite');
@@ -104,13 +186,13 @@ export const caseData = createReactiveState({
     acta_defuncion: {
         numero_acta: '',
         year_acta: '',               // NOT NULL (CHECK >= 1900)
-        parroquia: ''                // Texto libre asignado directamente
+        parroquia_registro_id: ''    // FK a parroquias — coincide con columna en sim_actas_defunciones
     },
 
     // ── Sección 6: Domicilio fiscal del causante (→ sim_persona_direcciones) ──
     // Nombres corregidos para coincidir con columnas de la BD
     domicilio_causante: {
-        tipo_direccion: 'Domicilio_Fiscal',   // ENUM corregido
+        tipo_direccion: 'Casa_Matriz_Establecimiento_Principal',   // ENUM válido en sim_persona_direcciones
         tipo_vialidad: '',                     // antes: vialidad
         tipo_inmueble: '',                     // antes: tipo_vivienda
         nombre_vialidad: '',

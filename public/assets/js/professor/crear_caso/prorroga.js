@@ -1,5 +1,5 @@
 import { caseData, UIState } from './state.js';
-import { $, $$ } from './utils.js';
+import { $, $$, showToast } from './utils.js';
 
 /**
  * Renderiza el listado de prórrogas en la tabla y maneja su estado vacío
@@ -60,12 +60,12 @@ export function saveProrroga() {
 
     // Validación: Todos los campos requeridos
     if (!fecha_solicitud || !nro_resolucion.trim() || !fecha_resolucion || !plazo_dias || !fecha_vencimiento) {
-        alert("Por favor, complete todos los campos de la prórroga antes de agregarla.");
+        showToast('Complete todos los campos de la prórroga antes de agregarla.');
         return;
     }
 
     if (parseInt(plazo_dias) < 1) {
-        alert("El plazo otorgado debe ser al menos 1 día.");
+        showToast('El plazo otorgado debe ser al menos 1 día.');
         return;
     }
 

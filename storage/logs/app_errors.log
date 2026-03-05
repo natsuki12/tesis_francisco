@@ -4579,3 +4579,159 @@ Stack trace:
 #3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/api/tipos-pasi...')
 #4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
 #5 {main}
+[05-Mar-2026 04:38:12 Europe/Berlin] [CRITICAL] Class "App\Core\Database\DB" not found in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php:15
+[05-Mar-2026 04:38:12 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php(18): App\Modules\Professor\Models\Casos\CasosModel->__construct()
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(101): App\Modules\Professor\Controllers\Casos\CasosController->__construct(Object(App\Core\App))
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}
+[05-Mar-2026 04:38:13 Europe/Berlin] [CRITICAL] Class "App\Core\Database\DB" not found in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php:15
+[05-Mar-2026 04:38:13 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php(18): App\Modules\Professor\Models\Casos\CasosModel->__construct()
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(101): App\Modules\Professor\Controllers\Casos\CasosController->__construct(Object(App\Core\App))
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}
+[05-Mar-2026 04:38:25 Europe/Berlin] [CRITICAL] Class "App\Core\Database\DB" not found in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php:15
+[05-Mar-2026 04:38:25 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php(18): App\Modules\Professor\Models\Casos\CasosModel->__construct()
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(101): App\Modules\Professor\Controllers\Casos\CasosController->__construct(Object(App\Core\App))
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}
+[05-Mar-2026 04:38:31 Europe/Berlin] [CRITICAL] Class "App\Core\Database\DB" not found in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php:15
+[05-Mar-2026 04:38:31 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php(18): App\Modules\Professor\Models\Casos\CasosModel->__construct()
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(101): App\Modules\Professor\Controllers\Casos\CasosController->__construct(Object(App\Core\App))
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}
+[05-Mar-2026 04:38:47 Europe/Berlin] [CRITICAL] Call to undefined method App\Core\DB::getConnection() in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php:15
+[05-Mar-2026 04:38:47 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php(18): App\Modules\Professor\Models\Casos\CasosModel->__construct()
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(101): App\Modules\Professor\Controllers\Casos\CasosController->__construct(Object(App\Core\App))
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}
+[05-Mar-2026 04:38:48 Europe/Berlin] [CRITICAL] Call to undefined method App\Core\DB::getConnection() in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php:15
+[05-Mar-2026 04:38:48 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php(18): App\Modules\Professor\Models\Casos\CasosModel->__construct()
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(101): App\Modules\Professor\Controllers\Casos\CasosController->__construct(Object(App\Core\App))
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}
+[05-Mar-2026 04:39:13 Europe/Berlin] [CRITICAL] Call to undefined method App\Core\DB::getConnection() in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php:15
+[05-Mar-2026 04:39:13 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php(18): App\Modules\Professor\Models\Casos\CasosModel->__construct()
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(101): App\Modules\Professor\Controllers\Casos\CasosController->__construct(Object(App\Core\App))
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}
+[05-Mar-2026 04:39:13 Europe/Berlin] [CRITICAL] Call to undefined method App\Core\DB::getConnection() in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php:15
+[05-Mar-2026 04:39:13 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php(18): App\Modules\Professor\Models\Casos\CasosModel->__construct()
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(101): App\Modules\Professor\Controllers\Casos\CasosController->__construct(Object(App\Core\App))
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}
+[05-Mar-2026 04:39:14 Europe/Berlin] [CRITICAL] Call to undefined method App\Core\DB::getConnection() in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php:15
+[05-Mar-2026 04:39:14 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php(18): App\Modules\Professor\Models\Casos\CasosModel->__construct()
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(101): App\Modules\Professor\Controllers\Casos\CasosController->__construct(Object(App\Core\App))
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#4 {main}
+[05-Mar-2026 04:39:34 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:39:34 Europe/Berlin] [CRITICAL] SQLSTATE[HY093]: Invalid parameter number in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php:77
+[05-Mar-2026 04:39:34 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php(77): PDOStatement->execute(Array)
+#1 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php(37): App\Modules\Professor\Models\Casos\CasosModel->getStatsByProfesor(1)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(110): App\Modules\Professor\Controllers\Casos\CasosController->index()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[05-Mar-2026 04:39:34 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:39:34 Europe/Berlin] [CRITICAL] SQLSTATE[HY093]: Invalid parameter number in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php:77
+[05-Mar-2026 04:39:34 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php(77): PDOStatement->execute(Array)
+#1 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php(37): App\Modules\Professor\Models\Casos\CasosModel->getStatsByProfesor(1)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(110): App\Modules\Professor\Controllers\Casos\CasosController->index()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[05-Mar-2026 04:40:12 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:40:12 Europe/Berlin] [CRITICAL] SQLSTATE[HY093]: Invalid parameter number in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php:77
+[05-Mar-2026 04:40:12 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\CasosModel.php(77): PDOStatement->execute(Array)
+#1 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php(37): App\Modules\Professor\Models\Casos\CasosModel->getStatsByProfesor(1)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(110): App\Modules\Professor\Controllers\Casos\CasosController->index()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(128): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[05-Mar-2026 04:41:04 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:15 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:16 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:16 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:16 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:17 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:17 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:18 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:18 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:19 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:20 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:21 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:21 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:21 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:22 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:22 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:23 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:23 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:24 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:24 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:25 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:25 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:25 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:26 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:26 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:27 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:27 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:27 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:27 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:27 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:28 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:28 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:28 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:28 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:28 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:28 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:29 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:29 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:29 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:29 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:29 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:30 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:30 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:30 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:30 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:30 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:30 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:31 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:31 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:31 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:31 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:31 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:31 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:32 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:32 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:32 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:32 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:32 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:32 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:33 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:33 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:33 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:48 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:48 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:48 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:48 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:49 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:49 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:49 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:50 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:50 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:50 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:50 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:51 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:51 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:51 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:41:52 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26
+[05-Mar-2026 04:42:31 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\Casos\CasosController.php on line 26

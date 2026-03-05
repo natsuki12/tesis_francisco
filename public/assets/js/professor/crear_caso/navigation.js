@@ -1,5 +1,5 @@
 import { $, $$, show, hide, formatBs } from './utils.js';
-import { caseData, UIState } from './state.js';
+import { caseData, UIState, saveCaseData } from './state.js';
 import { renderHerederos } from './herederos.js';
 import { renderInventario } from './inventario.js';
 import { renderSummary, renderStudents } from './summary.js';
@@ -7,6 +7,7 @@ import { renderSummary, renderStudents } from './summary.js';
 export function setStep(n) {
     n = Math.max(0, Math.min(3, n));
     UIState.currentStep = n;
+    saveCaseData();
 
     // Toggle step visibility
     $$('.cc-step').forEach((el, i) => {

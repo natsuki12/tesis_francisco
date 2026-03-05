@@ -1,5 +1,5 @@
 import { caseData, UIState } from './state.js';
-import { $, show, hide } from './utils.js';
+import { $, show, hide, showToast } from './utils.js';
 
 // Control de peticiones para evitar Race Conditions
 const abortControllers = {
@@ -189,7 +189,7 @@ export function saveDireccion() {
     if (!d.tipo_direccion || !d.tipo_vialidad || !d.tipo_inmueble || !d.nombre_vialidad ||
         !d.nro_inmueble || !d.tipo_nivel || !d.tipo_sector || !d.nro_nivel || !d.nombre_sector ||
         !d.estado || !d.municipio || !d.parroquia || !d.ciudad) {
-        alert("Por favor, complete todos los campos de ubicación requeridos para la dirección.");
+        showToast('Complete todos los campos de ubicación requeridos para la dirección.');
         return;
     }
 

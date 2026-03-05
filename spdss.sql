@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-03-2026 a las 22:32:26
+-- Tiempo de generación: 05-03-2026 a las 04:18:43
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -73,7 +73,22 @@ INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento
 (28, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 04:26:52'),
 (29, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 04:37:20'),
 (30, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 04:37:34'),
-(31, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 16:26:07');
+(31, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 16:26:07'),
+(32, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 22:20:07'),
+(33, NULL, 'fadr2001@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 22:21:20'),
+(34, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 22:22:57'),
+(35, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 01:32:45'),
+(36, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 03:42:49'),
+(37, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 04:04:00'),
+(38, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 04:04:08'),
+(39, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 04:05:01'),
+(40, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 04:05:09'),
+(41, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 06:06:45'),
+(42, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 06:22:31'),
+(43, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 22:41:21'),
+(44, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 00:42:23'),
+(45, NULL, 'admin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 02:25:48'),
+(46, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 02:48:26');
 
 -- --------------------------------------------------------
 
@@ -4953,8 +4968,8 @@ CREATE TABLE `sim_actas_defunciones` (
   `sim_persona_id` bigint(20) UNSIGNED NOT NULL,
   `fecha_fallecimiento` date NOT NULL,
   `numero_acta` varchar(50) DEFAULT NULL,
-  `year_acta` year(4) NOT NULL,
-  `parroquia_registro_id` bigint(20) UNSIGNED NOT NULL,
+  `year_acta` year(4) DEFAULT NULL COMMENT 'NULL permitido para actas de premuertos',
+  `parroquia_registro_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'NULL permitido para actas de premuertos donde solo se registra fecha',
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ;
@@ -4971,9 +4986,11 @@ CREATE TABLE `sim_casos_estudios` (
   `causante_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Persona cuya sucesión se analiza en el caso',
   `representante_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Persona designada como representante de la sucesión ante el SENIAT',
   `unidad_tributaria_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'UT sugerida según año de fallecimiento, seleccionada del catálogo',
+  `tipo_sucesion` enum('Con_Cedula','Sin_Cedula') DEFAULT 'Con_Cedula' COMMENT 'Determina qué campos se requieren del causante y qué formulario se muestra en el stepper.',
   `titulo` varchar(150) NOT NULL,
   `descripcion` text DEFAULT NULL,
   `estado` enum('Borrador','Publicado','Inactivo','Eliminado') NOT NULL DEFAULT 'Borrador' COMMENT 'Borrador=en construcción, Publicado=visible para estudiantes, Inactivo=oculto, Eliminado=papelera',
+  `borrador_json` longtext DEFAULT NULL COMMENT 'JSON temporal del stepper mientras estado=Borrador. Se limpia al publicar.',
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -5002,7 +5019,6 @@ CREATE TABLE `sim_caso_asignaciones` (
 CREATE TABLE `sim_caso_bienes_inmuebles` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
-  `tipo_bien_inmueble_id` tinyint(3) UNSIGNED NOT NULL,
   `es_vivienda_principal` tinyint(1) NOT NULL DEFAULT 0,
   `es_bien_litigioso` tinyint(1) NOT NULL DEFAULT 0,
   `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
@@ -5065,6 +5081,19 @@ CREATE TABLE `sim_caso_bienes_muebles` (
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Soft delete: NULL=activo, con fecha=eliminado',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_caso_bien_inmueble_tipo_rel`
+--
+
+CREATE TABLE `sim_caso_bien_inmueble_tipo_rel` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_inmueble_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_bien_inmueble_id` tinyint(3) UNSIGNED NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -5804,6 +5833,13 @@ CREATE TABLE `sim_empresas` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `sim_empresas`
+--
+
+INSERT INTO `sim_empresas` (`id`, `rif`, `razon_social`, `activo`, `created_at`, `updated_at`) VALUES
+(1, 'J123456789', 'unimar', 1, '2026-03-05 02:29:50', '2026-03-05 02:29:50');
+
 -- --------------------------------------------------------
 
 --
@@ -5834,7 +5870,6 @@ CREATE TABLE `sim_intentos` (
 CREATE TABLE `sim_intento_bienes_inmuebles` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `intento_id` bigint(20) UNSIGNED NOT NULL,
-  `tipo_bien_inmueble_id` tinyint(3) UNSIGNED NOT NULL,
   `es_vivienda_principal` tinyint(1) NOT NULL DEFAULT 0,
   `es_bien_litigioso` tinyint(1) NOT NULL DEFAULT 0,
   `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
@@ -5897,6 +5932,19 @@ CREATE TABLE `sim_intento_bienes_muebles` (
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Soft delete: NULL=activo, con fecha=eliminado',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_intento_bien_inmueble_tipo_rel`
+--
+
+CREATE TABLE `sim_intento_bien_inmueble_tipo_rel` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bien_inmueble_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_bien_inmueble_id` tinyint(3) UNSIGNED NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -6259,7 +6307,7 @@ CREATE TABLE `sim_intento_tipoherencias` (
 
 CREATE TABLE `sim_personas` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `tipo_cedula` enum('V','E') NOT NULL DEFAULT 'V',
+  `tipo_cedula` enum('V','E','No_Aplica') NOT NULL DEFAULT 'V',
   `nacionalidad` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Nacionalidad del causante/participante, FK a tabla paises',
   `cedula` varchar(20) DEFAULT NULL COMMENT 'NULL permitido para casos de causante sin cédula',
   `pasaporte` varchar(20) DEFAULT NULL COMMENT 'Número de pasaporte, en caso de ser necesario en la declaracion',
@@ -6526,8 +6574,7 @@ ALTER TABLE `sim_caso_asignaciones`
 --
 ALTER TABLE `sim_caso_bienes_inmuebles`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_cbi_caso` (`caso_estudio_id`),
-  ADD KEY `fk_cbi_tipo` (`tipo_bien_inmueble_id`);
+  ADD KEY `fk_cbi_caso` (`caso_estudio_id`);
 
 --
 -- Indices de la tabla `sim_caso_bienes_litigiosos`
@@ -6544,6 +6591,14 @@ ALTER TABLE `sim_caso_bienes_muebles`
   ADD KEY `fk_cbm_caso` (`caso_estudio_id`),
   ADD KEY `fk_cbm_categoria` (`categoria_bien_mueble_id`),
   ADD KEY `fk_cbm_tipo` (`tipo_bien_mueble_id`);
+
+--
+-- Indices de la tabla `sim_caso_bien_inmueble_tipo_rel`
+--
+ALTER TABLE `sim_caso_bien_inmueble_tipo_rel`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_cbitr_bien_tipo` (`bien_inmueble_id`,`tipo_bien_inmueble_id`),
+  ADD KEY `fk_cbitr_tipo` (`tipo_bien_inmueble_id`);
 
 --
 -- Indices de la tabla `sim_caso_bm_acciones`
@@ -6797,8 +6852,7 @@ ALTER TABLE `sim_intentos`
 --
 ALTER TABLE `sim_intento_bienes_inmuebles`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_ibi_intento` (`intento_id`),
-  ADD KEY `fk_ibi_tipo` (`tipo_bien_inmueble_id`);
+  ADD KEY `fk_ibi_intento` (`intento_id`);
 
 --
 -- Indices de la tabla `sim_intento_bienes_litigiosos`
@@ -6815,6 +6869,14 @@ ALTER TABLE `sim_intento_bienes_muebles`
   ADD KEY `fk_ibm_intento` (`intento_id`),
   ADD KEY `fk_ibm_categoria` (`categoria_bien_mueble_id`),
   ADD KEY `fk_ibm_tipo` (`tipo_bien_mueble_id`);
+
+--
+-- Indices de la tabla `sim_intento_bien_inmueble_tipo_rel`
+--
+ALTER TABLE `sim_intento_bien_inmueble_tipo_rel`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ibibtr_bien_tipo` (`bien_inmueble_id`,`tipo_bien_inmueble_id`),
+  ADD KEY `fk_ibibtr_tipo` (`tipo_bien_inmueble_id`);
 
 --
 -- Indices de la tabla `sim_intento_bm_acciones`
@@ -7028,7 +7090,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `bitacora_accesos`
 --
 ALTER TABLE `bitacora_accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -7160,6 +7222,12 @@ ALTER TABLE `sim_caso_bienes_litigiosos`
 -- AUTO_INCREMENT de la tabla `sim_caso_bienes_muebles`
 --
 ALTER TABLE `sim_caso_bienes_muebles`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_caso_bien_inmueble_tipo_rel`
+--
+ALTER TABLE `sim_caso_bien_inmueble_tipo_rel`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -7340,7 +7408,7 @@ ALTER TABLE `sim_cat_unidades_tributarias`
 -- AUTO_INCREMENT de la tabla `sim_empresas`
 --
 ALTER TABLE `sim_empresas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_intentos`
@@ -7364,6 +7432,12 @@ ALTER TABLE `sim_intento_bienes_litigiosos`
 -- AUTO_INCREMENT de la tabla `sim_intento_bienes_muebles`
 --
 ALTER TABLE `sim_intento_bienes_muebles`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_intento_bien_inmueble_tipo_rel`
+--
+ALTER TABLE `sim_intento_bien_inmueble_tipo_rel`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -7618,8 +7692,7 @@ ALTER TABLE `sim_caso_asignaciones`
 -- Filtros para la tabla `sim_caso_bienes_inmuebles`
 --
 ALTER TABLE `sim_caso_bienes_inmuebles`
-  ADD CONSTRAINT `fk_cbi_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`),
-  ADD CONSTRAINT `fk_cbi_tipo` FOREIGN KEY (`tipo_bien_inmueble_id`) REFERENCES `sim_cat_tipos_bien_inmueble` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_cbi_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`);
 
 --
 -- Filtros para la tabla `sim_caso_bienes_litigiosos`
@@ -7634,6 +7707,13 @@ ALTER TABLE `sim_caso_bienes_muebles`
   ADD CONSTRAINT `fk_cbm_caso` FOREIGN KEY (`caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`),
   ADD CONSTRAINT `fk_cbm_categoria` FOREIGN KEY (`categoria_bien_mueble_id`) REFERENCES `sim_cat_categorias_bien_mueble` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_cbm_tipo` FOREIGN KEY (`tipo_bien_mueble_id`) REFERENCES `sim_cat_tipos_bien_mueble` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_caso_bien_inmueble_tipo_rel`
+--
+ALTER TABLE `sim_caso_bien_inmueble_tipo_rel`
+  ADD CONSTRAINT `fk_cbitr_bien` FOREIGN KEY (`bien_inmueble_id`) REFERENCES `sim_caso_bienes_inmuebles` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_cbitr_tipo` FOREIGN KEY (`tipo_bien_inmueble_id`) REFERENCES `sim_cat_tipos_bien_inmueble` (`id`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `sim_caso_bm_acciones`
@@ -7792,8 +7872,7 @@ ALTER TABLE `sim_intentos`
 -- Filtros para la tabla `sim_intento_bienes_inmuebles`
 --
 ALTER TABLE `sim_intento_bienes_inmuebles`
-  ADD CONSTRAINT `fk_ibi_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`),
-  ADD CONSTRAINT `fk_ibi_tipo` FOREIGN KEY (`tipo_bien_inmueble_id`) REFERENCES `sim_cat_tipos_bien_inmueble` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_ibi_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`);
 
 --
 -- Filtros para la tabla `sim_intento_bienes_litigiosos`
@@ -7808,6 +7887,13 @@ ALTER TABLE `sim_intento_bienes_muebles`
   ADD CONSTRAINT `fk_ibm_categoria` FOREIGN KEY (`categoria_bien_mueble_id`) REFERENCES `sim_cat_categorias_bien_mueble` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_ibm_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`),
   ADD CONSTRAINT `fk_ibm_tipo` FOREIGN KEY (`tipo_bien_mueble_id`) REFERENCES `sim_cat_tipos_bien_mueble` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_intento_bien_inmueble_tipo_rel`
+--
+ALTER TABLE `sim_intento_bien_inmueble_tipo_rel`
+  ADD CONSTRAINT `fk_ibibtr_bien` FOREIGN KEY (`bien_inmueble_id`) REFERENCES `sim_intento_bienes_inmuebles` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_ibibtr_tipo` FOREIGN KEY (`tipo_bien_inmueble_id`) REFERENCES `sim_cat_tipos_bien_inmueble` (`id`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `sim_intento_bm_acciones`

@@ -1,4 +1,4 @@
-import { $, $$ } from './utils.js';
+import { $, $$, showToast } from './utils.js';
 import { caseData, UIState } from './state.js';
 import { renderHerederos, renderHerederosPremuertos } from './herederos.js';
 import { renderInventario } from './inventario.js';
@@ -1069,7 +1069,7 @@ export function saveModal() {
   if (config.validate) {
     const error = config.validate(form);
     if (error) {
-      alert(error);
+      showToast(error);
       return;
     }
   }

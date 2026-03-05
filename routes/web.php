@@ -110,11 +110,22 @@ $router->get('/servicios_declaracion', function () use ($app, $requireAuth) {
 });
 
 // Casos Sucesorales (Profesor)
-$router->get('/casos-sucesorales', [CasosController::class, 'index']);
+$router->get('/casos-sucesorales', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return (new CasosController())->index();
+});
 $router->get('/crear-caso', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
     return $app->view('professor/crear_caso');
+});
+
+// API: Guardar/Publicar caso
+$router->post('/api/casos', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return (new CasosController())->store();
 });
 
 // Perfil

@@ -1,5 +1,36 @@
-import { $, $$ } from './utils.js';
-import { caseData, UIState } from './state.js';
+import { $, $$, showToast } from './utils.js';
+import { caseData, UIState, loadCaseData, saveCaseData, clearSavedCaseData } from './state.js';
+
+/**
+ * Envía el caseData completo al backend vía POST /api/casos.
+ * @param {'Borrador'|'Publicado'} modo
+ */
+async function submitCase(modo) {
+    // Fijar el estado antes de enviar
+    caseData.caso.estado = modo;
+
+    try {
+        const res = await fetch('/api/casos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(caseData),
+        });
+        const json = await res.json();
+
+        if (!res.ok || !json.success) {
+            // Mostrar cada error del servidor como toast
+            (json.errors || ['Error desconocido al guardar.']).forEach(err => showToast(err));
+            return;
+        }
+
+        // Éxito
+        showToast(json.message || 'Guardado exitosamente.', 'success');
+        clearSavedCaseData();
+        setTimeout(() => { window.location.href = '/casos-sucesorales'; }, 1500);
+    } catch (err) {
+        showToast('Error de red al guardar el caso: ' + err.message);
+    }
+}
 import { renderHerenciaCheckboxes, initRepresentanteLogic } from './herederos.js';
 import { fetchEstados, initAddressListeners, saveDireccion, renderDirecciones, editDireccion, deleteDireccion } from './direccion.js';
 import { initStepperClicks, setStep, nextStep, prevStep } from './navigation.js';
@@ -15,7 +46,7 @@ window.CC = {
     removeItem, removeMueble,
     saveDireccion, editDireccion, deleteDireccion,
     saveProrroga, deleteProrroga, editProrroga,
-    publish: () => alert('Caso publicado exitosamente (pendiente integración con backend).')
+    publish: () => submitCase('Publicado')
 };
 
 // Global helper access for state changes
@@ -110,6 +141,9 @@ function renderSelects() {
 }
 
 async function init() {
+    // Restore saved data before binding inputs
+    const hadSavedData = loadCaseData();
+
     bindInputs();
     initCollapsibles();
     initTabs();
@@ -124,16 +158,21 @@ async function init() {
     fetchEstados();
     renderDirecciones();
     renderProrrogas();
-    setStep(0);
+
+    // Restore step or start at 0
+    setStep(hadSavedData ? UIState.currentStep : 0);
+
+    // Auto-save before page unload
+    window.addEventListener('beforeunload', () => saveCaseData());
 
     const btnSaveDraft = $('#btnSaveDraft');
     if (btnSaveDraft) {
         btnSaveDraft.addEventListener('click', () => {
             if (!caseData.caso || !caseData.caso.titulo || caseData.caso.titulo.trim() === '') {
-                alert("Por favor, ingrese el Título del Caso antes de guardar el borrador.");
+                showToast('Ingrese el Título del Caso antes de guardar el borrador.');
                 return;
             }
-            alert('Borrador guardado exitosamente (pendiente integración con backend).');
+            submitCase('Borrador');
         });
     }
 }
