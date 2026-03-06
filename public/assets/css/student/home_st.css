@@ -41,8 +41,14 @@
     margin-bottom: 32px;
 }
 
+.dashboard-stats h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-800);
+    margin-bottom: 4px;
+}
+
 .page-header h1 {
-    font-family: 'DM Sans', sans-serif;
     font-size: 26px;
     font-weight: 700;
     color: var(--gray-800);
@@ -50,7 +56,6 @@
 }
 
 .page-header p {
-    font-family: 'DM Sans', sans-serif;
     font-size: 15px;
     color: var(--gray-500);
 }
@@ -70,7 +75,7 @@
     box-shadow: var(--shadow-card);
     border: 1px solid var(--gray-100);
     transition: box-shadow var(--transition), transform var(--transition);
-    font-family: 'DM Sans', sans-serif;
+
 }
 
 .stat-card:hover {
@@ -149,7 +154,7 @@
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    font-family: 'DM Sans', sans-serif;
+
 }
 
 .action-card::before {
@@ -277,7 +282,6 @@
     box-shadow: var(--shadow-card);
     border: 1px solid var(--gray-100);
     overflow: hidden;
-    font-family: 'DM Sans', sans-serif;
 }
 
 .panel-header {

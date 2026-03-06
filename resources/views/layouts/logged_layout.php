@@ -10,21 +10,28 @@ if (!isset($user)) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $pageTitle ?? 'Simulador' ?> - UNIMAR</title>
-    
+
     <!-- Google Fonts (v2 Design System) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- CSS Base del Layout (variables y estructura) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS Base Global (Variables y Tipografía) -->
+    <link rel="stylesheet" href="<?= asset('css/base.css') ?>">
+
+    <!-- CSS Base del Layout (estructura) -->
     <style>
         /* Variables globales */
         :root {
-            --sim-blue: #0056AC; /* Azul actualizado según referencia */
+            --sim-blue: #0056AC;
+            /* Azul actualizado según referencia */
             --sim-blue-dark: #003d7a;
             --sim-blue-light: #e6f0fa;
             --sim-text: #1f2937;
@@ -39,10 +46,17 @@ if (!isset($user)) {
             --sidebar-collapsed-width: 60px;
         }
 
-        * { box-sizing: border-box; }
-        html, body { height: 100%; margin: 0; }
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
         body {
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
             color: var(--sim-text);
             background: var(--sim-bg);
             line-height: 1.5;
@@ -58,6 +72,7 @@ if (!isset($user)) {
             height: 100vh;
             overflow: hidden;
         }
+
         .sim-layout--sidebar-collapsed {
             grid-template-columns: var(--sidebar-collapsed-width) 1fr;
         }
@@ -68,6 +83,7 @@ if (!isset($user)) {
                 grid-template-areas: "header" "main";
                 grid-template-columns: 1fr;
             }
+
             .sim-main {
                 padding: 24px 16px;
             }
@@ -80,6 +96,7 @@ if (!isset($user)) {
             overflow-x: hidden;
             padding: 32px 36px;
         }
+
         .sim-container {
             width: 100%;
             max-width: 100%;
@@ -87,14 +104,16 @@ if (!isset($user)) {
             padding: 0;
         }
     </style>
-    
+
     <!-- CSS de los parciales -->
     <link rel="stylesheet" href="<?= asset('css/partials/logged/header_logged.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/partials/logged/sidebar_logged.css') ?>">
-    
+
     <!-- CSS extra de la página (si existe) -->
-    <?php if (isset($extraCss)) echo $extraCss; ?>
+    <?php if (isset($extraCss))
+        echo $extraCss; ?>
 </head>
+
 <body class="sim-layout">
 
     <?php include __DIR__ . '/../partials/logged/header_logged.php'; ?>
@@ -112,7 +131,7 @@ if (!isset($user)) {
         const sidebar = document.getElementById('sidebar');
         const body = document.body;
 
-        if(toggle && sidebar) {
+        if (toggle && sidebar) {
             toggle.addEventListener('click', () => {
                 if (window.innerWidth <= 768) {
                     body.classList.toggle('sim-layout--sidebar-open');
@@ -127,12 +146,14 @@ if (!isset($user)) {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 const parent = btn.closest('.sim-nav__item--parent');
-                if(parent) parent.classList.toggle('sim-nav__item--expanded');
+                if (parent) parent.classList.toggle('sim-nav__item--expanded');
             });
         });
     </script>
 
     <!-- JS extra de la página (si existe) -->
-    <?php if (isset($extraJs)) echo $extraJs; ?>
+    <?php if (isset($extraJs))
+        echo $extraJs; ?>
 </body>
+
 </html>

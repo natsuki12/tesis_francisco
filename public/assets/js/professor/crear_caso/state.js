@@ -11,7 +11,15 @@ const STORAGE_KEY = 'crearCaso_caseData';
 const STORAGE_KEY_STEP = 'crearCaso_currentStep';
 
 let _saveTimer = null;
+let _savingDisabled = false;
+
+export function disableSaving() {
+    _savingDisabled = true;
+    clearTimeout(_saveTimer);
+}
+
 export function saveCaseData() {
+    if (_savingDisabled) return;
     clearTimeout(_saveTimer);
     _saveTimer = setTimeout(() => {
         try {
@@ -52,54 +60,59 @@ export function clearSavedCaseData() {
     sessionStorage.removeItem(STORAGE_KEY_STEP);
 }
 
-// ── State reactivo ──
+/**
+ * Hydrate caseData with server data (for edit mode).
+ * Works like loadCaseData but from a plain object instead of sessionStorage.
+ */
+export function hydrateCaseData(serverData) {
+    if (!serverData || typeof serverData !== 'object') return;
+    _savingDisabled = true; // Prevent auto-save during hydration
+    for (const key of Object.keys(serverData)) {
+        if (key in caseData) {
+            if (Array.isArray(serverData[key])) {
+                caseData[key].length = 0;
+                serverData[key].forEach(item => caseData[key].push(item));
+            } else if (typeof serverData[key] === 'object' && serverData[key] !== null) {
+                Object.assign(caseData[key], serverData[key]);
+            } else {
+                // Prevenir sobreescribir un objeto reactivo con null
+                if (serverData[key] === null && typeof caseData[key] === 'object' && caseData[key] !== null) {
+                    continue;
+                }
+                caseData[key] = serverData[key];
+            }
+        }
+    }
+    _savingDisabled = false;
+}
 
-const ARRAY_MUTATORS = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'];
+// ── State reactivo ──
 
 function makeReactive(obj, onChange) {
     if (obj === null || typeof obj !== 'object') return obj;
 
-    // Para arrays: interceptar métodos mutadores
-    if (Array.isArray(obj)) {
-        const handler = {
-            get(target, prop, receiver) {
-                const value = Reflect.get(target, prop, receiver);
-                if (ARRAY_MUTATORS.includes(prop)) {
-                    return function (...args) {
-                        const result = Array.prototype[prop].apply(target, args);
-                        onChange(prop);
-                        return result;
-                    };
-                }
-                return value;
-            },
-            set(target, prop, value) {
-                target[prop] = (typeof value === 'object' && value !== null && !Array.isArray(value))
-                    ? makeReactive(value, onChange)
-                    : value;
-                onChange(prop);
-                return true;
-            }
-        };
-        return new Proxy(obj, handler);
-    }
-
-    // Para objetos planos: interceptar set
     const handler = {
         set(target, prop, value) {
-            target[prop] = value;
+            // Recurse heavily into newly assigned objects/arrays
+            target[prop] = typeof value === 'object' && value !== null
+                ? makeReactive(value, onChange)
+                : value;
+            onChange(prop);
+            return true;
+        },
+        deleteProperty(target, prop) {
+            delete target[prop];
             onChange(prop);
             return true;
         }
     };
 
+    // Make initial properties reactive
+    // Object.keys works for both arrays (returns string indices) and plain objects
     for (const key of Object.keys(obj)) {
-        if (Array.isArray(obj[key])) {
-            obj[key] = makeReactive(obj[key], onChange);
-        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-            obj[key] = new Proxy(obj[key], handler);
-        }
+        obj[key] = makeReactive(obj[key], onChange);
     }
+
     return new Proxy(obj, handler);
 }
 
@@ -154,6 +167,7 @@ export const caseData = createReactiveState({
         estado: 'Borrador',
         tipo_sucesion: 'Con Cédula'
     },
+    caso_id: null,  // ID del borrador existente (para re-saves)
 
     // ── Sección 1: Configuración de asignación (→ sim_caso_configs) ──
     config: {

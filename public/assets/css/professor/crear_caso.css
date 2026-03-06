@@ -122,7 +122,6 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: inherit;
     font-size: 13px;
     font-weight: 600;
     border: none;
@@ -566,7 +565,6 @@
 .cc-field textarea {
     width: 100%;
     padding: 8px 12px;
-    font-family: inherit;
     font-size: 13px;
     color: var(--cc-slate-700);
     background: var(--cc-white);

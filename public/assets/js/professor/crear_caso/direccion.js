@@ -14,9 +14,9 @@ const abortControllers = {
     parroquias_acta: null
 };
 
-function fetchGeneric(url, type, selectSelector, defaultText, stateObj, fieldName) {
+function fetchGeneric(url, type, selectSelector, defaultText, stateObj, fieldName, preserveState = false) {
     const select = document.querySelector(selectSelector);
-    if (!select) return;
+    if (!select) return Promise.resolve();
 
     if (abortControllers[type]) {
         abortControllers[type].abort();
@@ -24,15 +24,18 @@ function fetchGeneric(url, type, selectSelector, defaultText, stateObj, fieldNam
     abortControllers[type] = new AbortController();
     const signal = abortControllers[type].signal;
 
+    // Guardar valor actual antes de limpiar
+    const savedValue = (preserveState && stateObj && fieldName) ? stateObj[fieldName] : null;
+
     select.innerHTML = '<option value="">Cargando...</option>';
     select.disabled = true;
 
-    // Limpiar el campo en el state
-    if (stateObj && fieldName && stateObj[fieldName] !== undefined) {
+    // Solo limpiar el campo si NO estamos preservando
+    if (!preserveState && stateObj && fieldName && stateObj[fieldName] !== undefined) {
         stateObj[fieldName] = '';
     }
 
-    fetch(url, { signal })
+    return fetch(url, { signal })
         .then(async response => {
             const text = await response.text();
             if (!response.ok) throw new Error(`Server Error: ${response.status} - ${text}`);
@@ -63,7 +66,13 @@ function fetchGeneric(url, type, selectSelector, defaultText, stateObj, fieldNam
         .finally(() => {
             if (!signal.aborted) {
                 select.disabled = false;
-                select.value = "";
+                if (preserveState && savedValue) {
+                    // Restaurar valor guardado del state
+                    select.value = savedValue;
+                    if (stateObj && fieldName) stateObj[fieldName] = savedValue;
+                } else if (!preserveState) {
+                    select.value = "";
+                }
             }
         });
 }
@@ -273,6 +282,47 @@ export function deleteDireccion(index) {
             $('#btnSaveDireccion').innerText = "+ Agregar Dirección";
         }
         renderDirecciones();
+    }
+}
+
+/**
+ * Restaura la cascada completa de dirección usando los valores persistidos en caseData.
+ * Se usa al recargar la página para reconstruir los selects sin perder los valores guardados.
+ */
+export async function restoreAddressCascade() {
+    if (!caseData.domicilio_causante) {
+        caseData.domicilio_causante = {};
+    }
+    const d = caseData.domicilio_causante;
+    const baseUrl = getBaseUrl();
+
+    // 1. Cargar estados y restaurar valor
+    await fetchGeneric(`${baseUrl}/api/estados`, 'estados',
+        '[data-bind="domicilio_causante.estado"]', 'Seleccionar Estado',
+        d, 'estado', true);
+
+    // 2. Si había un estado seleccionado, cargar municipios y zonas
+    if (d.estado) {
+        await Promise.all([
+            fetchGeneric(`${baseUrl}/api/municipios?estado_id=${d.estado}`, 'municipios',
+                '[data-bind="domicilio_causante.municipio"]', 'Seleccionar Municipio',
+                d, 'municipio', true),
+            fetchGeneric(`${baseUrl}/api/zonas-postales?estado_id=${d.estado}`, 'zonas',
+                '[data-bind="domicilio_causante.codigo_postal_id"]', 'SELECCIONAR',
+                d, 'codigo_postal_id', true),
+        ]);
+    }
+
+    // 3. Si había un municipio seleccionado, cargar parroquias y ciudades
+    if (d.municipio) {
+        await Promise.all([
+            fetchGeneric(`${baseUrl}/api/parroquias?municipio_id=${d.municipio}`, 'parroquias',
+                '[data-bind="domicilio_causante.parroquia"]', 'Seleccionar Parroquia',
+                d, 'parroquia', true),
+            fetchGeneric(`${baseUrl}/api/ciudades?municipio_id=${d.municipio}`, 'ciudades',
+                '[data-bind="domicilio_causante.ciudad"]', 'Seleccionar Ciudad',
+                d, 'ciudad', true),
+        ]);
     }
 }
 

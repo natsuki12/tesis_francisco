@@ -42,8 +42,8 @@ class RegisterService
         // 📝 Guardar datos enviados para repoblar el formulario si hay error
         $_SESSION['flash_old'] = [
             'nacionalidad' => $nacionalidad,
-            'cedula'       => $cedula,
-            'email'        => $email,
+            'cedula' => $cedula,
+            'email' => $email,
         ];
 
         // ⏱️ RATE LIMITING
@@ -88,9 +88,9 @@ class RegisterService
         // Guardar temporalmente
         $_SESSION['temp_user'] = [
             'nacionalidad' => $nacionalidad,
-            'cedula'       => $cedula,
-            'email'        => $email,
-            'rol'          => 'Estudiante'
+            'cedula' => $cedula,
+            'email' => $email,
+            'rol' => 'Estudiante'
         ];
 
         // Generar código seguro
@@ -111,7 +111,7 @@ class RegisterService
         // Enviar correo (mismo HTML)
         $asunto = "Código de Verificación - Simulador SENIAT";
         $mensajeHTML = "
-            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>
+            <div style='font-family: \"Plus Jakarta Sans\", sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>
                 <h2 style='color: #004085; text-align: center;'>Verificación de Cuenta</h2>
                 <p>Su código de seguridad es:</p>
                 <div style='background-color: #f8f9fa; padding: 15px; text-align: center; margin: 20px 0;'>
@@ -147,7 +147,7 @@ class RegisterService
         }
 
         $realCode = $_SESSION['verification_code'] ?? null;
-        $expires  = (int) ($_SESSION['verification_expires_at'] ?? 0);
+        $expires = (int) ($_SESSION['verification_expires_at'] ?? 0);
 
         // Validación formato
         if (!preg_match('/^\d{6}$/', $inputCode)) {
@@ -195,8 +195,8 @@ class RegisterService
 
             // Binding y avance
             $_SESSION['verified_email'] = $_SESSION['temp_user']['email'];
-            $_SESSION['code_verified']  = true;
-            $_SESSION['register_step']  = 3;
+            $_SESSION['code_verified'] = true;
+            $_SESSION['register_step'] = 3;
 
             // Limpiamos SOLO verificación
             unset($_SESSION['verification_code'], $_SESSION['verification_expires_at'], $_SESSION['verification_attempts']);
@@ -231,23 +231,23 @@ class RegisterService
             return "/registro";
         }
 
-        $tempUser  = $_SESSION['temp_user'];
+        $tempUser = $_SESSION['temp_user'];
 
-        $nombres   = (string) ($p['nombres'] ?? '');
+        $nombres = (string) ($p['nombres'] ?? '');
         $apellidos = (string) ($p['apellidos'] ?? '');
-        $fechaNac  = (string) ($p['fecha_nacimiento'] ?? '');
-        $genero    = (string) ($p['genero'] ?? '');
-        $seccionId = (int)    ($p['seccion'] ?? 0);
-        $pass      = (string) ($p['password'] ?? '');
-        $passConf  = (string) ($p['password_confirm'] ?? '');
+        $fechaNac = (string) ($p['fecha_nacimiento'] ?? '');
+        $genero = (string) ($p['genero'] ?? '');
+        $seccionId = (int) ($p['seccion'] ?? 0);
+        $pass = (string) ($p['password'] ?? '');
+        $passConf = (string) ($p['password_confirm'] ?? '');
 
         // 📝 Guardar datos enviados para repoblar el formulario si hay error (sin contraseñas)
         $_SESSION['flash_old'] = [
-            'nombres'          => $nombres,
-            'apellidos'        => $apellidos,
+            'nombres' => $nombres,
+            'apellidos' => $apellidos,
             'fecha_nacimiento' => $fechaNac,
-            'genero'           => $genero,
-            'seccion'          => $seccionId,
+            'genero' => $genero,
+            'seccion' => $seccionId,
         ];
 
         if (strlen($pass) < 8 || !preg_match('/\d/', $pass)) {
@@ -271,13 +271,13 @@ class RegisterService
 
         try {
             $this->model->createFullStudentRegistration([
-                'temp_user'  => $tempUser,
-                'nombres'    => $nombres,
-                'apellidos'  => $apellidos,
-                'fechaNac'   => $fechaNac,
-                'genero'     => $genero,
-                'seccionId'  => $seccionId,
-                'password'   => $pass,
+                'temp_user' => $tempUser,
+                'nombres' => $nombres,
+                'apellidos' => $apellidos,
+                'fechaNac' => $fechaNac,
+                'genero' => $genero,
+                'seccionId' => $seccionId,
+                'password' => $pass,
             ]);
 
             // Regenerar sesión final
@@ -329,9 +329,9 @@ class RegisterService
 
         // Recuperar datos de sesión
         $tempUser = $_SESSION['temp_user'] ?? [];
-        $email    = $tempUser['email'] ?? null;
-        $cedula   = $tempUser['cedula'] ?? null;
-        
+        $email = $tempUser['email'] ?? null;
+        $cedula = $tempUser['cedula'] ?? null;
+
         if (!$email || !$cedula) {
             $this->clearRegistrationSessionKeepRateLimit();
             $this->flash('vista', 'datos');
@@ -366,7 +366,7 @@ class RegisterService
         // Enviar correo (Mismo HTML, quizás cambiar título si se desea)
         $asunto = "Nuevo Código de Verificación - Simulador SENIAT";
         $mensajeHTML = "
-            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>
+            <div style='font-family: \"Plus Jakarta Sans\", sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>
                 <h2 style='color: #004085; text-align: center;'>Solicitud de Nuevo Código</h2>
                 <p>Su nuevo código de seguridad es:</p>
                 <div style='background-color: #f8f9fa; padding: 15px; text-align: center; margin: 20px 0;'>

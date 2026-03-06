@@ -39,6 +39,41 @@ class CasosController
     }
 
     /**
+     * Retorna el JSON de un caso específico para edición.
+     * GET /api/casos/{id}
+     */
+    public function show(int $id)
+    {
+        header('Content-Type: application/json');
+
+        $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+        $result = $this->casosModel->getCasoJsonById($id, $profesorId);
+
+        if (!$result) {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'Caso no encontrado.']);
+            exit;
+        }
+
+        if (!$result['data']) {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'Este caso no tiene datos editables.']);
+            exit;
+        }
+
+        // Inyectar caso_id en el data para que el frontend lo use en re-saves
+        $result['data']['caso_id'] = $result['caso_id'];
+
+        echo json_encode([
+            'success' => true,
+            'caso_id' => $result['caso_id'],
+            'estado' => $result['estado'],
+            'data' => $result['data']
+        ]);
+        exit;
+    }
+
+    /**
      * Guarda un caso completo (Borrador o Publicar).
      * POST /api/casos
      */
@@ -61,9 +96,14 @@ class CasosController
         // Determinar modo
         $modo = ($data['caso']['estado'] ?? 'Borrador') === 'Publicado' ? 'Publicar' : 'Borrador';
 
+        // Sanitizar: XSS escape + coerción de tipos numéricos
+        $data = CasoValidator::sanitize($data);
+
         // Validar
+        $profesorId = (int) $_SESSION['user_id'];
+        $casoId = isset($data['caso_id']) ? (int) $data['caso_id'] : null;
         $validator = new CasoValidator();
-        $errors = $validator->validate($data, $modo);
+        $errors = $validator->validate($data, $modo, $profesorId, $casoId);
 
         if (!empty($errors)) {
             http_response_code(400);
@@ -74,7 +114,13 @@ class CasosController
         // Insertar en la BD
         try {
             $storeModel = new StoreCasoModel();
-            $casoId = $storeModel->store($data, $profesorId);
+
+            if ($modo === 'Borrador') {
+                $inputCasoId = isset($data['caso_id']) ? (int) $data['caso_id'] : null;
+                $casoId = $storeModel->storeDraft($data, $profesorId, $inputCasoId);
+            } else {
+                $casoId = $storeModel->store($data, $profesorId);
+            }
 
             echo json_encode([
                 'success' => true,

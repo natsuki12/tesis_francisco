@@ -115,6 +115,12 @@ $router->get('/casos-sucesorales', function () use ($app, $requireAuth, $require
     $requireRole(2);
     return (new CasosController())->index();
 });
+$router->get('/casos-sucesorales/{id}', function ($id) use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    // TODO: Obtener datos reales del caso $id en el futuro
+    return $app->view('professor/gestionar_caso', ['id' => $id]);
+});
 $router->get('/crear-caso', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
@@ -126,6 +132,13 @@ $router->post('/api/casos', function () use ($requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
     return (new CasosController())->store();
+});
+
+// API: Obtener JSON de un caso para edición
+$router->get('/api/casos/{id}', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return (new CasosController())->show((int) $id);
 });
 
 // Perfil

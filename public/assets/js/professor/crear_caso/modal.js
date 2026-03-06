@@ -79,6 +79,20 @@ const MODAL_CONFIGS = {
       if (form.cedula && !/^\d{6,10}$/.test(form.cedula)) {
         return "La cédula debe contener solo números (entre 6 y 10 dígitos).";
       }
+      // Cédula compuesta: letra + número
+      const fullCed = (form.letra_cedula || '') + (form.cedula || '');
+      // Cédula compuesta no puede ser igual a la del causante
+      if (form.cedula && caseData.causante.cedula) {
+        const causanteCed = (caseData.causante.tipo_cedula || '') + caseData.causante.cedula;
+        if (fullCed === causanteCed) return "La cédula del heredero no puede ser igual a la del causante.";
+      }
+      // Cédula compuesta no puede estar repetida entre herederos
+      if (form.cedula) {
+        const dupH = caseData.herederos.some((h, i) => i !== UIState.editIndex && (h.letra_cedula || '') + (h.cedula || '') === fullCed);
+        if (dupH) return "Ya existe un heredero con esa cédula.";
+        const dupHP = caseData.herederos_premuertos.some(h => (h.letra_cedula || '') + (h.cedula || '') === fullCed);
+        if (dupHP) return "Ya existe un heredero del premuerto con esa cédula.";
+      }
       if (!form.nombres || !form.apellidos || !form.fecha_nacimiento || !form.sexo || !form.estado_civil || !form.caracter || !form.parentesco_id || !form.premuerto) {
         return "Por favor, complete todos los campos obligatorios del heredero.";
       }
@@ -160,7 +174,7 @@ const MODAL_CONFIGS = {
           <select data-modal="premuerto_padre_id">
             <option value="">No aplica...</option>
             ${caseData.herederos.map((h, i) => {
-      if (h.premuerto === 'SI' && i !== UIState.editIndex) {
+      if (h.premuerto === 'SI') {
         return `<option value="${h.cedula}" ${form.premuerto_padre_id == h.cedula ? 'selected' : ''}>${h.nombres} ${h.apellidos}</option>`;
       }
       return '';
@@ -176,6 +190,20 @@ const MODAL_CONFIGS = {
       }
       if (form.cedula && !/^\d{6,10}$/.test(form.cedula)) {
         return "La cédula debe contener solo números (entre 6 y 10 dígitos).";
+      }
+      // Cédula compuesta: letra + número
+      const fullCed = (form.letra_cedula || '') + (form.cedula || '');
+      // Cédula compuesta no puede ser igual a la del causante
+      if (form.cedula && caseData.causante.cedula) {
+        const causanteCed = (caseData.causante.tipo_cedula || '') + caseData.causante.cedula;
+        if (fullCed === causanteCed) return "La cédula del heredero del premuerto no puede ser igual a la del causante.";
+      }
+      // Cédula compuesta no puede estar repetida entre herederos/premuertos
+      if (form.cedula) {
+        const dupH = caseData.herederos.some(h => (h.letra_cedula || '') + (h.cedula || '') === fullCed);
+        if (dupH) return "Ya existe un heredero con esa cédula.";
+        const dupHP = caseData.herederos_premuertos.some((h, i) => i !== UIState.editIndex && (h.letra_cedula || '') + (h.cedula || '') === fullCed);
+        if (dupHP) return "Ya existe un heredero del premuerto con esa cédula.";
       }
       if (!form.nombres || !form.apellidos || !form.fecha_nacimiento || !form.sexo || !form.estado_civil || !form.caracter || !form.parentesco_id || !form.premuerto || !form.premuerto_padre_id) {
         return "Por favor, complete todos los campos (incluyendo a quién representa).";
@@ -768,7 +796,12 @@ const MODAL_CONFIGS = {
 function collectModalFields() {
   const form = {};
   $$('#modalBody [data-modal]').forEach(el => {
-    form[el.dataset.modal] = el.value;
+    if (el.type === 'radio') {
+      // Solo tomar el valor del radio que esté seleccionado
+      if (el.checked) form[el.dataset.modal] = el.value;
+    } else {
+      form[el.dataset.modal] = el.value;
+    }
   });
   return form;
 }
@@ -792,6 +825,10 @@ export function openModal(type, editIdx) {
     formData = { ...caseData.herederos[UIState.editIndex] };
   } else if (type === 'heredero') {
     formData = { tipo_cedula: 'V', caracter: 'HEREDERO', premuerto: 'NO', parentesco_id: '', sexo: '', estado_civil: '' };
+  } else if (type === 'heredero_premuerto' && UIState.editIndex !== null) {
+    formData = { ...caseData.herederos_premuertos[UIState.editIndex] };
+  } else if (type === 'heredero_premuerto') {
+    formData = { tipo_cedula: 'V', caracter: 'HEREDERO', premuerto: 'NO', parentesco_id: '', sexo: '', estado_civil: '', premuerto_padre_id: '' };
   } else if (type === 'inmueble' && UIState.editIndex !== null) {
     formData = { ...caseData.bienes_inmuebles[UIState.editIndex] };
   } else if (type === 'inmueble') {
@@ -880,10 +917,30 @@ export function openModal(type, editIdx) {
     const inputPasa = bodyEl.querySelector('[data-modal="pasaporte"]');
     const selectLetra = bodyEl.querySelector('[data-modal="letra_cedula"]');
 
+    // Helper: ajusta opciones del select de letra según tipo de documento
+    const syncLetraOptions = (tipoDoc) => {
+      if (!selectLetra) return;
+      if (tipoDoc === 'RIF') {
+        // RIF → solo J, deshabilitado
+        selectLetra.innerHTML = '<option value="J" selected>J</option>';
+        selectLetra.value = 'J';
+        selectLetra.disabled = true;
+      } else {
+        // Cédula → V / E, habilitado
+        const currentVal = selectLetra.value;
+        selectLetra.innerHTML = `
+          <option value="V" ${currentVal === 'V' || !currentVal ? 'selected' : ''}>V</option>
+          <option value="E" ${currentVal === 'E' ? 'selected' : ''}>E</option>
+        `;
+        selectLetra.disabled = false;
+      }
+    };
+
     if (radiosDoc.length > 0 && inputCed && inputPasa) {
       radiosDoc.forEach(r => r.addEventListener('change', (e) => {
-        if (e.target.checked && lblDoc) {
-          lblDoc.innerHTML = e.target.value === 'RIF' ? 'RIF <span class="req">*</span>' : 'CÉDULA <span class="req">*</span>';
+        if (e.target.checked) {
+          if (lblDoc) lblDoc.innerHTML = e.target.value === 'RIF' ? 'RIF <span class="req">*</span>' : 'CÉDULA <span class="req">*</span>';
+          syncLetraOptions(e.target.value);
         }
       }));
 
@@ -896,7 +953,9 @@ export function openModal(type, editIdx) {
           inputPasa.disabled = true;
         } else {
           inputCed.disabled = false;
-          selectLetra.disabled = false;
+          // Solo rehabilitar selectLetra si no es RIF
+          const checkedR = Array.from(radiosDoc).find(r => r.checked);
+          if (!checkedR || checkedR.value !== 'RIF') selectLetra.disabled = false;
           radiosDoc.forEach(r => r.disabled = false);
           inputPasa.disabled = false;
         }
@@ -906,9 +965,11 @@ export function openModal(type, editIdx) {
       inputPasa.addEventListener('input', handleDocInput);
       handleDocInput();
 
-      if (lblDoc) {
-        const checkedRadio = Array.from(radiosDoc).find(r => r.checked);
-        if (checkedRadio) lblDoc.innerHTML = checkedRadio.value === 'RIF' ? 'RIF <span class="req">*</span>' : 'CÉDULA <span class="req">*</span>';
+      // Inicializar label y opciones de letra según el radio seleccionado
+      const checkedRadio = Array.from(radiosDoc).find(r => r.checked);
+      if (checkedRadio) {
+        if (lblDoc) lblDoc.innerHTML = checkedRadio.value === 'RIF' ? 'RIF <span class="req">*</span>' : 'CÉDULA <span class="req">*</span>';
+        syncLetraOptions(checkedRadio.value);
       }
     }
   }

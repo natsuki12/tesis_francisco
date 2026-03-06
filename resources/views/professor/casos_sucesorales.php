@@ -8,8 +8,7 @@ $pageTitle = 'Casos Sucesorales — Simulador SENIAT';
 $activePage = 'casos-sucesorales';
 
 // 2. CSS específico
-$extraCss = '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">';
-$extraCss .= '<link rel="stylesheet" href="' . asset('css/professor/casos_sucesorales.css') . '">';
+$extraCss = '<link rel="stylesheet" href="' . asset('css/professor/casos_sucesorales.css') . '">';
 
 ob_start();
 ?>
@@ -149,6 +148,7 @@ ob_start();
       <tr>
         <th class="checkbox-cell"><input type="checkbox" class="custom-check"></th>
         <th class="sortable">N° Caso</th>
+        <th class="sortable">Nombre Caso</th>
         <th class="sortable">Causante</th>
         <th>Herederos</th>
         <th class="sortable">Patrimonio Neto</th>
@@ -161,7 +161,7 @@ ob_start();
     <tbody>
       <?php if (empty($casos)): ?>
         <tr>
-          <td colspan="9" style="text-align: center; padding: 2rem;">No tienes casos creados aún. <a
+          <td colspan="10" style="text-align: center; padding: 2rem;">No tienes casos creados aún. <a
               href="<?= base_url('/crear-caso') ?>">Crear el primero</a></td>
         </tr>
       <?php else: ?>
@@ -220,13 +220,16 @@ ob_start();
           ?>
           <tr>
             <td class="checkbox-cell"><input type="checkbox" class="custom-check"></td>
-            <td><span class="case-id"><?= htmlspecialchars($caseId) ?></span></td>
+            <td><a href="<?= base_url('/casos-sucesorales/' . $caso['id']) ?>" class="case-id"
+                style="text-decoration: none; color: inherit;"><?= htmlspecialchars($caseId) ?></a></td>
+            <td><?= htmlspecialchars($caso['titulo'] ?? 'Sin título') ?></td>
             <td>
               <div class="causante-cell">
                 <div class="causante-avatar m"><?= htmlspecialchars($iniciales) ?></div>
                 <div class="causante-info">
                   <div class="causante-name" title="<?= htmlspecialchars($caso['titulo']) ?>">
-                    <?= htmlspecialchars($fullName) ?></div>
+                    <?= htmlspecialchars($fullName) ?>
+                  </div>
                   <div class="causante-ci"><?= htmlspecialchars($cedula) ?></div>
                 </div>
               </div>
@@ -251,24 +254,19 @@ ob_start();
             </td>
             <td>
               <div class="row-actions">
-                <button class="row-action-btn" title="Ver detalle">
+                <a href="<?= base_url('/casos-sucesorales/' . $caso['id']) ?>" class="row-action-btn"
+                  title="Gestionar Caso">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                     <circle cx="12" cy="12" r="3" />
                   </svg>
-                </button>
-                <button class="row-action-btn" title="Editar">
+                </a>
+                <a href="<?= base_url('/crear-caso?edit=' . $caso['id']) ?>" class="row-action-btn" title="Editar">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
-                </button>
-                <button class="row-action-btn" title="Duplicar">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                  </svg>
-                </button>
+                </a>
                 <button class="row-action-btn danger" title="Eliminar">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                     <polyline points="3 6 5 6 21 6" />
@@ -307,6 +305,32 @@ ob_start();
 </div>
 
 
+
+<script>
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('borrador') !== 'ok') return;
+    history.replaceState(null, '', window.location.pathname);
+
+    const toast = document.createElement('div');
+    toast.textContent = '✅ Borrador guardado exitosamente.';
+    Object.assign(toast.style, {
+      position: 'fixed', top: '24px', right: '24px', zIndex: '9999',
+      padding: '14px 28px', borderRadius: '10px',
+      background: '#059669', color: '#fff',
+      fontSize: '14px', fontWeight: '500',
+      boxShadow: '0 8px 24px rgba(5,150,105,.35)',
+      opacity: '0', transform: 'translateY(-12px)',
+      transition: 'opacity .3s, transform .3s'
+    });
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => { toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; });
+    setTimeout(() => {
+      toast.style.opacity = '0'; toast.style.transform = 'translateY(-12px)';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  })();
+</script>
 
 <?php
 $content = ob_get_clean();

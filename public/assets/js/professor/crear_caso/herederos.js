@@ -99,7 +99,7 @@ export function renderHerederos() {
     return `
     <tr>
       <td>${h.nombres || ''} ${h.apellidos || ''}</td>
-      <td>${h.tipo_cedula || 'V'}-${h.cedula || ''}</td>
+      <td>${h.letra_cedula || 'V'}-${h.cedula || ''}</td>
       <td><span class="cc-badge ${h.caracter === 'HEREDERO' ? 'cc-badge--blue' : 'cc-badge--amber'}">${h.caracter || ''}</span></td>
       <td>${pName}</td>
       <td><span class="cc-badge ${h.premuerto === 'SI' ? 'cc-badge--red' : 'cc-badge--slate'}">${h.premuerto || 'NO'}</span></td>
@@ -132,7 +132,7 @@ export function renderHerederosPremuertos() {
     return `
     <tr>
       <td>${h.nombres || ''} ${h.apellidos || ''}</td>
-      <td>${h.tipo_cedula || 'V'}-${h.cedula || ''}</td>
+      <td>${h.letra_cedula || 'V'}-${h.cedula || ''}</td>
       <td><span class="cc-badge ${h.caracter === 'HEREDERO' ? 'cc-badge--blue' : 'cc-badge--amber'}">${h.caracter || ''}</span></td>
       <td>${pName}</td>
       <td><span class="cc-badge cc-badge--slate">${h.premuerto_padre_id || '<em style="color:var(--cc-slate-300)">Ninguno</em>'}</span></td>

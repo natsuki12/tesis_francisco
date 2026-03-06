@@ -20,6 +20,37 @@ class StoreCasoModel
     }
 
     /**
+     * Guarda (INSERT o UPDATE) un borrador: solo titulo + JSON del stepper.
+     * No toca tablas relacionadas (personas, direcciones, herederos, etc.).
+     * @return int caso_id
+     */
+    public function storeDraft(array $data, int $profesorId, ?int $casoId = null): int
+    {
+        $titulo = $data['caso']['titulo'] ?? 'Sin título';
+        $json = json_encode($data, JSON_UNESCAPED_UNICODE);
+
+        if ($casoId) {
+            // UPDATE borrador existente
+            $sql = "UPDATE sim_casos_estudios 
+                    SET titulo = :titulo, borrador_json = :json, updated_at = NOW()
+                    WHERE id = :id AND profesor_id = :prof AND estado = 'Borrador'";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                'titulo' => $titulo, 'json' => $json,
+                'id' => $casoId, 'prof' => $profesorId
+            ]);
+            return $casoId;
+        }
+
+        // INSERT nuevo borrador
+        $sql = "INSERT INTO sim_casos_estudios (profesor_id, titulo, estado, borrador_json)
+                VALUES (:prof, :titulo, 'Borrador', :json)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['prof' => $profesorId, 'titulo' => $titulo, 'json' => $json]);
+        return (int) $this->db->lastInsertId();
+    }
+
+    /**
      * Inserta un caso completo.
      * @return int caso_id generado
      */
@@ -143,6 +174,11 @@ class StoreCasoModel
             $this->insertAsignaciones($data['estudiantes_asignados'] ?? [], $configId);
 
             $this->db->commit();
+
+            // Limpiar borrador_json al publicar
+            $this->db->prepare("UPDATE sim_casos_estudios SET borrador_json = NULL WHERE id = :id")
+                ->execute(['id' => $casoId]);
+
             return $casoId;
 
         } catch (\Throwable $e) {

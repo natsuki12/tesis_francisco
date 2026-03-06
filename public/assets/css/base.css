@@ -1,0 +1,106 @@
+/* public/assets/css/base.css */
+
+:root {
+    /* --- DEFINICIÓN DE FUENTES --- */
+    /* Moderna y pedagógica para la interfaz general */
+    --font-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    /* Estándar y "burocrática" para simular documentos del SENIAT */
+    --font-sim: 'Arial', Helvetica, sans-serif;
+
+    /* --- ESCALA DE TAMAÑOS (Base 16px) --- */
+    --text-xs: 0.75rem;
+    /* 12px - Ayudas, pie de página */
+    --text-sm: 0.875rem;
+    /* 14px - Textos secundarios */
+    --text-base: 1rem;
+    /* 16px - Texto estándar, inputs */
+    --text-lg: 1.125rem;
+    /* 18px - Subtítulos de sección */
+    --text-xl: 1.5rem;
+    /* 24px - Títulos de tarjeta/módulo */
+    --text-2xl: 2rem;
+    /* 32px - Títulos de página principal */
+
+    /* --- PESOS (Grosor) --- */
+    --weight-regular: 400;
+    --weight-medium: 500;
+    --weight-semibold: 600;
+    --weight-bold: 700;
+
+    /* --- COLORES DE TEXTO (Para jerarquía visual) --- */
+    --text-primary: #1a1a1a;
+    /* Negro suave - Títulos */
+    --text-body: #4a5568;
+    /* Gris oscuro - Párrafos */
+    --text-light: #718096;
+    /* Gris medio - Placeholders, ayudas */
+}
+
+/* === 1. RESET GLOBAL === */
+body {
+    font-family: var(--font-ui);
+    font-size: var(--text-base);
+    color: var(--text-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* === 2. TÍTULOS (Headings) === */
+h1,
+.page-title {
+    font-family: var(--font-ui);
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+}
+
+h2,
+.section-title {
+    font-family: var(--font-ui);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+}
+
+h3,
+.card-title {
+    font-family: var(--font-ui);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+}
+
+/* === 3. FORMULARIOS (Simulación) === */
+label {
+    font-family: var(--font-ui);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+    font-family: var(--font-sim);
+    font-size: var(--text-base);
+    color: #000;
+}
+
+::placeholder {
+    font-family: var(--font-ui);
+    color: var(--text-light);
+    font-size: var(--text-sm);
+}
+
+.form-help-text {
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
+    color: var(--text-light);
+}
+
+/* === 4. BOTONES === */
+.btn {
+    font-family: var(--font-ui);
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-sm);
+}

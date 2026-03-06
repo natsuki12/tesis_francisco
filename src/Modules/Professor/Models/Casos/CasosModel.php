@@ -88,4 +88,30 @@ class CasosModel
             'estudiantes_asignados' => (int) ($result['total_estudiantes_asignados'] ?? 0)
         ];
     }
+
+    /**
+     * Obtiene el JSON del borrador de un caso específico.
+     * Retorna null si no existe o no pertenece al profesor.
+     */
+    public function getCasoJsonById(int $casoId, int $profesorId): ?array
+    {
+        $sql = "
+            SELECT id, titulo, estado, borrador_json
+            FROM sim_casos_estudios
+            WHERE id = :id AND profesor_id = :prof AND estado != 'Eliminado'
+        ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['id' => $casoId, 'prof' => $profesorId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row)
+            return null;
+
+        return [
+            'caso_id' => (int) $row['id'],
+            'titulo' => $row['titulo'],
+            'estado' => $row['estado'],
+            'data' => $row['borrador_json'] ? json_decode($row['borrador_json'], true) : null
+        ];
+    }
 }

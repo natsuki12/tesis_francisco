@@ -4,7 +4,6 @@ $activePage = 'casos-sucesorales';
 $userName = htmlspecialchars($_SESSION['user_name'] ?? 'Profesor', ENT_QUOTES, 'UTF-8');
 
 $extraCss = '
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="' . asset('css/professor/crear_caso.css') . '">
 ';
 
@@ -129,7 +128,7 @@ ob_start();
     <div class="cc-card__body cc-card__collapse">
       <div class="cc-grid cc-grid--2">
         <div class="cc-field cc-span-2">
-          <label>Título del caso <span class="req">*</span></label>
+          <label>Título del caso</label>
           <input type="text" data-bind="caso.titulo" placeholder="Ej: Sucesión García - Caso práctico bienes mixtos">
         </div>
         <div class="cc-field cc-span-2">
@@ -207,7 +206,7 @@ ob_start();
     <div class="cc-card__body cc-card__collapse">
       <div class="cc-grid cc-grid--4">
         <div class="cc-field" id="campo_tipo_cedula_causante">
-          <label>Tipo Cédula <span class="req">*</span></label>
+          <label>Tipo Cédula</label>
           <select data-bind="causante.tipo_cedula">
             <option value="">Seleccione...</option>
             <option value="V">V - Venezolano</option>
@@ -215,27 +214,19 @@ ob_start();
           </select>
         </div>
         <div class="cc-field" id="campo_cedula_causante">
-          <label>Cédula <span class="req">*</span></label>
+          <label>Cédula</label>
           <input type="text" data-bind="causante.cedula" placeholder="12.345.678">
         </div>
         <div class="cc-field">
-          <label>Pasaporte</label>
-          <input type="text" data-bind="causante.pasaporte" placeholder="Opcional">
-        </div>
-        <div class="cc-field">
-          <label>RIF Personal</label>
-          <input type="text" data-bind="causante.rif_personal" placeholder="V-12345678-9">
-        </div>
-        <div class="cc-field">
-          <label>Nombres <span class="req">*</span></label>
+          <label>Nombres</label>
           <input type="text" data-bind="causante.nombres" placeholder="Nombres del causante">
         </div>
         <div class="cc-field">
-          <label>Apellidos <span class="req">*</span></label>
+          <label>Apellidos</label>
           <input type="text" data-bind="causante.apellidos" placeholder="Apellidos del causante">
         </div>
         <div class="cc-field">
-          <label>Sexo <span class="req">*</span></label>
+          <label>Sexo</label>
           <select data-bind="causante.sexo">
             <option value="">Seleccione...</option>
             <option value="M">Masculino</option>
@@ -243,7 +234,7 @@ ob_start();
           </select>
         </div>
         <div class="cc-field">
-          <label>Estado Civil <span class="req">*</span></label>
+          <label>Estado Civil</label>
           <select data-bind="causante.estado_civil">
             <option value="">Seleccione...</option>
             <option value="Soltero">Soltero</option>
@@ -253,11 +244,11 @@ ob_start();
           </select>
         </div>
         <div class="cc-field">
-          <label>Fecha de Nacimiento <span class="req">*</span></label>
+          <label>Fecha de Nacimiento</label>
           <input type="date" data-bind="causante.fecha_nacimiento">
         </div>
         <div class="cc-field">
-          <label>Fecha de Fallecimiento <span class="req">*</span></label>
+          <label>Fecha de Fallecimiento</label>
           <input type="date" data-bind="causante.fecha_fallecimiento">
         </div>
         <div class="cc-field">
@@ -280,11 +271,11 @@ ob_start();
               <input type="text" data-bind="acta_defuncion.numero_acta" placeholder="Número del acta">
             </div>
             <div class="cc-field">
-              <label>Año del Acta <span class="req">*</span></label>
+              <label>Año del Acta</label>
               <input type="number" data-bind="acta_defuncion.year_acta" min="1900" placeholder="2024">
             </div>
             <div class="cc-field">
-              <label>Parroquia de Emisión <span class="req">*</span></label>
+              <label>Parroquia de Emisión</label>
               <input type="number" data-bind="acta_defuncion.parroquia_registro_id" placeholder="ID de parroquia">
             </div>
           </div>
@@ -580,27 +571,27 @@ ob_start();
       <div class="cc-grid cc-grid--2">
         <!-- Fila 1 -->
         <div class="cc-field">
-          <label>Fecha de Solicitud <span class="req">*</span></label>
+          <label>Fecha de Solicitud</label>
           <input type="date" data-bind="prorroga.fecha_solicitud">
         </div>
         <div class="cc-field">
-          <label>Nro de Resolución <span class="req">*</span></label>
+          <label>Nro de Resolución</label>
           <input type="text" data-bind="prorroga.nro_resolucion" placeholder="Nro de Resolución">
         </div>
 
         <!-- Fila 2 -->
         <div class="cc-field">
-          <label>Fecha de Resolución <span class="req">*</span></label>
+          <label>Fecha de Resolución</label>
           <input type="date" data-bind="prorroga.fecha_resolucion">
         </div>
         <div class="cc-field">
-          <label>Plazo Otorgado (días) <span class="req">*</span></label>
+          <label>Plazo Otorgado (días)</label>
           <input type="number" data-bind="prorroga.plazo_dias" placeholder="Ej: 30" min="1">
         </div>
 
         <!-- Fila 3 -->
         <div class="cc-field">
-          <label>Fecha de Vencimiento <span class="req">*</span></label>
+          <label>Fecha de Vencimiento</label>
           <input type="date" data-bind="prorroga.fecha_vencimiento">
         </div>
         <div></div>
@@ -638,17 +629,17 @@ ob_start();
       <div class="cc-grid cc-grid--3">
         <!-- Nombres y Apellidos -->
         <div class="cc-field cc-span-1">
-          <label>Nombres <span class="req">*</span></label>
+          <label>Nombres</label>
           <input type="text" data-bind="representante.nombres" placeholder="Ej: Juan Carlos">
         </div>
         <div class="cc-field cc-span-1">
-          <label>Apellidos <span class="req">*</span></label>
+          <label>Apellidos</label>
           <input type="text" data-bind="representante.apellidos" placeholder="Ej: Pérez Gómez">
         </div>
 
         <!-- Tipo de Documento -->
         <div class="cc-field cc-span-1">
-          <label>Tipo de Documento <span class="req">*</span></label>
+          <label>Tipo de Documento</label>
           <div class="cc-radio-pills">
             <label class="cc-radio-pill">
               <input type="radio" name="rep_tipo_doc" value="Cédula" data-bind="representante.tipo_cedula" checked>
@@ -667,7 +658,7 @@ ob_start();
 
         <!-- Cédula y Pasaporte -->
         <div class="cc-field cc-span-1" id="wrap-rep-cedula">
-          <label id="lbl-rep-cedula">Cédula <span class="req">*</span></label>
+          <label id="lbl-rep-cedula">Cédula</label>
           <div style="display: flex; gap: 8px;">
             <select data-bind="representante.letra_cedula" id="sel-rep-letra" style="width: 70px;">
               <option value="V">V</option>
@@ -1091,7 +1082,7 @@ ob_start();
     <div class="cc-card__body">
       <div class="cc-grid cc-grid--3">
         <div class="cc-field">
-          <label>Modalidad <span class="req">*</span></label>
+          <label>Modalidad</label>
           <select data-bind="config.modalidad">
             <option value="">Seleccione...</option>
             <option value="Practica_Libre">Práctica Libre</option>
@@ -1126,7 +1117,7 @@ ob_start();
       <div class="cc-p-4 cc-border-b">
         <label
           style="display:block; font-size: 11.5px; font-weight: 600; color: var(--cc-slate-600); text-transform: uppercase; margin-bottom: 10px;">Método
-          de asignación <span class="req">*</span></label>
+          de asignación</label>
         <div class="cc-addr-radios cc-addr-radios--inline" style="justify-content: flex-start;">
           <label class="cc-radio-pill"><input type="radio" name="tipo_asignacion" value="Seccion"
               data-bind="config.tipo_asignacion"> Por sección completa</label>
@@ -1137,7 +1128,7 @@ ob_start();
 
       <div class="cc-p-4" id="bloqueSeccion" style="display:none;">
         <div class="cc-field">
-          <label>Sección <span class="req">*</span></label>
+          <label>Sección</label>
           <select data-bind="config.seccion_id" id="selectSeccion" style="max-width: 400px;">
             <option value="">Cargando secciones...</option>
           </select>

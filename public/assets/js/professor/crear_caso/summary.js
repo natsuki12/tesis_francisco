@@ -17,7 +17,12 @@ export function renderSummary() {
         : 'Sin definir';
     s('sumCausante', causante);
     s('sumHerederos', caseData.herederos.length);
-    s('sumHerencia', caseData.herencia.tipos.length > 0 ? caseData.herencia.tipos.join(', ') : 'Sin definir');
+    const cats = getCatalogs();
+    const herenciaNombres = caseData.herencia.tipos.map(t => {
+        const found = (cats.tiposHerencia || []).find(c => c.id == t.tipo_herencia_id);
+        return found ? found.nombre : `ID ${t.tipo_herencia_id}`;
+    });
+    s('sumHerencia', herenciaNombres.length > 0 ? herenciaNombres.join(', ') : 'Sin definir');
     s('sumUT', 'Sin definir');
 
     const totalInm = caseData.bienes_inmuebles.reduce((s, b) => s + (parseFloat(b.valor_declarado) || 0), 0);
