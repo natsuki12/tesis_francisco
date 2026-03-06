@@ -378,11 +378,22 @@ ob_start();
         <!-- ROW 2: Inputs -->
         <div class="cc-addr-tr">
           <div class="cc-addr-td">
-            <div class="cc-field"><input type="text" data-bind="domicilio_causante.nombre_vialidad" placeholder="">
+            <div class="cc-field">
+              <label style="font-size:10px; color:#64748b; margin-bottom:2px; font-weight:600;">NOMBRE DE
+                VIALIDAD</label>
+              <input type="text" data-bind="domicilio_causante.nombre_vialidad" placeholder="">
             </div>
           </div>
-          <div class="cc-addr-td">
-            <div class="cc-field"><input type="text" data-bind="domicilio_causante.nro_inmueble" placeholder="">
+          <div class="cc-addr-td" style="display: flex; gap: 8px;">
+            <div class="cc-field" style="flex: 2;">
+              <label style="font-size:10px; color:#64748b; margin-bottom:2px; font-weight:600;">NOMBRE /
+                DESCRIPCIÓN</label>
+              <input type="text" id="input_desc_inmueble" placeholder="Ej: Torre A">
+            </div>
+            <div class="cc-field" style="flex: 1;">
+              <label id="lbl_piso_nivel"
+                style="font-size:10px; color:#64748b; margin-bottom:2px; font-weight:600;">PISO/NRO</label>
+              <input type="text" id="input_piso_nivel" placeholder="">
             </div>
           </div>
         </div>
@@ -534,7 +545,7 @@ ob_start();
   </div>
 
   <!-- Prórrogas -->
-  <div class="cc-card cc-mt" id="card_prorrogas">
+  <div class="cc-card cc-card--collapsible cc-mt" id="card_prorrogas">
     <div class="cc-card__header cc-card__toggle">
       <div>
         <h3>Prórrogas</h3>
@@ -689,14 +700,19 @@ ob_start();
     </div>
   </div>
 
-  <div class="cc-card">
-    <div class="cc-card__header">
+  <div class="cc-card cc-card--collapsible cc-mt-6">
+    <div class="cc-card__header cc-card__toggle"
+      style="display: flex; justify-content: space-between; align-items: center;">
       <div>
         <h3>Herederos y Legatarios</h3>
-        <p>Personas que recibirán la herencia o legado</p>
+        <p>Añada las personas con derecho sobre el patrimonio</p>
       </div>
+      <svg class="cc-card__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
     </div>
-    <div class="cc-card__body">
+    <div class="cc-card__body cc-card__collapse">
       <!-- Empty state (shown when no herederos) -->
       <div class="cc-empty" id="herederosEmpty">
         <div class="cc-empty__icon">
@@ -750,14 +766,21 @@ ob_start();
     </div>
   </div>
 
-  <div class="cc-card cc-mt">
-    <div class="cc-card__header">
+  <!-- Herederos del Premuerto -->
+  <div class="cc-card cc-mt-6 cc-card--collapsible" id="card_premuertos"
+    style="display:none; border-color: var(--cc-indigo-200);">
+    <div class="cc-card__header cc-card__toggle"
+      style="background: var(--cc-indigo-50); display: flex; justify-content: space-between; align-items: center;">
       <div>
         <h3>Herederos del Premuerto</h3>
-        <p>Herederos en representación de una persona premuerta</p>
+        <p>Añada los representantes de herederos fallecidos antes que el causante</p>
       </div>
+      <svg class="cc-card__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
     </div>
-    <div class="cc-card__body">
+    <div class="cc-card__body cc-card__collapse">
       <!-- Empty state (shown when no herederos premuertos) -->
       <div class="cc-empty" id="herederosPremuertosEmpty">
         <div class="cc-empty__icon">

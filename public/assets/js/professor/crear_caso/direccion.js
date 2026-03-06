@@ -189,16 +189,123 @@ export function initAddressListeners() {
         });
     }
 
-    // (Eventos de Acta de Defunción eliminados)
+    // Listener para tipo de inmueble
+    const tipoInmuebleRadios = document.querySelectorAll('input[name="tipo_inmueble"]');
+    tipoInmuebleRadios.forEach(r => {
+        r.addEventListener('change', (e) => {
+            const val = e.target.value;
+            const radiosNivel = document.querySelectorAll('input[name="tipo_nivel"]');
+            const nroNivelInput = document.querySelector('[data-bind="domicilio_causante.nro_nivel"]');
+            const lblPiso = document.getElementById('lbl_piso_nivel');
+
+            if (val === 'Edificio' || val === 'Centro_Comercial') {
+                radiosNivel.forEach(rn => rn.disabled = false);
+                if (nroNivelInput) {
+                    nroNivelInput.disabled = false;
+                    if (nroNivelInput.value === 'NO APLICA') {
+                        nroNivelInput.value = '';
+                        caseData.domicilio_causante.nro_nivel = '';
+                    }
+                }
+                if (lblPiso) lblPiso.innerText = val === 'Edificio' ? 'PISO' : 'NIVEL';
+            } else {
+                // Quinta, Casa, Local
+                radiosNivel.forEach(rn => {
+                    rn.disabled = true;
+                    rn.checked = false;
+                });
+                caseData.domicilio_causante.tipo_nivel = ''; // clear state
+
+                if (nroNivelInput) {
+                    nroNivelInput.value = 'NO APLICA';
+                    nroNivelInput.disabled = true;
+                    caseData.domicilio_causante.nro_nivel = 'NO APLICA';
+                }
+                if (lblPiso) lblPiso.innerText = 'NRO';
+            }
+        });
+    });
 }
 
 export function saveDireccion() {
     const d = caseData.domicilio_causante;
 
+    // Forzar mayúsculas en campos de texto
+    const uppercaseFields = ['nombre_vialidad', 'nro_nivel', 'nombre_sector', 'telefono_fijo', 'telefono_celular', 'fax', 'punto_referencia'];
+    uppercaseFields.forEach(f => {
+        const el = document.querySelector(`[data-bind="domicilio_causante.${f}"]`);
+        if (el && el.value) {
+            el.value = el.value.toUpperCase();
+            d[f] = el.value;
+        }
+    });
+
+    // Leer inputs manuales de nro_inmueble
+    const elDesc = document.getElementById('input_desc_inmueble');
+    const elNum = document.getElementById('input_piso_nivel');
+    let desc = elDesc ? elDesc.value.trim().toUpperCase() : '';
+    let num = elNum ? elNum.value.trim().toUpperCase() : '';
+
+    if (elDesc) elDesc.value = desc;
+    if (elNum) elNum.value = num;
+
+    // Asegurar que tipo de inmueble está actualizado
+    const tipoInmChecked = document.querySelector('input[name="tipo_inmueble"]:checked');
+    d.tipo_inmueble = tipoInmChecked ? tipoInmChecked.value : d.tipo_inmueble;
+
+    if (!desc && !num && d.tipo_inmueble) {
+        showToast('Debe ingresar el nombre/descripción o el piso/nro/nivel del inmueble.');
+        return;
+    }
+
+    // Construir nro_inmueble lógicamente
+    let finalDesc = desc || 'NO APLICA';
+    let finalInmueble = '';
+
+    if (d.tipo_inmueble === 'Edificio') {
+        if (!num) { showToast('El piso es obligatorio para Edificios.'); return; }
+        finalInmueble = `${finalDesc} - PISO ${num}`;
+    } else if (d.tipo_inmueble === 'Centro_Comercial') {
+        if (!num) { showToast('El nivel es obligatorio para Centros Comerciales.'); return; }
+        finalInmueble = `${finalDesc} - NIVEL ${num}`;
+    } else {
+        if (desc && num) finalInmueble = `${finalDesc} - NRO ${num}`;
+        else if (desc && !num) finalInmueble = finalDesc;
+        else if (!desc && num) finalInmueble = `NO APLICA - NRO ${num}`;
+    }
+
+    d.nro_inmueble = finalInmueble;
+
     if (!d.tipo_direccion || !d.tipo_vialidad || !d.tipo_inmueble || !d.nombre_vialidad ||
-        !d.nro_inmueble || !d.tipo_nivel || !d.tipo_sector || !d.nro_nivel || !d.nombre_sector ||
-        !d.estado || !d.municipio || !d.parroquia || !d.ciudad) {
-        showToast('Complete todos los campos de ubicación requeridos para la dirección.');
+        !d.nro_inmueble || !d.tipo_sector || !d.nombre_sector ||
+        !d.estado || !d.municipio || !d.parroquia || !d.ciudad || !d.codigo_postal_id) {
+        showToast('Complete todos los campos base requeridos (incluyendo Código Postal).');
+        return;
+    }
+
+    if (d.tipo_inmueble === 'Edificio' || d.tipo_inmueble === 'Centro_Comercial') {
+        if (!d.tipo_nivel || !d.nro_nivel) {
+            showToast(`Complete el tipo de nivel y el número de local/apto/oficina para ${d.tipo_inmueble.replace('_', ' ')}.`);
+            return;
+        }
+    }
+
+    if (!d.telefono_fijo && !d.telefono_celular) {
+        showToast('Debe ingresar al menos un teléfono (fijo o celular).');
+        return;
+    }
+
+    const phoneRegex = /^0\d{3}-\d{7}$/;
+    if (d.telefono_fijo && !phoneRegex.test(d.telefono_fijo)) {
+        showToast('El teléfono fijo debe tener el formato 0XXX-XXXXXXX');
+        return;
+    }
+    if (d.telefono_celular && !phoneRegex.test(d.telefono_celular)) {
+        showToast('El teléfono celular debe tener el formato 0XXX-XXXXXXX');
+        return;
+    }
+    if (d.fax && !phoneRegex.test(d.fax)) {
+        showToast('El fax debe tener el formato 0XXX-XXXXXXX');
         return;
     }
 
@@ -269,6 +376,33 @@ export function editDireccion(index) {
         }
     });
 
+    // Restaurar campos manuales desc_inmueble y piso_nivel a partir de nro_inmueble
+    let desc = '', num = '';
+    if (dir.nro_inmueble) {
+        if (dir.nro_inmueble.includes(' - PISO ')) {
+            [desc, num] = dir.nro_inmueble.split(' - PISO ');
+        } else if (dir.nro_inmueble.includes(' - NIVEL ')) {
+            [desc, num] = dir.nro_inmueble.split(' - NIVEL ');
+        } else if (dir.nro_inmueble.includes(' - NRO ')) {
+            [desc, num] = dir.nro_inmueble.split(' - NRO ');
+        } else {
+            desc = dir.nro_inmueble;
+        }
+    }
+    if (desc === 'NO APLICA') desc = '';
+
+    const elDesc = document.getElementById('input_desc_inmueble');
+    const elNum = document.getElementById('input_piso_nivel');
+    if (elDesc) elDesc.value = desc;
+    if (elNum) elNum.value = num;
+
+    // Forzar trigger de tipo_inmueble para actualizar labels y disables
+    const selectedInmueble = document.querySelector(`input[name="tipo_inmueble"][value="${dir.tipo_inmueble}"]`);
+    if (selectedInmueble) {
+        selectedInmueble.checked = true;
+        selectedInmueble.dispatchEvent(new Event('change'));
+    }
+
     UIState.editDireccionIndex = index;
     $('#btnSaveDireccion').innerText = "Guardar Cambios";
 }
@@ -335,4 +469,25 @@ function clearDireccionForm() {
         if (el.type === 'radio' || el.type === 'checkbox') el.checked = false;
         if (el.type === 'text') el.value = '';
     });
+
+    // Limpiar campos visuales que no tienen data-bind
+    const elDesc = document.getElementById('input_desc_inmueble');
+    const elNum = document.getElementById('input_piso_nivel');
+    if (elDesc) elDesc.value = '';
+    if (elNum) elNum.value = '';
+
+    // Habilitar controles ocultos/deshabilitados condicionalmente
+    document.querySelectorAll('input[name="tipo_nivel"]').forEach(rn => {
+        rn.disabled = false;
+        rn.checked = false;
+    });
+
+    const nroNivelInput = document.querySelector('[data-bind="domicilio_causante.nro_nivel"]');
+    if (nroNivelInput) {
+        nroNivelInput.disabled = false;
+        nroNivelInput.value = '';
+    }
+
+    const lbl = document.getElementById('lbl_piso_nivel');
+    if (lbl) lbl.innerText = 'PISO/NRO';
 }

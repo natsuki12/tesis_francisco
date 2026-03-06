@@ -36,8 +36,10 @@ class StoreCasoModel
                     WHERE id = :id AND profesor_id = :prof AND estado = 'Borrador'";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([
-                'titulo' => $titulo, 'json' => $json,
-                'id' => $casoId, 'prof' => $profesorId
+                'titulo' => $titulo,
+                'json' => $json,
+                'id' => $casoId,
+                'prof' => $profesorId
             ]);
             return $casoId;
         }
@@ -69,18 +71,8 @@ class StoreCasoModel
             $fechaFallecimiento = $data['causante']['fecha_fallecimiento'] ?? null;
             $this->insertActaDefuncion($data['acta_defuncion'] ?? [], $causanteId, $fechaFallecimiento);
 
-            // 4. Insertar domicilio fiscal del causante
+            // 4. (Movido abajo de crear el caso, ya que ahora las direcciones van contra el caso)
             $domicilio = $data['domicilio_causante'] ?? [];
-            if (!empty($domicilio['estado'])) {
-                $this->insertDireccion($domicilio, $causanteId);
-            }
-
-            // 4b. Insertar direcciones adicionales del causante
-            foreach (($data['direcciones_causante'] ?? []) as $dir) {
-                if (!empty($dir['estado'])) {
-                    $this->insertDireccion($dir, $causanteId);
-                }
-            }
 
             // 5. Insertar representante (sim_personas)
             $representanteId = null;
@@ -102,6 +94,19 @@ class StoreCasoModel
             // 6. Insertar caso (sim_casos_estudios)
             $caso = $data['caso'] ?? [];
             $casoId = $this->insertCaso($caso, $profesorId, $causanteId, $representanteId, $fechaFallecimiento);
+
+            // 4. Insertar domicilio fiscal del causante vinculándolo al caso
+            $domicilio = $data['domicilio_causante'] ?? [];
+            if (!empty($domicilio['estado'])) {
+                $this->insertDireccion($domicilio, $casoId);
+            }
+
+            // 4b. Insertar direcciones adicionales del causante vinculándolas al caso
+            foreach (($data['direcciones_causante'] ?? []) as $dir) {
+                if (!empty($dir['estado'])) {
+                    $this->insertDireccion($dir, $casoId);
+                }
+            }
 
             // 7. Insertar config (sim_caso_configs)
             $config = $data['config'] ?? [];
@@ -258,21 +263,21 @@ class StoreCasoModel
     // ====================================================================
     // Direcciones
     // ====================================================================
-    private function insertDireccion(array $d, int $personaId): void
+    private function insertDireccion(array $d, int $casoId): void
     {
-        $sql = "INSERT INTO sim_persona_direcciones 
-                (sim_persona_id, tipo_direccion, tipo_vialidad, nombre_vialidad, tipo_inmueble,
+        $sql = "INSERT INTO sim_caso_direcciones 
+                (caso_estudio_id, tipo_direccion, tipo_vialidad, nombre_vialidad, tipo_inmueble,
                  nro_inmueble, tipo_nivel, nro_nivel, tipo_sector, nombre_sector,
                  estado_id, municipio_id, parroquia_id, ciudad_id, codigo_postal_id,
                  telefono_fijo, telefono_celular, fax, punto_referencia)
-                VALUES (:persona_id, :tipo_direccion, :tipo_vialidad, :nombre_vialidad, :tipo_inmueble,
+                VALUES (:caso_id, :tipo_direccion, :tipo_vialidad, :nombre_vialidad, :tipo_inmueble,
                         :nro_inmueble, :tipo_nivel, :nro_nivel, :tipo_sector, :nombre_sector,
                         :estado_id, :municipio_id, :parroquia_id, :ciudad_id, :codigo_postal_id,
                         :telefono_fijo, :telefono_celular, :fax, :punto_referencia)";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            'persona_id' => $personaId,
+            'caso_id' => $casoId,
             'tipo_direccion' => $d['tipo_direccion'] ?? 'Casa_Matriz_Establecimiento_Principal',
             'tipo_vialidad' => $d['tipo_vialidad'] ?? null,
             'nombre_vialidad' => $d['nombre_vialidad'] ?? null,
