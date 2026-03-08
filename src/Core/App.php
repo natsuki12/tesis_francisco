@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Core;
 
 use Throwable;
+use App\Modules\Auth\Models\UserSessionModel;
 
 final class App
 {
@@ -208,6 +209,61 @@ final class App
         ini_set('session.cookie_lifetime', '7200');
 
         session_start();
+
+        // 🛡️ Verificar sesión única (después de session_start)
+        $this->enforceUniqueSession();
+    }
+
+    /**
+     * 🛡️ SEGURIDAD: Sesión Única por Usuario
+     * Si el usuario tiene sesión activa en otro navegador/dispositivo,
+     * esta sesión se invalida y se redirige al login.
+     */
+    private function enforceUniqueSession(): void
+    {
+        // Solo aplica a usuarios logueados
+        if (empty($_SESSION['user_id'])) {
+            return;
+        }
+
+        try {
+            $userId = (int) $_SESSION['user_id'];
+            $currentSessionId = session_id();
+
+            $record = UserSessionModel::getByUserId($userId);
+
+            // Si no hay registro en user_sessions o el session_id no coincide → sesión desplazada
+            if (!$record || $record['session_id'] !== $currentSessionId) {
+                // Destruir esta sesión
+                $_SESSION = [];
+
+                if (ini_get('session.use_cookies')) {
+                    $params = session_get_cookie_params();
+                    setcookie(
+                        session_name(),
+                        '',
+                        time() - 42000,
+                        $params['path'],
+                        $params['domain'],
+                        $params['secure'],
+                        $params['httponly']
+                    );
+                }
+
+                session_destroy();
+
+                // Redirigir al login con mensaje
+                header('Location: ' . base_url('/login?msg=sesion_desplazada'));
+                exit;
+            }
+
+            // Sesión válida → actualizar last_activity
+            UserSessionModel::updateLastActivity($userId);
+
+        } catch (Throwable $e) {
+            // Un error en la verificación NO debe romper la app
+            error_log('[SESSION ENFORCE ERROR] ' . $e->getMessage());
+        }
     }
 
     /**

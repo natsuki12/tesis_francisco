@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-03-2026 a las 01:52:08
+-- Tiempo de generación: 08-03-2026 a las 19:31:14
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -108,7 +108,40 @@ INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento
 (63, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 17:51:57'),
 (64, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 20:05:12'),
 (65, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 22:14:15'),
-(66, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 00:48:57');
+(66, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 00:48:57'),
+(67, NULL, 'admin@admin.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 01:20:38'),
+(68, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 02:49:06'),
+(69, NULL, 'fadr2001@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 04:55:55'),
+(70, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 04:56:01'),
+(71, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 06:56:34'),
+(72, NULL, '27836650', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 07:23:54'),
+(73, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 16:56:03'),
+(74, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 18:56:25'),
+(75, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 01:59:45'),
+(76, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 02:03:29'),
+(77, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:46:48'),
+(78, 2, 'fdiaz.6650@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:47:31'),
+(79, 2, 'fdiaz.6650@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:48:29'),
+(80, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:51:43'),
+(81, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:52:14'),
+(82, NULL, 'Fadr2001', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:53:36'),
+(83, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:53:41'),
+(84, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:57:47'),
+(85, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:57:58'),
+(86, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:16:18'),
+(87, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:34:09'),
+(88, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:34:36'),
+(89, 2, 'fdiaz.6650@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:35:17'),
+(90, 2, 'fdiaz.6650@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:47:13'),
+(91, NULL, 'fadr2001@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:47:24'),
+(92, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:47:29'),
+(93, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:10'),
+(94, 2, 'fdiaz.6650@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:18'),
+(95, 2, 'fdiaz.6650@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:33'),
+(96, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:39'),
+(97, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 05:32:59'),
+(98, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:33:48'),
+(99, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:13:44');
 
 -- --------------------------------------------------------
 
@@ -4989,7 +5022,7 @@ CREATE TABLE `sim_actas_defunciones` (
   `fecha_fallecimiento` date NOT NULL,
   `numero_acta` varchar(50) DEFAULT NULL,
   `year_acta` year(4) DEFAULT NULL COMMENT 'NULL permitido para actas de premuertos',
-  `parroquia_registro_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'NULL permitido para actas de premuertos donde solo se registra fecha',
+  `parroquia_registro` varchar(100) DEFAULT NULL COMMENT 'NULL permitido para actas de premuertos donde solo se registra fecha',
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ;
@@ -4998,9 +5031,11 @@ CREATE TABLE `sim_actas_defunciones` (
 -- Volcado de datos para la tabla `sim_actas_defunciones`
 --
 
-INSERT INTO `sim_actas_defunciones` (`id`, `sim_persona_id`, `fecha_fallecimiento`, `numero_acta`, `year_acta`, `parroquia_registro_id`, `created_at`, `updated_at`) VALUES
+INSERT INTO `sim_actas_defunciones` (`id`, `sim_persona_id`, `fecha_fallecimiento`, `numero_acta`, `year_acta`, `parroquia_registro`, `created_at`, `updated_at`) VALUES
 (1, 1, '2024-03-28', NULL, NULL, NULL, '2026-03-06 18:36:07', '2026-03-06 18:36:07'),
-(2, 2, '2017-03-02', NULL, NULL, NULL, '2026-03-06 22:46:50', '2026-03-06 22:46:50');
+(2, 2, '2017-03-02', NULL, NULL, NULL, '2026-03-06 22:46:50', '2026-03-06 22:46:50'),
+(3, 5, '2025-02-01', NULL, NULL, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(4, 8, '2026-03-01', '12345', '2026', '1', '2026-03-08 03:33:25', '2026-03-08 03:33:25');
 
 -- --------------------------------------------------------
 
@@ -5029,8 +5064,11 @@ CREATE TABLE `sim_casos_estudios` (
 
 INSERT INTO `sim_casos_estudios` (`id`, `profesor_id`, `causante_id`, `representante_id`, `unidad_tributaria_id`, `tipo_sucesion`, `titulo`, `descripcion`, `estado`, `borrador_json`, `created_at`, `updated_at`) VALUES
 (1, 1, NULL, NULL, NULL, 'Con_Cedula', '5to', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"5to\",\"descripcion\":\"ejemplo 2\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Sin Cédula\"},\"caso_id\":1,\"config\":{\"modalidad\":\"\",\"max_intentos\":\"0\",\"fecha_limite\":\"\",\"tipo_asignacion\":\"Seccion\",\"seccion_id\":\"\"},\"herencia\":{\"tipos\":[{\"tipo_herencia_id\":\"4\"}]},\"causante\":{\"tipo_cedula\":\"\",\"sexo\":\"\",\"estado_civil\":\"\",\"nacionalidad\":\"\",\"cedula\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"fecha_nacimiento\":\"\",\"fecha_fallecimiento\":\"\"},\"datos_fiscales_causante\":{\"domiciliado_pais\":\"1\",\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"domicilio_causante\":{\"tipo_direccion\":\"Casa_Matriz_Establecimiento_Principal\",\"tipo_vialidad\":\"\",\"tipo_inmueble\":\"\",\"nombre_vialidad\":\"\",\"nro_inmueble\":\"\",\"tipo_nivel\":\"\",\"tipo_sector\":\"\",\"nro_nivel\":\"\",\"nombre_sector\":\"\",\"estado\":\"\",\"municipio\":\"\",\"parroquia\":\"\",\"ciudad\":\"\",\"telefono_fijo\":\"\",\"telefono_celular\":\"\",\"fax\":\"\",\"codigo_postal_id\":\"\",\"punto_referencia\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"sexo\":\"\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nacionalidad\":\"\"},\"herederos\":[],\"herederos_premuertos\":[],\"bienes_inmuebles\":[],\"bienes_muebles\":[],\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorroga\":{\"fecha_solicitud\":\"\",\"nro_resolucion\":\"\",\"fecha_resolucion\":\"\",\"plazo_dias\":\"\",\"fecha_vencimiento\":\"\"},\"prorrogas\":[],\"estudiantes_asignados\":[]}', '2026-03-05 20:48:40', '2026-03-05 21:00:27'),
-(2, 1, NULL, NULL, NULL, 'Con_Cedula', 'segundo ejemplo', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"segundo ejemplo\",\"descripcion\":\"sssssss\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Sin Cédula\"},\"caso_id\":null,\"config\":{\"modalidad\":\"\",\"max_intentos\":\"0\",\"fecha_limite\":\"\",\"tipo_asignacion\":\"Seccion\",\"seccion_id\":\"\"},\"herencia\":{\"tipos\":[]},\"causante\":{\"tipo_cedula\":\"\",\"sexo\":\"\",\"estado_civil\":\"\",\"nacionalidad\":\"\",\"cedula\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"fecha_nacimiento\":\"\",\"fecha_fallecimiento\":\"\"},\"datos_fiscales_causante\":{\"domiciliado_pais\":\"1\",\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"domicilio_causante\":{\"tipo_direccion\":\"Casa_Matriz_Establecimiento_Principal\",\"tipo_vialidad\":\"\",\"tipo_inmueble\":\"\",\"nombre_vialidad\":\"\",\"nro_inmueble\":\"\",\"tipo_nivel\":\"\",\"tipo_sector\":\"\",\"nro_nivel\":\"\",\"nombre_sector\":\"\",\"estado\":\"\",\"municipio\":\"\",\"parroquia\":\"\",\"ciudad\":\"\",\"telefono_fijo\":\"\",\"telefono_celular\":\"\",\"fax\":\"\",\"codigo_postal_id\":\"\",\"punto_referencia\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"sexo\":\"\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nacionalidad\":\"\"},\"herederos\":[],\"herederos_premuertos\":[],\"bienes_inmuebles\":[],\"bienes_muebles\":[],\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorroga\":{\"fecha_solicitud\":\"\",\"nro_resolucion\":\"\",\"fecha_resolucion\":\"\",\"plazo_dias\":\"\",\"fecha_vencimiento\":\"\"},\"prorrogas\":[],\"estudiantes_asignados\":[]}', '2026-03-05 21:01:35', '2026-03-05 21:01:35'),
-(3, 1, NULL, NULL, NULL, 'Con_Cedula', 'este ', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"este \",\"descripcion\":\"\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":3,\"config\":{\"modalidad\":\"\",\"max_intentos\":0,\"fecha_limite\":\"\",\"tipo_asignacion\":\"Seccion\",\"seccion_id\":\"\"},\"herencia\":{\"tipos\":[]},\"causante\":{\"tipo_cedula\":\"E\",\"sexo\":\"\",\"estado_civil\":\"\",\"nacionalidad\":\"\",\"cedula\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"fecha_nacimiento\":\"\",\"fecha_fallecimiento\":\"\"},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"domicilio_causante\":{\"tipo_direccion\":\"Casa_Matriz_Establecimiento_Principal\",\"tipo_vialidad\":\"\",\"tipo_inmueble\":\"\",\"nombre_vialidad\":\"\",\"nro_inmueble\":\"\",\"tipo_nivel\":\"\",\"tipo_sector\":\"\",\"nro_nivel\":\"\",\"nombre_sector\":\"\",\"estado\":\"\",\"municipio\":\"\",\"parroquia\":\"\",\"ciudad\":\"\",\"telefono_fijo\":\"\",\"telefono_celular\":\"\",\"fax\":\"\",\"codigo_postal_id\":\"\",\"punto_referencia\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"\",\"nombres\":\"finalmenter\",\"apellidos\":\"diaz\",\"sexo\":\"\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nacionalidad\":\"\"},\"herederos\":[{\"nombres\":\"Valeria\",\"apellidos\":\"Cardier\",\"tipo_documento\":\"RIF\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2026-03-12\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"17\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2026-04-02\"}],\"herederos_premuertos\":[],\"bienes_inmuebles\":[],\"bienes_muebles\":{\"length\":0},\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorroga\":{\"fecha_solicitud\":\"\",\"nro_resolucion\":\"67\",\"fecha_resolucion\":\"\",\"plazo_dias\":\"\",\"fecha_vencimiento\":\"\"},\"prorrogas\":[],\"estudiantes_asignados\":[]}', '2026-03-05 21:09:30', '2026-03-06 19:29:15');
+(2, 1, 1, 3, 24, 'Con_Cedula', 'caso 2', 'prueba', 'Publicado', NULL, '2026-03-05 21:01:35', '2026-03-07 19:12:09'),
+(3, 1, NULL, NULL, NULL, 'Con_Cedula', 'este ', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"este \",\"descripcion\":\"\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":3,\"config\":{\"modalidad\":\"\",\"max_intentos\":0,\"fecha_limite\":\"\",\"tipo_asignacion\":\"Seccion\",\"seccion_id\":\"\"},\"herencia\":{\"tipos\":[]},\"causante\":{\"tipo_cedula\":\"E\",\"sexo\":\"\",\"estado_civil\":\"\",\"nacionalidad\":\"\",\"cedula\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"fecha_nacimiento\":\"\",\"fecha_fallecimiento\":\"\"},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"domicilio_causante\":{\"tipo_direccion\":\"Casa_Matriz_Establecimiento_Principal\",\"tipo_vialidad\":\"\",\"tipo_inmueble\":\"\",\"nombre_vialidad\":\"\",\"nro_inmueble\":\"\",\"tipo_nivel\":\"\",\"tipo_sector\":\"\",\"nro_nivel\":\"\",\"nombre_sector\":\"\",\"estado\":\"\",\"municipio\":\"\",\"parroquia\":\"\",\"ciudad\":\"\",\"telefono_fijo\":\"\",\"telefono_celular\":\"\",\"fax\":\"\",\"codigo_postal_id\":\"\",\"punto_referencia\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"\",\"nombres\":\"finalmenter\",\"apellidos\":\"diaz\",\"sexo\":\"\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nacionalidad\":\"\"},\"herederos\":[{\"nombres\":\"Valeria\",\"apellidos\":\"Cardier\",\"tipo_documento\":\"RIF\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2026-03-12\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"17\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2026-04-02\"}],\"herederos_premuertos\":[],\"bienes_inmuebles\":[],\"bienes_muebles\":{\"length\":0},\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorroga\":{\"fecha_solicitud\":\"\",\"nro_resolucion\":\"67\",\"fecha_resolucion\":\"\",\"plazo_dias\":\"\",\"fecha_vencimiento\":\"\"},\"prorrogas\":[],\"estudiantes_asignados\":[]}', '2026-03-05 21:09:30', '2026-03-06 19:29:15'),
+(4, 1, NULL, NULL, NULL, 'Con_Cedula', 'test', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"test\",\"descripcion\":\"\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":4,\"config\":{\"modalidad\":\"\",\"max_intentos\":0,\"fecha_limite\":\"\",\"tipo_asignacion\":\"Seccion\",\"seccion_id\":\"\"},\"herencia\":{\"tipos\":[]},\"causante\":{\"tipo_cedula\":\"V\",\"sexo\":\"F\",\"estado_civil\":\"Soltero\",\"nacionalidad\":190,\"cedula\":\"4079920\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"Maria\",\"apellidos\":\"Sarmiento\",\"fecha_nacimiento\":\"2001-05-29\",\"fecha_fallecimiento\":\"2024-03-28\",\"_locked_fields\":[],\"persona_id\":1},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"sexo\":\"M\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nacionalidad\":190,\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"nacionalidad\"],\"persona_id\":3},\"herederos\":[{\"persona_id\":\"2\",\"nombres\":\"jesus\",\"apellidos\":\"estanga\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"4224014\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2019-03-01\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"17\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2017-03-02\"}],\"herederos_premuertos\":[],\"bienes_inmuebles\":[],\"bienes_muebles\":{\"length\":0},\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorrogas\":[],\"estudiantes_asignados\":[]}', '2026-03-07 05:22:36', '2026-03-07 05:27:10'),
+(10, 1, 1, 3, 24, 'Con_Cedula', 'caso 1', 'prueba', 'Inactivo', NULL, '2026-03-07 07:12:52', '2026-03-08 02:28:40'),
+(11, 1, 8, 9, NULL, 'Sin_Cedula', '3', 'Descripcion de prueba para caso sin cedula', 'Publicado', NULL, '2026-03-08 02:28:25', '2026-03-08 03:33:25');
 
 -- --------------------------------------------------------
 
@@ -5046,6 +5084,24 @@ CREATE TABLE `sim_caso_asignaciones` (
   `estado` enum('Pendiente','En_Progreso','Completado','Vencido') NOT NULL DEFAULT 'Pendiente',
   `fecha_completado` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_asignaciones`
+--
+
+INSERT INTO `sim_caso_asignaciones` (`id`, `config_id`, `estudiante_id`, `created_at`, `estado`, `fecha_completado`) VALUES
+(1, 5, 1, '2026-03-07 07:12:52', 'Pendiente', NULL),
+(2, 5, 2, '2026-03-07 07:12:52', 'Pendiente', NULL),
+(3, 5, 3, '2026-03-07 07:12:52', 'Pendiente', NULL),
+(4, 5, 4, '2026-03-07 07:12:52', 'Pendiente', NULL),
+(5, 6, 1, '2026-03-07 19:12:09', 'Pendiente', NULL),
+(6, 6, 2, '2026-03-07 19:12:09', 'Pendiente', NULL),
+(7, 6, 3, '2026-03-07 19:12:09', 'Pendiente', NULL),
+(8, 6, 4, '2026-03-07 19:12:09', 'Pendiente', NULL),
+(9, 7, 1, '2026-03-08 03:33:25', 'Pendiente', NULL),
+(10, 7, 2, '2026-03-08 03:33:25', 'Pendiente', NULL),
+(11, 7, 3, '2026-03-08 03:33:25', 'Pendiente', NULL),
+(12, 7, 4, '2026-03-08 03:33:25', 'Pendiente', NULL);
 
 -- --------------------------------------------------------
 
@@ -5075,11 +5131,22 @@ CREATE TABLE `sim_caso_bienes_inmuebles` (
   `matricula` varchar(50) DEFAULT NULL,
   `folio_real_anio` varchar(20) DEFAULT NULL,
   `valor_original` decimal(15,2) NOT NULL DEFAULT 0.00,
-  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(18,2) NOT NULL DEFAULT 0.00,
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Soft delete: NULL=activo, con fecha=eliminado',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_bienes_inmuebles`
+--
+
+INSERT INTO `sim_caso_bienes_inmuebles` (`id`, `caso_estudio_id`, `es_vivienda_principal`, `es_bien_litigioso`, `porcentaje`, `descripcion`, `linderos`, `superficie_construida`, `superficie_no_construida`, `area_superficie`, `direccion`, `oficina_registro`, `nro_registro`, `libro`, `protocolo`, `fecha_registro`, `trimestre`, `asiento_registral`, `matricula`, `folio_real_anio`, `valor_original`, `valor_declarado`, `deleted_at`, `created_at`, `updated_at`) VALUES
+(1, 10, 1, 1, 50.50, '5656', '5656', 666.30, 66.50, 66.30, 'la asuncion', 'no se', '500', '055', '0221', '2026-03-04', '55', '54', '44', '44', 2.20, 2.20, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(2, 10, 0, 0, 10.50, 'ccc', 'cc', 33.30, 33.30, 3.30, '3333', '33', '33', '33', '33', '2026-03-03', '33', '33', '33', '33', 33.30, 333.30, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(3, 2, 1, 1, 50.50, '5656', '5656', 666.30, 66.50, 66.30, 'la asuncion', 'no se', '500', '055', '0221', '2026-03-04', '55', '54', '44', '44', 2.20, 2.20, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(4, 2, 0, 0, 10.50, 'ccc', 'cc', 33.30, 33.30, 3.30, '3333', '33', '33', '33', '33', '2026-03-03', '33', '33', '33', '33', 33.30, 333.30, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(5, 11, 0, 0, 100.00, 'Casa de habitacion', 'Norte: calle 1, Sur: calle 2, Este: avenida 3, Oeste: avenida 4', 150.00, 50.00, 200.00, 'Av. Principal, Sector Centro, Municipio Marino', 'Oficina Subalterna de Registro del Municipio Marino', 'R-2019-001', 'Libro 5', 'Protocolo 1', '2019-05-20', '2do', 'A-123', 'M-2019-001', '2019', 50000.00, 75000.00, NULL, '2026-03-08 03:33:25', '2026-03-08 03:33:25');
 
 -- --------------------------------------------------------
 
@@ -5100,6 +5167,34 @@ CREATE TABLE `sim_caso_bienes_litigiosos` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `sim_caso_bienes_litigiosos`
+--
+
+INSERT INTO `sim_caso_bienes_litigiosos` (`id`, `caso_estudio_id`, `bien_tipo`, `bien_id`, `numero_expediente`, `tribunal_causa`, `partes_juicio`, `estado_juicio`, `created_at`, `updated_at`) VALUES
+(1, 10, 'Inmueble', 1, '66', '66', '66', '66', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(2, 10, 'Mueble', 1, '44545', '4545', '4545', '45454', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(3, 10, 'Mueble', 3, '4578', '444', '444', '444', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(4, 10, 'Mueble', 4, 'ee', 'ee', 'ee', 'eee', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(5, 10, 'Mueble', 6, '434', '333', '33', '33', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(6, 10, 'Mueble', 11, 'w', 'w', 'w', 'w', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(7, 10, 'Mueble', 13, 'ggg', 'gg', 'gg', 'gg', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(8, 10, 'Mueble', 14, '44', '44', '44', '44', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(9, 10, 'Mueble', 17, '33', '33', '33', '33', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(10, 10, 'Mueble', 23, '44', '44', '44', '44', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(11, 10, 'Mueble', 27, 'ee', 'ee', 'ee', 'ee', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(12, 2, 'Inmueble', 3, '66', '66', '66', '66', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(13, 2, 'Mueble', 30, '44545', '4545', '4545', '45454', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(14, 2, 'Mueble', 32, '4578', '444', '444', '444', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(15, 2, 'Mueble', 33, 'ee', 'ee', 'ee', 'eee', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(16, 2, 'Mueble', 35, '434', '333', '33', '33', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(17, 2, 'Mueble', 40, 'w', 'w', 'w', 'w', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(18, 2, 'Mueble', 42, 'ggg', 'gg', 'gg', 'gg', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(19, 2, 'Mueble', 43, '44', '44', '44', '44', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(20, 2, 'Mueble', 46, '33', '33', '33', '33', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(21, 2, 'Mueble', 52, '44', '44', '44', '44', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(22, 2, 'Mueble', 56, 'ee', 'ee', 'ee', 'ee', '2026-03-07 19:12:09', '2026-03-07 19:12:09');
+
 -- --------------------------------------------------------
 
 --
@@ -5114,11 +5209,75 @@ CREATE TABLE `sim_caso_bienes_muebles` (
   `es_bien_litigioso` tinyint(1) NOT NULL DEFAULT 0,
   `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
   `descripcion` text DEFAULT NULL,
-  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(18,2) NOT NULL DEFAULT 0.00,
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Soft delete: NULL=activo, con fecha=eliminado',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_bienes_muebles`
+--
+
+INSERT INTO `sim_caso_bienes_muebles` (`id`, `caso_estudio_id`, `categoria_bien_mueble_id`, `tipo_bien_mueble_id`, `es_bien_litigioso`, `porcentaje`, `descripcion`, `valor_declarado`, `deleted_at`, `created_at`, `updated_at`) VALUES
+(1, 10, 1, 1, 1, 90.50, 'juju', 55.50, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(2, 10, 1, 1, 0, 90.50, '5.5.5', 555.50, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(3, 10, 2, 7, 1, 100.00, 'hola', 0.25, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(4, 10, 2, 8, 1, 100.00, '1111', 123456.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(5, 10, 2, 9, 0, 100.00, '444', 4444444.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(6, 10, 3, 15, 1, 100.00, '565', 50000.52, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(7, 10, 3, 15, 0, 100.00, 'eeee', 3334.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(8, 10, 3, 10, 0, 100.00, 'rt54', 4545.50, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(9, 10, 3, 12, 0, 100.00, 'frfr', 4444444.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(10, 10, 4, NULL, 0, 100.00, 'dddddd', 4545.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(11, 10, 4, NULL, 1, 95.50, 'frfr', 3444.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(12, 10, 5, 17, 0, 100.00, 'lolo', 45.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(13, 10, 5, 18, 1, 88.50, 'huhui', 56.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(14, 10, 6, NULL, 1, 100.00, 'ft', 4555.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(15, 10, 6, NULL, 0, 100.00, 'hohohohoh', 555.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(16, 10, 7, NULL, 0, 100.00, '23332', 33333.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(17, 10, 7, NULL, 1, 100.00, '33', 33333.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(18, 10, 8, 19, 0, 100.00, '44554', 454545.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(19, 10, 8, 20, 0, 100.00, 'si', 34444.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(20, 10, 9, NULL, 0, 100.00, 'carga', 45.20, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(21, 10, 9, NULL, 0, 100.00, '', 222222.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(22, 10, 10, NULL, 0, 100.00, 'ffff', 0.25, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(23, 10, 10, NULL, 1, 55.00, 'increible copia', 33333.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(24, 10, 10, NULL, 0, 100.00, 'gfgtr', 4545.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(25, 10, 10, NULL, 0, 100.00, '6666', 80000.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(26, 10, 11, NULL, 0, 100.00, 'que es una plantacion', 4343.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(27, 10, 11, NULL, 1, 100.00, 'loool', 300.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(28, 10, 12, NULL, 0, 100.00, 'bueno es otro', 4555.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(29, 10, 12, NULL, 0, 100.00, '55555', 5555555555.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(30, 2, 1, 1, 1, 90.50, 'juju', 55.50, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(31, 2, 1, 1, 0, 90.50, '5.5.5', 555.50, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(32, 2, 2, 7, 1, 100.00, 'hola', 0.25, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(33, 2, 2, 8, 1, 100.00, '1111', 123456.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(34, 2, 2, 9, 0, 100.00, '444', 4444444.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(35, 2, 3, 15, 1, 100.00, '565', 50000.52, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(36, 2, 3, 15, 0, 100.00, 'eeee', 3334.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(37, 2, 3, 10, 0, 100.00, 'rt54', 4545.50, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(38, 2, 3, 12, 0, 100.00, 'frfr', 4444444.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(39, 2, 4, NULL, 0, 100.00, 'dddddd', 4545.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(40, 2, 4, NULL, 1, 95.50, 'frfr', 3444.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(41, 2, 5, 17, 0, 100.00, 'lolo', 45.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(42, 2, 5, 18, 1, 88.50, 'huhui', 56.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(43, 2, 6, NULL, 1, 100.00, 'ft', 4555.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(44, 2, 6, NULL, 0, 100.00, 'hohohohoh', 555.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(45, 2, 7, NULL, 0, 100.00, '23332', 33333.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(46, 2, 7, NULL, 1, 100.00, '33', 33333.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(47, 2, 8, 19, 0, 100.00, '44554', 454545.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(48, 2, 8, 20, 0, 100.00, 'si', 34444.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(49, 2, 9, NULL, 0, 100.00, 'carga', 45.20, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(50, 2, 9, NULL, 0, 100.00, '', 222222.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(51, 2, 10, NULL, 0, 100.00, 'ffff', 0.25, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(52, 2, 10, NULL, 1, 55.00, 'increible copia', 33333.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(53, 2, 10, NULL, 0, 100.00, 'gfgtr', 4545.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(54, 2, 10, NULL, 0, 100.00, '6666', 80000.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(55, 2, 11, NULL, 0, 100.00, 'que es una plantacion', 4343.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(56, 2, 11, NULL, 1, 100.00, 'loool', 300.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(57, 2, 12, NULL, 0, 100.00, 'bueno es otro', 4555.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(58, 2, 12, NULL, 0, 100.00, '55555', 5555555555.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09');
 
 -- --------------------------------------------------------
 
@@ -5133,6 +5292,25 @@ CREATE TABLE `sim_caso_bien_inmueble_tipo_rel` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `sim_caso_bien_inmueble_tipo_rel`
+--
+
+INSERT INTO `sim_caso_bien_inmueble_tipo_rel` (`id`, `bien_inmueble_id`, `tipo_bien_inmueble_id`, `created_at`) VALUES
+(1, 1, 1, '2026-03-07 07:12:52'),
+(2, 1, 2, '2026-03-07 07:12:52'),
+(3, 2, 1, '2026-03-07 07:12:52'),
+(4, 2, 2, '2026-03-07 07:12:52'),
+(5, 2, 5, '2026-03-07 07:12:52'),
+(6, 2, 6, '2026-03-07 07:12:52'),
+(7, 3, 1, '2026-03-07 19:12:09'),
+(8, 3, 2, '2026-03-07 19:12:09'),
+(9, 4, 1, '2026-03-07 19:12:09'),
+(10, 4, 2, '2026-03-07 19:12:09'),
+(11, 4, 5, '2026-03-07 19:12:09'),
+(12, 4, 6, '2026-03-07 19:12:09'),
+(13, 5, 1, '2026-03-08 03:33:25');
+
 -- --------------------------------------------------------
 
 --
@@ -5145,6 +5323,16 @@ CREATE TABLE `sim_caso_bm_acciones` (
   `empresa_id` bigint(20) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_bm_acciones`
+--
+
+INSERT INTO `sim_caso_bm_acciones` (`id`, `bien_mueble_id`, `empresa_id`, `created_at`) VALUES
+(1, 18, 5, '2026-03-07 07:12:52'),
+(2, 19, 5, '2026-03-07 07:12:52'),
+(3, 47, 5, '2026-03-07 19:12:09'),
+(4, 48, 5, '2026-03-07 19:12:09');
 
 -- --------------------------------------------------------
 
@@ -5159,6 +5347,16 @@ CREATE TABLE `sim_caso_bm_banco` (
   `numero_cuenta` varchar(20) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_bm_banco`
+--
+
+INSERT INTO `sim_caso_bm_banco` (`id`, `bien_mueble_id`, `banco_id`, `numero_cuenta`, `created_at`) VALUES
+(1, 1, 1, '010256556', '2026-03-07 07:12:52'),
+(2, 2, 2, '5555', '2026-03-07 07:12:52'),
+(3, 30, 1, '010256556', '2026-03-07 19:12:09'),
+(4, 31, 2, '5555', '2026-03-07 19:12:09');
 
 -- --------------------------------------------------------
 
@@ -5175,6 +5373,16 @@ CREATE TABLE `sim_caso_bm_bonos` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `sim_caso_bm_bonos`
+--
+
+INSERT INTO `sim_caso_bm_bonos` (`id`, `bien_mueble_id`, `tipo_bonos`, `numero_bonos`, `numero_serie`, `created_at`) VALUES
+(1, 16, 'ohyeah', '4555', '444332423', '2026-03-07 07:12:52'),
+(2, 17, 'rumbera', '333', '33333', '2026-03-07 07:12:52'),
+(3, 45, 'ohyeah', '4555', '444332423', '2026-03-07 19:12:09'),
+(4, 46, 'rumbera', '333', '33333', '2026-03-07 19:12:09');
+
 -- --------------------------------------------------------
 
 --
@@ -5187,6 +5395,20 @@ CREATE TABLE `sim_caso_bm_caja_ahorro` (
   `empresa_id` bigint(20) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_bm_caja_ahorro`
+--
+
+INSERT INTO `sim_caso_bm_caja_ahorro` (`id`, `bien_mueble_id`, `empresa_id`, `created_at`) VALUES
+(1, 22, 1, '2026-03-07 07:12:52'),
+(2, 23, 1, '2026-03-07 07:12:52'),
+(3, 24, 3, '2026-03-07 07:12:52'),
+(4, 25, 3, '2026-03-07 07:12:52'),
+(5, 51, 1, '2026-03-07 19:12:09'),
+(6, 52, 1, '2026-03-07 19:12:09'),
+(7, 53, 3, '2026-03-07 19:12:09'),
+(8, 54, 3, '2026-03-07 19:12:09');
 
 -- --------------------------------------------------------
 
@@ -5202,6 +5424,16 @@ CREATE TABLE `sim_caso_bm_cuentas_cobrar` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `sim_caso_bm_cuentas_cobrar`
+--
+
+INSERT INTO `sim_caso_bm_cuentas_cobrar` (`id`, `bien_mueble_id`, `rif_cedula`, `apellidos_nombres`, `created_at`) VALUES
+(1, 12, '30516520', 'jhon doe', '2026-03-07 07:12:52'),
+(2, 13, 'lolos34444', 'lol lol gh', '2026-03-07 07:12:52'),
+(3, 41, '30516520', 'jhon doe', '2026-03-07 19:12:09'),
+(4, 42, 'lolos34444', 'lol lol gh', '2026-03-07 19:12:09');
+
 -- --------------------------------------------------------
 
 --
@@ -5214,6 +5446,16 @@ CREATE TABLE `sim_caso_bm_opciones_compra` (
   `nombre_oferente` varchar(40) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_bm_opciones_compra`
+--
+
+INSERT INTO `sim_caso_bm_opciones_compra` (`id`, `bien_mueble_id`, `nombre_oferente`, `created_at`) VALUES
+(1, 10, 'bancamiga', '2026-03-07 07:12:52'),
+(2, 11, 'juanito almania', '2026-03-07 07:12:52'),
+(3, 39, 'bancamiga', '2026-03-07 19:12:09'),
+(4, 40, 'juanito almania', '2026-03-07 19:12:09');
 
 -- --------------------------------------------------------
 
@@ -5231,6 +5473,16 @@ CREATE TABLE `sim_caso_bm_prestaciones` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `sim_caso_bm_prestaciones`
+--
+
+INSERT INTO `sim_caso_bm_prestaciones` (`id`, `bien_mueble_id`, `posee_banco`, `banco_id`, `numero_cuenta`, `empresa_id`, `created_at`) VALUES
+(1, 20, 1, 2, '565656', 1, '2026-03-07 07:12:52'),
+(2, 21, 1, 2, '33323232', 4, '2026-03-07 07:12:52'),
+(3, 49, 1, 2, '565656', 1, '2026-03-07 19:12:09'),
+(4, 50, 1, 2, '33323232', 4, '2026-03-07 19:12:09');
+
 -- --------------------------------------------------------
 
 --
@@ -5245,6 +5497,18 @@ CREATE TABLE `sim_caso_bm_seguro` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `sim_caso_bm_seguro`
+--
+
+INSERT INTO `sim_caso_bm_seguro` (`id`, `bien_mueble_id`, `empresa_id`, `numero_prima`, `created_at`) VALUES
+(1, 3, 2, '44', '2026-03-07 07:12:52'),
+(2, 4, 3, '5454', '2026-03-07 07:12:52'),
+(3, 5, 4, '4545', '2026-03-07 07:12:52'),
+(4, 32, 2, '44', '2026-03-07 19:12:09'),
+(5, 33, 3, '5454', '2026-03-07 19:12:09'),
+(6, 34, 4, '4545', '2026-03-07 19:12:09');
+
 -- --------------------------------------------------------
 
 --
@@ -5258,6 +5522,16 @@ CREATE TABLE `sim_caso_bm_semovientes` (
   `cantidad` int(10) UNSIGNED DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_bm_semovientes`
+--
+
+INSERT INTO `sim_caso_bm_semovientes` (`id`, `bien_mueble_id`, `tipo_semoviente_id`, `cantidad`, `created_at`) VALUES
+(1, 14, 1, 45, '2026-03-07 07:12:52'),
+(2, 15, 2, 55, '2026-03-07 07:12:52'),
+(3, 43, 1, 45, '2026-03-07 19:12:09'),
+(4, 44, 2, 55, '2026-03-07 19:12:09');
 
 -- --------------------------------------------------------
 
@@ -5275,6 +5549,20 @@ CREATE TABLE `sim_caso_bm_transporte` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `sim_caso_bm_transporte`
+--
+
+INSERT INTO `sim_caso_bm_transporte` (`id`, `bien_mueble_id`, `anio`, `marca`, `modelo`, `serial_placa`, `created_at`) VALUES
+(1, 6, '2026', 'toyota', 'corolla', 'x145sdd', '2026-03-07 07:12:52'),
+(2, 7, '2025', 'eee', 'eee', 'eee', '2026-03-07 07:12:52'),
+(3, 8, '2007', 'chevy', 'avion nuclear', 'xxx456', '2026-03-07 07:12:52'),
+(4, 9, '2026', 'kawasaki', 'ninja', '2312545', '2026-03-07 07:12:52'),
+(5, 35, '2026', 'toyota', 'corolla', 'x145sdd', '2026-03-07 19:12:09'),
+(6, 36, '2025', 'eee', 'eee', 'eee', '2026-03-07 19:12:09'),
+(7, 37, '2007', 'chevy', 'avion nuclear', 'xxx456', '2026-03-07 19:12:09'),
+(8, 38, '2026', 'kawasaki', 'ninja', '2312545', '2026-03-07 19:12:09');
+
 -- --------------------------------------------------------
 
 --
@@ -5291,6 +5579,15 @@ CREATE TABLE `sim_caso_configs` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_configs`
+--
+
+INSERT INTO `sim_caso_configs` (`id`, `caso_id`, `profesor_id`, `modalidad`, `max_intentos`, `fecha_limite`, `created_at`, `updated_at`) VALUES
+(5, 10, 1, 'Evaluacion', 2, '2026-05-30 04:25:00', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(6, 2, 1, 'Practica_Libre', 2, '2026-04-30 04:25:00', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(7, 11, 1, 'Practica_Libre', 3, NULL, '2026-03-08 03:33:25', '2026-03-08 03:33:25');
 
 -- --------------------------------------------------------
 
@@ -5321,6 +5618,17 @@ CREATE TABLE `sim_caso_direcciones` (
   `punto_referencia` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Direcciones del causante en el contexto de cada caso.';
 
+--
+-- Volcado de datos para la tabla `sim_caso_direcciones`
+--
+
+INSERT INTO `sim_caso_direcciones` (`id`, `sim_caso_estudio_id`, `tipo_direccion`, `tipo_vialidad`, `nombre_vialidad`, `tipo_inmueble`, `nro_inmueble`, `tipo_nivel`, `nro_nivel`, `tipo_sector`, `nombre_sector`, `estado_id`, `municipio_id`, `parroquia_id`, `ciudad_id`, `codigo_postal_id`, `telefono_fijo`, `telefono_celular`, `fax`, `punto_referencia`) VALUES
+(9, 10, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Edificio', 'GARAJONAY - PISO PH', 'Apartamento', 'PH2', 'Urbanizacion', 'URB PRUEBA 1', 6, 71, 244, 71, 527, NULL, '0412-7048856', NULL, 'CERCAS DE TROPIC'),
+(10, 10, 'Bodega_Almacenamiento_Deposito', 'Carretera', 'PARA POZ', 'Centro_Comercial', 'LA VELA - NIVEL 1', 'Local', 'A-05', 'Sector', 'MANEIRO', 16, 215, 713, 215, 1833, NULL, '0416-6864545', NULL, 'LA VELA'),
+(11, 2, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Edificio', 'GARAJONAY - PISO PH', 'Apartamento', 'PH2', 'Urbanizacion', 'URB PRUEBA 1', 6, 71, 244, 71, 527, NULL, '0412-7048856', NULL, 'CERCAS DE TROPIC'),
+(12, 2, 'Bodega_Almacenamiento_Deposito', 'Carretera', 'PARA POZ', 'Centro_Comercial', 'LA VELA - NIVEL 1', 'Local', 'A-05', 'Sector', 'MANEIRO', 16, 215, 713, 215, 1833, NULL, '0416-6864545', NULL, 'LA VELA'),
+(13, 11, 'Domicilio_Fiscal', 'Calle', 'LA REDONDA', 'Quinta', 'SECTOR 1 - NRO LA AS', '', 'NO APLICA', 'Zona', 'LA ARBOLEDA', 16, 210, 701, 210, 1818, '0412-7048856', NULL, NULL, 'PDP');
+
 -- --------------------------------------------------------
 
 --
@@ -5332,11 +5640,21 @@ CREATE TABLE `sim_caso_exenciones` (
   `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
   `tipo` varchar(255) DEFAULT NULL,
   `descripcion` text DEFAULT NULL,
-  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(18,2) NOT NULL DEFAULT 0.00,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_exenciones`
+--
+
+INSERT INTO `sim_caso_exenciones` (`id`, `caso_estudio_id`, `tipo`, `descripcion`, `valor_declarado`, `deleted_at`, `created_at`, `updated_at`) VALUES
+(1, 10, '555', '555', 555555.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(2, 10, '5555', '5555', 55555.50, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(3, 2, '555', '555', 555555.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(4, 2, '5555', '5555', 55555.50, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09');
 
 -- --------------------------------------------------------
 
@@ -5349,11 +5667,21 @@ CREATE TABLE `sim_caso_exoneraciones` (
   `caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
   `tipo` varchar(255) DEFAULT NULL,
   `descripcion` text DEFAULT NULL,
-  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(18,2) NOT NULL DEFAULT 0.00,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_exoneraciones`
+--
+
+INSERT INTO `sim_caso_exoneraciones` (`id`, `caso_estudio_id`, `tipo`, `descripcion`, `valor_declarado`, `deleted_at`, `created_at`, `updated_at`) VALUES
+(1, 10, 'exo 45', 'exo exo gossip girl', 525.50, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(2, 10, 'exo 46', 'eeee', 0.45, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(3, 2, 'exo 45', 'exo exo gossip girl', 525.50, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(4, 2, 'exo 46', 'eeee', 0.45, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09');
 
 -- --------------------------------------------------------
 
@@ -5371,6 +5699,21 @@ CREATE TABLE `sim_caso_participantes` (
   `premuerto_padre_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Si no es NULL, este participante hereda en representación del premuerto indicado'
 ) ;
 
+--
+-- Volcado de datos para la tabla `sim_caso_participantes`
+--
+
+INSERT INTO `sim_caso_participantes` (`id`, `caso_estudio_id`, `persona_id`, `rol_en_caso`, `parentesco_id`, `es_premuerto`, `premuerto_padre_id`) VALUES
+(5, 10, 5, 'Heredero', 18, 1, NULL),
+(6, 10, 2, 'Heredero', 16, 1, NULL),
+(7, 10, 6, 'Heredero', 7, 0, NULL),
+(8, 10, 7, 'Heredero', 17, 0, NULL),
+(9, 2, 5, 'Heredero', 18, 1, NULL),
+(10, 2, 2, 'Heredero', 16, 1, NULL),
+(11, 2, 6, 'Heredero', 7, 0, NULL),
+(12, 2, 7, 'Heredero', 17, 0, NULL),
+(13, 11, 10, 'Heredero', 1, 0, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -5385,11 +5728,21 @@ CREATE TABLE `sim_caso_pasivos_deuda` (
   `numero_tdc` varchar(20) DEFAULT NULL COMMENT 'Solo para Tarjetas de Crédito',
   `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
   `descripcion` text DEFAULT NULL,
-  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(18,2) NOT NULL DEFAULT 0.00,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_pasivos_deuda`
+--
+
+INSERT INTO `sim_caso_pasivos_deuda` (`id`, `caso_estudio_id`, `tipo_pasivo_deuda_id`, `banco_id`, `numero_tdc`, `porcentaje`, `descripcion`, `valor_declarado`, `deleted_at`, `created_at`, `updated_at`) VALUES
+(1, 10, 2, 15, NULL, 100.00, 'erer', 333333.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(2, 10, 4, NULL, NULL, 100.00, '333', 33333333333.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(3, 2, 2, 15, NULL, 100.00, 'erer', 333333.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(4, 2, 4, NULL, NULL, 100.00, '333', 33333333333.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09');
 
 -- --------------------------------------------------------
 
@@ -5403,11 +5756,21 @@ CREATE TABLE `sim_caso_pasivos_gastos` (
   `tipo_pasivo_gasto_id` tinyint(3) UNSIGNED NOT NULL,
   `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
   `descripcion` text DEFAULT NULL,
-  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(18,2) NOT NULL DEFAULT 0.00,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_pasivos_gastos`
+--
+
+INSERT INTO `sim_caso_pasivos_gastos` (`id`, `caso_estudio_id`, `tipo_pasivo_gasto_id`, `porcentaje`, `descripcion`, `valor_declarado`, `deleted_at`, `created_at`, `updated_at`) VALUES
+(1, 10, 7, 100.00, 'en btc', 10000000000000.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(2, 10, 3, 100.00, 'que caroooo', 50000000.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(3, 2, 7, 100.00, 'en btc', 10000000000000.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(4, 2, 3, 100.00, 'que caroooo', 50000000.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09');
 
 -- --------------------------------------------------------
 
@@ -5426,6 +5789,16 @@ CREATE TABLE `sim_caso_prorrogas` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `sim_caso_prorrogas`
+--
+
+INSERT INTO `sim_caso_prorrogas` (`id`, `caso_estudio_id`, `fecha_solicitud`, `nro_resolucion`, `fecha_resolucion`, `plazo_otorgado_dias`, `fecha_vencimiento`, `created_at`) VALUES
+(1, 10, '2026-03-05', '4520', '2026-03-07', 30, '2026-03-30', '2026-03-07 07:12:52'),
+(2, 10, '2026-03-05', '45445', '2026-03-06', 45, '2026-03-27', '2026-03-07 07:12:52'),
+(3, 2, '2026-03-05', '4520', '2026-03-07', 30, '2026-03-30', '2026-03-07 19:12:09'),
+(4, 2, '2026-03-05', '45445', '2026-03-06', 45, '2026-03-27', '2026-03-07 19:12:09');
+
 -- --------------------------------------------------------
 
 --
@@ -5441,6 +5814,17 @@ CREATE TABLE `sim_caso_tipoherencia_rel` (
   `fecha_conclusion_inventario` date DEFAULT NULL COMMENT 'Solo si tipo_herencia = Beneficio de Inventario',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_caso_tipoherencia_rel`
+--
+
+INSERT INTO `sim_caso_tipoherencia_rel` (`id`, `caso_estudio_id`, `tipo_herencia_id`, `subtipo_testamento`, `fecha_testamento`, `fecha_conclusion_inventario`, `created_at`) VALUES
+(9, 10, 2, NULL, NULL, NULL, '2026-03-07 07:12:52'),
+(10, 10, 1, 'Abierto', '2024-03-12', NULL, '2026-03-07 07:12:52'),
+(11, 2, 2, NULL, NULL, NULL, '2026-03-07 19:12:09'),
+(12, 2, 1, 'Abierto', '2024-03-12', NULL, '2026-03-07 19:12:09'),
+(13, 11, 2, NULL, NULL, NULL, '2026-03-08 03:33:25');
 
 -- --------------------------------------------------------
 
@@ -5553,7 +5937,7 @@ INSERT INTO `sim_cat_grupos_tarifa` (`id`, `nombre`, `activo`, `created_at`) VAL
 --
 
 CREATE TABLE `sim_cat_parentescos` (
-  `id` int(11) NOT NULL,
+  `id` int(11) UNSIGNED NOT NULL,
   `clave` varchar(50) NOT NULL,
   `etiqueta` varchar(60) NOT NULL,
   `activo` tinyint(1) DEFAULT 1,
@@ -5837,7 +6221,7 @@ INSERT INTO `sim_cat_tipos_semoviente` (`id`, `nombre`, `activo`, `created_at`) 
 CREATE TABLE `sim_cat_unidades_tributarias` (
   `id` smallint(5) UNSIGNED NOT NULL,
   `anio` smallint(5) UNSIGNED NOT NULL,
-  `valor` decimal(15,2) NOT NULL,
+  `valor` decimal(18,2) NOT NULL,
   `fecha_gaceta` date DEFAULT NULL COMMENT 'Fecha de publicación en Gaceta Oficial',
   `activo` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
@@ -5886,6 +6270,14 @@ CREATE TABLE `sim_causante_datos_fiscales` (
   `fecha_cierre_fiscal` date NOT NULL COMMENT 'Fecha de cierre del ejercicio fiscal de la sucesión'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Datos fiscales del causante para el formulario RIF. Solo existe cuando sim_persona actúa como causante en un caso.';
 
+--
+-- Volcado de datos para la tabla `sim_causante_datos_fiscales`
+--
+
+INSERT INTO `sim_causante_datos_fiscales` (`sim_persona_id`, `domiciliado_pais`, `fecha_cierre_fiscal`) VALUES
+(1, 1, '2024-12-31'),
+(8, 1, '2026-03-05');
+
 -- --------------------------------------------------------
 
 --
@@ -5906,7 +6298,11 @@ CREATE TABLE `sim_empresas` (
 --
 
 INSERT INTO `sim_empresas` (`id`, `rif`, `razon_social`, `activo`, `created_at`, `updated_at`) VALUES
-(1, 'J123456789', 'unimar', 1, '2026-03-05 02:29:50', '2026-03-05 02:29:50');
+(1, 'J123456789', 'unimar', 1, '2026-03-05 02:29:50', '2026-03-05 02:29:50'),
+(2, '123456789', 'unimar', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(3, 'J012345678', 'alados c.o', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(4, 'J987654321', 'seguros vidal', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(5, 'J321654987', 'crunchyroll', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52');
 
 -- --------------------------------------------------------
 
@@ -5957,7 +6353,7 @@ CREATE TABLE `sim_intento_bienes_inmuebles` (
   `matricula` varchar(50) DEFAULT NULL,
   `folio_real_anio` varchar(20) DEFAULT NULL,
   `valor_original` decimal(15,2) NOT NULL DEFAULT 0.00,
-  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(18,2) NOT NULL DEFAULT 0.00,
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Soft delete: NULL=activo, con fecha=eliminado',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -5996,7 +6392,7 @@ CREATE TABLE `sim_intento_bienes_muebles` (
   `es_bien_litigioso` tinyint(1) NOT NULL DEFAULT 0,
   `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
   `descripcion` text DEFAULT NULL,
-  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(18,2) NOT NULL DEFAULT 0.00,
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT 'Soft delete: NULL=activo, con fecha=eliminado',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -6237,7 +6633,7 @@ CREATE TABLE `sim_intento_exenciones` (
   `intento_id` bigint(20) UNSIGNED NOT NULL,
   `tipo` varchar(255) DEFAULT NULL,
   `descripcion` text DEFAULT NULL,
-  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(18,2) NOT NULL DEFAULT 0.00,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -6254,7 +6650,7 @@ CREATE TABLE `sim_intento_exoneraciones` (
   `intento_id` bigint(20) UNSIGNED NOT NULL,
   `tipo` varchar(255) DEFAULT NULL,
   `descripcion` text DEFAULT NULL,
-  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(18,2) NOT NULL DEFAULT 0.00,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -6287,7 +6683,7 @@ CREATE TABLE `sim_intento_pasivos_deuda` (
   `numero_tdc` varchar(20) DEFAULT NULL COMMENT 'Solo para Tarjetas de Crédito',
   `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
   `descripcion` text DEFAULT NULL,
-  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(18,2) NOT NULL DEFAULT 0.00,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -6305,7 +6701,7 @@ CREATE TABLE `sim_intento_pasivos_gastos` (
   `tipo_pasivo_gasto_id` tinyint(3) UNSIGNED NOT NULL,
   `porcentaje` decimal(5,2) NOT NULL DEFAULT 0.01,
   `descripcion` text DEFAULT NULL,
-  `valor_declarado` decimal(15,2) NOT NULL DEFAULT 0.00,
+  `valor_declarado` decimal(18,2) NOT NULL DEFAULT 0.00,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -6382,7 +6778,7 @@ CREATE TABLE `sim_personas` (
   `rif_personal` varchar(12) DEFAULT NULL COMMENT 'Formato Ej: V-12345678-9',
   `nombres` varchar(100) NOT NULL,
   `apellidos` varchar(100) NOT NULL,
-  `fecha_nacimiento` date NOT NULL,
+  `fecha_nacimiento` date DEFAULT NULL,
   `estado_civil` enum('Soltero','Casado','Viudo','Divorciado','Concubinato','No_aplica') NOT NULL DEFAULT 'No_aplica',
   `sexo` enum('M','F') NOT NULL,
   `created_by` bigint(20) UNSIGNED NOT NULL COMMENT 'Profesor que registró a esta persona en la piscina de datos',
@@ -6396,7 +6792,15 @@ CREATE TABLE `sim_personas` (
 
 INSERT INTO `sim_personas` (`id`, `tipo_cedula`, `nacionalidad`, `cedula`, `pasaporte`, `rif_personal`, `nombres`, `apellidos`, `fecha_nacimiento`, `estado_civil`, `sexo`, `created_by`, `created_at`, `updated_at`) VALUES
 (1, 'V', 190, '4079920', '0123456', 'J4079921', 'Maria', 'Sarmiento', '2001-05-29', 'No_aplica', 'F', 1, '2026-03-06 18:14:28', '2026-03-06 21:17:46'),
-(2, 'V', 190, '4224014', '12345678', 'v42240148', 'jesus', 'estanga', '2019-03-01', 'Soltero', 'M', 1, '2026-03-06 18:52:53', '2026-03-06 20:40:07');
+(2, 'V', 190, '4224014', '12345678', 'v42240148', 'jesus', 'estanga', '2000-03-01', 'Soltero', 'M', 1, '2026-03-06 18:52:53', '2026-03-07 06:27:58'),
+(3, 'V', 190, '27836650', '47836650', 'J37836650', 'francisco', 'diaz', '2001-05-29', 'No_aplica', 'M', 1, '2026-03-07 03:15:53', '2026-03-07 03:18:25'),
+(4, 'V', 190, '31120479', '311204790', 'J31120479', 'valeria', 'cardier', '2004-11-20', 'Casado', 'F', 1, '2026-03-07 03:34:56', '2026-03-07 03:34:56'),
+(5, 'V', 190, '11171151', '111711510', 'J11171151', 'janetsy', 'rodriguez', '1971-03-01', 'Soltero', 'M', 1, '2026-03-07 05:18:14', '2026-03-07 05:18:14'),
+(6, 'V', 190, '30061516', '30061516', 'J30061516', 'Daniel', 'Diaz', '2002-12-30', 'Concubinato', 'M', 1, '2026-03-07 05:18:14', '2026-03-07 06:30:41'),
+(7, 'V', NULL, '28555555', NULL, NULL, 'sebastian', 'astudillo', '2001-01-01', 'Soltero', 'M', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(8, '', 190, NULL, NULL, NULL, 'jhon', 'doe', '1950-01-15', 'Soltero', 'M', 1, '2026-03-08 03:33:25', '2026-03-08 03:33:25'),
+(9, 'V', NULL, '40545632', NULL, NULL, 'maria ', 'galleta', '2008-03-06', '', 'F', 1, '2026-03-08 03:33:25', '2026-03-08 03:33:25'),
+(10, 'V', NULL, '87654321', NULL, NULL, 'Pedro', 'Gomez', '1985-07-10', 'Soltero', 'M', 1, '2026-03-08 03:33:25', '2026-03-08 03:33:25');
 
 -- --------------------------------------------------------
 
@@ -6452,6 +6856,22 @@ INSERT INTO `users` (`id`, `persona_id`, `role_id`, `email`, `password`, `status
 (4, 4, 3, 'vcardier.0479@unimar.edu.ve', '$2y$10$KRc/FlxyrUVWliVPC13RK.Vuak8bRsta4f16HeHlXBhovaT5b93r6', 'active', '2026-02-12 18:08:20', '2026-02-12 18:08:20'),
 (5, 5, 3, 'valefrancardiaz@gmail.com', '$2y$10$JCFra4N/FFLg3zA66srZeOWbVXPdaz9m8A8ctl4c0aVosYhzS1SYm', 'active', '2026-02-12 18:10:33', '2026-02-12 18:10:33'),
 (6, 6, 1, 'superadmin@unimar.edu.ve', '$2b$12$DBCRoldI2.DRiUFC.m0VqeIMBVU2PgoWcDQrz6MiJb8xBL1DpxCJW', 'active', '2026-02-23 04:45:28', '2026-02-23 04:46:06');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `user_sessions`
+--
+
+CREATE TABLE `user_sessions` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `session_id` varchar(128) NOT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` varchar(255) DEFAULT NULL,
+  `last_activity` datetime NOT NULL DEFAULT current_timestamp(),
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Índices para tablas volcadas
@@ -6594,7 +7014,6 @@ ALTER TABLE `secciones`
 ALTER TABLE `sim_actas_defunciones`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uq_acta_defuncion_persona` (`sim_persona_id`),
-  ADD KEY `idx_acta_defuncion_parroquia` (`parroquia_registro_id`),
   ADD KEY `idx_acta_defuncion_fecha` (`fecha_fallecimiento`),
   ADD KEY `idx_acta_defuncion_year` (`year_acta`);
 
@@ -7130,6 +7549,14 @@ ALTER TABLE `users`
   ADD KEY `fk_users_roles` (`role_id`);
 
 --
+-- Indices de la tabla `user_sessions`
+--
+ALTER TABLE `user_sessions`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uk_user_activo` (`user_id`),
+  ADD KEY `idx_session_id` (`session_id`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -7137,7 +7564,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `bitacora_accesos`
 --
 ALTER TABLE `bitacora_accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -7245,121 +7672,121 @@ ALTER TABLE `sim_actas_defunciones`
 -- AUTO_INCREMENT de la tabla `sim_casos_estudios`
 --
 ALTER TABLE `sim_casos_estudios`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_asignaciones`
 --
 ALTER TABLE `sim_caso_asignaciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bienes_inmuebles`
 --
 ALTER TABLE `sim_caso_bienes_inmuebles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bienes_litigiosos`
 --
 ALTER TABLE `sim_caso_bienes_litigiosos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bienes_muebles`
 --
 ALTER TABLE `sim_caso_bienes_muebles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bien_inmueble_tipo_rel`
 --
 ALTER TABLE `sim_caso_bien_inmueble_tipo_rel`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_acciones`
 --
 ALTER TABLE `sim_caso_bm_acciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_banco`
 --
 ALTER TABLE `sim_caso_bm_banco`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_bonos`
 --
 ALTER TABLE `sim_caso_bm_bonos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_caja_ahorro`
 --
 ALTER TABLE `sim_caso_bm_caja_ahorro`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_cuentas_cobrar`
 --
 ALTER TABLE `sim_caso_bm_cuentas_cobrar`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_opciones_compra`
 --
 ALTER TABLE `sim_caso_bm_opciones_compra`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_prestaciones`
 --
 ALTER TABLE `sim_caso_bm_prestaciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_seguro`
 --
 ALTER TABLE `sim_caso_bm_seguro`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_semovientes`
 --
 ALTER TABLE `sim_caso_bm_semovientes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_transporte`
 --
 ALTER TABLE `sim_caso_bm_transporte`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_configs`
 --
 ALTER TABLE `sim_caso_configs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_direcciones`
 --
 ALTER TABLE `sim_caso_direcciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_exenciones`
 --
 ALTER TABLE `sim_caso_exenciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_exoneraciones`
 --
 ALTER TABLE `sim_caso_exoneraciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_participantes`
@@ -7371,25 +7798,25 @@ ALTER TABLE `sim_caso_participantes`
 -- AUTO_INCREMENT de la tabla `sim_caso_pasivos_deuda`
 --
 ALTER TABLE `sim_caso_pasivos_deuda`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_pasivos_gastos`
 --
 ALTER TABLE `sim_caso_pasivos_gastos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_prorrogas`
 --
 ALTER TABLE `sim_caso_prorrogas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_tipoherencia_rel`
 --
 ALTER TABLE `sim_caso_tipoherencia_rel`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_cat_bancos`
@@ -7413,7 +7840,7 @@ ALTER TABLE `sim_cat_grupos_tarifa`
 -- AUTO_INCREMENT de la tabla `sim_cat_parentescos`
 --
 ALTER TABLE `sim_cat_parentescos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_cat_tarifas_sucesion`
@@ -7467,7 +7894,7 @@ ALTER TABLE `sim_cat_unidades_tributarias`
 -- AUTO_INCREMENT de la tabla `sim_empresas`
 --
 ALTER TABLE `sim_empresas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_intentos`
@@ -7629,7 +8056,7 @@ ALTER TABLE `sim_intento_tipoherencias`
 -- AUTO_INCREMENT de la tabla `sim_personas`
 --
 ALTER TABLE `sim_personas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos_eventos`
@@ -7642,6 +8069,12 @@ ALTER TABLE `tipos_eventos`
 --
 ALTER TABLE `users`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `user_sessions`
+--
+ALTER TABLE `user_sessions`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
@@ -7722,7 +8155,6 @@ ALTER TABLE `secciones`
 -- Filtros para la tabla `sim_actas_defunciones`
 --
 ALTER TABLE `sim_actas_defunciones`
-  ADD CONSTRAINT `fk_acta_defuncion_parroquia` FOREIGN KEY (`parroquia_registro_id`) REFERENCES `parroquias` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_acta_defuncion_persona` FOREIGN KEY (`sim_persona_id`) REFERENCES `sim_personas` (`id`) ON UPDATE CASCADE;
 
 --
@@ -8118,6 +8550,12 @@ ALTER TABLE `sim_personas`
 ALTER TABLE `users`
   ADD CONSTRAINT `fk_users_personas` FOREIGN KEY (`persona_id`) REFERENCES `personas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_users_roles` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `user_sessions`
+--
+ALTER TABLE `user_sessions`
+  ADD CONSTRAINT `fk_user_sessions_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

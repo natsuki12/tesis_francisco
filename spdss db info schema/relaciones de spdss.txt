@@ -1,6 +1,6 @@
 127.0.0.1/information_schema/KEY_COLUMN_USAGE/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=spdss
 
-   Mostrando filas 0 - 126 (total de 127, La consulta tardó 0,0012 segundos.)
+   Mostrando filas 0 - 126 (total de 127, La consulta tardó 0,0014 segundos.)
 
 
 SELECT 
@@ -35,7 +35,6 @@ profesores	persona_id	fk_profesores_personas	personas	id
 secciones	materia_id	fk_secciones_materias	materias	id	
 secciones	periodo_id	fk_secciones_periodos	periodos	id	
 secciones	profesor_id	fk_secciones_profesores	profesores	id	
-sim_actas_defunciones	parroquia_registro_id	fk_acta_defuncion_parroquia	parroquias	id	
 sim_actas_defunciones	sim_persona_id	fk_acta_defuncion_persona	sim_personas	id	
 sim_casos_estudios	causante_id	fk_caso_causante	sim_personas	id	
 sim_casos_estudios	profesor_id	fk_casos_profesor	profesores	id	
@@ -119,8 +118,8 @@ sim_intento_bm_semovientes	bien_mueble_id	fk_ibmsem_bien	sim_intento_bienes_mueb
 sim_intento_bm_semovientes	tipo_semoviente_id	fk_ibmsem_tipo	sim_cat_tipos_semoviente	id	
 sim_intento_bm_transporte	bien_mueble_id	fk_ibmt_bien	sim_intento_bienes_muebles	id	
 sim_intento_datos_basicos	intento_id	fk_sird_intento	sim_intentos	id	
-
 sim_intento_datos_basicos	nacionalidad	fk_sird_nacionalidad	paises	id	
+
 sim_intento_datos_basicos	parroquia_registro_id	fk_sird_parroquia	parroquias	id	
 sim_intento_direcciones	ciudad_id	fk_sid_ciudad	ciudades	id	
 sim_intento_direcciones	codigo_postal_id	fk_sid_codigo_postal	codigos_postales	id	
@@ -147,3 +146,4 @@ sim_personas	created_by	fk_personas_maestro_profesor	profesores	id
 sim_personas	nacionalidad	fk_sp_nacionalidad	paises	id	
 users	persona_id	fk_users_personas	personas	id	
 users	role_id	fk_users_roles	roles	id	
+user_sessions	user_id	fk_user_sessions_user	users	id	
