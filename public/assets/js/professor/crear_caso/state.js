@@ -18,8 +18,19 @@ export function disableSaving() {
     clearTimeout(_saveTimer);
 }
 
-export function saveCaseData() {
+export function saveCaseData(immediate = false) {
     if (_savingDisabled) return;
+
+    if (immediate) {
+        // Guardar sincrónicamente (para beforeunload)
+        try {
+            const plain = JSON.parse(JSON.stringify(caseData));
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(plain));
+            sessionStorage.setItem(STORAGE_KEY_STEP, UIState.currentStep.toString());
+        } catch (e) { /* silently fail */ }
+        return;
+    }
+
     clearTimeout(_saveTimer);
     _saveTimer = setTimeout(() => {
         try {
@@ -58,6 +69,7 @@ export function loadCaseData() {
 export function clearSavedCaseData() {
     sessionStorage.removeItem(STORAGE_KEY);
     sessionStorage.removeItem(STORAGE_KEY_STEP);
+    sessionStorage.removeItem('crearCaso_cardsState');
 }
 
 /**
@@ -186,7 +198,8 @@ export const caseData = createReactiveState({
         tipo_cedula: '', sexo: '', estado_civil: '', nacionalidad: '',
         cedula: '', pasaporte: '', rif_personal: '',
         nombres: '', apellidos: '',
-        fecha_nacimiento: '', fecha_fallecimiento: ''
+        fecha_nacimiento: '', fecha_fallecimiento: '',
+        _locked_fields: []                    // helper: campos deshabilitados por autocomplete
         // NOTA: valor_ut eliminado — ahora es caso.unidad_tributaria_id (Sección 2)
     },
 
@@ -218,7 +231,9 @@ export const caseData = createReactiveState({
         estado: '', municipio: '', parroquia: '', ciudad: '',
         telefono_fijo: '', telefono_celular: '', fax: '',
         codigo_postal_id: '',                  // antes: zona_postal
-        punto_referencia: ''
+        punto_referencia: '',
+        desc_inmueble: '',                     // helper: nombre/descripción del inmueble (no va a BD)
+        piso_nivel: ''                         // helper: piso/nro/nivel (no va a BD)
     },
     direcciones_causante: [],
 
@@ -227,7 +242,8 @@ export const caseData = createReactiveState({
     representante: {
         tipo_cedula: 'Cédula', letra_cedula: 'V', cedula: '', nombres: '', apellidos: '',
         sexo: '', estado_civil: '', fecha_nacimiento: '',
-        pasaporte: '', rif_personal: '', nacionalidad: ''
+        pasaporte: '', rif_personal: '', nacionalidad: '',
+        _locked_fields: []                    // helper: campos deshabilitados por autocomplete
     },
 
     herederos: [],

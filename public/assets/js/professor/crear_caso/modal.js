@@ -1,8 +1,54 @@
-import { $, $$, showToast } from './utils.js';
+import { $, $$, showToast } from '../../global/utils.js';
 import { caseData, UIState } from './state.js';
 import { renderHerederos, renderHerederosPremuertos } from './herederos.js';
 import { renderInventario } from './inventario.js';
-import { getCatalogs } from './catalogos.js';
+import { getCatalogs } from '../../global/catalogos.js';
+
+/**
+ * Muestra un diálogo de confirmación estilizado.
+ * Retorna una Promise que resuelve a true (Aceptar) o false (Cancelar).
+ */
+function showConfirm(message, title = 'Confirmación') {
+  return new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `position:fixed;inset:0;background:rgba(10,30,61,0.5);backdrop-filter:blur(4px);
+      display:flex;align-items:center;justify-content:center;z-index:300;
+      opacity:0;transition:opacity 0.2s ease;`;
+    overlay.innerHTML = `
+      <div style="background:var(--cc-white,#fff);border-radius:16px;width:440px;max-width:90vw;
+        box-shadow:0 24px 80px rgba(0,0,0,0.25);transform:translateY(10px) scale(0.98);
+        transition:transform 0.2s ease;overflow:hidden;">
+        <div style="padding:16px 24px;border-bottom:1px solid var(--cc-slate-100,#f1f5f9);
+          display:flex;align-items:center;gap:10px;">
+          <span style="font-size:20px;">⚠️</span>
+          <h3 style="margin:0;font-size:15px;font-weight:700;color:var(--cc-slate-800,#1e293b);">${title}</h3>
+        </div>
+        <div style="padding:20px 24px;font-size:14px;color:var(--cc-slate-600,#475569);line-height:1.6;">
+          ${message}
+        </div>
+        <div style="padding:16px 24px;border-top:1px solid var(--cc-slate-100,#f1f5f9);
+          display:flex;justify-content:flex-end;gap:10px;">
+          <button id="ccConfirmNo" style="padding:8px 20px;border-radius:8px;border:1px solid var(--cc-slate-200,#e2e8f0);
+            background:var(--cc-white,#fff);color:var(--cc-slate-600,#475569);font-size:13px;font-weight:600;
+            cursor:pointer;transition:all 0.15s ease;">Cancelar</button>
+          <button id="ccConfirmYes" style="padding:8px 20px;border-radius:8px;border:none;
+            background:var(--cc-blue-600,#2563eb);color:#fff;font-size:13px;font-weight:600;
+            cursor:pointer;transition:all 0.15s ease;">Aceptar</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => {
+      overlay.style.opacity = '1';
+      overlay.querySelector('div').style.transform = 'translateY(0) scale(1)';
+    });
+    const close = (val) => {
+      overlay.style.opacity = '0';
+      setTimeout(() => { overlay.remove(); resolve(val); }, 200);
+    };
+    overlay.querySelector('#ccConfirmNo').addEventListener('click', () => close(false));
+    overlay.querySelector('#ccConfirmYes').addEventListener('click', () => close(true));
+  });
+}
 
 const MODAL_CONFIGS = {
   heredero: {
@@ -11,51 +57,54 @@ const MODAL_CONFIGS = {
     wide: false,
     build: (form) => `
       <div class="cc-grid cc-grid--2">
-        <div class="cc-field"><label>Nombres <span class="req">*</span></label>
+        <input type="hidden" data-modal="persona_id" value="${form.persona_id || ''}">
+        <div class="cc-field"><label>Nombres</label>
           <input type="text" data-modal="nombres" value="${form.nombres || ''}" placeholder="Nombres"></div>
-        <div class="cc-field"><label>Apellidos <span class="req">*</span></label>
+        <div class="cc-field"><label>Apellidos</label>
           <input type="text" data-modal="apellidos" value="${form.apellidos || ''}" placeholder="Apellidos"></div>
-        <div class="cc-field" style="grid-column: 1 / -1;"><label>TIPO DE DOCUMENTO <span class="req">*</span></label>
+        <div class="cc-field" style="grid-column: 1 / -1;"><label>TIPO DE DOCUMENTO</label>
           <div class="cc-radio-group cc-radio-group--inline" style="display:flex;gap:1.5rem; margin-top:0.25rem;">
             <label class="cc-radio"><input type="radio" name="doc_heredero" value="Cédula" data-modal="tipo_documento" ${form.tipo_documento === 'Cédula' || !form.tipo_documento ? 'checked' : ''}> CÉDULA</label>
             <label class="cc-radio"><input type="radio" name="doc_heredero" value="RIF" data-modal="tipo_documento" ${form.tipo_documento === 'RIF' ? 'checked' : ''}> RIF</label>
+            <label class="cc-radio"><input type="radio" name="doc_heredero" value="Pasaporte" data-modal="tipo_documento" ${form.tipo_documento === 'Pasaporte' ? 'checked' : ''}> PASAPORTE</label>
           </div>
         </div>
-        <div class="cc-field cc-field--doc"><label id="lblDocHer1">CÉDULA <span class="req">*</span></label>
+        <div class="cc-field cc-field--doc" id="wrap-her1-cedula"><label id="lblDocHer1">CÉDULA</label>
           <div class="cc-doc-wrapper" style="display:flex; gap:0.5rem">
-            <select data-modal="letra_cedula" style="width:70px;">
+            <select data-modal="letra_cedula" id="sel-her1-letra" style="width:70px;">
               <option value="V" ${form.letra_cedula === 'V' || !form.letra_cedula ? 'selected' : ''}>V</option>
               <option value="E" ${form.letra_cedula === 'E' ? 'selected' : ''}>E</option>
               <option value="J" ${form.letra_cedula === 'J' ? 'selected' : ''}>J</option>
               <option value="G" ${form.letra_cedula === 'G' ? 'selected' : ''}>G</option>
             </select>
-            <input type="text" data-modal="cedula" id="inputCedHer1" value="${form.cedula || ''}" placeholder="Ej: 12345678" style="flex:1;">
+            <input type="text" data-modal="cedula" id="inputCedHer1" value="${form.cedula || ''}" placeholder="Ej: 12345678" style="flex:1;" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
           </div>
         </div>
-        <div class="cc-field"><label>PASAPORTE (SÓLO EXTRANJEROS SIN CÉDULA/RIF)</label>
-          <input type="text" data-modal="pasaporte" id="inputPasaHer1" value="${form.pasaporte || ''}" placeholder="Opcional"></div>
+        <div class="cc-field" id="wrap-her1-pasaporte" style="display:none;"><label>PASAPORTE</label>
+          <input type="text" data-modal="pasaporte" id="inputPasaHer1" value="${form.pasaporte || ''}" placeholder="" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
         <div class="cc-field"><label>Fecha de Nacimiento</label>
           <input type="date" data-modal="fecha_nacimiento" value="${form.fecha_nacimiento || ''}"></div>
-        <div class="cc-field"><label>Sexo <span class="req">*</span></label>
+        <div class="cc-field"><label>Sexo</label>
           <select data-modal="sexo">
             <option value="">Seleccione...</option>
             <option value="M" ${form.sexo === 'M' ? 'selected' : ''}>Masculino</option>
             <option value="F" ${form.sexo === 'F' ? 'selected' : ''}>Femenino</option>
           </select></div>
-        <div class="cc-field"><label>Estado Civil <span class="req">*</span></label>
+        <div class="cc-field"><label>Estado Civil</label>
           <select data-modal="estado_civil">
             <option value="">Seleccione...</option>
             <option value="Soltero" ${form.estado_civil === 'Soltero' ? 'selected' : ''}>Soltero/a</option>
             <option value="Casado" ${form.estado_civil === 'Casado' ? 'selected' : ''}>Casado/a</option>
             <option value="Viudo" ${form.estado_civil === 'Viudo' ? 'selected' : ''}>Viudo/a</option>
             <option value="Divorciado" ${form.estado_civil === 'Divorciado' ? 'selected' : ''}>Divorciado/a</option>
+            <option value="Concubinato" ${form.estado_civil === 'Concubinato' ? 'selected' : ''}>Concubinato</option>
           </select></div>
-        <div class="cc-field"><label>Carácter <span class="req">*</span></label>
+        <div class="cc-field"><label>Carácter</label>
           <select data-modal="caracter">
             <option value="HEREDERO" ${form.caracter === 'HEREDERO' ? 'selected' : ''}>Heredero</option>
             <option value="LEGATARIO" ${form.caracter === 'LEGATARIO' ? 'selected' : ''}>Legatario</option>
           </select></div>
-        <div class="cc-field"><label>Parentesco <span class="req">*</span></label>
+        <div class="cc-field"><label>Parentesco</label>
           <select data-modal="parentesco_id">
             <option value="">Seleccione...</option>
             ${getCatalogs().parentescos.map(p => `<option value="${p.parentesco_id}" ${form.parentesco_id == p.parentesco_id ? 'selected' : ''}>${p.nombre}</option>`).join('')}
@@ -65,7 +114,7 @@ const MODAL_CONFIGS = {
             <option value="NO" ${form.premuerto !== 'SI' ? 'selected' : ''}>No</option>
             <option value="SI" ${form.premuerto === 'SI' ? 'selected' : ''}>Sí</option>
           </select></div>
-        <div class="cc-field" id="bloqueFallecimiento" style="display: ${form.premuerto === 'SI' ? 'block' : 'none'}"><label>Fecha de Fallecimiento <span class="req">*</span></label>
+        <div class="cc-field" id="bloqueFallecimiento" style="display: ${form.premuerto === 'SI' ? 'block' : 'none'}"><label>Fecha de Fallecimiento</label>
           <input type="date" data-modal="fecha_fallecimiento" value="${form.fecha_fallecimiento || ''}"></div>
       </div>`,
     collect: () => collectModalFields(),
@@ -102,6 +151,10 @@ const MODAL_CONFIGS = {
       return null;
     },
     save: (form) => {
+      // Parsear _locked_fields de string JSON a array
+      if (typeof form._locked_fields === 'string') {
+        try { form._locked_fields = JSON.parse(form._locked_fields); } catch { form._locked_fields = []; }
+      }
       if (UIState.editIndex !== null) { caseData.herederos[UIState.editIndex] = form; }
       else { caseData.herederos.push(form); }
       renderHerederos();
@@ -114,63 +167,60 @@ const MODAL_CONFIGS = {
     wide: false,
     build: (form) => `
       <div class="cc-grid cc-grid--2">
-        <div class="cc-field"><label>Nombres <span class="req">*</span></label>
+        <input type="hidden" data-modal="persona_id" value="${form.persona_id || ''}">
+        <div class="cc-field"><label>Nombres</label>
           <input type="text" data-modal="nombres" value="${form.nombres || ''}" placeholder="Nombres"></div>
-        <div class="cc-field"><label>Apellidos <span class="req">*</span></label>
+        <div class="cc-field"><label>Apellidos</label>
           <input type="text" data-modal="apellidos" value="${form.apellidos || ''}" placeholder="Apellidos"></div>
-        <div class="cc-field" style="grid-column: 1 / -1;"><label>TIPO DE DOCUMENTO <span class="req">*</span></label>
+        <div class="cc-field" style="grid-column: 1 / -1;"><label>TIPO DE DOCUMENTO</label>
           <div class="cc-radio-group cc-radio-group--inline" style="display:flex;gap:1.5rem; margin-top:0.25rem;">
             <label class="cc-radio"><input type="radio" name="doc_heredero2" value="Cédula" data-modal="tipo_documento" ${form.tipo_documento === 'Cédula' || !form.tipo_documento ? 'checked' : ''}> CÉDULA</label>
             <label class="cc-radio"><input type="radio" name="doc_heredero2" value="RIF" data-modal="tipo_documento" ${form.tipo_documento === 'RIF' ? 'checked' : ''}> RIF</label>
+            <label class="cc-radio"><input type="radio" name="doc_heredero2" value="Pasaporte" data-modal="tipo_documento" ${form.tipo_documento === 'Pasaporte' ? 'checked' : ''}> PASAPORTE</label>
           </div>
         </div>
-        <div class="cc-field cc-field--doc"><label id="lblDocHer2">CÉDULA <span class="req">*</span></label>
+        <div class="cc-field cc-field--doc" id="wrap-her2-cedula"><label id="lblDocHer2">CÉDULA</label>
           <div class="cc-doc-wrapper" style="display:flex; gap:0.5rem">
-            <select data-modal="letra_cedula" style="width:70px;">
+            <select data-modal="letra_cedula" id="sel-her2-letra" style="width:70px;">
               <option value="V" ${form.letra_cedula === 'V' || !form.letra_cedula ? 'selected' : ''}>V</option>
               <option value="E" ${form.letra_cedula === 'E' ? 'selected' : ''}>E</option>
               <option value="J" ${form.letra_cedula === 'J' ? 'selected' : ''}>J</option>
               <option value="G" ${form.letra_cedula === 'G' ? 'selected' : ''}>G</option>
             </select>
-            <input type="text" data-modal="cedula" id="inputCedHer2" value="${form.cedula || ''}" placeholder="Ej: 12345678" style="flex:1;">
+            <input type="text" data-modal="cedula" id="inputCedHer2" value="${form.cedula || ''}" placeholder="Ej: 12345678" style="flex:1;" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
           </div>
         </div>
-        <div class="cc-field"><label>PASAPORTE (SÓLO EXTRANJEROS SIN CÉDULA/RIF)</label>
-          <input type="text" data-modal="pasaporte" id="inputPasaHer2" value="${form.pasaporte || ''}" placeholder="Opcional"></div>
+        <div class="cc-field" id="wrap-her2-pasaporte" style="display:none;"><label>PASAPORTE</label>
+          <input type="text" data-modal="pasaporte" id="inputPasaHer2" value="${form.pasaporte || ''}" placeholder="" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
         <div class="cc-field"><label>Fecha de Nacimiento</label>
           <input type="date" data-modal="fecha_nacimiento" value="${form.fecha_nacimiento || ''}"></div>
-        <div class="cc-field"><label>Sexo <span class="req">*</span></label>
+        <div class="cc-field"><label>Sexo</label>
           <select data-modal="sexo">
             <option value="">Seleccione...</option>
             <option value="M" ${form.sexo === 'M' ? 'selected' : ''}>Masculino</option>
             <option value="F" ${form.sexo === 'F' ? 'selected' : ''}>Femenino</option>
           </select></div>
-        <div class="cc-field"><label>Estado Civil <span class="req">*</span></label>
+        <div class="cc-field"><label>Estado Civil</label>
           <select data-modal="estado_civil">
             <option value="">Seleccione...</option>
             <option value="Soltero" ${form.estado_civil === 'Soltero' ? 'selected' : ''}>Soltero/a</option>
             <option value="Casado" ${form.estado_civil === 'Casado' ? 'selected' : ''}>Casado/a</option>
             <option value="Viudo" ${form.estado_civil === 'Viudo' ? 'selected' : ''}>Viudo/a</option>
             <option value="Divorciado" ${form.estado_civil === 'Divorciado' ? 'selected' : ''}>Divorciado/a</option>
+            <option value="Concubinato" ${form.estado_civil === 'Concubinato' ? 'selected' : ''}>Concubinato</option>
           </select></div>
-        <div class="cc-field"><label>Carácter <span class="req">*</span></label>
+        <div class="cc-field"><label>Carácter</label>
           <select data-modal="caracter">
             <option value="HEREDERO" ${form.caracter === 'HEREDERO' ? 'selected' : ''}>Heredero</option>
             <option value="LEGATARIO" ${form.caracter === 'LEGATARIO' ? 'selected' : ''}>Legatario</option>
           </select></div>
-        <div class="cc-field"><label>Parentesco <span class="req">*</span></label>
+        <div class="cc-field"><label>Parentesco</label>
           <select data-modal="parentesco_id">
             <option value="">Seleccione...</option>
             ${getCatalogs().parentescos.map(p => `<option value="${p.parentesco_id}" ${form.parentesco_id == p.parentesco_id ? 'selected' : ''}>${p.nombre}</option>`).join('')}
           </select></div>
-        <div class="cc-field"><label>Premuerto</label>
-          <select data-modal="premuerto" id="modalHerederoPremuerto2">
-            <option value="NO" ${form.premuerto !== 'SI' ? 'selected' : ''}>No</option>
-            <option value="SI" ${form.premuerto === 'SI' ? 'selected' : ''}>Sí</option>
-          </select></div>
-        <div class="cc-field" id="bloqueFallecimiento2" style="display: ${form.premuerto === 'SI' ? 'block' : 'none'}"><label>Fecha de Fallecimiento <span class="req">*</span></label>
-          <input type="date" data-modal="fecha_fallecimiento" value="${form.fecha_fallecimiento || ''}"></div>
-        <div class="cc-field"><label>Representa a: <span class="req">*</span></label>
+
+        <div class="cc-field"><label>Representa a:</label>
           <select data-modal="premuerto_padre_id">
             <option value="">No aplica...</option>
             ${caseData.herederos.map((h, i) => {
@@ -205,15 +255,15 @@ const MODAL_CONFIGS = {
         const dupHP = caseData.herederos_premuertos.some((h, i) => i !== UIState.editIndex && (h.letra_cedula || '') + (h.cedula || '') === fullCed);
         if (dupHP) return "Ya existe un heredero del premuerto con esa cédula.";
       }
-      if (!form.nombres || !form.apellidos || !form.fecha_nacimiento || !form.sexo || !form.estado_civil || !form.caracter || !form.parentesco_id || !form.premuerto || !form.premuerto_padre_id) {
+      if (!form.nombres || !form.apellidos || !form.fecha_nacimiento || !form.sexo || !form.estado_civil || !form.caracter || !form.parentesco_id || !form.premuerto_padre_id) {
         return "Por favor, complete todos los campos (incluyendo a quién representa).";
-      }
-      if (form.premuerto === 'SI' && !form.fecha_fallecimiento) {
-        return "Debe ingresar la fecha de fallecimiento del premuerto.";
       }
       return null;
     },
     save: (form) => {
+      if (typeof form._locked_fields === 'string') {
+        try { form._locked_fields = JSON.parse(form._locked_fields); } catch { form._locked_fields = []; }
+      }
       if (UIState.editIndex !== null) { caseData.herederos_premuertos[UIState.editIndex] = form; }
       else { caseData.herederos_premuertos.push(form); }
       renderHerederosPremuertos();
@@ -240,18 +290,18 @@ const MODAL_CONFIGS = {
         </div>
       </div>
       <div class="cc-grid cc-grid--3">
-        <div class="cc-field"><label>Vivienda Principal <span class="req">*</span></label>
+        <div class="cc-field"><label>Vivienda Principal</label>
           <select data-modal="vivienda_principal" id="modalViviendaPrincipal" disabled>
             <option value="No" ${form.vivienda_principal !== 'Si' ? 'selected' : ''}>No</option>
             <option value="Si" ${form.vivienda_principal === 'Si' ? 'selected' : ''}>Sí</option>
           </select></div>
-        <div class="cc-field"><label>Bien Litigioso <span class="req">*</span></label>
+        <div class="cc-field"><label>Bien Litigioso</label>
           <select data-modal="bien_litigioso" id="modalBienLitigioso">
             <option value="No" ${form.bien_litigioso !== 'Si' ? 'selected' : ''}>No</option>
             <option value="Si" ${form.bien_litigioso === 'Si' ? 'selected' : ''}>Sí</option>
           </select></div>
         <div class="cc-field"><label>Porcentaje %</label>
-          <input type="number" data-modal="porcentaje" min="0" max="100" value="${form.porcentaje || 100}"></div>
+          <input type="text" data-modal="porcentaje" placeholder="Ej: 100" value="${form.porcentaje || 100}"></div>
       </div>
 
       <!-- Sección 9: Bloque litigioso condicional -->
@@ -312,9 +362,9 @@ const MODAL_CONFIGS = {
           <input type="text" data-modal="folio_real_anio" value="${form.folio_real_anio || ''}"></div>
 
         <div class="cc-field"><label>Valor Original (Bs.)</label>
-          <input type="number" step="0.01" data-modal="valor_original" placeholder="0,00" value="${form.valor_original || ''}"></div>
-        <div class="cc-field"><label>Valor Declarado (Bs.) <span class="req">*</span></label>
-          <input type="number" step="0.01" data-modal="valor_declarado" placeholder="0,00" value="${form.valor_declarado || ''}"></div>
+          <input type="text" data-modal="valor_original" placeholder="0.00" value="${form.valor_original || ''}"></div>
+        <div class="cc-field"><label>Valor Declarado (Bs.)</label>
+          <input type="text" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>
       </div>`,
     collect: () => {
       const f = collectModalFields();
@@ -335,6 +385,14 @@ const MODAL_CONFIGS = {
     validate: (form) => {
       if (!form.tipo_bien_inmueble_id || form.tipo_bien_inmueble_id.length === 0) return "Debe seleccionar al menos un Tipo de Bien.";
       if (!form.porcentaje || parseFloat(form.porcentaje) <= 0 || parseFloat(form.porcentaje) > 100) return "Porcentaje inválido.";
+
+      // Solo un bien inmueble puede ser vivienda principal
+      if (form.vivienda_principal === 'Si') {
+        const existeOtra = caseData.bienes_inmuebles.some((bi, i) =>
+          bi.vivienda_principal === 'Si' && i !== UIState.editIndex
+        );
+        if (existeOtra) return "Ya existe un bien inmueble marcado como Vivienda Principal. Solo se permite uno.";
+      }
 
       if (form.bien_litigioso === 'Si') {
         if (!form.numero_expediente || !form.tribunal_causa || !form.partes_juicio || !form.estado_juicio) {
@@ -369,9 +427,15 @@ const MODAL_CONFIGS = {
       const tipos = getCatalogs().tiposBienMueble[UIState.currentSubTab] || [];
 
       // ── Helper: bloque RIF Empresa + Razón Social (readonly) ──
+      const rifDigits = (form.rif_empresa || '').replace(/^[A-Za-z]/, ''); // quitar letra J si existe
       const rifEmpresaBlock = (labelRif = 'Rif Empresa', labelRS = 'Razón Social') => `
-            <div class="cc-field"><label>${labelRif} <span class="req">*</span></label>
-              <input type="text" data-modal="rif_empresa" id="modalRifEmpresa" value="${form.rif_empresa || ''}" placeholder="Ej: J012345678">
+            <div class="cc-field"><label>${labelRif}</label>
+              <div style="display:flex;gap:4px;">
+                <select id="modalRifLetra" style="width:60px;flex-shrink:0;" disabled>
+                  <option value="J" selected>J</option>
+                </select>
+                <input type="text" data-modal="rif_empresa" id="modalRifEmpresa" value="${rifDigits}" placeholder="012345678" maxlength="9" style="flex:1;">
+              </div>
               <span class="cc-hint cc-rif-hint" id="rifHint" style="color:var(--cc-amber-600)"></span></div>
             <div class="cc-field"><label>${labelRS}</label>
               <input type="text" data-modal="razon_social" id="modalRazonSocial" value="${form.razon_social || ''}" readonly style="background:var(--cc-slate-50)"></div>`;
@@ -381,31 +445,31 @@ const MODAL_CONFIGS = {
       // ── 1. Banco ──
       if (nameKey.includes('banco')) {
         extraFields = `
-              <div class="cc-field"><label>Nombre Banco <span class="req">*</span></label>
+              <div class="cc-field"><label>Nombre Banco</label>
                 <select data-modal="banco_id">
                   <option value="">Seleccione...</option>
                   ${getCatalogs().bancos.map(b => `<option value="${b.banco_id}" ${form.banco_id == b.banco_id ? 'selected' : ''}>${b.nombre}</option>`).join('')}
                 </select></div>
-              <div class="cc-field"><label>Número de Cuenta <span class="req">*</span></label>
+              <div class="cc-field"><label>Número de Cuenta</label>
                 <input type="text" data-modal="numero_cuenta" value="${form.numero_cuenta || ''}"></div>`;
 
         // ── 2. Transporte ──
       } else if (nameKey.includes('transporte')) {
         extraFields = `
-              <div class="cc-field"><label>Año <span class="req">*</span></label>
+              <div class="cc-field"><label>Año</label>
                 <input type="number" data-modal="anio" value="${form.anio || ''}" min="1900"></div>
-              <div class="cc-field"><label>Marca <span class="req">*</span></label>
+              <div class="cc-field"><label>Marca</label>
                 <input type="text" data-modal="marca" value="${form.marca || ''}"></div>
-              <div class="cc-field"><label>Modelo <span class="req">*</span></label>
+              <div class="cc-field"><label>Modelo</label>
                 <input type="text" data-modal="modelo" value="${form.modelo || ''}"></div>
-              <div class="cc-field"><label>Serial/Número Identificador/Placas <span class="req">*</span></label>
+              <div class="cc-field"><label>Serial/Número Identificador/Placas</label>
                 <input type="text" data-modal="serial_placa" value="${form.serial_placa || ''}"></div>`;
 
         // ── 3. Seguro ──
       } else if (nameKey.includes('seguro')) {
         extraFields = `
               ${rifEmpresaBlock()}
-              <div class="cc-field"><label>Número de Prima <span class="req">*</span></label>
+              <div class="cc-field"><label>Número de Prima</label>
                 <input type="text" data-modal="numero_prima" value="${form.numero_prima || ''}"></div>`;
 
         // ── 4. Acciones ──
@@ -415,11 +479,11 @@ const MODAL_CONFIGS = {
         // ── 5. Bonos ──
       } else if (nameKey.includes('bonos')) {
         extraFields = `
-              <div class="cc-field"><label>Tipo de Bonos <span class="req">*</span></label>
+              <div class="cc-field"><label>Tipo de Bonos</label>
                 <input type="text" data-modal="tipo_bonos" value="${form.tipo_bonos || ''}"></div>
-              <div class="cc-field"><label>Número de Bonos <span class="req">*</span></label>
+              <div class="cc-field"><label>Número de Bonos</label>
                 <input type="number" data-modal="numero_bonos" value="${form.numero_bonos || ''}"></div>
-              <div class="cc-field"><label>Número de Serie <span class="req">*</span></label>
+              <div class="cc-field"><label>Número de Serie</label>
                 <input type="text" data-modal="numero_serie" value="${form.numero_serie || ''}"></div>`;
 
         // ── 6. Caja de Ahorro ──  (NO tipo de bien select)
@@ -429,15 +493,15 @@ const MODAL_CONFIGS = {
         // ── 7. Cuentas y Efectos por Cobrar ──
       } else if (nameKey.includes('cobrar')) {
         extraFields = `
-              <div class="cc-field"><label>Rif o Cédula <span class="req">*</span></label>
+              <div class="cc-field"><label>Rif o Cédula</label>
                 <input type="text" data-modal="rif_cedula" value="${form.rif_cedula || ''}"></div>
-              <div class="cc-field"><label>Apellidos y Nombres <span class="req">*</span></label>
+              <div class="cc-field"><label>Apellidos y Nombres</label>
                 <input type="text" data-modal="apellidos_nombres" value="${form.apellidos_nombres || ''}"></div>`;
 
         // ── 8. Opciones de Compra ──
       } else if (nameKey.includes('compra')) {
         extraFields = `
-              <div class="cc-field cc-span-2"><label>Nombre del Oferente <span class="req">*</span></label>
+              <div class="cc-field cc-span-2"><label>Nombre del Oferente</label>
                 <input type="text" data-modal="nombre_oferente" value="${form.nombre_oferente || ''}"></div>`;
 
         // ── 9. Otros ──  (solo Tipo de Bien + campos comunes)
@@ -468,19 +532,19 @@ const MODAL_CONFIGS = {
         // ── 12. Semovientes ──
       } else if (nameKey.includes('semovientes')) {
         extraFields = `
-              <div class="cc-field"><label>Tipo de Semoviente <span class="req">*</span></label>
+              <div class="cc-field"><label>Tipo de Semoviente</label>
                 <select data-modal="tipo_semoviente_id">
                   <option value="">Seleccione...</option>
                   ${getCatalogs().tiposSemoviente.map(s => `<option value="${s.tipo_semoviente_id}" ${form.tipo_semoviente_id == s.tipo_semoviente_id ? 'selected' : ''}>${s.nombre}</option>`).join('')}
                 </select></div>
-              <div class="cc-field"><label>Cantidad <span class="req">*</span></label>
+              <div class="cc-field"><label>Cantidad</label>
                 <input type="number" data-modal="cantidad" value="${form.cantidad || ''}"></div>`;
       }
 
       // Tipo de Bien select (some categories like Plantaciones and Caja de Ahorro don't have it)
       const skipTipoSelect = nameKey.includes('plantaciones') || nameKey.includes('caja de ahorro');
       const selectsTipo = (!skipTipoSelect && tipos.length > 0) ? `
-            <div class="cc-field"><label>Tipo de Bien <span class="req">*</span></label>
+            <div class="cc-field"><label>Tipo de Bien</label>
             <select data-modal="tipo_bien_mueble_id">
                 <option value="">Seleccione...</option>
                 ${tipos.map(t => `<option value="${t.tipo_bien_mueble_id}" ${form.tipo_bien_mueble_id == t.tipo_bien_mueble_id ? 'selected' : ''}>${t.nombre}</option>`).join('')}
@@ -516,12 +580,12 @@ const MODAL_CONFIGS = {
         ${bloqueLitigiosoHTML}
 
         <div class="cc-field"><label>Porcentaje %</label>
-          <input type="number" data-modal="porcentaje" min="0" max="100" step="0.01" value="${form.porcentaje || '0.01'}"></div>
+          <input type="text" data-modal="porcentaje" placeholder="0.01 - 100" value="${form.porcentaje || '0.01'}"></div>
         <div class="cc-field"><label>Descripción</label>
           <textarea data-modal="descripcion" placeholder="Descripción del bien mueble...">${form.descripcion || ''}</textarea></div>
         <div class="cc-field cc-span-2" style="display:flex; justify-content:flex-end;">
-          <div class="cc-field" style="max-width:300px; width:100%;"><label>Valor Declarado (Bs.) <span class="req">*</span></label>
-            <input type="number" step="0.01" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>
+          <div class="cc-field" style="max-width:300px; width:100%;"><label>Valor Declarado (Bs.)</label>
+            <input type="text" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>
         </div>
       </div>`;
     },
@@ -549,8 +613,8 @@ const MODAL_CONFIGS = {
       // Validar formato RIF en categorías que lo usan
       const usaRif = nameKey.includes('seguro') || nameKey.includes('acciones') || nameKey.includes('caja de ahorro') || nameKey.includes('prestaciones');
       if (usaRif) {
-        if (!form.rif_empresa) return "Debe ingresar el Rif Empresa.";
-        if (!/^[Jj]\d{9}$/.test(form.rif_empresa)) return "El Rif Empresa debe tener formato J seguido de 9 dígitos. Ej: J012345678";
+        if (!form.rif_empresa) return "Debe ingresar el número de Rif Empresa (9 dígitos).";
+        if (!/^\d{9}$/.test(form.rif_empresa)) return "El Rif Empresa debe tener exactamente 9 dígitos.";
         if (!form.razon_social) return "Debe ingresar la Razón Social.";
       }
 
@@ -588,13 +652,55 @@ const MODAL_CONFIGS = {
 
       return null;
     },
-    save: (form) => {
+    save: async (form) => {
+      // Concatenar letra J con los dígitos del RIF para guardar completo
+      if (form.rif_empresa && /^\d{9}$/.test(form.rif_empresa)) {
+        form.rif_empresa = 'J' + form.rif_empresa;
+      }
       if (!caseData.bienes_muebles[UIState.currentSubTab]) caseData.bienes_muebles[UIState.currentSubTab] = [];
       if (UIState.editIndex !== null) {
         caseData.bienes_muebles[UIState.currentSubTab][UIState.editIndex] = form;
       } else {
         caseData.bienes_muebles[UIState.currentSubTab].push(form);
       }
+
+      // Propagar cambio de razón social a otros bienes con el mismo RIF
+      if (form.rif_empresa && form.razon_social) {
+        const muebles = caseData.bienes_muebles || {};
+        let razonOriginal = null;
+        for (const catId of Object.keys(muebles)) {
+          if (!Array.isArray(muebles[catId])) continue;
+          for (const bien of muebles[catId]) {
+            if (bien === form) continue;
+            if (bien.rif_empresa === form.rif_empresa && bien.razon_social && bien.razon_social !== form.razon_social) {
+              razonOriginal = bien.razon_social;
+              break;
+            }
+          }
+          if (razonOriginal) break;
+        }
+        if (razonOriginal) {
+          const confirmar = await showConfirm(
+            `La Razón Social de la empresa con RIF <strong>${form.rif_empresa}</strong> ha cambiado a <strong>"${form.razon_social}"</strong>.<br><br>
+            ¿Desea actualizar la Razón Social en todos los bienes que usan este mismo RIF?<br><br>
+            <span style="color:var(--cc-slate-400);font-size:12px;">Si cancela, se mantendrá la razón social original "${razonOriginal}".</span>`,
+            'Cambio de Razón Social'
+          );
+          if (confirmar) {
+            for (const catId of Object.keys(muebles)) {
+              if (!Array.isArray(muebles[catId])) continue;
+              for (const bien of muebles[catId]) {
+                if (bien.rif_empresa === form.rif_empresa) {
+                  bien.razon_social = form.razon_social;
+                }
+              }
+            }
+          } else {
+            form.razon_social = razonOriginal;
+          }
+        }
+      }
+
       renderInventario();
     }
   },
@@ -607,7 +713,7 @@ const MODAL_CONFIGS = {
       const catalogs = getCatalogs();
       return `
       <div class="cc-grid cc-grid--2 cc-pasivo-deuda-grid" style="display: grid;">
-        <div class="cc-field cc-span-2" id="wrapTipoDeuda" style="order:0"><label>Tipo de Deuda <span class="req">*</span></label>
+        <div class="cc-field cc-span-2" id="wrapTipoDeuda" style="order:0"><label>Tipo de Deuda</label>
           <select data-modal="tipo_pasivo_deuda_id" id="selectPasivoDeuda">
             <option value="">Seleccione...</option>
             ${catalogs.tiposPasivoDeuda.map(t => `<option value="${t.tipo_pasivo_deuda_id}" ${form.tipo_pasivo_deuda_id == t.tipo_pasivo_deuda_id ? 'selected' : ''}>${t.nombre}</option>`).join('')}
@@ -623,13 +729,13 @@ const MODAL_CONFIGS = {
           <input type="text" data-modal="numero_tdc" value="${form.numero_tdc || ''}"></div>
 
         <div class="cc-field" id="wrapPorcentajeDeuda" style="order:3; grid-column:1;"><label>Porcentaje %</label>
-          <input type="number" data-modal="porcentaje" min="0" max="100" value="${form.porcentaje || '0.01'}"></div>
+          <input type="text" data-modal="porcentaje" placeholder="0.01 - 100" value="${form.porcentaje || '0.01'}"></div>
         
         <div class="cc-field" id="wrapDescDeuda" style="order:4; grid-column:2;"><label>Descripción</label>
           <textarea data-modal="descripcion" placeholder="Descripción de la deuda..." rows="2">${form.descripcion || ''}</textarea></div>
         
-        <div class="cc-field" id="wrapValorDeuda" style="order:5; grid-column:2;"><label>Valor Declarado (Bs.) <span class="req">*</span></label>
-          <input type="number" step="0.01" data-modal="valor_declarado" placeholder="0,00" value="${form.valor_declarado || ''}"></div>
+        <div class="cc-field" id="wrapValorDeuda" style="order:5; grid-column:2;"><label>Valor Declarado (Bs.)</label>
+          <input type="text" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>
       </div>`;
     },
     collect: () => {
@@ -680,17 +786,17 @@ const MODAL_CONFIGS = {
     wide: false,
     build: (form) => `
       <div class="cc-grid cc-grid--2">
-        <div class="cc-field"><label>Tipo de Gasto <span class="req">*</span></label>
+        <div class="cc-field"><label>Tipo de Gasto</label>
           <select data-modal="tipo_pasivo_gasto_id">
             <option value="">Seleccione...</option>
             ${getCatalogs().tiposPasivoGasto.map(t => `<option value="${t.tipo_pasivo_gasto_id}" ${form.tipo_pasivo_gasto_id == t.tipo_pasivo_gasto_id ? 'selected' : ''}>${t.nombre}</option>`).join('')}
           </select></div>
         <div class="cc-field"><label>Porcentaje %</label>
-          <input type="number" data-modal="porcentaje" min="0" max="100" value="${form.porcentaje || 100}"></div>
+          <input type="text" data-modal="porcentaje" placeholder="0.01 - 100" value="${form.porcentaje || 100}"></div>
         <div class="cc-field cc-span-2"><label>Descripción</label>
           <textarea data-modal="descripcion" placeholder="Motivo del gasto...">${form.descripcion || ''}</textarea></div>
-        <div class="cc-field cc-span-2"><label>Valor Declarado (Bs.) <span class="req">*</span></label>
-          <input type="number" step="0.01" data-modal="valor_declarado" value="${form.valor_declarado || ''}"></div>
+        <div class="cc-field cc-span-2"><label>Valor Declarado (Bs.)</label>
+          <input type="text" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>
       </div>`,
     collect: () => collectModalFields(),
     validate: (form) => {
@@ -715,12 +821,12 @@ const MODAL_CONFIGS = {
     saveLabel: (edit) => edit !== null ? 'Guardar Cambios' : 'Agregar',
     wide: false,
     build: (form) => `
-      <div class="cc-field"><label>Tipo de Exención <span class="req">*</span></label>
+      <div class="cc-field"><label>Tipo de Exención</label>
         <input type="text" data-modal="tipo_exencion" placeholder="Tipo de exención" value="${form.tipo_exencion || ''}"></div>
       <div class="cc-field cc-mt"><label>Descripción</label>
         <textarea data-modal="descripcion" placeholder="Descripción...">${form.descripcion || ''}</textarea></div>
-      <div class="cc-field cc-mt"><label>Valor Declarado (Bs.) <span class="req">*</span></label>
-        <input type="number" step="0.01" data-modal="valor_declarado" value="${form.valor_declarado || ''}"></div>`,
+      <div class="cc-field cc-mt"><label>Valor Declarado (Bs.)</label>
+        <input type="text" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>`,
     collect: () => collectModalFields(),
     validate: (form) => {
       if (!form.tipo_exencion) return "Debe ingresar el Tipo de Exención.";
@@ -743,12 +849,12 @@ const MODAL_CONFIGS = {
     saveLabel: (edit) => edit !== null ? 'Guardar Cambios' : 'Agregar',
     wide: false,
     build: (form) => `
-      <div class="cc-field"><label>Tipo de Exoneración <span class="req">*</span></label>
+      <div class="cc-field"><label>Tipo de Exoneración</label>
         <input type="text" data-modal="tipo_exoneracion" placeholder="Tipo de exoneración" value="${form.tipo_exoneracion || ''}"></div>
       <div class="cc-field cc-mt"><label>Descripción</label>
         <textarea data-modal="descripcion" placeholder="Descripción...">${form.descripcion || ''}</textarea></div>
-      <div class="cc-field cc-mt"><label>Valor Declarado (Bs.) <span class="req">*</span></label>
-        <input type="number" step="0.01" data-modal="valor_declarado" value="${form.valor_declarado || ''}"></div>`,
+      <div class="cc-field cc-mt"><label>Valor Declarado (Bs.)</label>
+        <input type="text" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>`,
     collect: () => collectModalFields(),
     validate: (form) => {
       if (!form.tipo_exoneracion) return "Debe ingresar el Tipo de Exoneración.";
@@ -773,7 +879,7 @@ const MODAL_CONFIGS = {
     wide: false,
     build: (form) => `
       <div class="cc-grid cc-grid--2">
-        <div class="cc-field"><label>Fecha de Solicitud <span class="req">*</span></label>
+        <div class="cc-field"><label>Fecha de Solicitud</label>
           <input type="date" data-modal="fecha_solicitud" value="${form.fecha_solicitud || ''}"></div>
         <div class="cc-field"><label>N° Resolución</label>
           <input type="text" data-modal="nro_resolucion" value="${form.nro_resolucion || ''}" placeholder="Número de resolución" maxlength="50"></div>
@@ -854,7 +960,6 @@ export function openModal(type, editIdx) {
   titleEl.textContent = config.title(UIState.editIndex);
   saveBtn.textContent = config.saveLabel(UIState.editIndex);
   bodyEl.innerHTML = config.build(formData);
-
   // Wide modal
   modal.classList.toggle('cc-modal--wide', !!config.wide);
 
@@ -911,6 +1016,31 @@ export function openModal(type, editIdx) {
       });
     }
 
+    // Si estamos editando un heredero/premuerto cargado de la BD, deshabilitar campos
+    if (UIState.editIndex !== null) {
+      const collection = type === 'heredero' ? caseData.herederos : caseData.herederos_premuertos;
+      const item = collection[UIState.editIndex];
+      let lockedFields = item?._locked_fields || [];
+
+      // Fallback: si tiene persona_id pero no _locked_fields, inferir de campos con valor
+      if (lockedFields.length === 0 && item?.persona_id) {
+        const inferrable = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil'];
+        lockedFields = inferrable.filter(f => item[f] && String(item[f]).trim());
+        // fecha_fallecimiento solo si viene explícitamente en _locked_fields (no inferir)
+        item._locked_fields = lockedFields;
+      }
+
+      if (lockedFields.length > 0) {
+        const lockStyle = 'var(--cc-slate-50, #f8fafc)';
+        lockedFields.forEach(field => {
+          const el = bodyEl.querySelector(`[data-modal="${field}"]`);
+          if (el) {
+            el.disabled = true;
+            el.style.backgroundColor = lockStyle;
+          }
+        });
+      }
+    }
     const radiosDoc = bodyEl.querySelectorAll('input[data-modal="tipo_documento"]');
     const lblDoc = bodyEl.querySelector('.cc-field--doc label');
     const inputCed = bodyEl.querySelector('[data-modal="cedula"]');
@@ -921,57 +1051,227 @@ export function openModal(type, editIdx) {
     const syncLetraOptions = (tipoDoc) => {
       if (!selectLetra) return;
       if (tipoDoc === 'RIF') {
-        // RIF → solo J, deshabilitado
-        selectLetra.innerHTML = '<option value="J" selected>J</option>';
+        selectLetra.innerHTML = '<option value="V">V</option><option value="J">J</option>';
         selectLetra.value = 'J';
-        selectLetra.disabled = true;
       } else {
-        // Cédula → V / E, habilitado
         const currentVal = selectLetra.value;
         selectLetra.innerHTML = `
-          <option value="V" ${currentVal === 'V' || !currentVal ? 'selected' : ''}>V</option>
-          <option value="E" ${currentVal === 'E' ? 'selected' : ''}>E</option>
-        `;
-        selectLetra.disabled = false;
+            <option value="V" ${currentVal === 'V' || !currentVal ? 'selected' : ''}>V</option>
+            <option value="E" ${currentVal === 'E' ? 'selected' : ''}>E</option>
+          `;
       }
     };
 
-    if (radiosDoc.length > 0 && inputCed && inputPasa) {
-      radiosDoc.forEach(r => r.addEventListener('change', (e) => {
-        if (e.target.checked) {
-          if (lblDoc) lblDoc.innerHTML = e.target.value === 'RIF' ? 'RIF <span class="req">*</span>' : 'CÉDULA <span class="req">*</span>';
-          syncLetraOptions(e.target.value);
-        }
-      }));
+    const wrapCedula = bodyEl.querySelector('[id^="wrap-her"][id$="-cedula"]');
+    const wrapPasaporte = bodyEl.querySelector('[id^="wrap-her"][id$="-pasaporte"]');
 
+    if (radiosDoc.length > 0 && inputCed && inputPasa) {
       const handleDocInput = () => {
-        if (inputPasa.value.trim() !== '') {
+        const hasPasaporte = inputPasa.value.trim() !== '';
+        const hasCedula = inputCed.value.trim() !== '';
+
+        if (hasPasaporte) {
           inputCed.disabled = true;
           selectLetra.disabled = true;
-          radiosDoc.forEach(r => r.disabled = true);
-        } else if (inputCed.value.trim() !== '') {
+        } else if (hasCedula) {
           inputPasa.disabled = true;
         } else {
           inputCed.disabled = false;
-          // Solo rehabilitar selectLetra si no es RIF
-          const checkedR = Array.from(radiosDoc).find(r => r.checked);
-          if (!checkedR || checkedR.value !== 'RIF') selectLetra.disabled = false;
-          radiosDoc.forEach(r => r.disabled = false);
+          selectLetra.disabled = false;
           inputPasa.disabled = false;
         }
       };
 
+      radiosDoc.forEach(r => r.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          const val = e.target.value;
+          if (val === 'Pasaporte') {
+            if (wrapCedula) wrapCedula.style.display = 'none';
+            if (wrapPasaporte) wrapPasaporte.style.display = '';
+            inputCed.value = '';
+          } else {
+            if (wrapCedula) wrapCedula.style.display = '';
+            if (wrapPasaporte) wrapPasaporte.style.display = 'none';
+            inputPasa.value = '';
+            if (lblDoc) lblDoc.innerHTML = val === 'RIF' ? 'RIF' : 'CÉDULA';
+            syncLetraOptions(val);
+          }
+          handleDocInput(); // Recalculate disabled states!
+          if (val !== 'Pasaporte') {
+            fetchPersona(); // trigger search on doc type switch if there's input
+          }
+        }
+      }));
+
+      if (selectLetra) {
+        selectLetra.addEventListener('change', () => fetchPersona());
+      }
+
+      const clearPersonaData = () => {
+        radiosDoc.forEach(r => r.disabled = false);
+        // Only clear fields that were previously auto-filled from DB
+        const elLocked = bodyEl.querySelector('[data-modal="_locked_fields"]');
+        let lockedFields = [];
+        if (elLocked) {
+          try { lockedFields = JSON.parse(elLocked.value); } catch { lockedFields = []; }
+        }
+        lockedFields.forEach(field => {
+          const el = bodyEl.querySelector(`[data-modal="${field}"]`);
+          if (el) {
+            el.value = '';
+            el.disabled = false;
+            el.style.backgroundColor = '';
+          }
+        });
+        // Also clear persona_id since the person was unlinked
+        const elPid = bodyEl.querySelector('[data-modal="persona_id"]');
+        if (elPid) elPid.value = '';
+        // Reset locked fields tracker
+        if (elLocked) elLocked.value = '[]';
+      };
+
+      const fetchPersona = async () => {
+        let url = '';
+        const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+        const checkedRadio = Array.from(radiosDoc).find(r => r.checked)?.value || 'Cédula';
+
+        if (checkedRadio === 'Pasaporte') {
+          const pasaporte = inputPasa ? inputPasa.value.trim() : '';
+          if (!pasaporte || pasaporte.length < 5) {
+            // Only clear if empty, don't clear while typing early chars
+            if (pasaporte.length === 0) clearPersonaData();
+            return;
+          }
+          url = `${baseUrl}/api/buscar-persona?pasaporte=${pasaporte}`;
+        } else {
+          const cedula = inputCed ? inputCed.value.trim() : '';
+          if (!cedula || cedula.length < 6) {
+            if (cedula.length === 0) clearPersonaData();
+            return;
+          }
+          const tipo = selectLetra ? selectLetra.value : '';
+          if (!tipo) {
+            clearPersonaData();
+            return;
+          }
+
+          if (checkedRadio === 'RIF') {
+            url = `${baseUrl}/api/buscar-persona?rif=${tipo}${cedula}`;
+          } else {
+            url = `${baseUrl}/api/buscar-persona?tipo=${tipo}&cedula=${cedula}`;
+          }
+        }
+
+        try {
+          const resp = await fetch(url);
+          const json = await resp.json();
+
+          if (json.success && json.data) {
+            const data = json.data;
+
+            // ... (Restante de validación remains unchanged, we will edit the end of the block only)
+            let isSamePerson = false;
+            if (caseData.causante) {
+              if (checkedRadio === 'RIF') {
+                if (data.rif_personal && caseData.causante.rif_personal && data.rif_personal === caseData.causante.rif_personal) isSamePerson = true;
+                if (caseData.causante.cedula && data.rif_personal && (caseData.causante.tipo_cedula + caseData.causante.cedula) === data.rif_personal) isSamePerson = true;
+              } else if (checkedRadio === 'Pasaporte') {
+                if (data.pasaporte && caseData.causante.pasaporte && data.pasaporte === caseData.causante.pasaporte) isSamePerson = true;
+              } else {
+                if (caseData.causante.cedula && data.cedula && data.cedula === caseData.causante.cedula && data.tipo_cedula === caseData.causante.tipo_cedula) isSamePerson = true;
+              }
+              if (data.persona_id && caseData.causante.persona_id && data.persona_id === caseData.causante.persona_id) isSamePerson = true;
+            }
+
+            if (isSamePerson) {
+              showToast('El heredero no puede ser el mismo causante.', 'error');
+              inputCed.value = '';
+              inputPasa.value = '';
+              handleDocInput();
+              return;
+            }
+
+            // Llenar campos y rastrear cuáles vienen de BD
+            const lockedFromDb = [];
+            const fillIfExist = (sel, val, fieldName) => {
+              const el = bodyEl.querySelector(sel);
+              if (el && val) {
+                el.value = val;
+                el.disabled = true;
+                el.style.backgroundColor = 'var(--cc-slate-50, #f8fafc)';
+                if (fieldName) lockedFromDb.push(fieldName);
+              }
+            };
+
+            fillIfExist('[data-modal="nombres"]', data.nombres, 'nombres');
+            fillIfExist('[data-modal="apellidos"]', data.apellidos, 'apellidos');
+            fillIfExist('[data-modal="fecha_nacimiento"]', data.fecha_nacimiento, 'fecha_nacimiento');
+
+            if (data.sexo) fillIfExist('[data-modal="sexo"]', data.sexo, 'sexo');
+
+            const normalizedEC = data.estado_civil ? data.estado_civil.toLowerCase().replace('_', ' ') : '';
+            if (normalizedEC !== 'no aplica') {
+              fillIfExist('[data-modal="estado_civil"]', data.estado_civil, 'estado_civil');
+            }
+
+            // Fill persona_id if provided by the DB
+            if (data.persona_id) {
+              const elPersonaId = bodyEl.querySelector('[data-modal="persona_id"]');
+              if (elPersonaId) elPersonaId.value = data.persona_id;
+            }
+
+            // Fill fecha de fallecimiento if premuerto is SI
+            if (premuertoSelect && premuertoSelect.value === 'SI' && data.fecha_fallecimiento) {
+              fillIfExist('[data-modal="fecha_fallecimiento"]', data.fecha_fallecimiento, 'fecha_fallecimiento');
+            }
+
+            // Guardar qué campos vienen de la BD en un input oculto
+            let elLocked = bodyEl.querySelector('[data-modal="_locked_fields"]');
+            if (!elLocked) {
+              elLocked = document.createElement('input');
+              elLocked.type = 'hidden';
+              elLocked.dataset.modal = '_locked_fields';
+              bodyEl.appendChild(elLocked);
+            }
+            elLocked.value = JSON.stringify(lockedFromDb);
+          } else {
+            // Not found in DB, clear fields
+            clearPersonaData();
+          }
+        } catch (e) {
+          console.error('Error auto-rellenando heredero:', e);
+          clearPersonaData();
+        }
+      };
+
+      // premuertoSelect change is handled above for showing/hiding
+      // fecha_fallecimiento — do NOT trigger fetchPersona here to
+      // avoid wiping manually-entered data.
+
       inputCed.addEventListener('input', handleDocInput);
       inputPasa.addEventListener('input', handleDocInput);
+
+      inputCed.addEventListener('input', fetchPersona);
+      inputPasa.addEventListener('input', fetchPersona);
+
       handleDocInput();
 
-      // Inicializar label y opciones de letra según el radio seleccionado
-      const checkedRadio = Array.from(radiosDoc).find(r => r.checked);
-      if (checkedRadio) {
-        if (lblDoc) lblDoc.innerHTML = checkedRadio.value === 'RIF' ? 'RIF <span class="req">*</span>' : 'CÉDULA <span class="req">*</span>';
-        syncLetraOptions(checkedRadio.value);
+      // Inicializar UI basada en form data si se edita
+      const checkedRadioInit = Array.from(radiosDoc).find(r => r.checked);
+      if (checkedRadioInit) {
+        const val = checkedRadioInit.value;
+        if (val === 'Pasaporte') {
+          if (wrapCedula) wrapCedula.style.display = 'none';
+          if (wrapPasaporte) wrapPasaporte.style.display = '';
+        } else {
+          if (wrapCedula) wrapCedula.style.display = '';
+          if (wrapPasaporte) wrapPasaporte.style.display = 'none';
+          if (lblDoc) lblDoc.innerHTML = val === 'RIF' ? 'RIF' : 'CÉDULA';
+          syncLetraOptions(val);
+        }
       }
     }
+
   }
 
   if (type === 'pasivo_deuda') {
@@ -1073,22 +1373,46 @@ export function openModal(type, editIdx) {
 
     // ── RIF Empresa: buscar por RIF y auto-rellenar Razón Social ──
     const rifInput = bodyEl.querySelector('#modalRifEmpresa');
+    const rifLetra = bodyEl.querySelector('#modalRifLetra');
     const razonSocialInput = bodyEl.querySelector('#modalRazonSocial');
     const rifHint = bodyEl.querySelector('#rifHint');
     if (rifInput && razonSocialInput) {
-      const RIF_REGEX = /^[Jj]\d{9}$/;
+      const DIGITS_REGEX = /^\d{9}$/;
       const lockRazonSocial = () => { razonSocialInput.readOnly = true; razonSocialInput.style.background = 'var(--cc-slate-50)'; };
       const unlockRazonSocial = () => { razonSocialInput.readOnly = false; razonSocialInput.style.background = ''; };
       lockRazonSocial(); // default: locked
+
+      // Solo permitir dígitos en el input de RIF
+      rifInput.addEventListener('input', () => {
+        rifInput.value = rifInput.value.replace(/\D/g, '').slice(0, 9);
+      });
+
       const buscarRif = async () => {
-        rifInput.value = rifInput.value.trim().toUpperCase();
-        const rif = rifInput.value;
-        if (!rif) { razonSocialInput.value = ''; lockRazonSocial(); if (rifHint) rifHint.textContent = ''; return; }
-        if (!RIF_REGEX.test(rif)) {
+        rifInput.value = rifInput.value.trim();
+        const digits = rifInput.value;
+        if (!digits) { razonSocialInput.value = ''; lockRazonSocial(); if (rifHint) rifHint.textContent = ''; return; }
+        if (!DIGITS_REGEX.test(digits)) {
           razonSocialInput.value = ''; lockRazonSocial();
-          if (rifHint) rifHint.textContent = 'Formato inválido. Debe ser J seguido de 9 dígitos. Ej: J012345678';
+          if (rifHint) rifHint.textContent = 'Debe ingresar exactamente 9 dígitos.';
           return;
         }
+        const rif = 'J' + digits; // Concatenar letra + dígitos
+
+        // 1. Buscar primero en los bienes ya guardados en este caso
+        const muebles = caseData.bienes_muebles || {};
+        for (const catId of Object.keys(muebles)) {
+          if (!Array.isArray(muebles[catId])) continue;
+          for (const bien of muebles[catId]) {
+            if (bien.rif_empresa === rif && bien.razon_social) {
+              razonSocialInput.value = bien.razon_social;
+              unlockRazonSocial(); // Dejar editable por si quiere cambiar el nombre
+              if (rifHint) rifHint.textContent = 'Razón social tomada de otro bien. Si la modifica, se le preguntará si desea actualizarla en todos.';
+              return;
+            }
+          }
+        }
+
+        // 2. Si no se encontró en el caso, buscar en la BD
         try {
           const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
           const resp = await fetch(`${baseUrl}/api/buscar-empresa-rif?rif=${encodeURIComponent(rif)}`);
@@ -1108,10 +1432,50 @@ export function openModal(type, editIdx) {
         }
       };
       rifInput.addEventListener('blur', buscarRif);
-      // If editing with existing RIF, trigger search
-      if (rifInput.value.trim() && !razonSocialInput.value.trim()) buscarRif();
+      // Si hay RIF al abrir (editando), verificar si debe bloquear o desbloquear razón social
+      if (rifInput.value.trim()) buscarRif();
     }
   }
+
+  // ── Restringir campos decimales a max 2 dígitos después del punto ──
+  const decimalFields = bodyEl.querySelectorAll(
+    '[data-modal="valor_declarado"], [data-modal="valor_original"], [data-modal="porcentaje"], ' +
+    '[data-modal="superficie_construida"], [data-modal="superficie_no_construida"], [data-modal="area_superficie"]'
+  );
+  decimalFields.forEach(el => {
+    el.addEventListener('input', () => {
+      // Permitir solo dígitos y un punto decimal
+      let val = el.value.replace(/[^0-9.]/g, '');
+      // Solo un punto decimal
+      const parts = val.split('.');
+      if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
+      // Max 2 dígitos después del punto
+      if (parts.length === 2 && parts[1].length > 2) {
+        val = parts[0] + '.' + parts[1].slice(0, 2);
+      }
+      // Campos de dinero: max 18 dígitos antes del punto (DECIMAL 20,2)
+      const moneyFields = ['valor_declarado', 'valor_original'];
+      if (moneyFields.includes(el.dataset.modal)) {
+        const p = val.split('.');
+        if (p[0].length > 18) {
+          val = p[0].slice(0, 18) + (p[1] !== undefined ? '.' + p[1] : '');
+        }
+      }
+      // Campos de superficie: max 10 dígitos antes del punto (DECIMAL 12,2)
+      const surfaceFields = ['superficie_construida', 'superficie_no_construida', 'area_superficie'];
+      if (surfaceFields.includes(el.dataset.modal)) {
+        const p = val.split('.');
+        if (p[0].length > 10) {
+          val = p[0].slice(0, 10) + (p[1] !== undefined ? '.' + p[1] : '');
+        }
+      }
+      // Porcentaje no puede ser mayor a 100
+      if (el.dataset.modal === 'porcentaje' && parseFloat(val) > 100) {
+        val = '100';
+      }
+      el.value = val;
+    });
+  });
 
   overlay.classList.add('is-open');
 }
@@ -1122,7 +1486,7 @@ export function closeModal() {
   UIState.editIndex = null;
 }
 
-export function saveModal() {
+export async function saveModal() {
   const config = MODAL_CONFIGS[UIState.currentModalType];
   if (!config) return;
   const form = config.collect();
@@ -1135,13 +1499,31 @@ export function saveModal() {
     }
   }
 
-  config.save(form);
+  await config.save(form);
   closeModal();
 }
 
 export function removeItem(collection, index) {
+  // Si es un heredero premuerto, borrar sus herederos del premuerto en cascada
+  if (collection === 'herederos') {
+    const heredero = caseData.herederos[index];
+    if (heredero && heredero.premuerto === 'SI' && heredero.cedula) {
+      const cedula = heredero.cedula;
+      const letra = heredero.letra_cedula || 'V';
+      // Eliminar todos los herederos_premuertos que pertenecen a este premuerto
+      for (let i = caseData.herederos_premuertos.length - 1; i >= 0; i--) {
+        const hp = caseData.herederos_premuertos[i];
+        if (hp.premuerto_padre_id === cedula || hp.premuerto_padre_id === (letra + '-' + cedula)) {
+          caseData.herederos_premuertos.splice(i, 1);
+        }
+      }
+    }
+  }
   caseData[collection].splice(index, 1);
-  if (collection === 'herederos') renderHerederos();
+  if (collection === 'herederos') {
+    renderHerederos();
+    renderHerederosPremuertos();
+  }
   else renderInventario();
 }
 

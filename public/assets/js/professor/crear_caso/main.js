@@ -1,4 +1,4 @@
-import { $, $$, showToast } from './utils.js';
+import { $, $$, showToast } from '../../global/utils.js';
 import { caseData, UIState, loadCaseData, saveCaseData, clearSavedCaseData, hydrateCaseData } from './state.js';
 
 /**
@@ -15,6 +15,18 @@ async function submitCase(modo) {
     if (caseData.caso_id) {
         payload.caso_id = caseData.caso_id;
     }
+
+    // Limpiar campos auxiliares del frontend que no van al backend
+    delete payload.domicilio_causante; // Helper form → datos finales en direcciones_causante
+    delete payload.prorroga;           // Helper form → datos finales en prorrogas
+    // Solo quitar _locked_fields al publicar, los borradores los necesitan para restaurar estado
+    if (modo === 'Publicado') {
+        if (payload.causante) delete payload.causante._locked_fields;
+        if (payload.representante) delete payload.representante._locked_fields;
+        (payload.herederos || []).forEach(h => delete h._locked_fields);
+        (payload.herederos_premuertos || []).forEach(h => delete h._locked_fields);
+    }
+
 
     try {
         const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
@@ -57,7 +69,7 @@ import { renderHerenciaCheckboxes, initRepresentanteLogic, renderHerederos, rend
 import { fetchEstados, initAddressListeners, saveDireccion, renderDirecciones, editDireccion, deleteDireccion, restoreAddressCascade } from './direccion.js';
 import { initStepperClicks, setStep, nextStep, prevStep } from './navigation.js';
 import { initStudentSearch } from './summary.js';
-import { initCatalogos, getCatalogs, loadSeccionesSelect } from './catalogos.js';
+import { initCatalogos, getCatalogs, loadSeccionesSelect } from '../../global/catalogos.js';
 import { openModal, closeModal, saveModal, removeItem, removeMueble } from './modal.js';
 import { saveProrroga, renderProrrogas, deleteProrroga, editProrroga } from './prorroga.js';
 import { renderInventario } from './inventario.js';
@@ -188,27 +200,45 @@ function applyConstraints(container) {
         el.setAttribute('maxlength', max);
     });
 
-    // — Valores monetarios: solo números y punto decimal —
+    // — Valores monetarios y porcentaje: solo números y punto decimal (acepta coma como separador) —
     [
         'valor_declarado', 'valor_original',
         'superficie_construida', 'superficie_no_construida', 'area_superficie',
+        'porcentaje',
     ].forEach(name => {
         const el = constrain(sel(name));
         if (!el) return;
-        el.addEventListener('input', () => {
-            el.value = el.value.replace(/[^\d.]/g, '');
-            const parts = el.value.split('.');
-            if (parts.length > 2) el.value = parts[0] + '.' + parts.slice(1).join('');
-        });
-    });
+        el.addEventListener('input', (e) => {
+            // Guardar posición inicial del cursor
+            const start = el.selectionStart;
+            const end = el.selectionEnd;
+            const lengthBefore = el.value.length;
 
-    // — Porcentaje: 0-100 —
-    ['porcentaje'].forEach(name => {
-        const el = constrain(sel(name));
-        if (!el) return;
-        el.setAttribute('min', '0');
-        el.setAttribute('max', '100');
-        el.setAttribute('step', '0.01');
+            // 1. Reemplazar comas por puntos
+            let val = el.value.replace(/,/g, '.');
+
+            // 2. Eliminar cualquier caracter que no sea dígito o punto
+            val = val.replace(/[^0-9.]/g, '');
+
+            // 3. Prevenir múltiples puntos
+            const parts = val.split('.');
+            if (parts.length > 2) {
+                val = parts[0] + '.' + parts.slice(1).join('');
+            }
+
+            el.value = val;
+
+            // Restaurar cursor intentando compensar cambios de longitud
+            const lengthAfter = el.value.length;
+            const diff = lengthAfter - lengthBefore;
+
+            // Si el valor original tenía coma y lo cambiamos a punto, el cursor avanza al punto
+            if (e.inputType === 'insertText' && e.data === ',') {
+                el.setSelectionRange(start, end);
+            } else {
+                el.setSelectionRange(start + diff, end + diff);
+            }
+        });
     });
 
     // — RIF Empresa: J + 9 dígitos —
@@ -233,6 +263,9 @@ function applyConstraints(container) {
                 toEl.setAttribute('min', fromEl.value);
                 if (toEl.value && toEl.value < fromEl.value) {
                     toEl.value = '';
+                    setTimeout(() => {
+                        showToast('La segunda fecha fue limpiada porque no puede ser anterior a la primera fecha introducida.', 'warning');
+                    }, 300);
                 }
             } else {
                 toEl.removeAttribute('min');
@@ -334,6 +367,55 @@ function initFieldConstraints() {
         });
         observer.observe(modalBody, { childList: true, subtree: true });
     }
+
+    // — Fecha de cierre fiscal: min = fecha_fallecimiento, max = 31/12 del año de fallecimiento —
+    const cierreInput = $('#input_fecha_cierre_fiscal');
+    const fallecInput = $('[data-bind="causante.fecha_fallecimiento"]');
+    if (cierreInput && fallecInput) {
+        const updateCierreConstraints = () => {
+            const fallec = fallecInput.value;
+            if (fallec) {
+                const year = new Date(fallec).getFullYear();
+                cierreInput.min = fallec;
+                cierreInput.max = `${year}-12-31`;
+            } else {
+                cierreInput.min = '';
+                cierreInput.max = '';
+            }
+            // Validar valor actual contra nuevos límites
+            if (cierreInput.value) {
+                if (cierreInput.min && cierreInput.value < cierreInput.min) {
+                    showToast('La fecha de cierre fiscal no puede ser anterior a la fecha de fallecimiento.');
+                    cierreInput.value = '';
+                    caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
+                } else if (cierreInput.max && cierreInput.value > cierreInput.max) {
+                    showToast('La fecha de cierre fiscal no puede ser posterior al 31/12 del año de fallecimiento.');
+                    cierreInput.value = '';
+                    caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
+                }
+            }
+        };
+        // Actualizar cuando cambia fecha de fallecimiento
+        fallecInput.addEventListener('change', updateCierreConstraints);
+        // Validar al seleccionar fecha de cierre fiscal
+        cierreInput.addEventListener('change', () => {
+            const fallec = fallecInput.value || caseData.causante.fecha_fallecimiento;
+            if (fallec) {
+                const year = new Date(fallec).getFullYear();
+                if (cierreInput.value < fallec) {
+                    showToast('La fecha de cierre fiscal no puede ser anterior a la fecha de fallecimiento.');
+                    cierreInput.value = '';
+                    caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
+                } else if (cierreInput.value > `${year}-12-31`) {
+                    showToast('La fecha de cierre fiscal no puede ser posterior al 31/12 del año de fallecimiento.');
+                    cierreInput.value = '';
+                    caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
+                }
+            }
+        });
+        // Aplicar restricciones iniciales (datos restaurados de sessionStorage)
+        updateCierreConstraints();
+    }
 }
 
 // ====================================================================
@@ -386,6 +468,14 @@ function validateBeforePublish() {
     if (c.caso.tipo_sucesion === 'Sin Cédula' && c.causante.cedula?.trim())
         errors.push('Causante: En sucesión Sin Cédula, el campo de cédula debe estar vacío');
 
+    // Acta de defunción (obligatoria solo para sucesión Sin Cédula)
+    if (c.caso.tipo_sucesion === 'Sin Cédula') {
+        if (!c.acta_defuncion.numero_acta?.trim()) errors.push('Acta de Defunción: Número de acta');
+        if (!c.acta_defuncion.year_acta) errors.push('Acta de Defunción: Año del acta');
+        else if (parseInt(c.acta_defuncion.year_acta) < 1900) errors.push('Acta de Defunción: El año debe ser ≥ 1900');
+        if (!c.acta_defuncion.parroquia_registro_id) errors.push('Acta de Defunción: Parroquia de registro');
+    }
+
     // Datos fiscales
     if (!c.datos_fiscales_causante.fecha_cierre_fiscal) errors.push('Datos fiscales: Fecha de cierre fiscal');
     // #21 — Cierre fiscal ≥ fallecimiento
@@ -403,7 +493,11 @@ function validateBeforePublish() {
             const nombre = tipo?.nombre?.toLowerCase() || '';
             if (nombre.includes('testamento')) {
                 if (!t.subtipo_testamento) errors.push('Herencia Testamentaria: Subtipo');
-                if (!t.fecha_testamento) errors.push('Herencia Testamentaria: Fecha');
+                if (!t.fecha_testamento) errors.push('Herencia Testamentaria: Fecha del testamento');
+                // Fecha del testamento no puede ser posterior al fallecimiento
+                if (t.fecha_testamento && c.causante.fecha_fallecimiento
+                    && t.fecha_testamento > c.causante.fecha_fallecimiento)
+                    errors.push('Herencia Testamentaria: La fecha del testamento no puede ser posterior a la fecha de fallecimiento del causante');
             }
             if (nombre.includes('inventario')) {
                 if (!t.fecha_conclusion_inventario) errors.push('Beneficio de Inventario: Fecha de conclusión');
@@ -418,7 +512,7 @@ function validateBeforePublish() {
     else if (!isValidName(c.representante.apellidos)) errors.push('Representante: Apellidos no puede contener solo espacios o números');
     if (!c.representante.cedula?.trim() && !c.representante.pasaporte?.trim()) errors.push('Representante: Cédula o Pasaporte');
     if (!c.representante.sexo) errors.push('Representante: Sexo');
-    if (!c.representante.estado_civil) errors.push('Representante: Estado civil');
+
     if (!c.representante.fecha_nacimiento) errors.push('Representante: Fecha de nacimiento');
     // #33 — Representante ≥ 18
     if (c.representante.fecha_nacimiento) {
@@ -432,8 +526,9 @@ function validateBeforePublish() {
     if (cedCausante && cedRep && cedCausante === cedRep)
         errors.push('La cédula del representante no puede ser igual a la del causante');
 
-    // Domicilio fiscal
-    if (!c.domicilio_causante.estado) errors.push('Domicilio fiscal del causante (dirección completa)');
+    // Domicilio fiscal — debe haber al menos una dirección guardada
+    if (!c.direcciones_causante || c.direcciones_causante.length === 0)
+        errors.push('Debe agregar al menos una dirección de domicilio fiscal del causante');
 
     // Herederos + Premuertos — cédulas cruzadas
     if (!c.herederos.length) errors.push('Al menos un heredero');
@@ -455,6 +550,17 @@ function validateBeforePublish() {
         if (ced) allCedulas.push(ced);
     });
 
+    // Validar que cada heredero premuerto tenga al menos un heredero del premuerto
+    c.herederos.forEach((h, i) => {
+        if (h.premuerto === 'SI') {
+            const ced = (h.cedula || '').trim();
+            const tieneSubHerederos = (c.herederos_premuertos || []).some(hp => hp.premuerto_padre_id === ced);
+            if (!tieneSubHerederos) {
+                errors.push(`Heredero #${i + 1} (${h.nombres || ''} ${h.apellidos || ''}): Está marcado como premuerto pero no tiene herederos del premuerto asignados`);
+            }
+        }
+    });
+
     // Bienes
     const tieneInmuebles = c.bienes_inmuebles.length > 0;
     const tieneMuebles = Object.values(c.bienes_muebles).some(arr => Array.isArray(arr) && arr.length > 0);
@@ -472,7 +578,9 @@ function validateBeforePublish() {
     if (!c.config.tipo_asignacion) errors.push('Tipo de asignación');
     if (c.config.tipo_asignacion === 'Seccion' && !c.config.seccion_id) errors.push('Sección asignada');
     if (c.config.tipo_asignacion === 'Estudiantes' && !c.estudiantes_asignados.length) errors.push('Al menos un estudiante asignado');
-    // #56 — Fecha límite futura
+    // #56 — Fecha límite obligatoria y futura para Evaluación
+    if (c.config.modalidad === 'Evaluacion' && !c.config.fecha_limite)
+        errors.push('Configuración: La fecha límite es obligatoria para modalidad Evaluación');
     if (c.config.modalidad === 'Evaluacion' && c.config.fecha_limite && c.config.fecha_limite < new Date().toISOString().slice(0, 10))
         errors.push('Configuración: La fecha límite debe ser una fecha futura');
 
@@ -523,7 +631,7 @@ function showValidationPopup(errors, title = 'No se puede publicar') {
                 </ul>
             </div>
             <div class="cc-modal__footer" style="padding:16px 24px;border-top:1px solid var(--cc-slate-200);display:flex;justify-content:flex-end;">
-                <button class="cc-btn cc-btn--primary" id="ccValidationClose" style="min-width:120px;">Entendido</button>
+                <button class="btn btn-primary" id="ccValidationClose" style="min-width:120px;">Entendido</button>
             </div>
         </div>
     `;
@@ -561,6 +669,308 @@ window.CC = {
 // Global helper access for state changes
 document.ccHelpers = { $, show: (el) => { if (el) el.style.display = ''; }, hide: (el) => { if (el) el.style.display = 'none'; } };
 
+function initCausanteAutocomplete() {
+    const inputCedulaCausante = $('[data-bind="causante.cedula"]');
+    const selectTipoCedulaCausante = $('[data-bind="causante.tipo_cedula"]');
+
+    if (inputCedulaCausante && selectTipoCedulaCausante) {
+        // Función auxiliar para vaciar y habilitar solo los campos que fueron auto-rellenados desde la BD
+        const clearAndEnableAll = () => {
+            const lockedFields = caseData.causante._locked_fields || [];
+            lockedFields.forEach(f => {
+                if (caseData.causante[f] !== undefined) {
+                    caseData.causante[f] = '';
+                }
+                const el = $(`[data-bind="causante.${f}"]`);
+                if (el) {
+                    el.value = '';
+                    el.disabled = false;
+                    el.style.backgroundColor = '';
+                }
+            });
+            // Also clear persona_id since the person was unlinked
+            caseData.causante.persona_id = '';
+            const elPid = $('[data-bind="causante.persona_id"]');
+            if (elPid) { elPid.value = ''; }
+            caseData.causante._locked_fields = [];
+        };
+
+        const fetchCausante = async () => {
+            const cedula = inputCedulaCausante.value.trim();
+            const tipo = selectTipoCedulaCausante.value;
+
+            if (!cedula || cedula.length < 6 || caseData.caso.tipo_sucesion !== 'Con Cédula') {
+                if (cedula.length === 0 && caseData.causante.nombres) {
+                    clearAndEnableAll();
+                }
+                return;
+            }
+
+            if (!tipo) {
+                if (caseData.causante.nombres) {
+                    clearAndEnableAll();
+                }
+                return;
+            }
+
+            try {
+                const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+                const resp = await fetch(`${baseUrl}/api/buscar-persona?tipo=${tipo}&cedula=${cedula}`);
+                const json = await resp.json();
+
+                if (json.success && json.data) {
+                    const data = json.data;
+                    // Update state
+                    if (!tipo && data.tipo_cedula) {
+                        caseData.causante.tipo_cedula = data.tipo_cedula;
+                        if (selectTipoCedulaCausante) selectTipoCedulaCausante.value = data.tipo_cedula;
+                    }
+
+                    caseData.causante.persona_id = data.persona_id; // Store ID for cross-validation
+                    caseData.causante.nombres = data.nombres;
+                    caseData.causante.apellidos = data.apellidos;
+                    caseData.causante.fecha_nacimiento = data.fecha_nacimiento;
+                    caseData.causante.sexo = data.sexo;
+
+                    const normalizedEstadoCivil = data.estado_civil ? data.estado_civil.toLowerCase().replace('_', ' ') : '';
+                    if (normalizedEstadoCivil === 'no aplica') {
+                        caseData.causante.estado_civil = '';
+                    } else {
+                        caseData.causante.estado_civil = data.estado_civil;
+                    }
+
+                    caseData.causante.nacionalidad = data.nacionalidad;
+                    if (data.fecha_fallecimiento) {
+                        caseData.causante.fecha_fallecimiento = data.fecha_fallecimiento;
+                    }
+
+                    // Función auxiliar para asignar valor y deshabilitar
+                    const fillAndDisable = (selector, value, forceEnable = false) => {
+                        const el = $(selector);
+                        if (el && value !== undefined && value !== null) {
+                            if (forceEnable) {
+                                el.value = '';
+                                el.disabled = false;
+                                el.style.backgroundColor = '';
+                            } else {
+                                el.value = value;
+                                el.disabled = true;
+                                // Add a subtle style to indicate it's auto-filled and locked
+                                el.style.backgroundColor = 'var(--cc-slate-50, #f8fafc)';
+                            }
+                        }
+                    };
+
+                    // Update DOM directly since bindInputs runs once
+                    fillAndDisable('[data-bind="causante.nombres"]', data.nombres);
+                    fillAndDisable('[data-bind="causante.apellidos"]', data.apellidos);
+                    fillAndDisable('[data-bind="causante.fecha_nacimiento"]', data.fecha_nacimiento);
+                    fillAndDisable('[data-bind="causante.sexo"]', data.sexo);
+
+                    const isEstadoCivilNoAplica = (normalizedEstadoCivil === 'no aplica');
+                    fillAndDisable('[data-bind="causante.estado_civil"]', data.estado_civil, isEstadoCivilNoAplica);
+
+                    fillAndDisable('[data-bind="causante.nacionalidad"]', data.nacionalidad);
+                    if (data.fecha_fallecimiento) {
+                        fillAndDisable('[data-bind="causante.fecha_fallecimiento"]', data.fecha_fallecimiento);
+                    }
+
+                    showToast('Datos del causante autocompletados', 'success');
+                    // Guardar cuáles campos específicos se deshabilitaron
+                    const lockedFields = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'nacionalidad', 'fecha_fallecimiento']
+                        .filter(f => data[f] && !(f === 'estado_civil' && isEstadoCivilNoAplica));
+                    caseData.causante._locked_fields = lockedFields;
+                    // Re-renderizar herencia para actualizar max de fecha_testamento
+                    renderHerenciaCheckboxes();
+                } else {
+                    // Si consultamos y no existe, limpiamos en caso de que hubiese otra antes
+                    clearAndEnableAll();
+                }
+            } catch (err) {
+                console.error("Error buscando persona", err);
+            }
+        };
+
+        inputCedulaCausante.addEventListener('input', fetchCausante);
+        selectTipoCedulaCausante.addEventListener('change', fetchCausante);
+    }
+}
+
+function initRepresentanteAutocomplete() {
+    const inputCedulaRep = $('[data-bind="representante.cedula"]');
+    const selectLetraRep = $('[data-bind="representante.letra_cedula"]');
+    const inputPasaporteRep = $('[data-bind="representante.pasaporte"]');
+    const radiosTipoDoc = $$('[name="rep_tipo_doc"]');
+
+    const clearAndEnableAll = () => {
+        radiosTipoDoc.forEach(r => r.disabled = false);
+        const lockedFields = caseData.representante._locked_fields || [];
+        lockedFields.forEach(f => {
+            if (caseData.representante[f] !== undefined) {
+                caseData.representante[f] = '';
+            }
+            const el = $(`[data-bind="representante.${f}"]`);
+            if (el) {
+                el.value = '';
+                el.disabled = false;
+                el.style.backgroundColor = '';
+            }
+        });
+        // Also clear persona_id since the person was unlinked
+        caseData.representante.persona_id = '';
+        caseData.representante._locked_fields = [];
+    };
+
+    const fetchRepresentante = async (isPasaporte = false) => {
+        let url = '';
+        const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+
+        const isPasaporteRadio = Array.from(radiosTipoDoc).find(r => r.checked)?.value === 'Pasaporte';
+
+        if (isPasaporteRadio || isPasaporte) {
+            const pasaporte = inputPasaporteRep ? inputPasaporteRep.value.trim() : '';
+            if (!pasaporte || pasaporte.length < 5) {
+                if (pasaporte.length === 0 && caseData.representante.nombres) clearAndEnableAll();
+                return;
+            }
+            url = `${baseUrl}/api/buscar-persona?pasaporte=${pasaporte}`;
+        } else {
+            const cedula = inputCedulaRep ? inputCedulaRep.value.trim() : '';
+            const tipo = selectLetraRep ? selectLetraRep.value : '';
+            const isRif = Array.from(radiosTipoDoc).find(r => r.checked)?.value === 'Rif';
+
+            if (!cedula || cedula.length < 6) {
+                if (cedula.length === 0 && caseData.representante.nombres) clearAndEnableAll();
+                return;
+            }
+
+            if (!tipo) {
+                if (caseData.representante.nombres) clearAndEnableAll();
+                return;
+            }
+
+            if (isRif) {
+                url = `${baseUrl}/api/buscar-persona?rif=${tipo}${cedula}`;
+            } else {
+                url = `${baseUrl}/api/buscar-persona?tipo=${tipo}&cedula=${cedula}`;
+            }
+        }
+
+        try {
+            const resp = await fetch(url);
+            const json = await resp.json();
+
+            if (json.success && json.data) {
+                const data = json.data;
+
+                // Validar que el representante no sea el mismo causante
+                let isSamePerson = false;
+                if (caseData.causante) {
+                    const isRepRif = Array.from(radiosTipoDoc).find(r => r.checked)?.value === 'Rif';
+
+                    if (isRepRif) {
+                        // Representative is RIF (data.rif_personal will be populated like "V12345678")
+                        // Does it match Causante's explicitly loaded RIF?
+                        if (data.rif_personal && caseData.causante.rif_personal && data.rif_personal === caseData.causante.rif_personal) {
+                            isSamePerson = true;
+                        }
+                        // Did Causante enter their RIF into the Cédula field instead?
+                        if (caseData.causante.cedula && data.rif_personal && (caseData.causante.tipo_cedula + caseData.causante.cedula) === data.rif_personal) {
+                            isSamePerson = true;
+                        }
+                    } else if (isPasaporteRadio) {
+                        // Check by pasaporte
+                        if (data.pasaporte && caseData.causante.pasaporte && data.pasaporte === caseData.causante.pasaporte) {
+                            isSamePerson = true;
+                        }
+                    } else {
+                        // Representative is Cédula
+                        if (caseData.causante.cedula && data.cedula && data.cedula === caseData.causante.cedula && data.tipo_cedula === caseData.causante.tipo_cedula) {
+                            isSamePerson = true;
+                        }
+                    }
+
+                    // ID match, using `persona_id` returned by CatalogModel
+                    // Since causante doesn't always store persona_id, we only check if present
+                    if (data.persona_id && caseData.causante.persona_id && data.persona_id === caseData.causante.persona_id) {
+                        isSamePerson = true;
+                    }
+                }
+
+                if (isSamePerson) {
+                    showToast('El representante no puede ser el mismo causante.', 'error');
+                    clearAndEnableAll();
+                    return;
+                }
+
+                caseData.representante.persona_id = data.persona_id;
+                caseData.representante.nombres = data.nombres;
+                caseData.representante.apellidos = data.apellidos;
+                caseData.representante.fecha_nacimiento = data.fecha_nacimiento;
+                caseData.representante.sexo = data.sexo;
+
+                const normalizedEstadoCivil = data.estado_civil ? data.estado_civil.toLowerCase().replace('_', ' ') : '';
+                if (normalizedEstadoCivil === 'no aplica') {
+                    caseData.representante.estado_civil = '';
+                } else {
+                    caseData.representante.estado_civil = data.estado_civil;
+                }
+
+                caseData.representante.nacionalidad = data.nacionalidad;
+
+                const fillAndDisable = (selector, value, forceEnable = false) => {
+                    const el = $(selector);
+                    if (el && value !== undefined && value !== null) {
+                        if (forceEnable) {
+                            el.value = '';
+                            el.disabled = false;
+                            el.style.backgroundColor = '';
+                        } else {
+                            el.value = value;
+                            el.disabled = true;
+                            el.style.backgroundColor = 'var(--cc-slate-50, #f8fafc)';
+                        }
+                    }
+                };
+
+                fillAndDisable('[data-bind="representante.nombres"]', data.nombres);
+                fillAndDisable('[data-bind="representante.apellidos"]', data.apellidos);
+                fillAndDisable('[data-bind="representante.fecha_nacimiento"]', data.fecha_nacimiento);
+                fillAndDisable('[data-bind="representante.sexo"]', data.sexo);
+
+                const isEstadoCivilNoAplica = (normalizedEstadoCivil === 'no aplica');
+                fillAndDisable('[data-bind="representante.estado_civil"]', data.estado_civil, isEstadoCivilNoAplica);
+
+                fillAndDisable('[data-bind="representante.nacionalidad"]', data.nacionalidad);
+
+                showToast('Datos del representante autocompletados', 'success');
+                const lockedFieldsRep = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'nacionalidad']
+                    .filter(f => data[f] && !(f === 'estado_civil' && isEstadoCivilNoAplica));
+                caseData.representante._locked_fields = lockedFieldsRep;
+            } else {
+                clearAndEnableAll();
+            }
+        } catch (err) {
+            console.error("Error buscando persona", err);
+        }
+    };
+
+    if (inputCedulaRep) {
+        inputCedulaRep.addEventListener('input', () => fetchRepresentante(false));
+    }
+    if (selectLetraRep) {
+        selectLetraRep.addEventListener('change', () => fetchRepresentante(false));
+    }
+    if (inputPasaporteRep) {
+        inputPasaporteRep.addEventListener('input', () => fetchRepresentante(true));
+    }
+    if (radiosTipoDoc) {
+        radiosTipoDoc.forEach(r => r.addEventListener('change', () => {
+            fetchRepresentante(r.value === 'Pasaporte');
+        }));
+    }
+}
+
 function bindInputs() {
     $$('[data-bind]').forEach(el => {
         const [section, key] = el.dataset.bind.split('.');
@@ -594,21 +1004,104 @@ function bindInputs() {
     });
 }
 
+function restoreLockedFields() {
+    const lockStyle = 'var(--cc-slate-50, #f8fafc)';
+
+    // Helper: inferir campos bloqueados a partir de los que tienen valor
+    const inferLockedFields = (personData, fieldsList) => {
+        return fieldsList.filter(f => {
+            const val = personData[f];
+            return val !== undefined && val !== null && val !== '';
+        });
+    };
+
+    // Causante
+    const causanteFieldsList = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'nacionalidad', 'fecha_fallecimiento'];
+    let causanteLocked = caseData.causante._locked_fields || [];
+
+    // Fallback para borradores viejos: solo si _locked_from_db fue marcado por autocomplete
+    if (causanteLocked.length === 0 && caseData.causante._locked_from_db) {
+        causanteLocked = inferLockedFields(caseData.causante, causanteFieldsList);
+        caseData.causante._locked_fields = causanteLocked; // Guardar para futuros refreshes
+    }
+
+    causanteLocked.forEach(f => {
+        const el = $(`[data-bind="causante.${f}"]`);
+        if (el) {
+            el.disabled = true;
+            el.style.backgroundColor = lockStyle;
+        }
+    });
+
+    // Representante
+    const repFieldsList = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'nacionalidad'];
+    let repLocked = caseData.representante._locked_fields || [];
+
+    // Fallback para borradores viejos
+    if (repLocked.length === 0 && caseData.representante._locked_from_db) {
+        repLocked = inferLockedFields(caseData.representante, repFieldsList);
+        caseData.representante._locked_fields = repLocked;
+    }
+
+    repLocked.forEach(f => {
+        const el = $(`[data-bind="representante.${f}"]`);
+        if (el) {
+            el.disabled = true;
+            el.style.backgroundColor = lockStyle;
+        }
+    });
+}
+
 function initCollapsibles() {
-    $$('.cc-card--collapsible').forEach(card => {
+    const CARDS_STATE_KEY = 'crearCaso_cardsState';
+
+    // Detect: is this a page refresh (F5) or a fresh navigation (link click)?
+    const navEntries = performance.getEntriesByType('navigation');
+    const isReload = navEntries.length > 0 && navEntries[0].type === 'reload';
+
+    // Load saved state only on refresh; on fresh navigation, clear it
+    let savedState = null;
+    if (isReload) {
+        try {
+            const stored = sessionStorage.getItem(CARDS_STATE_KEY);
+            if (stored) savedState = JSON.parse(stored);
+        } catch (e) { /* ignore */ }
+    } else {
+        sessionStorage.removeItem(CARDS_STATE_KEY);
+    }
+
+    // Helper: persist current state of all collapsible cards
+    const saveCardsState = () => {
+        const state = {};
+        $$('.cc-card--collapsible').forEach((card, i) => {
+            const key = card.id || `card_${i}`;
+            state[key] = card.classList.contains('is-open');
+        });
+        sessionStorage.setItem(CARDS_STATE_KEY, JSON.stringify(state));
+    };
+
+    $$('.cc-card--collapsible').forEach((card, index) => {
         const header = card.querySelector('.cc-card__toggle');
         const body = card.querySelector('.cc-card__collapse');
 
         if (!header) return;
 
-        // Sync initial state (if body is visible, it should have 'is-open' class)
-        if (body) {
-            const isVisible = getComputedStyle(body).display !== 'none' && body.style.display !== 'none';
-            if (isVisible) {
+        const key = card.id || `card_${index}`;
+
+        // Determine initial open/closed state
+        if (savedState && savedState[key] !== undefined) {
+            // Refresh → restore saved state
+            if (savedState[key]) {
                 card.classList.add('is-open');
+                if (body) body.style.display = '';
             } else {
                 card.classList.remove('is-open');
+                if (body) body.style.display = 'none';
             }
+        } else {
+            // First entry (crear/editar) → all closed by default
+            card.classList.remove('is-open');
+            if (body) body.style.display = 'none';
         }
 
         // Clone node to drop previously attached listeners (prevent multiple triggers)
@@ -620,8 +1113,12 @@ function initCollapsibles() {
             if (body) {
                 body.style.display = card.classList.contains('is-open') ? '' : 'none';
             }
+            saveCardsState();
         });
     });
+
+    // Save initial state so a refresh knows we've been here
+    saveCardsState();
 }
 
 function initTabs() {
@@ -661,32 +1158,50 @@ async function init() {
     const params = new URLSearchParams(window.location.search);
     const editId = params.get('edit');
     let isEditMode = false;
+    let hadSavedData = false;
 
     if (editId) {
-        // Edit mode: fetch case data from server
-        try {
-            const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
-            const res = await fetch(baseUrl + '/api/casos/' + editId);
-            const json = await res.json();
+        const navEntry = performance.getEntriesByType('navigation')[0];
+        const isPageReload = navEntry && navEntry.type === 'reload';
 
-            if (res.ok && json.success && json.data) {
-                clearSavedCaseData(); // Clear any stale sessionStorage
-                hydrateCaseData(json.data);
+        // En reload: intentar restaurar desde sessionStorage (preserva ediciones no guardadas)
+        if (isPageReload) {
+            const restored = loadCaseData();
+            if (restored) {
                 isEditMode = true;
-
-                // Update page title and breadcrumb
-                const titleEl = $('.cc-topbar__title');
-                if (titleEl) titleEl.textContent = 'Editar Caso';
-                const badgeEl = $('.cc-badge');
-                if (badgeEl) {
-                    badgeEl.textContent = json.estado === 'Publicado' ? 'Publicado' : 'Editando';
-                    badgeEl.className = 'cc-badge cc-badge--blue';
-                }
-            } else {
-                showToast(json.message || 'No se pudo cargar el caso para editar.');
+                hadSavedData = true;
             }
-        } catch (err) {
-            showToast('Error de red al cargar el caso: ' + err.message);
+        }
+
+        // Si no se restauró de sessionStorage (navegación fresca o no había datos), cargar del servidor
+        if (!isEditMode) {
+            try {
+                const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+                const res = await fetch(baseUrl + '/api/casos/' + editId);
+                const json = await res.json();
+
+                if (res.ok && json.success && json.data) {
+                    clearSavedCaseData();
+                    hydrateCaseData(json.data);
+                    isEditMode = true;
+                    hadSavedData = true;
+                } else {
+                    showToast(json.message || 'No se pudo cargar el caso para editar.');
+                }
+            } catch (err) {
+                showToast('Error de red al cargar el caso: ' + err.message);
+            }
+        }
+
+        // Actualizar UI para modo edición
+        if (isEditMode) {
+            const titleEl = $('.cc-topbar__title');
+            if (titleEl) titleEl.textContent = 'Editar Caso';
+            const badgeEl = $('.status-badge');
+            if (badgeEl) {
+                badgeEl.textContent = 'Editando';
+                badgeEl.className = 'status-badge status-active';
+            }
         }
     }
 
@@ -696,8 +1211,7 @@ async function init() {
         history.replaceState(null, '', window.location.pathname);
     }
 
-    // Restore saved data only on page RELOAD (F5), not on fresh navigation
-    let hadSavedData = false;
+    // Restore saved data only on page RELOAD (F5), not on fresh navigation (create mode only)
     if (!isEditMode) {
         const navEntry = performance.getEntriesByType('navigation')[0];
         const isPageReload = navEntry && navEntry.type === 'reload';
@@ -706,8 +1220,6 @@ async function init() {
         } else {
             clearSavedCaseData();
         }
-    } else {
-        hadSavedData = true;
     }
 
     // 1. Cargar catálogos PRIMERO (antes de bindInputs para que los selects tengan opciones)
@@ -717,6 +1229,7 @@ async function init() {
 
     // 2. Ahora bindInputs puede poner valores en selects que ya tienen opciones
     bindInputs();
+    restoreLockedFields(); // Re-aplicar disabled en campos cargados de BD
     initFieldConstraints();
     initCollapsibles();
     initTabs();
@@ -725,6 +1238,10 @@ async function init() {
     renderHerenciaCheckboxes();
     initRepresentanteLogic();
     initAddressListeners();
+    initCausanteAutocomplete();
+    initRepresentanteAutocomplete();
+
+    // 3. Global text sanitization is now handled by global/sanitize.js (loaded in layout)
 
     // 3. Restaurar datos de dirección en cascada o cargar estados nuevos
     if (hadSavedData) {
@@ -743,8 +1260,8 @@ async function init() {
     // Restore step or start at 0
     setStep(hadSavedData ? UIState.currentStep : 0);
 
-    // Auto-save before page unload
-    window.addEventListener('beforeunload', () => saveCaseData());
+    // Auto-save before page unload (must be immediate, not debounced)
+    window.addEventListener('beforeunload', () => saveCaseData(true));
 
     const btnSaveDraft = $('#btnSaveDraft');
     if (btnSaveDraft) {

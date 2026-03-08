@@ -1,6 +1,6 @@
-import { $, show, hide, formatBs } from './utils.js';
+import { $, show, hide, formatBs } from '../../global/utils.js';
 import { caseData } from './state.js';
-import { getCatalogs } from './catalogos.js';
+import { getCatalogs } from '../../global/catalogos.js';
 
 export function renderSummary() {
     const s = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
@@ -8,9 +8,13 @@ export function renderSummary() {
     s('sumTitulo', caseData.caso.titulo || 'Sin título');
     const modalBadge = document.getElementById('sumModalidad');
     if (modalBadge) {
-        modalBadge.innerHTML = caseData.config.modalidad === 'Evaluacion'
-            ? '<span class="cc-badge cc-badge--amber">Evaluación</span>'
-            : '<span class="cc-badge cc-badge--blue">Práctica Libre</span>';
+        if (!caseData.config.modalidad) {
+            modalBadge.innerHTML = '<span class="status-badge status-draft">Sin definir</span>';
+        } else {
+            modalBadge.innerHTML = caseData.config.modalidad === 'Evaluada'
+                ? '<span class="status-badge status-review">Evaluación</span>'
+                : '<span class="status-badge status-active">Práctica Libre</span>';
+        }
     }
     const causante = caseData.causante.nombres && caseData.causante.apellidos
         ? `${caseData.causante.nombres} ${caseData.causante.apellidos}`

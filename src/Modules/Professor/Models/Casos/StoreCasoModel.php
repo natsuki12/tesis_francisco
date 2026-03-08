@@ -26,37 +26,48 @@ class StoreCasoModel
      */
     public function storeDraft(array $data, int $profesorId, ?int $casoId = null): int
     {
-        $titulo = $data['caso']['titulo'] ?? 'Sin título';
-        $json = json_encode($data, JSON_UNESCAPED_UNICODE);
+        $this->db->beginTransaction();
+        try {
+            $titulo = $data['caso']['titulo'] ?? 'Sin título';
+            $json = json_encode($data, JSON_UNESCAPED_UNICODE);
 
-        if ($casoId) {
-            // UPDATE borrador existente
-            $sql = "UPDATE sim_casos_estudios 
-                    SET titulo = :titulo, borrador_json = :json, updated_at = NOW()
-                    WHERE id = :id AND profesor_id = :prof AND estado = 'Borrador'";
+            if ($casoId) {
+                // UPDATE borrador existente
+                $sql = "UPDATE sim_casos_estudios 
+                        SET titulo = :titulo, borrador_json = :json, updated_at = NOW()
+                        WHERE id = :id AND profesor_id = :prof AND estado = 'Borrador'";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute([
+                    'titulo' => $titulo,
+                    'json' => $json,
+                    'id' => $casoId,
+                    'prof' => $profesorId
+                ]);
+                $this->db->commit();
+                return $casoId;
+            }
+
+            // INSERT nuevo borrador
+            $sql = "INSERT INTO sim_casos_estudios (profesor_id, titulo, estado, borrador_json)
+                    VALUES (:prof, :titulo, 'Borrador', :json)";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([
-                'titulo' => $titulo,
-                'json' => $json,
-                'id' => $casoId,
-                'prof' => $profesorId
-            ]);
-            return $casoId;
-        }
+            $stmt->execute(['prof' => $profesorId, 'titulo' => $titulo, 'json' => $json]);
+            $newId = (int) $this->db->lastInsertId();
 
-        // INSERT nuevo borrador
-        $sql = "INSERT INTO sim_casos_estudios (profesor_id, titulo, estado, borrador_json)
-                VALUES (:prof, :titulo, 'Borrador', :json)";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(['prof' => $profesorId, 'titulo' => $titulo, 'json' => $json]);
-        return (int) $this->db->lastInsertId();
+            $this->db->commit();
+            return $newId;
+        } catch (\Throwable $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 
     /**
-     * Inserta un caso completo.
-     * @return int caso_id generado
+     * Inserta o actualiza un caso completo.
+     * Si $existingCasoId se proporciona, actualiza el caso existente.
+     * @return int caso_id
      */
-    public function store(array $data, int $profesorId): int
+    public function store(array $data, int $profesorId, ?int $existingCasoId = null): int
     {
         $this->db->beginTransaction();
 
@@ -81,19 +92,29 @@ class StoreCasoModel
                 // Mapear el tipo_cedula del representante:
                 // Frontend envía tipo_cedula='Cédula'|'Rif' (UI) y letra_cedula='V'|'E'
                 // BD espera sim_personas.tipo_cedula = 'V'|'E'|'No_Aplica'
-                if (isset($rep['letra_cedula'])) {
-                    $rep['tipo_cedula'] = $rep['letra_cedula']; // 'V' o 'E'
-                } elseif (($rep['tipo_cedula'] ?? '') === 'Cédula') {
-                    $rep['tipo_cedula'] = 'V';
-                } elseif (($rep['tipo_cedula'] ?? '') === 'Rif') {
+                $tipoStr = $rep['tipo_cedula'] ?? '';
+                if ($tipoStr === 'Rif') {
+                    $rep['rif_personal'] = ($rep['letra_cedula'] ?? '') . ($rep['cedula'] ?? '');
                     $rep['tipo_cedula'] = 'No_Aplica';
+                    $rep['cedula'] = null;
+                } elseif ($tipoStr === 'Cédula') {
+                    $rep['tipo_cedula'] = $rep['letra_cedula'] ?? 'V';
+                    $rep['rif_personal'] = null;
+                } else {
+                    $rep['tipo_cedula'] = $rep['letra_cedula'] ?? 'No_Aplica';
                 }
                 $representanteId = $this->insertPersona($rep, $profesorId);
             }
 
-            // 6. Insertar caso (sim_casos_estudios)
+            // 6. Insertar o actualizar caso (sim_casos_estudios)
             $caso = $data['caso'] ?? [];
-            $casoId = $this->insertCaso($caso, $profesorId, $causanteId, $representanteId, $fechaFallecimiento);
+            if ($existingCasoId) {
+                $casoId = $this->updateCaso($existingCasoId, $caso, $causanteId, $representanteId, $fechaFallecimiento);
+                // Limpiar datos relacionados antes de re-insertar
+                $this->clearCaseRelatedData($casoId);
+            } else {
+                $casoId = $this->insertCaso($caso, $profesorId, $causanteId, $representanteId, $fechaFallecimiento);
+            }
 
             // 4. Insertar domicilio fiscal del causante vinculándolo al caso
             $domicilio = $data['domicilio_causante'] ?? [];
@@ -176,13 +197,35 @@ class StoreCasoModel
             }
 
             // 18. Insertar asignaciones de estudiantes
-            $this->insertAsignaciones($data['estudiantes_asignados'] ?? [], $configId);
+            $tipoAsignacion = $config['tipo_asignacion'] ?? '';
+            $estudianteIds = [];
 
-            $this->db->commit();
+            if ($tipoAsignacion === 'Seccion') {
+                // Resolver sección → estudiantes inscritos
+                $seccionId = (int) ($config['seccion_id'] ?? 0);
+                if ($seccionId > 0) {
+                    $stmt = $this->db->prepare(
+                        "SELECT estudiante_id FROM inscripciones WHERE seccion_id = :seccion_id"
+                    );
+                    $stmt->execute(['seccion_id' => $seccionId]);
+                    $estudianteIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                    if (empty($estudianteIds)) {
+                        throw new \RuntimeException('La sección seleccionada no tiene estudiantes inscritos.');
+                    }
+                }
+            } else {
+                // Asignación directa por estudiantes específicos
+                $estudianteIds = $data['estudiantes_asignados'] ?? [];
+            }
+
+            $this->insertAsignaciones($estudianteIds, $configId);
 
             // Limpiar borrador_json al publicar
             $this->db->prepare("UPDATE sim_casos_estudios SET borrador_json = NULL WHERE id = :id")
                 ->execute(['id' => $casoId]);
+
+            $this->db->commit();
 
             return $casoId;
 
@@ -197,6 +240,72 @@ class StoreCasoModel
     // ====================================================================
     private function insertPersona(array $p, int $createdBy): int
     {
+        $personaId = !empty($p['persona_id']) ? (int) $p['persona_id'] : null;
+
+        $tipoCedula = $p['tipo_cedula'] ?? null;
+        $cedula = $p['cedula'] ?: null;
+        $pasaporte = $p['pasaporte'] ?: null;
+        $rifPersonal = $p['rif_personal'] ?: null;
+
+        // Si no viene ID, intentar buscar la persona por documento para evitar duplicados
+        if (!$personaId) {
+            $sqlSearch = "SELECT id, nombres, apellidos, sexo, estado_civil, fecha_nacimiento, nacionalidad 
+                          FROM sim_personas 
+                          WHERE (tipo_cedula = :tc AND cedula = :ced)
+                             OR (pasaporte IS NOT NULL AND pasaporte = :pas)
+                             OR (rif_personal IS NOT NULL AND rif_personal = :rif)
+                          LIMIT 1";
+            $stmtSearch = $this->db->prepare($sqlSearch);
+            // PDO requiere bindear null adecuadamente o ignorar la busqueda estricta en DB,
+            // pero COALESCE no es necesario ya que se envian param por nombre
+            $stmtSearch->execute([
+                'tc' => $tipoCedula,
+                'ced' => $cedula,
+                'pas' => $pasaporte,
+                'rif' => $rifPersonal
+            ]);
+            $existingPersona = $stmtSearch->fetch(PDO::FETCH_ASSOC);
+
+            if ($existingPersona) {
+                $personaId = (int) $existingPersona['id'];
+                $dbData = $existingPersona;
+            }
+        } else {
+            // Si vino un persona_id del frontend, buscamos sus datos actuales
+            $stmtSearch = $this->db->prepare("SELECT nombres, apellidos, sexo, estado_civil, fecha_nacimiento, nacionalidad FROM sim_personas WHERE id = :id LIMIT 1");
+            $stmtSearch->execute(['id' => $personaId]);
+            $dbData = $stmtSearch->fetch(PDO::FETCH_ASSOC) ?: [];
+        }
+
+        if ($personaId) {
+            // UPSERT: Actualizar SOLO los campos que estaban vacíos en la BD.
+            $nombres = !empty($dbData['nombres']) ? $dbData['nombres'] : ($p['nombres'] ?? '');
+            $apellidos = !empty($dbData['apellidos']) ? $dbData['apellidos'] : ($p['apellidos'] ?? '');
+            $sexo = !empty($dbData['sexo']) ? $dbData['sexo'] : ($p['sexo'] ?? null);
+            $estadoCivil = !empty($dbData['estado_civil']) ? $dbData['estado_civil'] : ($p['estado_civil'] ?? null);
+            $fechaNacimiento = !empty($dbData['fecha_nacimiento']) ? $dbData['fecha_nacimiento'] : ($p['fecha_nacimiento'] ?: null);
+            $nacionalidad = !empty($dbData['nacionalidad']) ? $dbData['nacionalidad'] : (!empty($p['nacionalidad']) ? (int) $p['nacionalidad'] : null);
+
+            $sqlUpdate = "UPDATE sim_personas 
+                          SET nombres = :nombres, apellidos = :apellidos, 
+                              sexo = :sexo, estado_civil = :estado_civil, 
+                              fecha_nacimiento = :fecha_nacimiento, nacionalidad = :nacionalidad
+                          WHERE id = :id";
+            $stmtUpdate = $this->db->prepare($sqlUpdate);
+            $stmtUpdate->execute([
+                'nombres' => $nombres,
+                'apellidos' => $apellidos,
+                'sexo' => $sexo,
+                'estado_civil' => $estadoCivil,
+                'fecha_nacimiento' => $fechaNacimiento,
+                'nacionalidad' => $nacionalidad,
+                'id' => $personaId
+            ]);
+
+            return $personaId;
+        }
+
+        // Si no existe, hacemos un INSERT normal
         $sql = "INSERT INTO sim_personas 
                 (tipo_cedula, cedula, pasaporte, rif_personal, nombres, apellidos, 
                  sexo, estado_civil, fecha_nacimiento, nacionalidad, created_by)
@@ -205,10 +314,10 @@ class StoreCasoModel
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            'tipo_cedula' => $p['tipo_cedula'] ?? null,
-            'cedula' => $p['cedula'] ?: null,
-            'pasaporte' => $p['pasaporte'] ?: null,
-            'rif_personal' => $p['rif_personal'] ?: null,
+            'tipo_cedula' => $tipoCedula,
+            'cedula' => $cedula,
+            'pasaporte' => $pasaporte,
+            'rif_personal' => $rifPersonal,
             'nombres' => $p['nombres'] ?? '',
             'apellidos' => $p['apellidos'] ?? '',
             'sexo' => $p['sexo'] ?? null,
@@ -229,6 +338,13 @@ class StoreCasoModel
         if (empty($df))
             return;
 
+        // Si ya existen datos fiscales para esta persona, no insertar
+        $check = $this->db->prepare("SELECT COUNT(*) FROM sim_causante_datos_fiscales WHERE sim_persona_id = :id");
+        $check->execute(['id' => $personaId]);
+        if ((int) $check->fetchColumn() > 0) {
+            return;
+        }
+
         $sql = "INSERT INTO sim_causante_datos_fiscales 
                 (sim_persona_id, domiciliado_pais, fecha_cierre_fiscal)
                 VALUES (:persona_id, :domiciliado_pais, :fecha_cierre_fiscal)";
@@ -246,9 +362,18 @@ class StoreCasoModel
     // ====================================================================
     private function insertActaDefuncion(array $acta, int $personaId, ?string $fechaFallecimiento): void
     {
+        // Si ya existe un acta de defunción para esta persona, no insertar
+        $check = $this->db->prepare("SELECT COUNT(*) FROM sim_actas_defunciones WHERE sim_persona_id = :id");
+        $check->execute(['id' => $personaId]);
+        if ((int) $check->fetchColumn() > 0) {
+            return;
+        }
+
         $sql = "INSERT INTO sim_actas_defunciones 
-                (sim_persona_id, fecha_fallecimiento, numero_acta, year_acta, parroquia_registro_id)
-                VALUES (:persona_id, :fecha_fallecimiento, :numero_acta, :year_acta, :parroquia_registro_id)";
+                (sim_persona_id, fecha_fallecimiento, numero_acta, year_acta, parroquia_registro)
+                VALUES (:persona_id, :fecha_fallecimiento, :numero_acta, :year_acta, :parroquia_registro)";
+
+        $parroquiaVal = $acta['parroquia_registro'] ?? $acta['parroquia_registro_id'] ?? null;
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
@@ -256,7 +381,7 @@ class StoreCasoModel
             'fecha_fallecimiento' => $fechaFallecimiento ?: ($acta['fecha_fallecimiento'] ?? null),
             'numero_acta' => $acta['numero_acta'] ?: null,
             'year_acta' => !empty($acta['year_acta']) ? (int) $acta['year_acta'] : null,
-            'parroquia_registro_id' => !empty($acta['parroquia_registro_id']) ? (int) $acta['parroquia_registro_id'] : null,
+            'parroquia_registro' => !empty($parroquiaVal) ? $parroquiaVal : null,
         ]);
     }
 
@@ -266,7 +391,7 @@ class StoreCasoModel
     private function insertDireccion(array $d, int $casoId): void
     {
         $sql = "INSERT INTO sim_caso_direcciones 
-                (caso_estudio_id, tipo_direccion, tipo_vialidad, nombre_vialidad, tipo_inmueble,
+                (sim_caso_estudio_id, tipo_direccion, tipo_vialidad, nombre_vialidad, tipo_inmueble,
                  nro_inmueble, tipo_nivel, nro_nivel, tipo_sector, nombre_sector,
                  estado_id, municipio_id, parroquia_id, ciudad_id, codigo_postal_id,
                  telefono_fijo, telefono_celular, fax, punto_referencia)
@@ -278,7 +403,7 @@ class StoreCasoModel
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             'caso_id' => $casoId,
-            'tipo_direccion' => $d['tipo_direccion'] ?? 'Casa_Matriz_Establecimiento_Principal',
+            'tipo_direccion' => $d['tipo_direccion'] ?? null,
             'tipo_vialidad' => $d['tipo_vialidad'] ?? null,
             'nombre_vialidad' => $d['nombre_vialidad'] ?? null,
             'tipo_inmueble' => $d['tipo_inmueble'] ?? null,
@@ -337,6 +462,79 @@ class StoreCasoModel
         ]);
 
         return (int) $this->db->lastInsertId();
+    }
+
+    /**
+     * Actualiza un caso existente (cuando se publica un borrador).
+     */
+    private function updateCaso(int $casoId, array $caso, int $causanteId, ?int $representanteId, ?string $fechaFallecimiento): int
+    {
+        // Resolver unidad tributaria
+        $utId = null;
+        if ($fechaFallecimiento) {
+            $year = (int) date('Y', strtotime($fechaFallecimiento));
+            $stmt = $this->db->prepare("SELECT id FROM sim_cat_unidades_tributarias WHERE anio = :anio LIMIT 1");
+            $stmt->execute(['anio' => $year]);
+            $utId = $stmt->fetchColumn() ?: null;
+        }
+
+        $tipoSucesion = $caso['tipo_sucesion'] ?? 'Con_Cedula';
+        $tipoSucesion = str_replace(' ', '_', $tipoSucesion);
+        $tipoSucesion = str_replace(['é', 'É'], 'e', $tipoSucesion);
+
+        $sql = "UPDATE sim_casos_estudios SET
+                    titulo = :titulo, descripcion = :descripcion,
+                    tipo_sucesion = :tipo_sucesion, estado = :estado,
+                    causante_id = :causante_id, representante_id = :representante_id,
+                    unidad_tributaria_id = :unidad_tributaria_id, borrador_json = NULL
+                WHERE id = :id";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            'titulo' => $caso['titulo'] ?? '',
+            'descripcion' => $caso['descripcion'] ?? null,
+            'tipo_sucesion' => $tipoSucesion,
+            'estado' => $caso['estado'] ?? 'Publicado',
+            'causante_id' => $causanteId,
+            'representante_id' => $representanteId,
+            'unidad_tributaria_id' => $utId,
+            'id' => $casoId,
+        ]);
+
+        return $casoId;
+    }
+
+    /**
+     * Elimina datos relacionados de un caso antes de re-insertarlos.
+     * Se usa cuando se publica un borrador que ya tenía datos parciales.
+     */
+    private function clearCaseRelatedData(int $casoId): void
+    {
+        $tables = [
+            'sim_caso_direcciones' => 'sim_caso_estudio_id',
+            'sim_caso_tipoherencia_rel' => 'caso_estudio_id',
+            'sim_caso_participantes' => 'caso_estudio_id',
+            'sim_caso_bienes_inmuebles' => 'caso_estudio_id',
+            'sim_caso_bienes_muebles' => 'caso_estudio_id',
+            'sim_caso_pasivos_deuda' => 'caso_estudio_id',
+            'sim_caso_pasivos_gastos' => 'caso_estudio_id',
+            'sim_caso_exenciones' => 'caso_estudio_id',
+            'sim_caso_exoneraciones' => 'caso_estudio_id',
+            'sim_caso_prorrogas' => 'caso_estudio_id',
+        ];
+
+        foreach ($tables as $table => $col) {
+            $this->db->prepare("DELETE FROM {$table} WHERE {$col} = :cid")->execute(['cid' => $casoId]);
+        }
+
+        // Config y asignaciones
+        $stmt = $this->db->prepare("SELECT id FROM sim_caso_configs WHERE caso_id = :cid");
+        $stmt->execute(['cid' => $casoId]);
+        $configId = $stmt->fetchColumn();
+        if ($configId) {
+            $this->db->prepare("DELETE FROM sim_caso_asignaciones WHERE config_id = :cid")->execute(['cid' => $configId]);
+            $this->db->prepare("DELETE FROM sim_caso_configs WHERE id = :id")->execute(['id' => $configId]);
+        }
     }
 
     // ====================================================================
@@ -432,7 +630,7 @@ class StoreCasoModel
         $stmt->execute([
             'caso_id' => $casoId,
             'persona_id' => $personaId,
-            'rol' => $h['caracter'] ?? 'Heredero',
+            'rol' => ucfirst(strtolower($h['caracter'] ?? 'Heredero')),
             'parentesco_id' => (int) ($h['parentesco_id'] ?? 0),
             'es_premuerto' => $esPremuerto ? 1 : 0,
             'padre_id' => $padreParticipanteId,
@@ -443,7 +641,7 @@ class StoreCasoModel
         // Si es premuerto, insertar acta de defunción
         if ($esPremuerto && !empty($h['fecha_fallecimiento'])) {
             $this->insertActaDefuncion(
-                ['numero_acta' => null, 'year_acta' => null, 'parroquia_registro_id' => null],
+                ['numero_acta' => null, 'year_acta' => null, 'parroquia_registro' => null],
                 $personaId,
                 $h['fecha_fallecimiento']
             );
@@ -772,26 +970,47 @@ class StoreCasoModel
     // ====================================================================
 
     /**
-     * Busca o crea una empresa por RIF.
+     * Busca o crea una empresa por RIF. Realiza UPSERT de razon_social si estaba vacía.
      */
     private function resolveEmpresa(?string $rif, ?string $razonSocial): ?int
     {
         if (empty($rif))
             return null;
 
-        // Normalizar RIF (quitar guiones para búsqueda)
-        $rifClean = strtoupper(str_replace('-', '', $rif));
+        // Normalizar RIF (quitar guiones y espacios, dejar solo letra inicial + numeros)
+        // Ejemplo: "J - 12345678 - 9" -> "J123456789"
+        $rifClean = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $rif));
 
-        $stmt = $this->db->prepare("SELECT id FROM sim_empresas WHERE REPLACE(rif, '-', '') = :rif LIMIT 1");
+        // Buscar empresa con el RIF exacto
+        $stmt = $this->db->prepare("SELECT id, razon_social FROM sim_empresas WHERE rif = :rif LIMIT 1");
         $stmt->execute(['rif' => $rifClean]);
-        $id = $stmt->fetchColumn();
+        $empresa = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($id)
-            return (int) $id;
+        // Si no encontró y el RIF es solo números, buscar con prefijos comunes
+        if (!$empresa && ctype_digit($rifClean)) {
+            foreach (['J', 'V', 'E', 'G'] as $prefix) {
+                $stmt->execute(['rif' => $prefix . $rifClean]);
+                $empresa = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($empresa) {
+                    break;
+                }
+            }
+        }
 
-        // Crear empresa
+        if ($empresa) {
+            $id = (int) $empresa['id'];
+
+            // Si tiene el nombre vacío en BD, pero el frontend mandó uno, lo actualizamos (UPSERT parcial)
+            if (empty($empresa['razon_social']) && !empty($razonSocial)) {
+                $stmtUpd = $this->db->prepare("UPDATE sim_empresas SET razon_social = :rs WHERE id = :id");
+                $stmtUpd->execute(['rs' => $razonSocial, 'id' => $id]);
+            }
+            return $id;
+        }
+
+        // Crear empresa con el RIF normalizado estrictamente
         $stmt = $this->db->prepare("INSERT INTO sim_empresas (rif, razon_social, activo) VALUES (:rif, :rs, 1)");
-        $stmt->execute(['rif' => $rif, 'rs' => $razonSocial ?? '']);
+        $stmt->execute(['rif' => $rifClean, 'rs' => $razonSocial ?? '']);
 
         return (int) $this->db->lastInsertId();
     }

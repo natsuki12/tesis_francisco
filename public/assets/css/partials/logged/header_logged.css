@@ -43,6 +43,18 @@
     border-radius: 2px;
 }
 
+/* Hide by default on desktop */
+.sim-hamburger {
+    display: none !important;
+}
+
+/* Show only on smaller devices */
+@media (max-width: 1024px) {
+    .sim-hamburger {
+        display: flex !important;
+    }
+}
+
 .sim-header__right {
     display: flex;
     align-items: center;
@@ -64,7 +76,7 @@
 
 .sim-user__name {
     color: white;
-    font-size: 13px;
+    font-size: var(--text-md);
     font-weight: 600;
     letter-spacing: 0.3px;
 }

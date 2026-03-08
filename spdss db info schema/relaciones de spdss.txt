@@ -1,0 +1,149 @@
+127.0.0.1/information_schema/KEY_COLUMN_USAGE/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=spdss
+
+   Mostrando filas 0 - 126 (total de 127, La consulta tardó 0,0012 segundos.)
+
+
+SELECT 
+    TABLE_NAME AS 'Tabla_Origen',
+    COLUMN_NAME AS 'Columna_Foranea',
+    CONSTRAINT_NAME AS 'Nombre_Restriccion',
+    REFERENCED_TABLE_NAME AS 'Tabla_Destino',
+    REFERENCED_COLUMN_NAME AS 'Columna_Destino'
+FROM 
+    information_schema.KEY_COLUMN_USAGE
+WHERE 
+    TABLE_SCHEMA = 'spdss' -- Aquí filtramos por tu base de datos
+    AND REFERENCED_TABLE_NAME IS NOT NULL
+ORDER BY 
+    TABLE_NAME,  COLUMN_NAME;
+
+
+Tabla_Origen	Columna_Foranea	Nombre_Restriccion	Tabla_Destino	Columna_Destino	
+bitacora_accesos	tipo_evento_id	fk_bitacora_tipos	tipos_eventos	id	
+bitacora_accesos	user_id	fk_bitacora_users	users	id	
+ciudades	municipio_id	fk_ciudad_municipio	municipios	id	
+codigos_postales	estado_id	fk_codigo_estado	estados	id	
+estudiantes	carrera_id	fk_estudiantes_carreras	carreras	id	
+estudiantes	persona_id	fk_estudiantes_personas	personas	id	
+inscripciones	estudiante_id	fk_inscripcion_estudiante	estudiantes	id	
+inscripciones	seccion_id	fk_inscripcion_seccion	secciones	id	
+materias	carrera_id	fk_materias_carreras	carreras	id	
+municipios	estado_id	fk_municipio_estado	estados	id	
+parroquias	municipio_id	fk_parroquias_municipio	municipios	id	
+password_resets	user_id	fk_password_resets_users	users	id	
+profesores	persona_id	fk_profesores_personas	personas	id	
+secciones	materia_id	fk_secciones_materias	materias	id	
+secciones	periodo_id	fk_secciones_periodos	periodos	id	
+secciones	profesor_id	fk_secciones_profesores	profesores	id	
+sim_actas_defunciones	parroquia_registro_id	fk_acta_defuncion_parroquia	parroquias	id	
+sim_actas_defunciones	sim_persona_id	fk_acta_defuncion_persona	sim_personas	id	
+sim_casos_estudios	causante_id	fk_caso_causante	sim_personas	id	
+sim_casos_estudios	profesor_id	fk_casos_profesor	profesores	id	
+sim_casos_estudios	representante_id	fk_caso_representante	sim_personas	id	
+sim_casos_estudios	unidad_tributaria_id	fk_ce_ut	sim_cat_unidades_tributarias	id	
+sim_caso_asignaciones	config_id	fk_sca_config	sim_caso_configs	id	
+sim_caso_asignaciones	estudiante_id	fk_sca_estudiante	estudiantes	id	
+sim_caso_bienes_inmuebles	caso_estudio_id	fk_cbi_caso	sim_casos_estudios	id	
+sim_caso_bienes_litigiosos	caso_estudio_id	fk_cbl_caso	sim_casos_estudios	id	
+sim_caso_bienes_muebles	caso_estudio_id	fk_cbm_caso	sim_casos_estudios	id	
+sim_caso_bienes_muebles	categoria_bien_mueble_id	fk_cbm_categoria	sim_cat_categorias_bien_mueble	id	
+sim_caso_bienes_muebles	tipo_bien_mueble_id	fk_cbm_tipo	sim_cat_tipos_bien_mueble	id	
+sim_caso_bien_inmueble_tipo_rel	bien_inmueble_id	fk_cbitr_bien	sim_caso_bienes_inmuebles	id	
+sim_caso_bien_inmueble_tipo_rel	tipo_bien_inmueble_id	fk_cbitr_tipo	sim_cat_tipos_bien_inmueble	id	
+sim_caso_bm_acciones	bien_mueble_id	fk_cbma_bien	sim_caso_bienes_muebles	id	
+sim_caso_bm_acciones	empresa_id	fk_cbma_empresa	sim_empresas	id	
+sim_caso_bm_banco	banco_id	fk_cbmb_banco	sim_cat_bancos	id	
+sim_caso_bm_banco	bien_mueble_id	fk_cbmb_bien	sim_caso_bienes_muebles	id	
+sim_caso_bm_bonos	bien_mueble_id	fk_cbmbo_bien	sim_caso_bienes_muebles	id	
+sim_caso_bm_caja_ahorro	bien_mueble_id	fk_cbmca_bien	sim_caso_bienes_muebles	id	
+sim_caso_bm_caja_ahorro	empresa_id	fk_cbmca_empresa	sim_empresas	id	
+sim_caso_bm_cuentas_cobrar	bien_mueble_id	fk_cbmcc_bien	sim_caso_bienes_muebles	id	
+sim_caso_bm_opciones_compra	bien_mueble_id	fk_cbmoc_bien	sim_caso_bienes_muebles	id	
+sim_caso_bm_prestaciones	banco_id	fk_cbmp_banco	sim_cat_bancos	id	
+sim_caso_bm_prestaciones	bien_mueble_id	fk_cbmp_bien	sim_caso_bienes_muebles	id	
+sim_caso_bm_prestaciones	empresa_id	fk_cbmp_empresa	sim_empresas	id	
+sim_caso_bm_seguro	bien_mueble_id	fk_cbms_bien	sim_caso_bienes_muebles	id	
+sim_caso_bm_seguro	empresa_id	fk_cbms_empresa	sim_empresas	id	
+sim_caso_bm_semovientes	bien_mueble_id	fk_cbmsem_bien	sim_caso_bienes_muebles	id	
+sim_caso_bm_semovientes	tipo_semoviente_id	fk_cbmsem_tipo	sim_cat_tipos_semoviente	id	
+sim_caso_bm_transporte	bien_mueble_id	fk_cbmt_bien	sim_caso_bienes_muebles	id	
+sim_caso_configs	caso_id	fk_scc_caso	sim_casos_estudios	id	
+sim_caso_configs	profesor_id	fk_scc_profesor	profesores	id	
+sim_caso_direcciones	ciudad_id	fk_scd_ciudad	ciudades	id	
+sim_caso_direcciones	codigo_postal_id	fk_scd_codigo_postal	codigos_postales	id	
+sim_caso_direcciones	estado_id	fk_scd_estado	estados	id	
+sim_caso_direcciones	municipio_id	fk_scd_municipio	municipios	id	
+sim_caso_direcciones	parroquia_id	fk_scd_parroquia	parroquias	id	
+sim_caso_direcciones	sim_caso_estudio_id	fk_scd_caso	sim_casos_estudios	id	
+sim_caso_exenciones	caso_estudio_id	fk_ce_caso	sim_casos_estudios	id	
+sim_caso_exoneraciones	caso_estudio_id	fk_cex_caso	sim_casos_estudios	id	
+sim_caso_participantes	caso_estudio_id	fk_cp_caso	sim_casos_estudios	id	
+sim_caso_participantes	parentesco_id	fk_cp_parentesco	sim_cat_parentescos	id	
+sim_caso_participantes	persona_id	fk_cp_persona	sim_personas	id	
+sim_caso_participantes	premuerto_padre_id	fk_cp_premuerto_padre	sim_caso_participantes	id	
+sim_caso_pasivos_deuda	banco_id	fk_cpd_banco	sim_cat_bancos	id	
+sim_caso_pasivos_deuda	caso_estudio_id	fk_cpd_caso	sim_casos_estudios	id	
+sim_caso_pasivos_deuda	tipo_pasivo_deuda_id	fk_cpd_tipo	sim_cat_tipos_pasivo_deuda	id	
+sim_caso_pasivos_gastos	caso_estudio_id	fk_cpg_caso	sim_casos_estudios	id	
+sim_caso_pasivos_gastos	tipo_pasivo_gasto_id	fk_cpg_tipo	sim_cat_tipos_pasivo_gasto	id	
+sim_caso_prorrogas	caso_estudio_id	fk_cpr_caso	sim_casos_estudios	id	
+sim_caso_tipoherencia_rel	caso_estudio_id	fk_cthr_caso	sim_casos_estudios	id	
+sim_caso_tipoherencia_rel	tipo_herencia_id	fk_cthr_tipo	sim_cat_tipoherencias	id	
+sim_cat_parentescos	grupo_tarifa_id	fk_par_grupo_tarifa	sim_cat_grupos_tarifa	id	
+sim_cat_tarifas_sucesion	grupo_tarifa_id	fk_ts_grupo	sim_cat_grupos_tarifa	id	
+sim_cat_tipos_bien_mueble	categoria_bien_mueble_id	fk_ctbm_categoria	sim_cat_categorias_bien_mueble	id	
+sim_causante_datos_fiscales	sim_persona_id	fk_cdf_persona	sim_personas	id	
+sim_intentos	asignacion_id	fk_si_asignacion	sim_caso_asignaciones	id	
+sim_intento_bienes_inmuebles	intento_id	fk_ibi_intento	sim_intentos	id	
+sim_intento_bienes_litigiosos	intento_id	fk_ibl_intento	sim_intentos	id	
+sim_intento_bienes_muebles	categoria_bien_mueble_id	fk_ibm_categoria	sim_cat_categorias_bien_mueble	id	
+sim_intento_bienes_muebles	intento_id	fk_ibm_intento	sim_intentos	id	
+sim_intento_bienes_muebles	tipo_bien_mueble_id	fk_ibm_tipo	sim_cat_tipos_bien_mueble	id	
+sim_intento_bien_inmueble_tipo_rel	bien_inmueble_id	fk_ibibtr_bien	sim_intento_bienes_inmuebles	id	
+sim_intento_bien_inmueble_tipo_rel	tipo_bien_inmueble_id	fk_ibibtr_tipo	sim_cat_tipos_bien_inmueble	id	
+sim_intento_bm_acciones	bien_mueble_id	fk_ibma_bien	sim_intento_bienes_muebles	id	
+sim_intento_bm_acciones	empresa_id	fk_ibma_empresa	sim_empresas	id	
+sim_intento_bm_banco	banco_id	fk_ibmb_banco	sim_cat_bancos	id	
+sim_intento_bm_banco	bien_mueble_id	fk_ibmb_bien	sim_intento_bienes_muebles	id	
+sim_intento_bm_bonos	bien_mueble_id	fk_ibmbo_bien	sim_intento_bienes_muebles	id	
+sim_intento_bm_caja_ahorro	bien_mueble_id	fk_ibmca_bien	sim_intento_bienes_muebles	id	
+sim_intento_bm_caja_ahorro	empresa_id	fk_ibmca_empresa	sim_empresas	id	
+sim_intento_bm_cuentas_cobrar	bien_mueble_id	fk_ibmcc_bien	sim_intento_bienes_muebles	id	
+sim_intento_bm_opciones_compra	bien_mueble_id	fk_ibmoc_bien	sim_intento_bienes_muebles	id	
+sim_intento_bm_prestaciones	banco_id	fk_ibmp_banco	sim_cat_bancos	id	
+sim_intento_bm_prestaciones	bien_mueble_id	fk_ibmp_bien	sim_intento_bienes_muebles	id	
+sim_intento_bm_prestaciones	empresa_id	fk_ibmp_empresa	sim_empresas	id	
+sim_intento_bm_seguro	bien_mueble_id	fk_ibms_bien	sim_intento_bienes_muebles	id	
+sim_intento_bm_seguro	empresa_id	fk_ibms_empresa	sim_empresas	id	
+sim_intento_bm_semovientes	bien_mueble_id	fk_ibmsem_bien	sim_intento_bienes_muebles	id	
+sim_intento_bm_semovientes	tipo_semoviente_id	fk_ibmsem_tipo	sim_cat_tipos_semoviente	id	
+sim_intento_bm_transporte	bien_mueble_id	fk_ibmt_bien	sim_intento_bienes_muebles	id	
+sim_intento_datos_basicos	intento_id	fk_sird_intento	sim_intentos	id	
+
+sim_intento_datos_basicos	nacionalidad	fk_sird_nacionalidad	paises	id	
+sim_intento_datos_basicos	parroquia_registro_id	fk_sird_parroquia	parroquias	id	
+sim_intento_direcciones	ciudad_id	fk_sid_ciudad	ciudades	id	
+sim_intento_direcciones	codigo_postal_id	fk_sid_codigo_postal	codigos_postales	id	
+sim_intento_direcciones	estado_id	fk_sid_estado	estados	id	
+sim_intento_direcciones	intento_id	fk_sid_intento	sim_intentos	id	
+sim_intento_direcciones	municipio_id	fk_sid_municipio	municipios	id	
+sim_intento_direcciones	parroquia_id	fk_sid_parroquia	parroquias	id	
+sim_intento_estados	intento_id	fk_sie_intento	sim_intentos	id	
+sim_intento_exenciones	intento_id	fk_ie_intento	sim_intentos	id	
+sim_intento_exoneraciones	intento_id	fk_iex_intento	sim_intentos	id	
+sim_intento_observaciones	intento_id	fk_sio_intento	sim_intentos	id	
+sim_intento_pasivos_deuda	banco_id	fk_ipd_banco	sim_cat_bancos	id	
+sim_intento_pasivos_deuda	intento_id	fk_ipd_intento	sim_intentos	id	
+sim_intento_pasivos_deuda	tipo_pasivo_deuda_id	fk_ipd_tipo	sim_cat_tipos_pasivo_deuda	id	
+sim_intento_pasivos_gastos	intento_id	fk_ipg_intento	sim_intentos	id	
+sim_intento_pasivos_gastos	tipo_pasivo_gasto_id	fk_ipg_tipo	sim_cat_tipos_pasivo_gasto	id	
+sim_intento_prorrogas	intento_id	fk_ip_intento	sim_intentos	id	
+sim_intento_relaciones	intento_id	fk_sir_intento	sim_intentos	id	
+sim_intento_relaciones	parentesco_id	fk_sir_parentesco	sim_cat_parentescos	id	
+sim_intento_relaciones	premuerto_padre_id	fk_sir_premuerto_padre	sim_intento_relaciones	id	
+sim_intento_tipoherencias	intento_id	fk_ith_intento	sim_intentos	id	
+sim_intento_tipoherencias	tipo_herencia_id	fk_ith_tipo	sim_cat_tipoherencias	id	
+sim_personas	created_by	fk_personas_maestro_profesor	profesores	id	
+sim_personas	nacionalidad	fk_sp_nacionalidad	paises	id	
+users	persona_id	fk_users_personas	personas	id	
+users	role_id	fk_users_roles	roles	id	

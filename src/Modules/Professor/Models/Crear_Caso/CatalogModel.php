@@ -170,4 +170,46 @@ class CatalogModel
         $stmt->execute(['user_id' => $userId]);
         return $stmt->fetchAll();
     }
+
+    public function getPersonaByDocumento(string $tipoCedula, string $cedula, string $pasaporte, string $rif)
+    {
+        $db = DB::connect();
+
+        $sql = "SELECT p.id as persona_id, p.tipo_cedula, p.nacionalidad, p.cedula, p.pasaporte, p.rif_personal, 
+                       p.nombres, p.apellidos, p.fecha_nacimiento, p.estado_civil, p.sexo, 
+                       a.fecha_fallecimiento 
+                FROM sim_personas p
+                LEFT JOIN sim_actas_defunciones a ON a.sim_persona_id = p.id
+                WHERE 1=0";
+
+        $params = [];
+
+        if ($cedula !== '') {
+            if ($tipoCedula !== '') {
+                $sql .= " OR (p.tipo_cedula = :tipo_cedula AND p.cedula = :cedula)";
+                $params['tipo_cedula'] = $tipoCedula;
+                $params['cedula'] = $cedula;
+            } else {
+                $sql .= " OR p.cedula = :cedula";
+                $params['cedula'] = $cedula;
+            }
+        }
+
+        if ($pasaporte !== '') {
+            $sql .= " OR p.pasaporte = :pasaporte";
+            $params['pasaporte'] = $pasaporte;
+        }
+
+        if ($rif !== '') {
+            $sql .= " OR p.rif_personal = :rif";
+            $params['rif'] = $rif;
+        }
+
+        $sql .= " LIMIT 1";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetch() ?: null;
+    }
 }

@@ -121,4 +121,29 @@ class CatalogController
         $model = new CatalogModel();
         $this->jsonResponse($model->getEstudiantesByProfesor($userId));
     }
+
+    public function buscarPersonaPorCedula()
+    {
+        $tipo = $_GET['tipo'] ?? '';
+        $cedula = trim($_GET['cedula'] ?? '');
+        $pasaporte = trim($_GET['pasaporte'] ?? '');
+        $rif = trim($_GET['rif'] ?? '');
+
+        if (empty($cedula) && empty($pasaporte) && empty($rif)) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Documento requerido']);
+            exit;
+        }
+
+        $model = new CatalogModel();
+        $result = $model->getPersonaByDocumento($tipo, $cedula, $pasaporte, $rif);
+
+        if ($result) {
+            $this->jsonResponse($result);
+        } else {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Persona no encontrada']);
+            exit;
+        }
+    }
 }

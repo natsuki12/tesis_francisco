@@ -16,6 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="<?= asset('css/base.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/global/toast.css') ?>">
 
     <style>
         body {
@@ -37,6 +38,9 @@
     <main>
         <?= $content ?? '' ?>
     </main>
+
+    <!-- Global text sanitization -->
+    <script src="<?= asset('js/global/sanitize.js') ?>"></script>
 
 </body>
 

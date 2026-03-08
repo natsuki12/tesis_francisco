@@ -8,10 +8,14 @@
     --font-sim: 'Arial', Helvetica, sans-serif;
 
     /* --- ESCALA DE TAMAÑOS (Base 16px) --- */
+    --text-2xs: 0.6875rem;
+    /* 11px - Micro labels, indicadores */
     --text-xs: 0.75rem;
-    /* 12px - Ayudas, pie de página */
+    /* 12px - Ayudas, badges, pie de página */
     --text-sm: 0.875rem;
-    /* 14px - Textos secundarios */
+    /* 14px - Textos secundarios, labels */
+    --text-md: 0.9375rem;
+    /* 15px - Body de tablas, cards */
     --text-base: 1rem;
     /* 16px - Texto estándar, inputs */
     --text-lg: 1.125rem;
@@ -34,6 +38,59 @@
     /* Gris oscuro - Párrafos */
     --text-light: #718096;
     /* Gris medio - Placeholders, ayudas */
+
+    /* --- PALETA DE COLORES (App) --- */
+    --blue-900: #0a1e3d;
+    --blue-800: #0f2b54;
+    --blue-700: #14396e;
+    --blue-600: #1a4a8a;
+    --blue-500: #2563a8;
+    --blue-400: #3b82c4;
+    --blue-300: #60a5fa;
+    --blue-100: #dbeafe;
+    --blue-50: #eff6ff;
+
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e1;
+    --gray-400: #94a3b8;
+    --gray-500: #64748b;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1e293b;
+    --white: #ffffff;
+
+    --green-600: #16a34a;
+    --green-500: #22c55e;
+    --green-100: #dcfce7;
+    --green-50: #f0fdf4;
+
+    --amber-600: #d97706;
+    --amber-500: #f59e0b;
+    --amber-100: #fef3c7;
+    --amber-50: #fffbeb;
+
+    --red-600: #dc2626;
+    --red-500: #ef4444;
+    --red-100: #fee2e2;
+    --red-50: #fef2f2;
+
+    --purple-600: #9333ea;
+    --purple-500: #8b5cf6;
+    --purple-100: #f3e8ff;
+    --purple-50: #faf5ff;
+
+    --emerald-600: #059669;
+
+    /* --- UTILIDADES --- */
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-xs: 6px;
+    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-card-hover: 0 10px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04);
+    --shadow-dropdown: 0 10px 40px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+    --transition: 0.2s ease;
 }
 
 /* === 1. RESET GLOBAL === */

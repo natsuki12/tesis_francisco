@@ -55,6 +55,13 @@ class CasosController
             exit;
         }
 
+        // Bloquear edición de casos publicados
+        if ($result['estado'] === 'Publicado') {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'message' => 'No se puede editar un caso publicado.']);
+            exit;
+        }
+
         if (!$result['data']) {
             http_response_code(404);
             echo json_encode(['success' => false, 'message' => 'Este caso no tiene datos editables.']);
@@ -119,7 +126,8 @@ class CasosController
                 $inputCasoId = isset($data['caso_id']) ? (int) $data['caso_id'] : null;
                 $casoId = $storeModel->storeDraft($data, $profesorId, $inputCasoId);
             } else {
-                $casoId = $storeModel->store($data, $profesorId);
+                $inputCasoId = isset($data['caso_id']) ? (int) $data['caso_id'] : null;
+                $casoId = $storeModel->store($data, $profesorId, $inputCasoId);
             }
 
             echo json_encode([
@@ -137,6 +145,81 @@ class CasosController
             ]);
         }
 
+        exit;
+    }
+
+    /**
+     * Elimina un caso (soft delete: estado = 'Eliminado').
+     * DELETE /api/casos/{id}
+     */
+    public function destroy(int $id)
+    {
+        header('Content-Type: application/json');
+        $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+
+        try {
+            $db = \App\Core\DB::connect();
+
+            // Verificar que el caso existe y pertenece al profesor
+            $stmt = $db->prepare("SELECT id FROM sim_casos_estudios WHERE id = :id AND profesor_id = :prof AND estado != 'Eliminado'");
+            $stmt->execute(['id' => $id, 'prof' => $profesorId]);
+            if (!$stmt->fetch()) {
+                http_response_code(404);
+                echo json_encode(['success' => false, 'message' => 'Caso no encontrado.']);
+                exit;
+            }
+
+            // Soft delete: cambiar estado a 'Eliminado'
+            $stmt = $db->prepare("UPDATE sim_casos_estudios SET estado = 'Eliminado' WHERE id = :id");
+            $stmt->execute(['id' => $id]);
+
+            echo json_encode(['success' => true, 'message' => 'Caso eliminado exitosamente.']);
+        } catch (\Throwable $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Error al eliminar: ' . $e->getMessage()]);
+        }
+        exit;
+    }
+
+    /**
+     * Cambia el estado de un caso (ej: Inactivar).
+     * PATCH /api/casos/{id}/estado
+     */
+    public function updateEstado(int $id)
+    {
+        header('Content-Type: application/json');
+        $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+
+        $raw = file_get_contents('php://input');
+        $data = json_decode($raw, true);
+        $nuevoEstado = $data['estado'] ?? '';
+
+        // Solo permitir estados válidos
+        if (!in_array($nuevoEstado, ['Inactivo', 'Publicado', 'Borrador'])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Estado no válido.']);
+            exit;
+        }
+
+        try {
+            $db = \App\Core\DB::connect();
+
+            $stmt = $db->prepare("SELECT id FROM sim_casos_estudios WHERE id = :id AND profesor_id = :prof AND estado != 'Eliminado'");
+            $stmt->execute(['id' => $id, 'prof' => $profesorId]);
+            if (!$stmt->fetch()) {
+                http_response_code(404);
+                echo json_encode(['success' => false, 'message' => 'Caso no encontrado.']);
+                exit;
+            }
+
+            $stmt = $db->prepare("UPDATE sim_casos_estudios SET estado = :estado WHERE id = :id");
+            $stmt->execute(['estado' => $nuevoEstado, 'id' => $id]);
+
+            echo json_encode(['success' => true, 'message' => 'Estado actualizado a ' . $nuevoEstado . '.']);
+        } catch (\Throwable $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+        }
         exit;
     }
 }

@@ -1,7 +1,7 @@
-import { $, show, hide, formatBs } from './utils.js';
+import { $, show, hide, formatBs } from '../../global/utils.js';
 import { caseData, UIState } from './state.js';
 import { openModal, removeItem, removeMueble } from './modal.js';
-import { getCatalogs } from './catalogos.js';
+import { getCatalogs } from '../../global/catalogos.js';
 
 export function renderInventario() {
   updateTabCounts();
@@ -27,7 +27,7 @@ function renderCurrentTab() {
   } else {
     hide(iEmpty); show(iList);
     iList.innerHTML = caseData.bienes_inmuebles.map((b, i) => renderItemCard(b, 'bienes_inmuebles', i, '🏠')).join('') +
-      `<button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('inmueble')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Agregar Inmueble</button>`;
+      `<button class="btn btn-secondary btn-sm cc-mt" onclick="CC.openModal('inmueble')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Agregar Inmueble</button>`;
   }
 
   // Muebles
@@ -64,7 +64,7 @@ function renderListSection(dataKey, emptyId, listId, modalType, btnText, nameGet
   } else {
     hide(empty); show(list);
     list.innerHTML = items.map((item, i) => renderItemCard(item, dataKey, i, '💼', nameGetter(item))).join('') +
-      `<button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('${modalType}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> ${btnText}</button>`;
+      `<button class="btn btn-secondary btn-sm cc-mt" onclick="CC.openModal('${modalType}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> ${btnText}</button>`;
   }
 }
 
@@ -98,15 +98,15 @@ function renderItemCard(item, collection, index, emoji, name) {
         </div>` : '';
 
   const editButton = collection === 'bienes_inmuebles'
-    ? `<button class="cc-btn--icon-edit" onclick="CC.openModal('inmueble', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
+    ? `<button class="btn-icon" onclick="CC.openModal('inmueble', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
     : collection === 'pasivos_deuda'
-      ? `<button class="cc-btn--icon-edit" onclick="CC.openModal('pasivo_deuda', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
+      ? `<button class="btn-icon" onclick="CC.openModal('pasivo_deuda', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
       : collection === 'pasivos_gastos'
-        ? `<button class="cc-btn--icon-edit" onclick="CC.openModal('pasivo_gasto', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
+        ? `<button class="btn-icon" onclick="CC.openModal('pasivo_gasto', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
         : collection === 'exenciones'
-          ? `<button class="cc-btn--icon-edit" onclick="CC.openModal('exencion', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
+          ? `<button class="btn-icon" onclick="CC.openModal('exencion', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
           : collection === 'exoneraciones'
-            ? `<button class="cc-btn--icon-edit" onclick="CC.openModal('exoneracion', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
+            ? `<button class="btn-icon" onclick="CC.openModal('exoneracion', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>`
             : '';
 
   return `<div class="cc-item-card">
@@ -116,8 +116,8 @@ function renderItemCard(item, collection, index, emoji, name) {
         <div class="cc-item-card__name">${displayName}</div>
         <div class="cc-item-card__meta">
           <span>${item.porcentaje || 100}%</span>
-          ${item.vivienda_principal === 'Si' ? '<span class="cc-badge cc-badge--green">Viv. Principal</span>' : ''}
-          ${item.bien_litigioso === 'Si' ? '<span class="cc-badge cc-badge--red">Litigioso</span>' : ''}
+          ${item.vivienda_principal === 'Si' ? '<span class="status-badge status-completed">Viv. Principal</span>' : ''}
+          ${item.bien_litigioso === 'Si' ? '<span class="status-badge status-danger">Litigioso</span>' : ''}
         </div>
         ${inmuebleDetails}
         ${deudaDetails}
@@ -126,7 +126,7 @@ function renderItemCard(item, collection, index, emoji, name) {
     <div class="cc-item-card__right">
       <span class="cc-item-card__value">${formatBs(item.valor_declarado)}</span>
       ${editButton}
-      <button class="cc-btn--icon-danger" onclick="CC.removeItem('${collection}', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+      <button class="btn-danger-ghost" onclick="CC.removeItem('${collection}', ${index})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
     </div>
   </div>`;
 }
@@ -226,19 +226,19 @@ function renderMueblesList() {
             <div class="cc-item-card__name">${displayName}</div>
             <div class="cc-item-card__meta">
               <span>${b.porcentaje || 100}%</span>
-              ${b.bien_litigioso === 'Si' ? '<span class="cc-badge cc-badge--red">Litigioso</span>' : ''}
+              ${b.bien_litigioso === 'Si' ? '<span class="status-badge status-danger">Litigioso</span>' : ''}
             </div>
             ${extraMeta ? `<div class="cc-item-card__meta" style="margin-top:4px;font-size:11px;">${extraMeta}</div>` : ''}
           </div>
         </div>
         <div class="cc-item-card__right">
           <span class="cc-item-card__value">${formatBs(b.valor_declarado)}</span>
-          <button class="cc-btn--icon-edit" onclick="CC.openModal('mueble', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="cc-btn--icon-danger" onclick="CC.removeMueble('${UIState.currentSubTab}', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+          <button class="btn-icon" onclick="CC.openModal('mueble', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="btn-danger-ghost" onclick="CC.removeMueble('${UIState.currentSubTab}', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
         </div>
       </div>`;
     }).join('') +
-      `<button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('mueble')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg> Agregar</button>`;
+      `<button class="btn btn-secondary btn-sm cc-mt" onclick="CC.openModal('mueble')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg> Agregar</button>`;
   }
 }
 

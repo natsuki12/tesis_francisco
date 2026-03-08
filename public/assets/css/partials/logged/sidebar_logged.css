@@ -10,10 +10,55 @@
     border-right: 1px solid var(--sim-border);
     overflow-y: auto;
     overflow-x: hidden;
-    transition: width 0.3s cubic-bezier(0.23, 1, 0.32, 1);
     display: flex;
     flex-direction: column;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    /* On desktop, no shadow or transition needed, it sits in grid */
+}
+
+/* --- BACKDROP --- */
+.sim-sidebar-backdrop {
+    display: none;
+    /* Only used on mobile */
+    position: fixed;
+    inset: 0;
+    top: var(--header-height);
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* ================================================
+   MOBILE OVERLAY (< 1024px)
+   ================================================ */
+@media (max-width: 1024px) {
+    .sim-sidebar {
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        bottom: 0;
+        width: var(--sidebar-width);
+        transform: translateX(-100%);
+        z-index: 1000;
+        transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        box-shadow: 4px 0 16px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Open State */
+    .sim-layout--sidebar-open .sim-sidebar {
+        transform: translateX(0);
+    }
+
+    .sim-sidebar-backdrop {
+        display: block;
+    }
+
+    .sim-layout--sidebar-open .sim-sidebar-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+    }
 }
 
 /* Custom scrollbar */
@@ -58,7 +103,7 @@
 
 .sim-sidebar__brand-name {
     font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif;
-    font-size: 0.85rem;
+    font-size: var(--text-sm);
     font-weight: 700;
     color: var(--sim-text);
     line-height: 1.3;
@@ -69,69 +114,14 @@
 }
 
 .sim-sidebar__brand-sub {
-    font-size: 0.7rem;
+    font-size: var(--text-2xs);
     font-weight: 500;
     color: var(--sim-text-light);
     line-height: 1.3;
     letter-spacing: 0.01em;
 }
 
-/* --- COLLAPSED STATE --- */
-.sim-sidebar--collapsed {
-    width: var(--sidebar-collapsed-width);
-}
 
-.sim-sidebar--collapsed .sim-sidebar__header {
-    padding: 14px 8px;
-}
-
-.sim-sidebar--collapsed .sim-sidebar__logo {
-    width: 36px;
-    height: 36px;
-}
-
-.sim-sidebar--collapsed .sim-sidebar__brand-text {
-    display: none;
-}
-
-.sim-sidebar--collapsed .sim-nav__text,
-.sim-sidebar--collapsed .sim-nav__arrow,
-.sim-sidebar--collapsed .sim-nav__section-title {
-    display: none;
-}
-
-.sim-sidebar--collapsed .sim-nav__section {
-    margin-bottom: 2px;
-}
-
-.sim-sidebar--collapsed .sim-nav__link {
-    justify-content: center;
-    padding: 12px 0;
-}
-
-.sim-sidebar--collapsed .sim-nav__icon {
-    width: 22px;
-    height: 22px;
-}
-
-.sim-sidebar--collapsed .sim-nav__submenu {
-    display: none !important;
-}
-
-.sim-sidebar--collapsed .sim-nav__sublink {
-    padding: 10px 0;
-    justify-content: center;
-}
-
-.sim-sidebar--collapsed .sim-nav__subtext {
-    display: none;
-}
-
-.sim-sidebar--collapsed .sim-nav__subicon {
-    width: 18px;
-    height: 18px;
-    color: var(--sim-blue);
-}
 
 /* ================================================
    NAVIGATION
@@ -157,7 +147,7 @@
 .sim-nav__section-title {
     display: block;
     padding: 14px 20px 6px;
-    font-size: 0.65rem;
+    font-size: var(--text-2xs);
     font-weight: 700;
     color: var(--sim-text-light);
     text-transform: uppercase;
@@ -179,7 +169,7 @@
     margin: 2px 10px;
     color: var(--sim-text);
     text-decoration: none;
-    font-size: 0.86rem;
+    font-size: var(--text-sm);
     font-weight: 500;
     border: none;
     background: none;
@@ -255,7 +245,7 @@
 /* Badge (e.g. count or label next to a link) */
 .sim-nav__badge {
     margin-left: auto;
-    font-size: 0.65rem;
+    font-size: var(--text-2xs);
     font-weight: 600;
     background: var(--sim-blue-light, rgba(37, 99, 168, 0.1));
     color: var(--sim-blue, #2563a8);
@@ -303,7 +293,7 @@
     margin: 1px 10px;
     color: var(--sim-text-light);
     text-decoration: none;
-    font-size: 0.84rem;
+    font-size: var(--text-sm);
     font-weight: 500;
     transition: all 0.18s ease;
     border-radius: 8px;
@@ -368,25 +358,4 @@
 
 .sim-sidebar__footer .sim-nav__link:hover {
     opacity: 1;
-}
-
-/* ================================================
-   RESPONSIVE
-   ================================================ */
-@media (max-width: 768px) {
-    .sim-sidebar {
-        position: fixed;
-        left: 0;
-        top: var(--header-height);
-        bottom: 0;
-        width: var(--sidebar-width);
-        transform: translateX(-100%);
-        transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        z-index: 90;
-        box-shadow: 4px 0 16px rgba(0, 0, 0, 0.08);
-    }
-
-    .sim-layout--sidebar-open .sim-sidebar {
-        transform: translateX(0);
-    }
 }

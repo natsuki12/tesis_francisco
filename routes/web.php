@@ -118,8 +118,14 @@ $router->get('/casos-sucesorales', function () use ($app, $requireAuth, $require
 $router->get('/casos-sucesorales/{id}', function ($id) use ($app, $requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
-    // TODO: Obtener datos reales del caso $id en el futuro
-    return $app->view('professor/gestionar_caso', ['id' => $id]);
+    $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+    $model = new \App\Modules\Professor\Models\Casos\GestionarCasoModel();
+    $data = $model->getFullCaseById((int) $id, $profesorId);
+    if (!$data) {
+        http_response_code(404);
+        return $app->view('errors/404');
+    }
+    return $app->view('professor/gestionar_caso', ['casoData' => $data]);
 });
 $router->get('/crear-caso', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();
@@ -139,6 +145,20 @@ $router->get('/api/casos/{id}', function ($id) use ($requireAuth, $requireRole) 
     $requireAuth();
     $requireRole(2);
     return (new CasosController())->show((int) $id);
+});
+
+// API: Eliminar un caso permanentemente
+$router->delete('/api/casos/{id}', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return (new CasosController())->destroy((int) $id);
+});
+
+// API: Cambiar estado de un caso (Inactivar)
+$router->patch('/api/casos/{id}/estado', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return (new CasosController())->updateEstado((int) $id);
 });
 
 // Perfil
@@ -172,3 +192,4 @@ $router->get('/api/tipos-pasivo-gasto', [CatalogController::class, 'getTiposPasi
 $router->get('/api/secciones-profesor', [CatalogController::class, 'getSeccionesProfesor']);
 $router->get('/api/estudiantes-profesor', [CatalogController::class, 'getEstudiantesProfesor']);
 $router->get('/api/buscar-empresa-rif', [CatalogController::class, 'buscarEmpresaPorRif']);
+$router->get('/api/buscar-persona', [CatalogController::class, 'buscarPersonaPorCedula']);

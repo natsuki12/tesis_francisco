@@ -43,7 +43,6 @@ if (!isset($user)) {
             --sim-shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.07);
             --header-height: 56px;
             --sidebar-width: 240px;
-            --sidebar-collapsed-width: 60px;
         }
 
         * {
@@ -63,7 +62,6 @@ if (!isset($user)) {
         }
 
         /* Layout Grid */
-        /* Layout Grid */
         .sim-layout {
             display: grid;
             grid-template-areas: "header header" "sidebar main";
@@ -73,12 +71,15 @@ if (!isset($user)) {
             overflow: hidden;
         }
 
-        .sim-layout--sidebar-collapsed {
-            grid-template-columns: var(--sidebar-collapsed-width) 1fr;
+        /* Main Content */
+        .sim-main {
+            grid-area: main;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 32px 36px;
         }
 
-        /* Layout Grid Responsive */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .sim-layout {
                 grid-template-areas: "header" "main";
                 grid-template-columns: 1fr;
@@ -87,14 +88,6 @@ if (!isset($user)) {
             .sim-main {
                 padding: 24px 16px;
             }
-        }
-
-        /* Main Content */
-        .sim-main {
-            grid-area: main;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 32px 36px;
         }
 
         .sim-container {
@@ -108,6 +101,8 @@ if (!isset($user)) {
     <!-- CSS de los parciales -->
     <link rel="stylesheet" href="<?= asset('css/partials/logged/header_logged.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/partials/logged/sidebar_logged.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/global/toast.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/global/components.css') ?>">
 
     <!-- CSS extra de la página (si existe) -->
     <?php if (isset($extraCss))
@@ -117,6 +112,8 @@ if (!isset($user)) {
 <body class="sim-layout">
 
     <?php include __DIR__ . '/../partials/logged/header_logged.php'; ?>
+
+    <div class="sim-sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <?php include __DIR__ . '/../partials/logged/sidebar_logged.php'; ?>
 
@@ -129,16 +126,18 @@ if (!isset($user)) {
     <script>
         const toggle = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
         const body = document.body;
 
         if (toggle && sidebar) {
             toggle.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    body.classList.toggle('sim-layout--sidebar-open');
-                } else {
-                    sidebar.classList.toggle('sim-sidebar--collapsed');
-                    body.classList.toggle('sim-layout--sidebar-collapsed');
-                }
+                body.classList.toggle('sim-layout--sidebar-open');
+            });
+        }
+
+        if (backdrop) {
+            backdrop.addEventListener('click', () => {
+                body.classList.remove('sim-layout--sidebar-open');
             });
         }
 
@@ -150,6 +149,9 @@ if (!isset($user)) {
             });
         });
     </script>
+
+    <!-- Global text sanitization (removes dangerous characters from all text inputs) -->
+    <script src="<?= asset('js/global/sanitize.js') ?>"></script>
 
     <!-- JS extra de la página (si existe) -->
     <?php if (isset($extraJs))

@@ -29,10 +29,10 @@ ob_start();
     </a>
     <span class="cc-topbar__sep">/</span>
     <span class="cc-topbar__title">Nuevo Caso</span>
-    <span class="cc-badge cc-badge--slate">Borrador</span>
+    <span class="status-badge status-draft">Borrador</span>
   </div>
   <div class="cc-topbar__right">
-    <button class="cc-btn cc-btn--outline" id="btnSaveDraft">
+    <button class="btn btn-secondary" id="btnSaveDraft">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round">
         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
@@ -241,6 +241,7 @@ ob_start();
             <option value="Casado">Casado</option>
             <option value="Viudo">Viudo</option>
             <option value="Divorciado">Divorciado</option>
+            <option value="Concubinato">Concubinato</option>
           </select>
         </div>
         <div class="cc-field">
@@ -262,6 +263,21 @@ ob_start();
           </select>
         </div>
 
+        <!-- Datos Fiscales del Causante -->
+        <h4 class="cc-section-subtitle cc-mt" style="grid-column: 1 / -1;">Datos Fiscales</h4>
+        <div class="cc-field">
+          <label>Domiciliado en el país</label>
+          <select data-bind="datos_fiscales_causante.domiciliado_pais" disabled
+            style="background-color: var(--cc-slate-50, #f8fafc);">
+            <option value="1" selected>Sí</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+        <div class="cc-field">
+          <label>Fecha de Cierre Fiscal</label>
+          <input type="date" data-bind="datos_fiscales_causante.fecha_cierre_fiscal" id="input_fecha_cierre_fiscal">
+        </div>
+
         <!-- Block Acta de defunción condicional -->
         <div id="bloque_acta_defuncion" style="display:none; grid-column: 1 / -1;">
           <h4 class="cc-section-subtitle cc-mt">Acta de Defunción</h4>
@@ -272,11 +288,12 @@ ob_start();
             </div>
             <div class="cc-field">
               <label>Año del Acta</label>
-              <input type="number" data-bind="acta_defuncion.year_acta" min="1900" placeholder="2024">
+              <input type="text" data-bind="acta_defuncion.year_acta" placeholder="2024" maxlength="4">
             </div>
             <div class="cc-field">
               <label>Parroquia de Emisión</label>
-              <input type="number" data-bind="acta_defuncion.parroquia_registro_id" placeholder="ID de parroquia">
+              <input type="text" data-bind="acta_defuncion.parroquia_registro_id" placeholder="Ej: Catedral"
+                maxlength="99">
             </div>
           </div>
         </div>
@@ -302,8 +319,8 @@ ob_start();
       <!-- Tipo de dirección -->
       <div class="cc-p-4 cc-border-b">
         <div id="direccionesTableContainer" style="display:none; margin-bottom: 20px;">
-          <div class="cc-table-wrap">
-            <table class="cc-table">
+          <div class="table-container">
+            <table class="data-table">
               <thead>
                 <tr>
                   <th>Tipo Dirección</th>
@@ -388,12 +405,13 @@ ob_start();
             <div class="cc-field" style="flex: 2;">
               <label style="font-size:10px; color:#64748b; margin-bottom:2px; font-weight:600;">NOMBRE /
                 DESCRIPCIÓN</label>
-              <input type="text" id="input_desc_inmueble" placeholder="Ej: Torre A">
+              <input type="text" id="input_desc_inmueble" data-bind="domicilio_causante.desc_inmueble"
+                placeholder="Ej: Torre A">
             </div>
             <div class="cc-field" style="flex: 1;">
               <label id="lbl_piso_nivel"
                 style="font-size:10px; color:#64748b; margin-bottom:2px; font-weight:600;">PISO/NRO</label>
-              <input type="text" id="input_piso_nivel" placeholder="">
+              <input type="text" id="input_piso_nivel" data-bind="domicilio_causante.piso_nivel" placeholder="">
             </div>
           </div>
         </div>
@@ -537,7 +555,7 @@ ob_start();
 
       <!-- Footer de agregar direcciones de la tarjeta -->
       <div class="cc-p-4 cc-text-right">
-        <button type="button" class="cc-btn cc-btn--outline" onclick="CC.saveDireccion()" id="btnSaveDireccion">+
+        <button type="button" class="btn btn-secondary" onclick="CC.saveDireccion()" id="btnSaveDireccion">+
           Agregar Dirección</button>
       </div>
 
@@ -560,8 +578,8 @@ ob_start();
 
       <!-- Listado de Prórrogas -->
       <div id="prorrogasTableContainer" style="display:none; margin-bottom: 20px;">
-        <div class="cc-table-wrap">
-          <table class="cc-table">
+        <div class="table-container">
+          <table class="data-table">
             <thead>
               <tr>
                 <th>F. Solicitud</th>
@@ -609,7 +627,7 @@ ob_start();
 
         <!-- Fila 4 -->
         <div class="cc-field cc-span-2 cc-text-right" style="margin-top: 10px;">
-          <button type="button" class="cc-btn cc-btn--outline cc-btn--sm" style="width: max-content; margin-left: auto;"
+          <button type="button" class="btn btn-secondary btn--sm" style="width: max-content; margin-left: auto;"
             onclick="CC.saveProrroga()" id="btnSaveProrroga">+ Agregar Prórroga</button>
         </div>
       </div>
@@ -664,6 +682,12 @@ ob_start();
                 <span class="cc-radio-pill__title">Rif</span>
               </span>
             </label>
+            <label class="cc-radio-pill">
+              <input type="radio" name="rep_tipo_doc" value="Pasaporte" data-bind="representante.tipo_cedula">
+              <span class="cc-radio-pill__content">
+                <span class="cc-radio-pill__title">Pasaporte</span>
+              </span>
+            </label>
           </div>
         </div>
 
@@ -681,13 +705,28 @@ ob_start();
         </div>
         <div class="cc-field cc-span-1">
           <label>Pasaporte (Sólo extranjeros sin Cédula/RIF)</label>
-          <input type="text" data-bind="representante.pasaporte" id="inp-rep-pasaporte" placeholder="Opcional">
+          <input type="text" data-bind="representante.pasaporte" id="inp-rep-pasaporte" placeholder=""
+            oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
+
+        <!-- Sexo y Fecha de Nacimiento -->
+        <div class="cc-field cc-span-1">
+          <label>Sexo</label>
+          <select data-bind="representante.sexo">
+            <option value="">Seleccione...</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+          </select>
+        </div>
+        <div class="cc-field cc-span-1">
+          <label>Fecha de Nacimiento</label>
+          <input type="date" data-bind="representante.fecha_nacimiento">
         </div>
       </div>
 
       <!-- Footer Buttons -->
       <div class="cc-mt cc-text-right">
-        <button type="button" class="cc-btn cc-btn--outline cc-btn--sm"
+        <button type="button" class="btn btn-secondary btn--sm"
           onclick="const r = document.ccHelpers; if(r) { document.querySelector('[data-bind=\'representante.apellidos\']').value=''; document.querySelector('[data-bind=\'representante.nombres\']').value=''; document.querySelector('[data-bind=\'representante.cedula\']').value=''; document.querySelector('[data-bind=\'representante.pasaporte\']').value=''; document.querySelectorAll('[name=\'rep_tipo_doc\']').forEach(e=>e.checked=false); }">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round">
@@ -725,7 +764,7 @@ ob_start();
           </svg>
         </div>
         <p>No hay herederos registrados</p>
-        <button class="cc-btn cc-btn--soft" onclick="CC.openModal('heredero')">
+        <button class="btn btn-secondary btn-sm" onclick="CC.openModal('heredero')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round">
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -737,8 +776,8 @@ ob_start();
 
       <!-- Table (shown when there are herederos) -->
       <div id="herederosContent" style="display:none;">
-        <div class="cc-table-wrap">
-          <table class="cc-table">
+        <div class="table-container">
+          <table class="data-table">
             <thead>
               <tr>
                 <th>Nombres y Apellidos</th>
@@ -754,7 +793,7 @@ ob_start();
             </tbody>
           </table>
         </div>
-        <button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('heredero')">
+        <button class="btn btn-secondary btn-sm cc-mt" onclick="CC.openModal('heredero')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round">
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -793,7 +832,7 @@ ob_start();
           </svg>
         </div>
         <p>No hay herederos del premuerto registrados</p>
-        <button class="cc-btn cc-btn--soft" onclick="CC.openModal('heredero_premuerto')">
+        <button class="btn btn-secondary btn-sm" onclick="CC.openModal('heredero_premuerto')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round">
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -805,8 +844,8 @@ ob_start();
 
       <!-- Table (shown when there are herederos premuertos) -->
       <div id="herederosPremuertosContent" style="display:none;">
-        <div class="cc-table-wrap">
-          <table class="cc-table">
+        <div class="table-container">
+          <table class="data-table">
             <thead>
               <tr>
                 <th>Nombres y Apellidos</th>
@@ -822,7 +861,7 @@ ob_start();
             </tbody>
           </table>
         </div>
-        <button class="cc-btn cc-btn--soft cc-mt" onclick="CC.openModal('heredero_premuerto')">
+        <button class="btn btn-secondary btn-sm cc-mt" onclick="CC.openModal('heredero_premuerto')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round">
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -901,7 +940,7 @@ ob_start();
             </svg>
           </div>
           <p>No hay bienes inmuebles registrados</p>
-          <button class="cc-btn cc-btn--soft" onclick="CC.openModal('inmueble')">
+          <button class="btn btn-secondary btn-sm" onclick="CC.openModal('inmueble')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
               stroke-linecap="round">
               <line x1="12" y1="5" x2="12" y2="19" />
@@ -939,7 +978,7 @@ ob_start();
             </svg>
           </div>
           <p id="mueblesEmptyText">No hay registros de Banco</p>
-          <button class="cc-btn cc-btn--soft" onclick="CC.openModal('mueble')">
+          <button class="btn btn-secondary btn-sm" onclick="CC.openModal('mueble')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
               stroke-linecap="round">
               <line x1="12" y1="5" x2="12" y2="19" />
@@ -974,7 +1013,7 @@ ob_start();
             </svg>
           </div>
           <p>No hay deudas registradas</p>
-          <button class="cc-btn cc-btn--soft" onclick="CC.openModal('pasivo_deuda')">
+          <button class="btn btn-secondary btn-sm" onclick="CC.openModal('pasivo_deuda')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
               stroke-linecap="round">
               <line x1="12" y1="5" x2="12" y2="19" />
@@ -1006,7 +1045,7 @@ ob_start();
             </svg>
           </div>
           <p>No hay gastos registrados</p>
-          <button class="cc-btn cc-btn--soft" onclick="CC.openModal('pasivo_gasto')">
+          <button class="btn btn-secondary btn-sm" onclick="CC.openModal('pasivo_gasto')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
               stroke-linecap="round">
               <line x1="12" y1="5" x2="12" y2="19" />
@@ -1040,7 +1079,7 @@ ob_start();
             </svg>
           </div>
           <p>No hay exenciones registradas</p>
-          <button class="cc-btn cc-btn--soft" onclick="CC.openModal('exencion')">
+          <button class="btn btn-secondary btn-sm" onclick="CC.openModal('exencion')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
               stroke-linecap="round">
               <line x1="12" y1="5" x2="12" y2="19" />
@@ -1071,7 +1110,7 @@ ob_start();
             </svg>
           </div>
           <p>No hay exoneraciones registradas</p>
-          <button class="cc-btn cc-btn--soft" onclick="CC.openModal('exoneracion')">
+          <button class="btn btn-secondary btn-sm" onclick="CC.openModal('exoneracion')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
               stroke-linecap="round">
               <line x1="12" y1="5" x2="12" y2="19" />
@@ -1237,15 +1276,15 @@ ob_start();
       <!-- Injected by JS -->
     </div>
     <div class="cc-modal__footer">
-      <button class="cc-btn cc-btn--ghost" onclick="CC.closeModal()">Cancelar</button>
-      <button class="cc-btn cc-btn--primary" id="modalSaveBtn" onclick="CC.saveModal()">Agregar</button>
+      <button class="btn btn-ghost" onclick="CC.closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modalSaveBtn" onclick="CC.saveModal()">Agregar</button>
     </div>
   </div>
 </div>
 
 <!-- ===== BOTTOM NAV ===== -->
 <div class="cc-bottomnav">
-  <button class="cc-btn cc-btn--ghost" id="btnPrev" disabled onclick="CC.prevStep()">
+  <button class="btn btn-ghost" id="btnPrev" disabled onclick="CC.prevStep()">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
       stroke-linecap="round">
       <polyline points="15 18 9 12 15 6" />
@@ -1253,14 +1292,14 @@ ob_start();
     Anterior
   </button>
   <div class="cc-bottomnav__right">
-    <button class="cc-btn cc-btn--primary" id="btnNext" onclick="CC.nextStep()">
+    <button class="btn btn-primary" id="btnNext" onclick="CC.nextStep()">
       Siguiente
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round">
         <polyline points="9 18 15 12 9 6" />
       </svg>
     </button>
-    <button class="cc-btn cc-btn--success" id="btnPublish" onclick="CC.publish()" style="display:none;">
+    <button class="btn btn-primary" id="btnPublish" onclick="CC.publish()" style="display:none;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
         stroke-linecap="round">
         <polyline points="20 6 9 17 4 12" />

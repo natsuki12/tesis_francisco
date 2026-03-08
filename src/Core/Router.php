@@ -17,8 +17,10 @@ final class Router
      * Estructura: ['GET' => [...], 'POST' => [...]]
      */
     private array $routes = [
-        'GET'  => [],
+        'GET' => [],
         'POST' => [],
+        'DELETE' => [],
+        'PATCH' => [],
     ];
 
     /**
@@ -49,6 +51,22 @@ final class Router
     }
 
     /**
+     * Registra una ruta para el método DELETE.
+     */
+    public function delete(string $path, callable|array $handler): void
+    {
+        $this->routes['DELETE'][] = [$path, $handler];
+    }
+
+    /**
+     * Registra una ruta para el método PATCH.
+     */
+    public function patch(string $path, callable|array $handler): void
+    {
+        $this->routes['PATCH'][] = [$path, $handler];
+    }
+
+    /**
      * El Corazón del Router: DISPATCH (Despachador).
      * * Toma el método HTTP y la URL actual, busca una coincidencia y ejecuta la lógica.
      * * @param string $method El verbo HTTP (GET, POST, etc.)
@@ -76,10 +94,10 @@ final class Router
         // 3. Búsqueda de Coincidencia (Loop):
         // Recorremos todas las rutas registradas para ese método.
         foreach ($this->routes[$method] as [$routePath, $handler]) {
-            
+
             // Llamamos a match() para ver si la URL actual coincide con el patrón registrado
             $params = $this->match($routePath, $path);
-            
+
             // Si $params es null, no hubo coincidencia, seguimos a la siguiente ruta.
             if ($params === null) {
                 continue;
@@ -141,7 +159,7 @@ final class Router
         // {nombre} se convierte en (?P<nombre>[^/]+) que significa:
         // "Captura cualquier cosa que no sea una barra / y llámalo 'nombre'"
         $pattern = preg_replace('#\{([a-zA-Z_][a-zA-Z0-9_]*)\}#', '(?P<$1>[^/]+)', $routePath);
-        
+
         // Agregamos delimitadores de inicio (^) y fin ($) para que la coincidencia sea total
         $pattern = '#^' . $pattern . '$#';
 
@@ -153,7 +171,8 @@ final class Router
         // Limpiamos los resultados (preg_match devuelve índices numéricos que no necesitamos)
         $params = [];
         foreach ($matches as $k => $v) {
-            if (!is_string($k)) continue; // Ignoramos índices numéricos (0, 1...)
+            if (!is_string($k))
+                continue; // Ignoramos índices numéricos (0, 1...)
             $params[$k] = $v;
         }
 

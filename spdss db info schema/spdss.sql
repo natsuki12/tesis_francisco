@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-03-2026 a las 04:18:43
+-- Tiempo de generación: 07-03-2026 a las 01:52:08
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -88,7 +88,27 @@ INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento
 (43, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 22:41:21'),
 (44, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 00:42:23'),
 (45, NULL, 'admin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 02:25:48'),
-(46, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 02:48:26');
+(46, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 02:48:26'),
+(47, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:41:56'),
+(48, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:42:05'),
+(49, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:42:07'),
+(50, NULL, 'fadr2001@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:42:17'),
+(51, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:42:25'),
+(52, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 20:46:23'),
+(53, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:01:02'),
+(54, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:01:20'),
+(55, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:05:24'),
+(56, NULL, 'fdiaz.6650@unimar.edu.ve', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:05:34'),
+(57, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:05:39'),
+(58, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 23:05:46'),
+(59, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 01:09:37'),
+(60, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 03:12:15'),
+(61, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 17:45:43'),
+(62, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 17:51:52'),
+(63, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 17:51:57'),
+(64, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 20:05:12'),
+(65, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 22:14:15'),
+(66, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 00:48:57');
 
 -- --------------------------------------------------------
 
@@ -4974,6 +4994,14 @@ CREATE TABLE `sim_actas_defunciones` (
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ;
 
+--
+-- Volcado de datos para la tabla `sim_actas_defunciones`
+--
+
+INSERT INTO `sim_actas_defunciones` (`id`, `sim_persona_id`, `fecha_fallecimiento`, `numero_acta`, `year_acta`, `parroquia_registro_id`, `created_at`, `updated_at`) VALUES
+(1, 1, '2024-03-28', NULL, NULL, NULL, '2026-03-06 18:36:07', '2026-03-06 18:36:07'),
+(2, 2, '2017-03-02', NULL, NULL, NULL, '2026-03-06 22:46:50', '2026-03-06 22:46:50');
+
 -- --------------------------------------------------------
 
 --
@@ -4994,6 +5022,15 @@ CREATE TABLE `sim_casos_estudios` (
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `sim_casos_estudios`
+--
+
+INSERT INTO `sim_casos_estudios` (`id`, `profesor_id`, `causante_id`, `representante_id`, `unidad_tributaria_id`, `tipo_sucesion`, `titulo`, `descripcion`, `estado`, `borrador_json`, `created_at`, `updated_at`) VALUES
+(1, 1, NULL, NULL, NULL, 'Con_Cedula', '5to', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"5to\",\"descripcion\":\"ejemplo 2\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Sin Cédula\"},\"caso_id\":1,\"config\":{\"modalidad\":\"\",\"max_intentos\":\"0\",\"fecha_limite\":\"\",\"tipo_asignacion\":\"Seccion\",\"seccion_id\":\"\"},\"herencia\":{\"tipos\":[{\"tipo_herencia_id\":\"4\"}]},\"causante\":{\"tipo_cedula\":\"\",\"sexo\":\"\",\"estado_civil\":\"\",\"nacionalidad\":\"\",\"cedula\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"fecha_nacimiento\":\"\",\"fecha_fallecimiento\":\"\"},\"datos_fiscales_causante\":{\"domiciliado_pais\":\"1\",\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"domicilio_causante\":{\"tipo_direccion\":\"Casa_Matriz_Establecimiento_Principal\",\"tipo_vialidad\":\"\",\"tipo_inmueble\":\"\",\"nombre_vialidad\":\"\",\"nro_inmueble\":\"\",\"tipo_nivel\":\"\",\"tipo_sector\":\"\",\"nro_nivel\":\"\",\"nombre_sector\":\"\",\"estado\":\"\",\"municipio\":\"\",\"parroquia\":\"\",\"ciudad\":\"\",\"telefono_fijo\":\"\",\"telefono_celular\":\"\",\"fax\":\"\",\"codigo_postal_id\":\"\",\"punto_referencia\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"sexo\":\"\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nacionalidad\":\"\"},\"herederos\":[],\"herederos_premuertos\":[],\"bienes_inmuebles\":[],\"bienes_muebles\":[],\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorroga\":{\"fecha_solicitud\":\"\",\"nro_resolucion\":\"\",\"fecha_resolucion\":\"\",\"plazo_dias\":\"\",\"fecha_vencimiento\":\"\"},\"prorrogas\":[],\"estudiantes_asignados\":[]}', '2026-03-05 20:48:40', '2026-03-05 21:00:27'),
+(2, 1, NULL, NULL, NULL, 'Con_Cedula', 'segundo ejemplo', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"segundo ejemplo\",\"descripcion\":\"sssssss\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Sin Cédula\"},\"caso_id\":null,\"config\":{\"modalidad\":\"\",\"max_intentos\":\"0\",\"fecha_limite\":\"\",\"tipo_asignacion\":\"Seccion\",\"seccion_id\":\"\"},\"herencia\":{\"tipos\":[]},\"causante\":{\"tipo_cedula\":\"\",\"sexo\":\"\",\"estado_civil\":\"\",\"nacionalidad\":\"\",\"cedula\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"fecha_nacimiento\":\"\",\"fecha_fallecimiento\":\"\"},\"datos_fiscales_causante\":{\"domiciliado_pais\":\"1\",\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"domicilio_causante\":{\"tipo_direccion\":\"Casa_Matriz_Establecimiento_Principal\",\"tipo_vialidad\":\"\",\"tipo_inmueble\":\"\",\"nombre_vialidad\":\"\",\"nro_inmueble\":\"\",\"tipo_nivel\":\"\",\"tipo_sector\":\"\",\"nro_nivel\":\"\",\"nombre_sector\":\"\",\"estado\":\"\",\"municipio\":\"\",\"parroquia\":\"\",\"ciudad\":\"\",\"telefono_fijo\":\"\",\"telefono_celular\":\"\",\"fax\":\"\",\"codigo_postal_id\":\"\",\"punto_referencia\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"sexo\":\"\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nacionalidad\":\"\"},\"herederos\":[],\"herederos_premuertos\":[],\"bienes_inmuebles\":[],\"bienes_muebles\":[],\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorroga\":{\"fecha_solicitud\":\"\",\"nro_resolucion\":\"\",\"fecha_resolucion\":\"\",\"plazo_dias\":\"\",\"fecha_vencimiento\":\"\"},\"prorrogas\":[],\"estudiantes_asignados\":[]}', '2026-03-05 21:01:35', '2026-03-05 21:01:35'),
+(3, 1, NULL, NULL, NULL, 'Con_Cedula', 'este ', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"este \",\"descripcion\":\"\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":3,\"config\":{\"modalidad\":\"\",\"max_intentos\":0,\"fecha_limite\":\"\",\"tipo_asignacion\":\"Seccion\",\"seccion_id\":\"\"},\"herencia\":{\"tipos\":[]},\"causante\":{\"tipo_cedula\":\"E\",\"sexo\":\"\",\"estado_civil\":\"\",\"nacionalidad\":\"\",\"cedula\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"fecha_nacimiento\":\"\",\"fecha_fallecimiento\":\"\"},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"domicilio_causante\":{\"tipo_direccion\":\"Casa_Matriz_Establecimiento_Principal\",\"tipo_vialidad\":\"\",\"tipo_inmueble\":\"\",\"nombre_vialidad\":\"\",\"nro_inmueble\":\"\",\"tipo_nivel\":\"\",\"tipo_sector\":\"\",\"nro_nivel\":\"\",\"nombre_sector\":\"\",\"estado\":\"\",\"municipio\":\"\",\"parroquia\":\"\",\"ciudad\":\"\",\"telefono_fijo\":\"\",\"telefono_celular\":\"\",\"fax\":\"\",\"codigo_postal_id\":\"\",\"punto_referencia\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"\",\"nombres\":\"finalmenter\",\"apellidos\":\"diaz\",\"sexo\":\"\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nacionalidad\":\"\"},\"herederos\":[{\"nombres\":\"Valeria\",\"apellidos\":\"Cardier\",\"tipo_documento\":\"RIF\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2026-03-12\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"17\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2026-04-02\"}],\"herederos_premuertos\":[],\"bienes_inmuebles\":[],\"bienes_muebles\":{\"length\":0},\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorroga\":{\"fecha_solicitud\":\"\",\"nro_resolucion\":\"67\",\"fecha_resolucion\":\"\",\"plazo_dias\":\"\",\"fecha_vencimiento\":\"\"},\"prorrogas\":[],\"estudiantes_asignados\":[]}', '2026-03-05 21:09:30', '2026-03-06 19:29:15');
 
 -- --------------------------------------------------------
 
@@ -5258,6 +5295,35 @@ CREATE TABLE `sim_caso_configs` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sim_caso_direcciones`
+--
+
+CREATE TABLE `sim_caso_direcciones` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `sim_caso_estudio_id` bigint(20) UNSIGNED NOT NULL,
+  `tipo_direccion` enum('Domicilio_Fiscal','Bodega_Almacenamiento_Deposito','Casa_Matriz_Establecimiento_Principal','Direccion_Notificacion_Fisica','Negocio_Independiente','Planta_Industrial_Fabrica','Sucursal_Comercial') NOT NULL,
+  `tipo_vialidad` enum('Calle','Avenida','Vereda','Carretera','Esquina','Carrera') DEFAULT NULL,
+  `nombre_vialidad` varchar(100) DEFAULT NULL,
+  `tipo_inmueble` enum('Edificio','Centro_Comercial','Quinta','Casa','Local') DEFAULT NULL,
+  `nro_inmueble` varchar(20) DEFAULT NULL,
+  `tipo_nivel` enum('Apartamento','Local','Oficina') DEFAULT NULL,
+  `nro_nivel` varchar(20) DEFAULT NULL,
+  `tipo_sector` enum('Urbanizacion','Zona','Sector','Conjunto_Residencial','Barrio','Caserio') DEFAULT NULL,
+  `nombre_sector` varchar(100) DEFAULT NULL,
+  `estado_id` bigint(20) UNSIGNED NOT NULL,
+  `municipio_id` bigint(20) UNSIGNED NOT NULL,
+  `parroquia_id` bigint(20) UNSIGNED NOT NULL,
+  `ciudad_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `codigo_postal_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `telefono_fijo` varchar(20) DEFAULT NULL,
+  `telefono_celular` varchar(20) DEFAULT NULL,
+  `fax` varchar(20) DEFAULT NULL,
+  `punto_referencia` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Direcciones del causante en el contexto de cada caso.';
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `sim_caso_exenciones`
 --
 
@@ -5487,7 +5553,7 @@ INSERT INTO `sim_cat_grupos_tarifa` (`id`, `nombre`, `activo`, `created_at`) VAL
 --
 
 CREATE TABLE `sim_cat_parentescos` (
-  `id` int(10) UNSIGNED NOT NULL,
+  `id` int(11) NOT NULL,
   `clave` varchar(50) NOT NULL,
   `etiqueta` varchar(60) NOT NULL,
   `activo` tinyint(1) DEFAULT 1,
@@ -5499,23 +5565,25 @@ CREATE TABLE `sim_cat_parentescos` (
 --
 
 INSERT INTO `sim_cat_parentescos` (`id`, `clave`, `etiqueta`, `activo`, `grupo_tarifa_id`) VALUES
-(1, 'Hijo', 'Hijo / Hija', 1, 1),
-(2, 'Nieto', 'Nieto / Nieta', 1, 1),
-(3, 'Bisnieto', 'Bisnieto / Bisnieta', 1, 1),
+(1, 'Hijo', 'Hija/Hijo', 1, 1),
+(2, 'Nieto', 'Nieta/Nieto', 1, 1),
+(3, 'Bisnieto', 'Bisnieta/Bisnieto', 1, 1),
 (4, 'Madre', 'Madre', 1, 1),
 (5, 'Padre', 'Padre', 1, 1),
-(6, 'Abuelo', 'Abuelo / Abuela', 1, 1),
-(7, 'Hijo_Adoptivo', 'Hijo / Hija Adoptivo(a)', 1, 1),
+(6, 'Abuelo', 'Abuela/Abuelo', 1, 1),
+(7, 'Hijo_Adoptivo', 'Hija/ Hijo Adoptiva', 1, 1),
 (8, 'Conyuge', 'Cónyuge', 1, 1),
-(9, 'Concubino', 'Concubino / Concubina', 1, 1),
-(10, 'Hermano_Simple', 'Hermano / Hermana (simple conjunción)', 1, 2),
-(11, 'Hermano_Doble', 'Hermano / Hermana (doble conjunción)', 1, 2),
-(12, 'Sobrino_Repr', 'Sobrino por Derecho de Representación', 1, 2),
-(13, 'Tio', 'Tío / Tía', 1, 3),
-(14, 'Sobrino', 'Sobrino / Sobrina', 1, 3),
-(15, 'Primo_Segundo', 'Primo / Prima Segundo(a)', 1, 3),
-(16, 'Otro_Pariente', 'Otro Pariente', 1, 4),
-(17, 'Extraño', 'Extraño / Sin parentesco', 1, 4);
+(9, 'Concubino', 'Concubina', 1, 1),
+(10, 'Hermano_Simple', 'Hermana(o) Simple Conjuncion', 1, 2),
+(11, 'Hermano_Doble', 'Hermana(o) Doble Conjuncion', 1, 2),
+(12, 'Tio', 'Tia/Tio', 1, 3),
+(13, 'Sobrino', 'Sobrina/Sobrino', 1, 3),
+(14, 'Primo_Segundo', 'Prima/Primo Segundo', 1, 3),
+(15, 'Otro_Pariente', 'Otro pariente', 1, 4),
+(16, 'Extraño', 'Extraño', 1, 4),
+(17, 'Primo', 'Prima/Primo', 1, 3),
+(18, 'Otro', 'Otro', 1, 4),
+(19, 'Sin_Definir', 'Sin definir', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -6315,41 +6383,20 @@ CREATE TABLE `sim_personas` (
   `nombres` varchar(100) NOT NULL,
   `apellidos` varchar(100) NOT NULL,
   `fecha_nacimiento` date NOT NULL,
-  `estado_civil` enum('Soltero','Casado','Viudo','Divorciado') NOT NULL,
+  `estado_civil` enum('Soltero','Casado','Viudo','Divorciado','Concubinato','No_aplica') NOT NULL DEFAULT 'No_aplica',
   `sexo` enum('M','F') NOT NULL,
   `created_by` bigint(20) UNSIGNED NOT NULL COMMENT 'Profesor que registró a esta persona en la piscina de datos',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- --------------------------------------------------------
-
 --
--- Estructura de tabla para la tabla `sim_persona_direcciones`
+-- Volcado de datos para la tabla `sim_personas`
 --
 
-CREATE TABLE `sim_persona_direcciones` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `sim_persona_id` bigint(20) UNSIGNED NOT NULL,
-  `tipo_direccion` enum('Bodega_Almacenamiento_Deposito','Casa_Matriz_Establecimiento_Principal','Direccion_Notificacion_Fisica','Negocio_Independiente','Planta_Industrial_Fabrica','Sucursal_Comercial') NOT NULL,
-  `tipo_vialidad` enum('Calle','Avenida','Vereda','Carretera','Esquina','Carrera') DEFAULT NULL,
-  `nombre_vialidad` varchar(100) DEFAULT NULL,
-  `tipo_inmueble` enum('Edificio','Centro_Comercial','Quinta','Casa','Local') DEFAULT NULL,
-  `nro_inmueble` varchar(20) DEFAULT NULL,
-  `tipo_nivel` enum('Apartamento','Local','Oficina') DEFAULT NULL,
-  `nro_nivel` varchar(20) DEFAULT NULL,
-  `tipo_sector` enum('Urbanizacion','Zona','Sector','Conjunto_Residencial','Barrio','Caserio') DEFAULT NULL,
-  `nombre_sector` varchar(100) DEFAULT NULL,
-  `estado_id` bigint(20) UNSIGNED NOT NULL,
-  `municipio_id` bigint(20) UNSIGNED NOT NULL,
-  `parroquia_id` bigint(20) UNSIGNED NOT NULL,
-  `ciudad_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `codigo_postal_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `telefono_fijo` varchar(20) DEFAULT NULL,
-  `telefono_celular` varchar(20) DEFAULT NULL,
-  `fax` varchar(20) DEFAULT NULL,
-  `punto_referencia` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Direcciones de personas del simulador. NULL en tipo_vialidad/inmueble/nivel/sector se muestra como No Aplica en la planilla.';
+INSERT INTO `sim_personas` (`id`, `tipo_cedula`, `nacionalidad`, `cedula`, `pasaporte`, `rif_personal`, `nombres`, `apellidos`, `fecha_nacimiento`, `estado_civil`, `sexo`, `created_by`, `created_at`, `updated_at`) VALUES
+(1, 'V', 190, '4079920', '0123456', 'J4079921', 'Maria', 'Sarmiento', '2001-05-29', 'No_aplica', 'F', 1, '2026-03-06 18:14:28', '2026-03-06 21:17:46'),
+(2, 'V', 190, '4224014', '12345678', 'v42240148', 'jesus', 'estanga', '2019-03-01', 'Soltero', 'M', 1, '2026-03-06 18:52:53', '2026-03-06 20:40:07');
 
 -- --------------------------------------------------------
 
@@ -6684,6 +6731,18 @@ ALTER TABLE `sim_caso_configs`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_scc_caso` (`caso_id`),
   ADD KEY `fk_scc_profesor` (`profesor_id`);
+
+--
+-- Indices de la tabla `sim_caso_direcciones`
+--
+ALTER TABLE `sim_caso_direcciones`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_scd_caso` (`sim_caso_estudio_id`),
+  ADD KEY `fk_scd_estado` (`estado_id`),
+  ADD KEY `fk_scd_municipio` (`municipio_id`),
+  ADD KEY `fk_scd_parroquia` (`parroquia_id`),
+  ADD KEY `fk_scd_ciudad` (`ciudad_id`),
+  ADD KEY `fk_scd_codigo_postal` (`codigo_postal_id`);
 
 --
 -- Indices de la tabla `sim_caso_exenciones`
@@ -7055,18 +7114,6 @@ ALTER TABLE `sim_personas`
   ADD KEY `fk_sp_nacionalidad` (`nacionalidad`);
 
 --
--- Indices de la tabla `sim_persona_direcciones`
---
-ALTER TABLE `sim_persona_direcciones`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_spd_persona` (`sim_persona_id`),
-  ADD KEY `fk_spd_estado` (`estado_id`),
-  ADD KEY `fk_spd_municipio` (`municipio_id`),
-  ADD KEY `fk_spd_parroquia` (`parroquia_id`),
-  ADD KEY `fk_spd_ciudad` (`ciudad_id`),
-  ADD KEY `fk_spd_codigo_postal` (`codigo_postal_id`);
-
---
 -- Indices de la tabla `tipos_eventos`
 --
 ALTER TABLE `tipos_eventos`
@@ -7090,7 +7137,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `bitacora_accesos`
 --
 ALTER TABLE `bitacora_accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -7198,7 +7245,7 @@ ALTER TABLE `sim_actas_defunciones`
 -- AUTO_INCREMENT de la tabla `sim_casos_estudios`
 --
 ALTER TABLE `sim_casos_estudios`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_asignaciones`
@@ -7297,6 +7344,12 @@ ALTER TABLE `sim_caso_configs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `sim_caso_direcciones`
+--
+ALTER TABLE `sim_caso_direcciones`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `sim_caso_exenciones`
 --
 ALTER TABLE `sim_caso_exenciones`
@@ -7355,6 +7408,12 @@ ALTER TABLE `sim_cat_categorias_bien_mueble`
 --
 ALTER TABLE `sim_cat_grupos_tarifa`
   MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_parentescos`
+--
+ALTER TABLE `sim_cat_parentescos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_cat_tarifas_sucesion`
@@ -7570,13 +7629,7 @@ ALTER TABLE `sim_intento_tipoherencias`
 -- AUTO_INCREMENT de la tabla `sim_personas`
 --
 ALTER TABLE `sim_personas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `sim_persona_direcciones`
---
-ALTER TABLE `sim_persona_direcciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos_eventos`
@@ -7788,6 +7841,17 @@ ALTER TABLE `sim_caso_bm_transporte`
 ALTER TABLE `sim_caso_configs`
   ADD CONSTRAINT `fk_scc_caso` FOREIGN KEY (`caso_id`) REFERENCES `sim_casos_estudios` (`id`),
   ADD CONSTRAINT `fk_scc_profesor` FOREIGN KEY (`profesor_id`) REFERENCES `profesores` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_caso_direcciones`
+--
+ALTER TABLE `sim_caso_direcciones`
+  ADD CONSTRAINT `fk_scd_caso` FOREIGN KEY (`sim_caso_estudio_id`) REFERENCES `sim_casos_estudios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_scd_ciudad` FOREIGN KEY (`ciudad_id`) REFERENCES `ciudades` (`id`),
+  ADD CONSTRAINT `fk_scd_codigo_postal` FOREIGN KEY (`codigo_postal_id`) REFERENCES `codigos_postales` (`id`),
+  ADD CONSTRAINT `fk_scd_estado` FOREIGN KEY (`estado_id`) REFERENCES `estados` (`id`),
+  ADD CONSTRAINT `fk_scd_municipio` FOREIGN KEY (`municipio_id`) REFERENCES `municipios` (`id`),
+  ADD CONSTRAINT `fk_scd_parroquia` FOREIGN KEY (`parroquia_id`) REFERENCES `parroquias` (`id`);
 
 --
 -- Filtros para la tabla `sim_caso_exenciones`
@@ -8047,17 +8111,6 @@ ALTER TABLE `sim_intento_tipoherencias`
 ALTER TABLE `sim_personas`
   ADD CONSTRAINT `fk_personas_maestro_profesor` FOREIGN KEY (`created_by`) REFERENCES `profesores` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_sp_nacionalidad` FOREIGN KEY (`nacionalidad`) REFERENCES `paises` (`id`);
-
---
--- Filtros para la tabla `sim_persona_direcciones`
---
-ALTER TABLE `sim_persona_direcciones`
-  ADD CONSTRAINT `fk_spd_ciudad` FOREIGN KEY (`ciudad_id`) REFERENCES `ciudades` (`id`),
-  ADD CONSTRAINT `fk_spd_codigo_postal` FOREIGN KEY (`codigo_postal_id`) REFERENCES `codigos_postales` (`id`),
-  ADD CONSTRAINT `fk_spd_estado` FOREIGN KEY (`estado_id`) REFERENCES `estados` (`id`),
-  ADD CONSTRAINT `fk_spd_municipio` FOREIGN KEY (`municipio_id`) REFERENCES `municipios` (`id`),
-  ADD CONSTRAINT `fk_spd_parroquia` FOREIGN KEY (`parroquia_id`) REFERENCES `parroquias` (`id`),
-  ADD CONSTRAINT `fk_spd_persona` FOREIGN KEY (`sim_persona_id`) REFERENCES `sim_personas` (`id`);
 
 --
 -- Filtros para la tabla `users`

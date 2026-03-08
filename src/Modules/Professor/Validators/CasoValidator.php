@@ -157,10 +157,9 @@ class CasoValidator
                 $data['causante']['fecha_fallecimiento'] ?? ''
             );
             $this->validateActaDefuncion($data['acta_defuncion'] ?? [], $data['caso']['tipo_sucesion'] ?? '', $data['causante']['fecha_fallecimiento'] ?? '');
-            $this->validateDomicilio($data['domicilio_causante'] ?? []);
             $this->validateDirecciones($data['direcciones_causante'] ?? []);
             $this->validateRepresentante($data['representante'] ?? []);
-            $this->validateHerencia($data['herencia'] ?? []);
+            $this->validateHerencia($data['herencia'] ?? [], $data['causante']['fecha_fallecimiento'] ?? '');
             $this->validateHerederos($data['herederos'] ?? []);
             $this->validateHerederosPremuertos($data['herederos_premuertos'] ?? []);
             $this->validateBienesInmuebles($data['bienes_inmuebles'] ?? []);
@@ -294,7 +293,7 @@ class CasoValidator
         if (empty($c['sexo']) || !in_array($c['sexo'], ['M', 'F'])) {
             $this->errors[] = 'Causante: Sexo debe ser M o F.';
         }
-        $validEC = ['Soltero', 'Casado', 'Divorciado', 'Viudo', 'Union_Estable'];
+        $validEC = ['Soltero', 'Casado', 'Divorciado', 'Viudo', 'Union_Estable', 'Concubinato'];
         if (empty($c['estado_civil']) || !in_array($c['estado_civil'], $validEC)) {
             $this->errors[] = 'Causante: Estado civil inválido.';
         }
@@ -385,7 +384,8 @@ class CasoValidator
                 }
             }
 
-            if (empty($acta['parroquia']))
+            $parroquia = $acta['parroquia_registro_id'] ?? $acta['parroquia_registro'] ?? $acta['parroquia'] ?? '';
+            if (empty($parroquia))
                 $this->errors[] = 'Acta de defunción: Parroquia es obligatoria.';
         }
     }
@@ -425,14 +425,11 @@ class CasoValidator
         foreach ($direcciones as $i => $dir) {
             $n = $i + 1;
             $required = [
-                'tipo_direccion',
                 'tipo_vialidad',
                 'tipo_inmueble',
                 'nombre_vialidad',
                 'nro_inmueble',
-                'tipo_nivel',
                 'tipo_sector',
-                'nro_nivel',
                 'nombre_sector',
                 'estado',
                 'municipio',
@@ -472,10 +469,7 @@ class CasoValidator
         if (empty($r['sexo']) || !in_array($r['sexo'], ['M', 'F'])) {
             $this->errors[] = 'Representante: Sexo es obligatorio.';
         }
-        $validEC = ['Soltero', 'Casado', 'Divorciado', 'Viudo', 'Union_Estable'];
-        if (empty($r['estado_civil']) || !in_array($r['estado_civil'], $validEC)) {
-            $this->errors[] = 'Representante: Estado civil es obligatorio.';
-        }
+
         if (empty($r['fecha_nacimiento']) || !$this->isValidDate($r['fecha_nacimiento'])) {
             $this->errors[] = 'Representante: Fecha de nacimiento es obligatoria.';
         }
@@ -491,31 +485,47 @@ class CasoValidator
     // ====================================================================
     // Sección: Herencia
     // ====================================================================
-    private function validateHerencia(array $h): void
+    private function validateHerencia(array $h, string $fechaFallecimiento = ''): void
     {
         if (empty($h['tipos']) || !is_array($h['tipos']) || count($h['tipos']) === 0) {
             $this->errors[] = 'Debe seleccionar al menos un tipo de herencia.';
             return;
         }
 
-        // Validar subcampos según el tipo de herencia seleccionado
-        // Se usa la misma BD que el catálogo: sim_tipos_herencia
-        // IDs conocidos: Testamentaria y Beneficio de Inventario
+        // Prefetch nombres de tipos si no vienen en el payload (borradores viejos)
+        $nombresById = [];
+        try {
+            $db = DB::connect();
+            $rows = $db->query("SELECT id, nombre FROM sim_tipos_herencia")->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $nombresById = $rows ?: [];
+        } catch (\Throwable) {
+            // Si falla la BD, continuamos sin los nombres (las validaciones opcionales serán omitidas)
+        }
+
         foreach ($h['tipos'] as $tipo) {
             $id = (int) ($tipo['tipo_herencia_id'] ?? 0);
+            $nombre = strtolower($tipo['nombre'] ?? $nombresById[$id] ?? '');
 
-            // Testamentaria (id=2) → requiere subtipo + fecha
-            if ($id === 2) {
+            // Testamentaria → requiere subtipo + fecha
+            if (str_contains($nombre, 'testament')) {
                 if (empty($tipo['subtipo_testamento'])) {
                     $this->errors[] = 'Herencia Testamentaria: Debe seleccionar el subtipo de testamento.';
                 }
                 if (empty($tipo['fecha_testamento'])) {
                     $this->errors[] = 'Herencia Testamentaria: La fecha del testamento es obligatoria.';
                 }
+                // Fecha testamento no puede ser posterior al fallecimiento del causante
+                if (
+                    !empty($tipo['fecha_testamento']) && !empty($fechaFallecimiento)
+                    && $this->isValidDate($tipo['fecha_testamento']) && $this->isValidDate($fechaFallecimiento)
+                    && $tipo['fecha_testamento'] > $fechaFallecimiento
+                ) {
+                    $this->errors[] = 'Herencia Testamentaria: La fecha del testamento no puede ser posterior a la fecha de fallecimiento del causante.';
+                }
             }
 
-            // Beneficio de Inventario (id=3) → requiere fecha
-            if ($id === 3) {
+            // Beneficio de Inventario → requiere fecha
+            if (str_contains($nombre, 'inventario') || str_contains($nombre, 'beneficio')) {
                 if (empty($tipo['fecha_conclusion_inventario'])) {
                     $this->errors[] = 'Beneficio de Inventario: La fecha de conclusión es obligatoria.';
                 }

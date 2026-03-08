@@ -1,4 +1,4 @@
-import { $, $$, show, hide, formatBs } from './utils.js';
+import { $, $$, show, hide, formatBs } from '../../global/utils.js';
 import { caseData, UIState, saveCaseData } from './state.js';
 import { renderHerederos } from './herederos.js';
 import { renderInventario } from './inventario.js';

@@ -1,5 +1,5 @@
 import { caseData, UIState } from './state.js';
-import { $, show, hide, showToast } from './utils.js';
+import { $, show, hide, showToast } from '../../global/utils.js';
 
 // Control de peticiones para evitar Race Conditions
 const abortControllers = {
@@ -225,6 +225,35 @@ export function initAddressListeners() {
             }
         });
     });
+
+    // Auto-formato teléfonos: 0XXX-XXXXXXX
+    const phoneFields = [
+        '[data-bind="domicilio_causante.telefono_fijo"]',
+        '[data-bind="domicilio_causante.telefono_celular"]',
+        '[data-bind="domicilio_causante.fax"]'
+    ];
+    phoneFields.forEach(selector => {
+        const el = document.querySelector(selector);
+        if (!el) return;
+        el.maxLength = 12; // 0XXX-XXXXXXX = 12 chars
+        el.addEventListener('input', () => {
+            // Solo dígitos
+            let digits = el.value.replace(/\D/g, '');
+            if (digits.length > 11) digits = digits.slice(0, 11);
+            // Insertar guión después del 4to dígito
+            if (digits.length > 4) {
+                el.value = digits.slice(0, 4) + '-' + digits.slice(4);
+            } else {
+                el.value = digits;
+            }
+            // Sync con caseData
+            const bind = el.dataset.bind;
+            if (bind) {
+                const [section, key] = bind.split('.');
+                if (caseData[section]) caseData[section][key] = el.value;
+            }
+        });
+    });
 }
 
 export function saveDireccion() {
@@ -316,6 +345,10 @@ export function saveDireccion() {
         UIState.editDireccionIndex = null;
         $('#btnSaveDireccion').innerText = "+ Agregar Dirección";
     } else {
+        if (caseData.direcciones_causante.length >= 1) {
+            showToast('Solo se permite un domicilio fiscal. Edite o elimine el existente.');
+            return;
+        }
         caseData.direcciones_causante.push(nuevaDir);
     }
 
@@ -346,8 +379,8 @@ export function renderDirecciones() {
             <td>Fijo: ${dir.telefono_fijo || 'N/A'}<br>Cel: ${dir.telefono_celular || 'N/A'}</td>
             <td>
                 <div class="cc-td-actions">
-                    <button type="button" class="cc-btn--icon-edit" onclick="CC.editDireccion(${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-                    <button type="button" class="cc-btn--icon-danger" onclick="CC.deleteDireccion(${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+                    <button type="button" class="btn-icon" onclick="CC.editDireccion(${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button type="button" class="btn-danger-ghost" onclick="CC.deleteDireccion(${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
                 </div>
             </td>
         </tr>
@@ -361,10 +394,44 @@ function getOptionText(selectName, value) {
     return opt ? opt.innerText : value;
 }
 
-export function editDireccion(index) {
+export async function editDireccion(index) {
     const dir = caseData.direcciones_causante[index];
+
+    // Copiar la dirección al domicilio_causante en estado
     Object.assign(caseData.domicilio_causante, dir);
 
+    const baseUrl = getBaseUrl();
+
+    // 1. Cargar estados y restaurar el valor guardado
+    await fetchGeneric(`${baseUrl}/api/estados`, 'estados',
+        '[data-bind="domicilio_causante.estado"]', 'Seleccionar Estado',
+        caseData.domicilio_causante, 'estado', true);
+
+    // 2. Si hay estado, cargar municipios y zonas postales
+    if (dir.estado) {
+        await Promise.all([
+            fetchGeneric(`${baseUrl}/api/municipios?estado_id=${dir.estado}`, 'municipios',
+                '[data-bind="domicilio_causante.municipio"]', 'Seleccionar Municipio',
+                caseData.domicilio_causante, 'municipio', true),
+            fetchGeneric(`${baseUrl}/api/zonas-postales?estado_id=${dir.estado}`, 'zonas',
+                '[data-bind="domicilio_causante.codigo_postal_id"]', 'SELECCIONAR',
+                caseData.domicilio_causante, 'codigo_postal_id', true),
+        ]);
+    }
+
+    // 3. Si hay municipio, cargar parroquias y ciudades
+    if (dir.municipio) {
+        await Promise.all([
+            fetchGeneric(`${baseUrl}/api/parroquias?municipio_id=${dir.municipio}`, 'parroquias',
+                '[data-bind="domicilio_causante.parroquia"]', 'Seleccionar Parroquia',
+                caseData.domicilio_causante, 'parroquia', true),
+            fetchGeneric(`${baseUrl}/api/ciudades?municipio_id=${dir.municipio}`, 'ciudades',
+                '[data-bind="domicilio_causante.ciudad"]', 'Seleccionar Ciudad',
+                caseData.domicilio_causante, 'ciudad', true),
+        ]);
+    }
+
+    // 4. Rellenar el resto de campos del formulario con los valores guardados
     document.querySelectorAll('[data-bind^="domicilio_causante."]').forEach(el => {
         const key = el.dataset.bind.split('.')[1];
         if (dir[key] !== undefined) {
@@ -376,7 +443,7 @@ export function editDireccion(index) {
         }
     });
 
-    // Restaurar campos manuales desc_inmueble y piso_nivel a partir de nro_inmueble
+    // 5. Restaurar campos manuales desc_inmueble y piso_nivel a partir de nro_inmueble
     let desc = '', num = '';
     if (dir.nro_inmueble) {
         if (dir.nro_inmueble.includes(' - PISO ')) {
@@ -396,7 +463,7 @@ export function editDireccion(index) {
     if (elDesc) elDesc.value = desc;
     if (elNum) elNum.value = num;
 
-    // Forzar trigger de tipo_inmueble para actualizar labels y disables
+    // 6. Forzar trigger de tipo_inmueble para actualizar labels y disables
     const selectedInmueble = document.querySelector(`input[name="tipo_inmueble"][value="${dir.tipo_inmueble}"]`);
     if (selectedInmueble) {
         selectedInmueble.checked = true;

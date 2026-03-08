@@ -1,5 +1,5 @@
 import { caseData, UIState } from './state.js';
-import { $, $$, showToast } from './utils.js';
+import { $, $$, showToast } from '../../global/utils.js';
 
 /**
  * Renderiza el listado de prórrogas en la tabla y maneja su estado vacío
@@ -34,13 +34,13 @@ export function renderProrrogas() {
                 <td>${dVence}</td>
                 <td class="cc-th-action">
                     <div class="cc-td-actions">
-                        <button type="button" class="cc-btn--icon-edit" onclick="CC.editProrroga(${index})" title="Editar Prórroga">
+                        <button type="button" class="btn-icon" onclick="CC.editProrroga(${index})" title="Editar Prórroga">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                             </svg>
                         </button>
-                        <button type="button" class="cc-btn--icon-danger" onclick="CC.deleteProrroga(${index})" title="Eliminar Prórroga">
+                        <button type="button" class="btn-danger-ghost" onclick="CC.deleteProrroga(${index})" title="Eliminar Prórroga">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
                                 <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                             </svg>
@@ -84,8 +84,8 @@ export function saveProrroga() {
         const btnSave = $('#btnSaveProrroga');
         if (btnSave) {
             btnSave.innerHTML = '+ Agregar Prórroga';
-            btnSave.classList.remove('cc-btn--primary');
-            btnSave.classList.add('cc-btn--outline');
+            btnSave.classList.remove('btn-primary');
+            btnSave.classList.add('btn-secondary');
         }
     } else {
         // Guardar nueva
@@ -146,8 +146,8 @@ export function editProrroga(index) {
             </svg>
             Guardar Cambios
         `;
-        btnSave.classList.remove('cc-btn--outline');
-        btnSave.classList.add('cc-btn--primary');
+        btnSave.classList.remove('btn-secondary');
+        btnSave.classList.add('btn-primary');
     }
 
     // Scroll a la seccion

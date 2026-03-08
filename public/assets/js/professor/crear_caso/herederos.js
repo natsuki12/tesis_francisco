@@ -1,7 +1,7 @@
-import { $, $$, show, hide, formatBs } from './utils.js';
+import { $, $$, show, hide, formatBs, showToast } from '../../global/utils.js';
 import { caseData } from './state.js';
 import { openModal, removeItem } from './modal.js';
-import { getCatalogs } from './catalogos.js';
+import { getCatalogs } from '../../global/catalogos.js';
 
 // Asignamos callbacks globales para el HTML onClick
 window.CC = window.CC || {};
@@ -23,7 +23,7 @@ export function renderHerenciaCheckboxes() {
     const checked = !!exists;
 
     htmlCheckboxes += `<label class="cc-check-card${checked ? ' is-selected' : ''}">
-      <input type="checkbox" ${checked ? 'checked' : ''} data-herencia-id="${id}">
+      <input type="checkbox" ${checked ? 'checked' : ''} data-herencia-id="${id}" data-herencia-nombre="${tipo.nombre || ''}">
       <span>${tipo.nombre || 'Desconocido'}</span>
     </label>`;
 
@@ -62,7 +62,7 @@ export function renderHerenciaCheckboxes() {
       const id = cb.dataset.herenciaId;
       if (cb.checked) {
         if (!caseData.herencia.tipos.find(t => t.tipo_herencia_id == id)) {
-          caseData.herencia.tipos.push({ tipo_herencia_id: id });
+          caseData.herencia.tipos.push({ tipo_herencia_id: id, nombre: cb.dataset.herenciaNombre || '' });
         }
       } else {
         caseData.herencia.tipos = caseData.herencia.tipos.filter(t => t.tipo_herencia_id != id);
@@ -76,23 +76,71 @@ export function renderHerenciaCheckboxes() {
       const id = el.dataset.herenciaRef;
       const field = el.dataset.herenciaExtra;
       const item = caseData.herencia.tipos.find(t => t.tipo_herencia_id == id);
+
+      // Validación en tiempo real: fecha_testamento no puede superar fecha de fallecimiento
+      if (field === 'fecha_testamento') {
+        const fechaFall = caseData.causante?.fecha_fallecimiento;
+        if (fechaFall && el.value && el.value > fechaFall) {
+          showToast('La fecha del testamento no puede ser posterior a la fecha de fallecimiento del causante.');
+          el.value = '';
+          if (item) item[field] = '';
+          return;
+        }
+      }
+
       if (item) {
         item[field] = el.value;
       }
     });
   });
+
+  // Aplicar max en el date picker: fecha_fallecimiento o fecha actual como límite
+  const actualizarMaxTestamento = () => {
+    const fechaFall = caseData.causante?.fecha_fallecimiento;
+    // Si no hay fecha de fallecimiento, usar la fecha actual como límite
+    const maxDate = fechaFall || new Date().toISOString().split('T')[0];
+    extrasContainer.querySelectorAll('[data-herencia-extra="fecha_testamento"]').forEach(el => {
+      el.setAttribute('max', maxDate);
+      // Si la fecha actual excede el nuevo max, limpiarla
+      if (el.value && el.value > maxDate) {
+        el.value = '';
+        const id = el.dataset.herenciaRef;
+        const item = caseData.herencia.tipos.find(t => t.tipo_herencia_id == id);
+        if (item) {
+          item.fecha_testamento = '';
+          showToast('La fecha del testamento fue limpiada porque excede la fecha de fallecimiento.');
+        }
+      }
+    });
+  };
+  actualizarMaxTestamento();
+
+  // Engancharse al input de fecha_fallecimiento para actualizar max dinámicamente
+  const inputFechaFall = document.querySelector('[data-bind="causante.fecha_fallecimiento"]');
+  if (inputFechaFall && !inputFechaFall._herenciaMaxLinked) {
+    inputFechaFall._herenciaMaxLinked = true;
+    inputFechaFall.addEventListener('change', actualizarMaxTestamento);
+  }
 }
 
 export function renderHerederos() {
   const empty = $('#herederosEmpty');
   const content = $('#herederosContent');
   const tbody = $('#herederosTableBody');
+  const cardPremuertos = $('#card_premuertos');
 
   if (caseData.herederos.length === 0) {
     show(empty); hide(content);
+    if (cardPremuertos) hide(cardPremuertos);
     return;
   }
   hide(empty); show(content);
+
+  if (cardPremuertos) {
+    const hasPremuerto = caseData.herederos.some(h => h.premuerto === 'SI');
+    if (hasPremuerto) show(cardPremuertos);
+    else hide(cardPremuertos);
+  }
 
   tbody.innerHTML = caseData.herederos.map((h, i) => {
     const pName = getCatalogs().parentescos.find(p => p.parentesco_id == h.parentesco_id)?.nombre || '<em style="color:var(--cc-slate-300)">Sin definir</em>';
@@ -100,13 +148,13 @@ export function renderHerederos() {
     <tr>
       <td>${h.nombres || ''} ${h.apellidos || ''}</td>
       <td>${h.letra_cedula || 'V'}-${h.cedula || ''}</td>
-      <td><span class="cc-badge ${h.caracter === 'HEREDERO' ? 'cc-badge--blue' : 'cc-badge--amber'}">${h.caracter || ''}</span></td>
+      <td><span class="status-badge ${h.caracter === 'HEREDERO' ? 'status-active' : 'status-review'}">${h.caracter || ''}</span></td>
       <td>${pName}</td>
-      <td><span class="cc-badge ${h.premuerto === 'SI' ? 'cc-badge--red' : 'cc-badge--slate'}">${h.premuerto || 'NO'}</span></td>
+      <td><span class="status-badge ${h.premuerto === 'SI' ? 'status-danger' : 'status-draft'}">${h.premuerto || 'NO'}</span></td>
       <td>
         <div class="cc-td-actions">
-          <button class="cc-btn--icon-edit" onclick="CC.openModal('heredero', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="cc-btn--icon-danger" onclick="CC.removeItem('herederos', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+          <button class="btn-icon" onclick="CC.openModal('heredero', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="btn-danger-ghost" onclick="CC.removeItem('herederos', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
         </div>
       </td>
     </tr>
@@ -133,13 +181,13 @@ export function renderHerederosPremuertos() {
     <tr>
       <td>${h.nombres || ''} ${h.apellidos || ''}</td>
       <td>${h.letra_cedula || 'V'}-${h.cedula || ''}</td>
-      <td><span class="cc-badge ${h.caracter === 'HEREDERO' ? 'cc-badge--blue' : 'cc-badge--amber'}">${h.caracter || ''}</span></td>
+      <td><span class="status-badge ${h.caracter === 'HEREDERO' ? 'status-active' : 'status-review'}">${h.caracter || ''}</span></td>
       <td>${pName}</td>
-      <td><span class="cc-badge cc-badge--slate">${h.premuerto_padre_id || '<em style="color:var(--cc-slate-300)">Ninguno</em>'}</span></td>
+      <td><span class="status-badge status-draft">${h.premuerto_padre_id || '<em style="color:var(--cc-slate-300)">Ninguno</em>'}</span></td>
       <td>
         <div class="cc-td-actions">
-          <button class="cc-btn--icon-edit" onclick="CC.openModal('heredero_premuerto', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-          <button class="cc-btn--icon-danger" onclick="CC.removeItem('herederos_premuertos', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+          <button class="btn-icon" onclick="CC.openModal('heredero_premuerto', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="btn-danger-ghost" onclick="CC.removeItem('herederos_premuertos', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
         </div>
       </td>
     </tr>
@@ -157,38 +205,51 @@ export function initRepresentanteLogic() {
 
   if (!inpCedula || !inpPasaporte) return;
 
-  // 1. Variar Cédula/RIF y la visibilidad de la letra
+  const wrapCedula = document.getElementById('wrap-rep-cedula');
+  const wrapPasaporte = inpPasaporte.closest('.cc-field');
+
+  // 1. Variar Cédula/RIF/Pasaporte y la visibilidad
   const updateDocType = () => {
     const selected = document.querySelector('input[name="rep_tipo_doc"]:checked');
-    if (selected && selected.value === 'Rif') {
-      if (lblCedula) lblCedula.innerHTML = 'RIF <span class="req">*</span>';
-      if (selLetra) selLetra.style.display = 'none'; // Ocultar para RIF
-    } else {
-      if (lblCedula) lblCedula.innerHTML = 'Cédula <span class="req">*</span>';
-      if (selLetra) selLetra.style.display = ''; // Mostrar V/E
+    if (selected && selected.value === 'Pasaporte') {
+      if (wrapCedula) wrapCedula.style.display = 'none';
+      if (wrapPasaporte) wrapPasaporte.style.display = '';
+      inpCedula.value = '';
+    } else if (selected && selected.value === 'Rif') {
+      if (wrapCedula) wrapCedula.style.display = '';
+      if (wrapPasaporte) wrapPasaporte.style.display = 'none';
+      inpPasaporte.value = '';
+      if (lblCedula) lblCedula.innerHTML = 'RIF';
+      if (selLetra) {
+        selLetra.style.display = '';
+        selLetra.innerHTML = '<option value="V">V</option><option value="J">J</option>';
+        if (caseData.representante && caseData.representante.letra_cedula) {
+          selLetra.value = caseData.representante.letra_cedula;
+          if (!selLetra.value) selLetra.value = 'J'; // default for missing options
+        } else {
+          selLetra.value = 'J';
+        }
+      }
+    } else { // Default to Cédula
+      if (wrapCedula) wrapCedula.style.display = '';
+      if (wrapPasaporte) wrapPasaporte.style.display = 'none';
+      inpPasaporte.value = '';
+      if (lblCedula) lblCedula.innerHTML = 'Cédula';
+      if (selLetra) {
+        selLetra.style.display = '';
+        selLetra.innerHTML = '<option value="V">V</option><option value="E">E</option>';
+        if (caseData.representante && ['V', 'E'].includes(caseData.representante.letra_cedula)) {
+          selLetra.value = caseData.representante.letra_cedula;
+        } else {
+          selLetra.value = 'V';
+        }
+      }
+    }
+    if (selLetra && caseData.representante && (selected.value === 'Cédula' || selected.value === 'Rif')) {
+      caseData.representante.letra_cedula = selLetra.value;
     }
   };
 
   radios.forEach(r => r.addEventListener('change', updateDocType));
   updateDocType();
-
-  // 2. Deshabilitación cruzada Cédula vs Pasaporte
-  const updateDisabling = () => {
-    if (inpCedula.value.trim().length > 0) {
-      inpPasaporte.disabled = true;
-    } else if (inpPasaporte.value.trim().length > 0) {
-      inpCedula.disabled = true;
-      if (selLetra) selLetra.disabled = true;
-      radios.forEach(r => r.disabled = true);
-    } else {
-      inpPasaporte.disabled = false;
-      inpCedula.disabled = false;
-      if (selLetra) selLetra.disabled = false;
-      radios.forEach(r => r.disabled = false);
-    }
-  };
-
-  inpCedula.addEventListener('input', updateDisabling);
-  inpPasaporte.addEventListener('input', updateDisabling);
-  updateDisabling();
 }
