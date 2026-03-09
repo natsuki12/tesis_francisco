@@ -8,6 +8,15 @@ use App\Modules\Auth\Controllers\PasswordRecoveryController;
 use App\Modules\Professor\Controllers\Crear_Caso\Direcciones\LocationController;
 use App\Modules\Professor\Controllers\Crear_Caso\CatalogController;
 use App\Modules\Professor\Controllers\Casos\CasosController;
+use App\Modules\Admin\Controllers\Usuarios\ProfesoresController;
+use App\Modules\Admin\Controllers\Usuarios\EstudiantesController;
+use App\Modules\Admin\Controllers\Academico\PeriodosController;
+use App\Modules\Admin\Controllers\Academico\SeccionesController;
+use App\Modules\Admin\Controllers\Configuracion\CatalogosController;
+use App\Modules\Admin\Controllers\Configuracion\MarcoLegalController;
+use App\Modules\Admin\Controllers\Configuracion\ParametrosController;
+use App\Modules\Admin\Controllers\Monitoreo\BitacoraController;
+use App\Modules\Admin\Controllers\Monitoreo\ReportesController;
 
 /** @var \App\Core\App $app */
 /** @var \App\Core\Router $router */
@@ -98,6 +107,79 @@ $router->get('/admin', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(1);
     return $app->view('admin/dashboard/home_admin');
+});
+
+// Admin -> Gestión de Usuarios -> Profesores
+$router->get('/admin/profesores', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new ProfesoresController())->index();
+});
+$router->post('/admin/profesores/guardar', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new ProfesoresController())->guardar();
+});
+$router->post('/admin/profesores/eliminar', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new ProfesoresController())->eliminar();
+});
+
+// Admin -> Gestión de Usuarios -> Estudiantes
+$router->get('/admin/estudiantes', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new EstudiantesController())->index();
+});
+
+// Admin -> Gestión Académica -> Períodos
+$router->get('/admin/periodos', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new PeriodosController())->index();
+});
+
+// Admin -> Gestión Académica -> Secciones
+$router->get('/admin/secciones', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new SeccionesController())->index();
+});
+
+// Admin -> Configuración -> Catálogos
+$router->get('/admin/configuracion/catalogos', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new CatalogosController())->index();
+});
+
+// Admin -> Configuración -> Marco Legal
+$router->get('/admin/configuracion/marco-legal', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new MarcoLegalController())->index();
+});
+
+// Admin -> Configuración -> Parámetros
+$router->get('/admin/configuracion/parametros', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new ParametrosController())->index();
+});
+
+// Admin -> Monitoreo -> Bitácora
+$router->get('/admin/monitoreo/bitacora', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new BitacoraController())->index();
+});
+
+// Admin -> Monitoreo -> Reportes
+$router->get('/admin/monitoreo/reportes', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new ReportesController())->index();
 });
 
 $router->get('/simulador_inicio', function () use ($app, $requireAuth) {

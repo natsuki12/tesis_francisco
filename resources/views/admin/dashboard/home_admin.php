@@ -26,7 +26,7 @@ ob_start();
         <!-- Usuarios -->
         <div class="admin-stat-card">
             <div class="admin-stat-card__icon bg-blue">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                     <circle cx="9" cy="7" r="4" />
@@ -42,7 +42,7 @@ ob_start();
         <!-- Profesores -->
         <div class="admin-stat-card">
             <div class="admin-stat-card__icon bg-green">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
@@ -56,7 +56,7 @@ ob_start();
         <!-- Estudiantes -->
         <div class="admin-stat-card">
             <div class="admin-stat-card__icon bg-yellow">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round">
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                     <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
@@ -70,7 +70,7 @@ ob_start();
         <!-- Secciones -->
         <div class="admin-stat-card">
             <div class="admin-stat-card__icon bg-purple">
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                     <line x1="16" y1="2" x2="16" y2="6" />
@@ -213,8 +213,8 @@ ob_start();
                 <ul class="admin-status-list">
                     <li class="admin-status-item">
                         <div class="admin-status-item__icon text-green">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                                 <polyline points="22 4 12 14.01 9 11.01" />
                             </svg>
@@ -226,8 +226,8 @@ ob_start();
                     </li>
                     <li class="admin-status-item">
                         <div class="admin-status-item__icon text-green">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                                 <polyline points="22 4 12 14.01 9 11.01" />
                             </svg>
@@ -239,8 +239,8 @@ ob_start();
                     </li>
                     <li class="admin-status-item">
                         <div class="admin-status-item__icon text-green">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                                 <polyline points="22 4 12 14.01 9 11.01" />
                             </svg>
@@ -252,8 +252,8 @@ ob_start();
                     </li>
                     <li class="admin-status-item">
                         <div class="admin-status-item__icon text-yellow">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round">
                                 <path
                                     d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                                 <line x1="12" y1="9" x2="12" y2="13" />

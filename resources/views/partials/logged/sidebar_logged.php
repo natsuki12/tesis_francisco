@@ -43,15 +43,27 @@ $role = $_SESSION['role_id'] ?? 3;
             <!-- ============================================================= -->
             <div class="sim-nav__section">
                 <span class="sim-nav__section-title">GESTIÓN ACADÉMICA</span>
-                <a href="<?= base_url('/admin/periodos') ?>" class="sim-nav__link <?= $activePage === 'periodos' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/admin/periodos') ?>"
+                    class="sim-nav__link <?= $activePage === 'periodos' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
                     </span>
                     <span class="sim-nav__text">Períodos Académicos</span>
                 </a>
-                <a href="<?= base_url('/admin/secciones') ?>" class="sim-nav__link <?= $activePage === 'secciones' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/admin/secciones') ?>"
+                    class="sim-nav__link <?= $activePage === 'secciones' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                        </svg>
                     </span>
                     <span class="sim-nav__text">Secciones</span>
                 </a>
@@ -62,15 +74,28 @@ $role = $_SESSION['role_id'] ?? 3;
             <!-- ============================================================= -->
             <div class="sim-nav__section">
                 <span class="sim-nav__section-title">GESTIÓN DE USUARIOS</span>
-                <a href="<?= base_url('/admin/profesores') ?>" class="sim-nav__link <?= $activePage === 'profesores' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/admin/profesores') ?>"
+                    class="sim-nav__link <?= $activePage === 'profesores' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                            <circle cx="8.5" cy="7" r="4" />
+                            <path d="M20 8v6M23 11h-6" />
+                        </svg>
                     </span>
                     <span class="sim-nav__text">Profesores</span>
                 </a>
-                <a href="<?= base_url('/admin/estudiantes') ?>" class="sim-nav__link <?= $activePage === 'estudiantes' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/admin/estudiantes') ?>"
+                    class="sim-nav__link <?= $activePage === 'estudiantes' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                            <path d="M16 3.13a4 4 0 010 7.75" />
+                        </svg>
                     </span>
                     <span class="sim-nav__text">Estudiantes</span>
                 </a>
@@ -81,21 +106,35 @@ $role = $_SESSION['role_id'] ?? 3;
             <!-- ============================================================= -->
             <div class="sim-nav__section">
                 <span class="sim-nav__section-title">CONFIGURACIÓN</span>
-                <a href="<?= base_url('/admin/catalogos') ?>" class="sim-nav__link <?= $activePage === 'catalogos' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/admin/configuracion/catalogos') ?>"
+                    class="sim-nav__link <?= $activePage === 'catalogos' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                        </svg>
                     </span>
                     <span class="sim-nav__text">Catálogos</span>
                 </a>
-                <a href="<?= base_url('/admin/marco-legal') ?>" class="sim-nav__link <?= $activePage === 'marco-legal' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/admin/configuracion/marco-legal') ?>"
+                    class="sim-nav__link <?= $activePage === 'marco-legal' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
                     </span>
                     <span class="sim-nav__text">Marco Legal</span>
                 </a>
-                <a href="<?= base_url('/admin/parametros') ?>" class="sim-nav__link <?= $activePage === 'parametros' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/admin/configuracion/parametros') ?>"
+                    class="sim-nav__link <?= $activePage === 'parametros' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        </svg>
                     </span>
                     <span class="sim-nav__text">Parámetros del Sistema</span>
                 </a>
@@ -106,18 +145,37 @@ $role = $_SESSION['role_id'] ?? 3;
             <!-- ============================================================= -->
             <div class="sim-nav__section">
                 <span class="sim-nav__section-title">MONITOREO</span>
-                <a href="<?= base_url('/admin/bitacora') ?>" class="sim-nav__link <?= $activePage === 'bitacora' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/admin/monitoreo/bitacora') ?>"
+                    class="sim-nav__link <?= $activePage === 'bitacora' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                            <path d="M8 14h.01" />
+                            <path d="M12 14h.01" />
+                            <path d="M16 14h.01" />
+                            <path d="M8 18h.01" />
+                            <path d="M12 18h.01" />
+                            <path d="M16 18h.01" />
+                        </svg>
                     </span>
                     <span class="sim-nav__text">Bitácora</span>
                 </a>
-                <a href="<?= base_url('/admin/reportes') ?>" class="sim-nav__link <?= $activePage === 'reportes' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/admin/monitoreo/reportes') ?>"
+                    class="sim-nav__link <?= $activePage === 'reportes' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                            <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                        </svg>
                     </span>
                     <span class="sim-nav__text">Reportes Generales</span>
-                    <span class="sim-nav__badge-blue" style="margin-left: auto; background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;">Pronto</span>
+                    <span class="sim-nav__badge-blue"
+                        style="margin-left: auto; background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;">Pronto</span>
                 </a>
             </div>
         <?php endif; ?>
@@ -325,6 +383,7 @@ $role = $_SESSION['role_id'] ?? 3;
     <!-- FOOTER: Perfil & Cerrar Sesión (push to bottom)               -->
     <!-- ============================================================= -->
     <div class="sim-sidebar__footer">
+        <?php if ($role != 1): ?>
         <a href="<?= base_url('/perfil') ?>"
             class="sim-nav__link <?= $activePage === 'perfil' ? 'sim-nav__link--active' : '' ?>">
             <span class="sim-nav__icon">
@@ -337,6 +396,7 @@ $role = $_SESSION['role_id'] ?? 3;
             </span>
             <span class="sim-nav__text">Perfil</span>
         </a>
+        <?php endif; ?>
         <a href="<?= base_url('/logout') ?>" class="sim-nav__link">
             <span class="sim-nav__icon">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"

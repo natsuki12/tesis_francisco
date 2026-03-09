@@ -78,13 +78,16 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-size: var(--text-md);
+    font-size: 0.9375rem;
+    /* 15px */
     font-weight: 600;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md, 8px);
     cursor: pointer;
     transition: all var(--transition);
-    border: none;
+    border: 1px solid transparent;
+    /* Evita saltos de altura al añadir bordes en hover o variantes */
     text-decoration: none;
+    padding: 10px 20px;
 }
 
 .btn:disabled {
@@ -102,13 +105,21 @@
 .btn-primary {
     background: var(--blue-600);
     color: var(--white);
-    padding: 10px 18px;
-    box-shadow: 0 1px 3px rgba(26, 74, 138, 0.3);
 }
 
 .btn-primary:hover {
     background: var(--blue-700);
-    box-shadow: 0 4px 12px rgba(26, 74, 138, 0.35);
+    transform: translateY(-1px);
+    color: var(--white);
+}
+
+.btn-danger {
+    background: var(--red-600, #dc2626);
+    color: var(--white);
+}
+
+.btn-danger:hover {
+    background: var(--red-700, #b91c1c);
     transform: translateY(-1px);
     color: var(--white);
 }
@@ -116,15 +127,31 @@
 .btn-secondary {
     background: var(--white);
     color: var(--gray-700);
-    padding: 10px 16px;
     border: 1px solid var(--gray-200);
-    box-shadow: var(--shadow-card);
 }
 
 .btn-secondary:hover {
     background: var(--gray-50);
     border-color: var(--gray-300);
     color: var(--gray-800);
+}
+
+.btn-outline {
+    background: var(--white);
+    border: 1px solid var(--gray-300, #d1d5db);
+    color: var(--gray-700, #374151);
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    /* 15px */
+    border-radius: var(--radius-md, 8px);
+    transition: all 0.2s;
+}
+
+.btn-outline:hover {
+    background: var(--gray-50, #f9fafb);
+    border-color: var(--gray-400, #9ca3af);
+    color: var(--gray-800, #1f2937);
 }
 
 .btn-ghost {
@@ -832,4 +859,161 @@
 
 .panel-body {
     padding: 24px;
+}
+
+/* ===== 10. MODALES GENÉRICOS NATIVOS (<dialog>) ===== */
+.modal-base {
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-lg, 12px);
+    background: var(--white);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.25);
+    margin: auto;
+    width: 100%;
+    max-width: fit-content;
+    overflow: hidden;
+}
+
+.modal-base::backdrop {
+    background: rgba(10, 30, 61, 0.5);
+    /* Azul oscuro translúcido requerido */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: backdropFade 0.2s ease forwards;
+}
+
+@keyframes backdropFade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-base[open] {
+    animation: modalShow 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalShow {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-base__container {
+    padding: 0;
+    width: 100vw;
+    /* Expande al max-width inline */
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-base__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.modal-base__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    margin: 0;
+}
+
+.modal-base__close {
+    background: transparent;
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    color: var(--gray-500);
+    font-size: 1.25rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 10px;
+    transition: all 0.2s;
+}
+
+.modal-base__close:hover {
+    background: var(--gray-100);
+    color: var(--gray-800);
+}
+
+.modal-base__body {
+    padding: 24px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.modal-base__footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    background: var(--white, #ffffff);
+}
+
+/* ===== 12. BOTONES ESPECÍFICOS DE MODALES (Estilo Unificado) ===== */
+.modal-btn {
+    padding: .625rem 1.25rem;
+    border-radius: 8px;
+    font-size: .9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    line-height: 1.5;
+}
+
+.modal-btn-cancel {
+    background: #fff;
+    color: #374151;
+    border-color: #d1d5db;
+}
+
+.modal-btn-cancel:hover {
+    background: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.modal-btn-primary {
+    background: var(--blue-600, #2563eb);
+    color: var(--white, #fff);
+}
+
+.modal-btn-primary:hover {
+    background: var(--blue-700, #1d4ed8);
+}
+
+.modal-btn-danger {
+    background: #dc2626;
+    color: #fff;
+}
+
+.modal-btn-danger:hover {
+    background: #b91c1c;
+}
+
+.modal-btn-warning {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fde68a;
+}
+
+.modal-btn-warning:hover {
+    background: #fde68a;
 }

@@ -134,7 +134,8 @@ final class Router
 
         // 4. Si terminó el ciclo y nadie respondió: 404 Not Found
         http_response_code(404);
-        return '404 - Página no encontrada';
+        require __DIR__ . '/../../resources/views/errors/404.php';
+        return '';
     }
 
     /**

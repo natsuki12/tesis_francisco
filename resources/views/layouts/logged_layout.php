@@ -153,6 +153,12 @@ if (!isset($user)) {
     <!-- Global text sanitization (removes dangerous characters from all text inputs) -->
     <script src="<?= asset('js/global/sanitize.js') ?>"></script>
 
+    <!-- Global Modal Manager (Native <dialog> API) -->
+    <script src="<?= asset('js/global/core_modals.js') ?>"></script>
+
+    <!-- Global AJAX Handlers & Formatters for Modals -->
+    <script type="module" src="<?= asset('js/global/modals_ajax.js') ?>"></script>
+
     <!-- JS extra de la página (si existe) -->
     <?php if (isset($extraJs))
         echo $extraJs; ?>

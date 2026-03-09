@@ -5328,3 +5328,95 @@ Stack trace:
 #3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/home')
 #4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
 #5 {main}
+[09-Mar-2026 05:32:09 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php on line 135
+[09-Mar-2026 05:32:09 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php:135
+[09-Mar-2026 05:32:09 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Configuracion\CatalogosController.php(13): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(144): App\Modules\Admin\Controllers\Configuracion\CatalogosController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/admin/configur...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[09-Mar-2026 05:32:11 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php on line 135
+[09-Mar-2026 05:32:11 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php:135
+[09-Mar-2026 05:32:11 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Configuracion\CatalogosController.php(13): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(144): App\Modules\Admin\Controllers\Configuracion\CatalogosController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/admin/configur...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[09-Mar-2026 05:36:01 Europe/Berlin] PHP Warning:  Undefined variable $router in C:\xampp\htdocs\tesis_francisco\routes\web.php on line 27
+[09-Mar-2026 05:36:01 Europe/Berlin] [CRITICAL] Call to a member function get() on null in C:\xampp\htdocs\tesis_francisco\routes\web.php:27
+[09-Mar-2026 05:36:01 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\test_routes.php(4): require()
+#1 {main}
+[09-Mar-2026 05:37:27 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php on line 135
+[09-Mar-2026 05:37:27 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php:135
+[09-Mar-2026 05:37:27 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Configuracion\CatalogosController.php(13): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(144): App\Modules\Admin\Controllers\Configuracion\CatalogosController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/admin/configur...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[09-Mar-2026 05:39:14 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php on line 135
+[09-Mar-2026 05:39:14 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php:135
+[09-Mar-2026 05:39:14 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Configuracion\CatalogosController.php(13): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(144): App\Modules\Admin\Controllers\Configuracion\CatalogosController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/admin/configur...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[09-Mar-2026 05:39:16 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\marco_legal.php on line 84
+[09-Mar-2026 05:39:16 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\marco_legal.php:84
+[09-Mar-2026 05:39:16 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Configuracion\MarcoLegalController.php(13): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(151): App\Modules\Admin\Controllers\Configuracion\MarcoLegalController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/admin/configur...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[09-Mar-2026 05:39:21 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\parametros.php on line 84
+[09-Mar-2026 05:39:21 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\parametros.php:84
+[09-Mar-2026 05:39:21 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Configuracion\ParametrosController.php(13): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(158): App\Modules\Admin\Controllers\Configuracion\ParametrosController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/admin/configur...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[09-Mar-2026 05:39:23 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\tesis_francisco\resources\views\admin\monitoreo/../../partials/logged/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\monitoreo\bitacora.php on line 71
+[09-Mar-2026 05:39:23 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\monitoreo/../../partials/logged/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\monitoreo\bitacora.php:71
+[09-Mar-2026 05:39:23 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Monitoreo\BitacoraController.php(13): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(165): App\Modules\Admin\Controllers\Monitoreo\BitacoraController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/admin/monitore...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[09-Mar-2026 05:39:40 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php on line 135
+[09-Mar-2026 05:39:40 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php:135
+[09-Mar-2026 05:39:40 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Configuracion\CatalogosController.php(13): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(144): App\Modules\Admin\Controllers\Configuracion\CatalogosController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/admin/configur...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[09-Mar-2026 05:39:42 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php on line 135
+[09-Mar-2026 05:39:42 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php:135
+[09-Mar-2026 05:39:42 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Configuracion\CatalogosController.php(13): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(144): App\Modules\Admin\Controllers\Configuracion\CatalogosController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/admin/configur...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[09-Mar-2026 05:39:44 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php on line 135
+[09-Mar-2026 05:39:44 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php:135
+[09-Mar-2026 05:39:44 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Configuracion\CatalogosController.php(13): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(144): App\Modules\Admin\Controllers\Configuracion\CatalogosController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/admin/configur...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[09-Mar-2026 05:40:25 Europe/Berlin] PHP Warning:  require_once(C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php on line 135
+[09-Mar-2026 05:40:25 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion/../../partials/logged/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\catalogos.php:135
+[09-Mar-2026 05:40:25 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Configuracion\CatalogosController.php(13): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(144): App\Modules\Admin\Controllers\Configuracion\CatalogosController->index()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/admin/configur...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}

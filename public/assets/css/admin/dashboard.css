@@ -10,6 +10,7 @@
 }
 
 .admin-page-title {
+    font-family: var(--font-ui);
     font-size: 24px;
     font-weight: 700;
     color: var(--color-text);
@@ -18,12 +19,14 @@
 }
 
 .admin-page-subtitle {
+    font-family: var(--font-ui);
     font-size: 14px;
     color: var(--color-text-light);
     margin: 0;
 }
 
 .admin-section-title {
+    font-family: var(--font-ui);
     font-size: 16px;
     font-weight: 700;
     color: var(--color-text);
@@ -71,6 +74,7 @@
 }
 
 .admin-stat-card__value {
+    font-family: var(--font-ui);
     font-size: 24px;
     font-weight: 800;
     color: var(--color-text);
@@ -78,6 +82,7 @@
 }
 
 .admin-stat-card__label {
+    font-family: var(--font-ui);
     font-size: 13px;
     color: var(--color-text-light);
     font-weight: 500;
@@ -130,7 +135,8 @@
     display: flex;
     align-items: flex-start;
     gap: 16px;
-    text-decoration: none;
+    text-decoration: none !important;
+    color: inherit;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     border: 1px solid var(--color-border-light);
     transition: all 0.2s ease;
@@ -156,19 +162,25 @@
 
 .admin-quick-card__content {
     flex: 1;
+    color: var(--color-text);
+    /* Ensure the wrapper defaults to normal text */
 }
 
 .admin-quick-card__content h4 {
     margin: 0 0 6px 0;
+    font-family: var(--font-ui);
     font-size: 15px;
     font-weight: 700;
     color: var(--color-text);
+    /* Force dark headline color */
 }
 
 .admin-quick-card__content p {
     margin: 0;
+    font-family: var(--font-ui);
     font-size: 13px;
     color: var(--color-text-light);
+    /* Force gray secondary text color */
     line-height: 1.4;
 }
 
@@ -206,6 +218,7 @@
 
 .admin-panel__header h3 {
     margin: 0;
+    font-family: var(--font-ui);
     font-size: 16px;
     font-weight: 700;
     color: var(--color-text);
@@ -224,6 +237,7 @@
 }
 
 .admin-link {
+    font-family: var(--font-ui);
     color: var(--color-primary);
     text-decoration: none;
     font-weight: 600;
@@ -316,6 +330,7 @@
 
 .admin-status-item__title {
     margin: 0 0 4px 0;
+    font-family: var(--font-ui);
     font-size: 14px;
     font-weight: 700;
     color: var(--color-text);
@@ -323,6 +338,7 @@
 
 .admin-status-item__desc {
     margin: 0;
+    font-family: var(--font-ui);
     font-size: 13px;
     color: var(--color-text-light);
 }

@@ -1,0 +1,173 @@
+/* public/assets/css/admin/configuracion.css */
+
+/* --- Tabs para Catálogos --- */
+.config-tabs-nav {
+    display: flex;
+    border-bottom: 1px solid var(--gray-200);
+    margin-bottom: 24px;
+    gap: 32px;
+}
+
+.config-tab-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 12px 4px;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.config-tab-btn:hover {
+    color: var(--blue-600);
+}
+
+.config-tab-btn.active {
+    color: var(--blue-600);
+    border-bottom-color: var(--blue-600);
+    font-weight: var(--weight-semibold);
+}
+
+/* Ocultar contenido por defecto */
+.config-tab-pane {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.config-tab-pane.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Action Cards (Parámetros / Ajustes) --- */
+.config-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 24px;
+}
+
+.config-block {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--gray-200);
+}
+
+.config-block h3 {
+    margin-top: 0;
+    margin-bottom: 6px;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+}
+
+.config-block>p {
+    font-size: var(--text-sm);
+    color: var(--text-light);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.form-group.inline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.form-group.inline:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.form-group.inline>label:first-child {
+    margin-bottom: 0;
+    font-weight: var(--weight-medium);
+    font-size: var(--text-md);
+    color: var(--text-body);
+}
+
+.form-group.inline .form-input {
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
+    font-size: var(--text-md);
+    color: var(--text-primary);
+    background: var(--white);
+    transition: border-color 0.2s;
+}
+
+.form-group.inline .form-input:focus {
+    outline: none;
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-group.inline .param-unit {
+    font-size: var(--text-xs);
+    color: var(--text-light);
+    font-weight: var(--weight-medium);
+}
+
+/* Switch UI - custom toggle */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--gray-300);
+    transition: .3s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--white);
+    transition: .3s;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+input:checked+.slider {
+    background-color: var(--green-600);
+}
+
+input:checked+.slider:before {
+    transform: translateX(20px);
+}
