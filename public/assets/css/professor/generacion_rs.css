@@ -1,0 +1,189 @@
+/* =============================================
+   GENERACIÓN DE R.S. — Estilos específicos
+   ============================================= */
+
+/* Globals: toolbar, search-box, filter-btn, estudiante-cell,
+   avatar-*, ver-link, stat-card, data-table, status-badge,
+   pagination, empty-state, modal-base → components.css */
+
+/* ===== SOLICITUD STATUS BADGES ===== */
+.status-badge.status-pendiente {
+    background: var(--amber-100);
+    color: var(--amber-600);
+}
+
+.status-badge.status-aprobada {
+    background: var(--green-100);
+    color: var(--green-600);
+}
+
+.status-badge.status-rechazada {
+    background: var(--red-100);
+    color: var(--red-600);
+}
+
+
+/* ===== ACTION BUTTONS (inline in table) ===== */
+.action-btns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-2xs);
+    font-weight: 600;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all var(--transition);
+    white-space: nowrap;
+}
+
+.action-btn svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+}
+
+.action-btn--approve {
+    background: var(--green-50);
+    color: var(--green-600);
+    border-color: var(--green-200);
+}
+
+.action-btn--approve:hover {
+    background: var(--green-100);
+    border-color: var(--green-300);
+}
+
+.action-btn--reject {
+    background: var(--red-50);
+    color: var(--red-600);
+    border-color: var(--red-200);
+}
+
+.action-btn--reject:hover {
+    background: var(--red-100);
+    border-color: var(--red-300);
+}
+
+
+/* ===== REJECT MODAL EXTRAS ===== */
+.reject-field label {
+    display: block;
+    font-size: var(--text-md);
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 6px;
+}
+
+.reject-field textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px 14px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-md);
+    font-family: var(--font-ui);
+    color: var(--gray-700);
+    resize: vertical;
+    transition: border-color var(--transition);
+}
+
+.reject-field textarea:focus {
+    outline: none;
+    border-color: var(--blue-400);
+    box-shadow: 0 0 0 3px rgba(37, 99, 168, 0.1);
+}
+
+.reject-field .field-hint {
+    font-size: var(--text-xs);
+    color: var(--gray-400);
+    margin-top: 4px;
+}
+
+/* Modal solicitud info */
+.solicitud-detail-grid {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 8px 16px;
+    font-size: var(--text-md);
+}
+
+.solicitud-detail-grid dt {
+    font-weight: 600;
+    color: var(--gray-600);
+}
+
+.solicitud-detail-grid dd {
+    color: var(--gray-800);
+    margin: 0;
+}
+
+.motivo-rechazo-box {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: var(--red-50);
+    border-left: 3px solid var(--red-400);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: var(--text-md);
+    color: var(--red-700);
+}
+
+
+/* ===== INTENTO TAG ===== */
+.intento-display {
+    font-size: var(--text-md);
+    color: var(--gray-600);
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1100px) {
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-left {
+        flex-wrap: wrap;
+    }
+
+    .search-box {
+        max-width: 100%;
+    }
+
+    .data-table {
+        font-size: var(--text-xs);
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        min-width: 900px;
+    }
+
+    .action-btns {
+        flex-direction: column;
+        gap: 4px;
+    }
+}

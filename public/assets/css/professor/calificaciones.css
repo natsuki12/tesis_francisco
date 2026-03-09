@@ -1,0 +1,243 @@
+/* =============================================
+   CALIFICACIONES — Estilos específicos
+   ============================================= */
+
+/* Globals: toolbar, filter-btn, stat-card, empty-state,
+   breadcrumb, btn → components.css */
+
+/* toolbar-select → moved to components.css */
+
+/* ===== EXPORT BUTTON (disabled for now) ===== */
+.export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-md);
+    font-weight: 600;
+    font-family: var(--font-ui);
+    cursor: not-allowed;
+    border: 1px solid var(--gray-200);
+    background: var(--gray-50);
+    color: var(--gray-400);
+    box-shadow: var(--shadow-card);
+    white-space: nowrap;
+    opacity: 0.6;
+}
+
+.export-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+
+/* ===== GRADES TABLE (Cross-table with sticky column) ===== */
+.grades-wrapper {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--gray-100);
+    overflow-x: auto;
+    margin-bottom: 24px;
+}
+
+.grades-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--text-md);
+    font-family: var(--font-ui);
+}
+
+.grades-table thead th {
+    background: var(--gray-50);
+    color: var(--gray-600);
+    font-weight: 600;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 14px 16px;
+    text-align: center;
+    border-bottom: 2px solid var(--gray-200);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+/* First column - Estudiante (sticky) */
+.grades-table thead th:first-child,
+.grades-table tbody td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    text-align: left;
+    min-width: 220px;
+}
+
+.grades-table thead th:first-child {
+    z-index: 4;
+    background: var(--gray-50);
+}
+
+.grades-table tbody td:first-child {
+    background: var(--white);
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.04);
+}
+
+/* Last column - Promedio (sticky right) */
+.grades-table thead th:last-child,
+.grades-table tbody td:last-child {
+    position: sticky;
+    right: 0;
+    z-index: 3;
+    font-weight: 700;
+    min-width: 90px;
+}
+
+.grades-table thead th:last-child {
+    z-index: 4;
+    background: var(--gray-50);
+}
+
+.grades-table tbody td:last-child {
+    background: var(--white);
+    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.04);
+}
+
+.grades-table tbody tr {
+    transition: background var(--transition);
+}
+
+.grades-table tbody tr:hover td {
+    background: var(--blue-50);
+}
+
+.grades-table tbody tr:hover td:first-child,
+.grades-table tbody tr:hover td:last-child {
+    background: var(--blue-50);
+}
+
+.grades-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--gray-100);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    vertical-align: middle;
+}
+
+
+/* ===== GRADE CELLS ===== */
+.grade-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    padding: 4px 10px;
+    border-radius: var(--radius-xs);
+    font-weight: 600;
+    font-size: var(--text-md);
+}
+
+.grade-cell.grade-pass {
+    background: var(--green-50);
+    color: var(--green-600);
+}
+
+.grade-cell.grade-fail {
+    background: var(--red-50);
+    color: var(--red-600);
+}
+
+.grade-cell.grade-pending {
+    background: var(--amber-50);
+    color: var(--amber-600);
+    font-weight: 500;
+    font-size: var(--text-xs);
+}
+
+.grade-cell.grade-na {
+    color: var(--gray-300);
+    font-weight: 400;
+}
+
+/* Promedio column styling */
+.promedio-final {
+    font-size: var(--text-base);
+    font-weight: 700;
+}
+
+.promedio-final.grade-pass {
+    background: transparent;
+    color: var(--green-600);
+}
+
+.promedio-final.grade-fail {
+    background: transparent;
+    color: var(--red-600);
+}
+
+.promedio-final.grade-na {
+    color: var(--gray-300);
+    font-weight: 400;
+}
+
+
+/* ===== INITIAL STATE (no section selected) ===== */
+.grades-initial-state {
+    padding: 60px 24px;
+    text-align: center;
+}
+
+.grades-initial-state .empty-state-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--blue-100);
+    color: var(--blue-500);
+    margin-bottom: 16px;
+}
+
+.grades-initial-state .empty-state-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.grades-initial-state h3 {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 6px;
+}
+
+.grades-initial-state p {
+    font-size: var(--text-md);
+    color: var(--gray-500);
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-left {
+        flex-wrap: wrap;
+    }
+
+    .toolbar-select {
+        width: 100%;
+    }
+
+    .grades-table {
+        font-size: var(--text-xs);
+    }
+}

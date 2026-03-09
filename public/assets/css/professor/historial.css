@@ -1,0 +1,253 @@
+/* =============================================
+   HISTORIAL — Estilos específicos (Timeline/Feed)
+   ============================================= */
+
+/* Globals: toolbar, filter-btn, empty-state → components.css */
+
+/* ===== DATE INPUTS ===== */
+.date-input {
+    padding: 9px 14px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-md);
+    font-family: var(--font-ui);
+    color: var(--gray-600);
+    background: var(--white);
+    box-shadow: var(--shadow-card);
+    transition: all var(--transition);
+    cursor: pointer;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: var(--blue-400);
+    box-shadow: 0 0 0 3px rgba(37, 99, 168, 0.1);
+}
+
+.date-label {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--gray-500);
+    margin-right: 6px;
+}
+
+
+/* ===== TIMELINE ===== */
+.timeline {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+/* Day header */
+.timeline-day-header {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 8px 0;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.timeline-day-header:first-child {
+    margin-top: 0;
+}
+
+
+/* Timeline item */
+.timeline-item {
+    position: relative;
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    padding-left: 40px;
+    border-bottom: 1px solid var(--gray-50);
+    transition: background var(--transition);
+}
+
+.timeline-item:hover {
+    background: var(--gray-50);
+    border-radius: var(--radius-sm);
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+/* Vertical line */
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--gray-100);
+}
+
+.timeline-day-header+.timeline-item::before {
+    top: 0;
+}
+
+
+/* Dot */
+.timeline-dot {
+    position: absolute;
+    left: 8px;
+    top: 20px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    flex-shrink: 0;
+    border: 2px solid var(--white);
+}
+
+.timeline-dot svg {
+    width: 8px;
+    height: 8px;
+}
+
+.timeline-dot--blue {
+    background: var(--blue-500);
+    color: var(--white);
+}
+
+.timeline-dot--green {
+    background: var(--green-600);
+    color: var(--white);
+}
+
+.timeline-dot--amber {
+    background: var(--amber-600);
+    color: var(--white);
+}
+
+.timeline-dot--red {
+    background: var(--red-600);
+    color: var(--white);
+}
+
+.timeline-dot--purple {
+    background: var(--purple-600);
+    color: var(--white);
+}
+
+
+/* Content */
+.timeline-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.timeline-text {
+    font-size: var(--text-md);
+    color: var(--gray-700);
+    line-height: 1.5;
+}
+
+.timeline-text strong {
+    font-weight: 600;
+    color: var(--gray-800);
+}
+
+.timeline-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+    font-size: var(--text-xs);
+    color: var(--gray-400);
+}
+
+.timeline-meta svg {
+    width: 12px;
+    height: 12px;
+}
+
+.timeline-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+
+/* Link */
+.timeline-link {
+    flex-shrink: 0;
+    align-self: center;
+}
+
+
+/* ===== LOAD MORE BUTTON ===== */
+.load-more-wrapper {
+    text-align: center;
+    padding: 24px 0;
+}
+
+.load-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 24px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-md);
+    font-weight: 600;
+    font-family: var(--font-ui);
+    cursor: pointer;
+    border: 1px solid var(--gray-200);
+    background: var(--white);
+    color: var(--gray-600);
+    box-shadow: var(--shadow-card);
+    transition: all var(--transition);
+}
+
+.load-more-btn:hover {
+    border-color: var(--blue-400);
+    color: var(--blue-600);
+    background: var(--blue-50);
+}
+
+.load-more-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+
+/* ===== TIMELINE CONTAINER (White box) ===== */
+.timeline-container {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--gray-100);
+    padding: 24px 28px;
+    margin-bottom: 24px;
+}
+
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-left {
+        flex-wrap: wrap;
+    }
+
+    .timeline-container {
+        padding: 16px;
+    }
+
+    .timeline-item {
+        padding-left: 36px;
+    }
+}

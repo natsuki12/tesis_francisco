@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-03-2026 a las 06:55:35
+-- Tiempo de generación: 09-03-2026 a las 19:05:26
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -182,7 +182,13 @@ INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento
 (137, 6, 'superadmin@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:12:13'),
 (138, 6, 'superadmin@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:02'),
 (139, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:08'),
-(140, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:08');
+(140, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:08'),
+(141, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 16:58:04'),
+(142, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 16:58:04'),
+(143, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:43:04'),
+(144, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:43:14'),
+(145, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:44:01'),
+(146, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:44:08');
 
 -- --------------------------------------------------------
 
@@ -6808,16 +6814,19 @@ CREATE TABLE `sim_intento_tipoherencias` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `sim_marco_legal`
+-- Estructura de tabla para la tabla `sim_marco_legals`
 --
 
-CREATE TABLE `sim_marco_legal` (
+CREATE TABLE `sim_marco_legals` (
   `id` smallint(5) UNSIGNED NOT NULL,
   `titulo` varchar(255) NOT NULL,
   `tipo` enum('Ley','Codigo','Providencia','Gaceta_Oficial','Reglamento') NOT NULL,
   `descripcion` text NOT NULL,
   `url` varchar(500) DEFAULT NULL,
   `estado` enum('Vigente','Derogado') NOT NULL DEFAULT 'Vigente',
+  `orden` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  `fecha_publicacion` date DEFAULT NULL,
+  `numero_gaceta` varchar(100) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -6938,7 +6947,7 @@ CREATE TABLE `user_sessions` (
 
 INSERT INTO `user_sessions` (`id`, `user_id`, `session_id`, `ip_address`, `user_agent`, `last_activity`, `created_at`) VALUES
 (13, 3, 'ql6v922djf20f5k70vt9rgp77m', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 22:58:53', '2026-03-08 22:58:53'),
-(16, 1, '40kttalvsaf1kpj3k04h22p5of', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 01:51:22', '2026-03-09 00:09:29');
+(21, 1, 'mg6nah4vnorhiotqrim15ncekf', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 14:03:18', '2026-03-09 13:44:08');
 
 --
 -- Índices para tablas volcadas
@@ -7591,9 +7600,9 @@ ALTER TABLE `sim_intento_tipoherencias`
   ADD KEY `fk_ith_tipo` (`tipo_herencia_id`);
 
 --
--- Indices de la tabla `sim_marco_legal`
+-- Indices de la tabla `sim_marco_legals`
 --
-ALTER TABLE `sim_marco_legal`
+ALTER TABLE `sim_marco_legals`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -7637,7 +7646,7 @@ ALTER TABLE `user_sessions`
 -- AUTO_INCREMENT de la tabla `bitacora_accesos`
 --
 ALTER TABLE `bitacora_accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=147;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -8126,9 +8135,9 @@ ALTER TABLE `sim_intento_tipoherencias`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `sim_marco_legal`
+-- AUTO_INCREMENT de la tabla `sim_marco_legals`
 --
-ALTER TABLE `sim_marco_legal`
+ALTER TABLE `sim_marco_legals`
   MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -8153,7 +8162,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `user_sessions`
 --
 ALTER TABLE `user_sessions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Restricciones para tablas volcadas

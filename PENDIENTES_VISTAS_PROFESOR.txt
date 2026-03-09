@@ -1,0 +1,94 @@
+============================================================
+  PENDIENTES — VISTAS DEL PROFESOR
+  Fecha: 2026-03-09
+============================================================
+
+═══════════════════════════════════════════════════════════
+ 1. VISTA FALTANTE: DETALLE DE INTENTO
+═══════════════════════════════════════════════════════════
+  Archivos por crear:
+    - resources/views/professor/detalle_intento.php
+    - public/assets/css/professor/detalle_intento.css
+    - Ruta: /detalle-intento/{id} en routes/web.php
+
+  Debe contener:
+    - Breadcrumb: Entregas > Estudiante > Intento #N
+    - Resumen del intento (caso, estudiante, fecha envío, estado)
+    - Comparación lado a lado: datos del estudiante vs datos correctos del caso
+    - Sección de calificación: campo de nota (0-20), textarea de observaciones
+    - Botón "Calificar" (placeholder por ahora)
+    - Si ya está calificado: mostrar nota, observaciones, fecha de evaluación
+    - Historial de intentos previos del mismo estudiante en el mismo caso
+
+
+═══════════════════════════════════════════════════════════
+ 2. FUNCIONALIDAD JS PENDIENTE EN VISTAS YA CREADAS
+═══════════════════════════════════════════════════════════
+
+  2.1  Generación de R.S. (generacion_rs.php)
+    - [ ] AJAX real para aprobar/rechazar solicitudes (ahora usa alert())
+    - [ ] Filtros de toolbar funcionales (sección, caso, estado)
+    - [ ] Búsqueda por nombre de estudiante
+    - [ ] Paginación funcional
+
+  2.2  Mis Estudiantes (mis_estudiantes.php)
+    - [ ] Búsqueda por nombre de estudiante
+    - [ ] Filtro por sección funcional
+    - [ ] Filtro por actividad funcional
+    - [ ] Paginación funcional
+
+  2.3  Detalle Estudiante (detalle_estudiante.php)
+    - [ ] Recibir ID del estudiante real desde la ruta y cargar datos dinámicos
+    - [ ] Enlace "Ver" en entregas debe llevar al detalle_intento real
+
+  2.4  Calificaciones (calificaciones.php)
+    - [ ] Cambio de sección vía AJAX (recargar tabla de notas sin recargar página)
+    - [ ] Filtro por caso funcional
+    - [ ] Exportar a Excel/PDF (botón deshabilitado actualmente)
+
+  2.5  Historial (historial.php)
+    - [ ] Filtro por tipo de evento funcional
+    - [ ] Filtro por rango de fechas funcional
+    - [ ] Botón "Cargar más" funcional (paginación infinita o paginada)
+    - [ ] Enlace "Ver" debe llevar al recurso correspondiente según tipo de evento
+
+
+═══════════════════════════════════════════════════════════
+ 3. INTEGRACIÓN CON BACKEND (Datos Reales)
+═══════════════════════════════════════════════════════════
+  Todas las vistas actualmente usan datos placeholder en PHP.
+  Pendiente conectar con la BD real:
+
+    - [ ] Generación R.S.: consultar tabla de solicitudes de RIF Sucesoral
+    - [ ] Mis Estudiantes: consultar estudiantes por secciones del profesor
+    - [ ] Detalle Estudiante: consultar entregas/intentos por estudiante_id
+    - [ ] Calificaciones: consultar notas por sección y caso (mejor intento)
+    - [ ] Historial: consultar log de acciones del profesor
+    - [ ] Detalle Intento: consultar intento específico con datos del caso
+
+
+═══════════════════════════════════════════════════════════
+ 4. SIDEBAR — LINKS RESTANTES (NO son vistas del profesor)
+═══════════════════════════════════════════════════════════
+  Los siguientes links del sidebar del profesor siguen apuntando a "#":
+
+    - Estadísticas (sección REPORTES) → href="#"
+      Ruta sugerida: /estadisticas
+
+  NOTA: Los links de Generación R.S., Entregas, Historial,
+  Mis Estudiantes, Calificaciones y Marco Legal ya están funcionales.
+
+
+═══════════════════════════════════════════════════════════
+ 5. POSIBLES MEJORAS DE UX / VISUAL
+═══════════════════════════════════════════════════════════
+    - [ ] Ordenamiento de columnas funcional (click en headers "sortable")
+          en todas las tablas (data-sort ya está en el HTML, falta el JS)
+    - [ ] Empty states: verificar que se muestran correctamente
+          cuando no hay datos en cada vista
+    - [ ] Responsive: verificar todas las vistas en pantallas < 768px
+    - [ ] Accesibilidad: aria-labels en botones de acción e iconos
+    - [ ] Tooltips en botones como aprobar/rechazar
+    - [ ] Animaciones de entrada (animate-in) — actualmente la clase
+          está puesta pero sin CSS animation definido, verificar si
+          animation.css o similar lo maneja

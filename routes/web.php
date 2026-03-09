@@ -242,6 +242,51 @@ $router->get('/entregas', function () use ($app, $requireAuth, $requireRole) {
     ]);
 });
 
+// Marco Legal (Compartido: Profesor + Estudiante)
+$router->get('/marco-legal', function () use ($app, $requireAuth) {
+    $requireAuth();
+    $role = (int) ($_SESSION['role_id'] ?? 3);
+    if (!in_array($role, [2, 3])) {
+        header('Location: ' . base_url('/home'));
+        exit;
+    }
+    return $app->view('shared/marco_legal');
+});
+
+// Generación de R.S. (Profesor)
+$router->get('/generacion-rs', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return $app->view('professor/generacion_rs');
+});
+
+// Mis Estudiantes (Profesor)
+$router->get('/mis-estudiantes', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return $app->view('professor/mis_estudiantes');
+});
+
+$router->get('/mis-estudiantes/{id}', function ($id) use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return $app->view('professor/detalle_estudiante');
+});
+
+// Calificaciones (Profesor)
+$router->get('/calificaciones', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return $app->view('professor/calificaciones');
+});
+
+// Historial (Profesor)
+$router->get('/historial', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return $app->view('professor/historial');
+});
+
 // API: Guardar/Publicar caso
 $router->post('/api/casos', function () use ($requireAuth, $requireRole) {
     $requireAuth();
