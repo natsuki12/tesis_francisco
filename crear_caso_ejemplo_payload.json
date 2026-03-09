@@ -17,7 +17,6 @@
       "premuerto_padre_id usa _ref_index (índice zero-based del array herederos). El backend resuelve al ID real de sim_caso_participantes."
     ]
   },
-
   "caso": {
     "_tabla": "sim_casos_estudios",
     "titulo": "Sucesión Ab-Intestato - Familia Pérez Rodríguez",
@@ -27,16 +26,6 @@
     "_nota_ut": "El backend resuelve unidad_tributaria_id automáticamente: SELECT id FROM sim_cat_unidades_tributarias WHERE anio = YEAR(acta_defuncion.fecha_fallecimiento). Si el profesor necesita sobrescribirla, se puede enviar explícitamente.",
     "estado": "Borrador"
   },
-
-  "config": {
-    "_tabla": "sim_caso_configs",
-    "_nota": "profesor_id se toma de sesión. caso_id se genera en Paso 2.",
-    "modalidad": "Evaluacion",
-    "max_intentos": 3,
-    "fecha_limite": "2026-04-15T23:59:00",
-    "estudiantes_asignados": [1, 3, 5, 6, 8]
-  },
-
   "tipos_herencia": {
     "_tabla": "sim_caso_tipoherencia_rel",
     "_nota": "Un registro por cada tipo. campos condicionales son NULL si no aplican al tipo.",
@@ -55,7 +44,6 @@
       }
     ]
   },
-
   "causante": {
     "_tabla": "sim_personas",
     "_nota": "created_by = profesor_id de sesión. Si tipo_sucesion='Sin_Cedula', tipo_cedula='No_Aplica' y cedula=null.",
@@ -70,14 +58,12 @@
     "fecha_nacimiento": "1955-03-12",
     "nacionalidad": 1
   },
-
   "causante_fiscal": {
     "_tabla": "sim_causante_datos_fiscales",
     "_nota": "sim_persona_id = causante_id generado en Paso 1.",
     "domiciliado_pais": 1,
     "fecha_cierre_fiscal": "2025-11-20"
   },
-
   "acta_defuncion": {
     "_tabla": "sim_actas_defunciones",
     "_nota_condicional": "Los campos obligatorios dependen de caso.tipo_sucesion. Ver ejemplos A y B.",
@@ -101,7 +87,6 @@
     "year_acta": null,
     "parroquia_registro_id": null
   },
-
   "domicilio_causante": {
     "_tabla": "sim_persona_direcciones",
     "_nota": "sim_persona_id = causante_id. Valores ENUM deben coincidir exactamente con la BD (capitalizados, con guion bajo).",
@@ -124,11 +109,11 @@
     "fax": null,
     "punto_referencia": "Frente al Parque Los Caobos, edificio de fachada azul"
   },
-
   "representante": {
     "_tabla": "sim_personas",
-    "_nota": "Se inserta como persona independiente. representante_id en sim_casos_estudios apunta a este registro. Si comparte cédula con un heredero, se crean registros separados en sim_personas.",
-    "tipo_cedula": "V",
+    "_nota": "Se inserta como persona independiente. representante_id en sim_casos_estudios apunta a este registro. El backend espera tipo_cedula='Cédula'|'Rif' y letra_cedula='V'|'E'|'J'|'G' por cómo funciona el frontend.",
+    "tipo_cedula": "Cédula",
+    "letra_cedula": "V",
     "cedula": "15789432",
     "pasaporte": null,
     "rif_personal": null,
@@ -139,7 +124,6 @@
     "fecha_nacimiento": "1980-07-25",
     "nacionalidad": 1
   },
-
   "herederos": {
     "_tabla_persona": "sim_personas",
     "_tabla_participante": "sim_caso_participantes",
@@ -228,7 +212,6 @@
       }
     ]
   },
-
   "bienes_inmuebles": {
     "_tabla": "sim_caso_bienes_inmuebles",
     "_tabla_tipos": "sim_caso_bien_inmueble_tipo_rel (M:N — un inmueble puede tener varios tipos)",
@@ -236,7 +219,9 @@
     "_nota_v3": "tipo_bien_inmueble_id (singular) fue reemplazado por tipos_bien_inmueble_ids (array). El backend inserta un registro en sim_caso_bien_inmueble_tipo_rel por cada ID del array.",
     "items": [
       {
-        "tipos_bien_inmueble_ids": [4],
+        "tipos_bien_inmueble_ids": [
+          4
+        ],
         "es_vivienda_principal": true,
         "es_bien_litigioso": false,
         "porcentaje": 100.00,
@@ -260,7 +245,10 @@
         "litigioso": null
       },
       {
-        "tipos_bien_inmueble_ids": [2, 7],
+        "tipos_bien_inmueble_ids": [
+          2,
+          7
+        ],
         "_nota_tipos_multiples": "Ejemplo de inmueble con dos tipos simultáneos: Apartamento (2) + Local Comercial (7). El backend inserta 2 registros en sim_caso_bien_inmueble_tipo_rel.",
         "es_vivienda_principal": false,
         "es_bien_litigioso": true,
@@ -291,7 +279,6 @@
       }
     ]
   },
-
   "bienes_muebles": {
     "_tabla_base": "sim_caso_bienes_muebles",
     "_tablas_detalle": "sim_caso_bm_{categoria} según categoria_bien_mueble_id",
@@ -496,7 +483,6 @@
       }
     ]
   },
-
   "pasivos_deuda": {
     "_tabla": "sim_caso_pasivos_deuda",
     "items": [
@@ -518,7 +504,6 @@
       }
     ]
   },
-
   "pasivos_gastos": {
     "_tabla": "sim_caso_pasivos_gastos",
     "items": [
@@ -536,7 +521,6 @@
       }
     ]
   },
-
   "exenciones": {
     "_tabla": "sim_caso_exenciones",
     "items": [
@@ -547,12 +531,10 @@
       }
     ]
   },
-
   "exoneraciones": {
     "_tabla": "sim_caso_exoneraciones",
     "items": []
   },
-
   "prorrogas": {
     "_tabla": "sim_caso_prorrogas",
     "items": [
