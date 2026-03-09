@@ -95,10 +95,11 @@ class DB
                 echo "</div>";
                 exit; // Detener ejecución
             } else {
+                // MODO PRODUCCIÓN: Nunca revelar detalles técnicos al usuario
                 http_response_code(500);
                 header('Content-Type: application/json');
-                echo json_encode(['success' => false, 'message' => 'DB Connection Error: ' . $e->getMessage()]);
-                exit; // Detener ejecución
+                echo json_encode(['success' => false, 'message' => 'Error interno del servidor. Intente más tarde.']);
+                exit;
             }
         }
     }

@@ -3,25 +3,32 @@ tesis_francisco/
     .env.example
     .gitignore
     .htaccess
-    ProfesorAutorizado.php
     README.md
     composer.json
     composer.lock
+    crear_caso_ejemplo_payload.json
     estructura_actual.txt
     gen_tree.py
     generate_pass.py
     readme.txt
-    spdss.sql
     public/
         .htaccess
         index.php
         assets/
             css/
+                base.css
+                admin/
+                    configuracion.css
+                    dashboard.css
+                    home_admin.css
                 auth/
                     login.css
                     password_recovery.css
                     progress-bar-register.css
                     register.css
+                global/
+                    components.css
+                    toast.css
                 landing/
                     landing.css
                 partials/
@@ -30,6 +37,12 @@ tesis_francisco/
                     logged/
                         header_logged.css
                         sidebar_logged.css
+                professor/
+                    casos_sucesorales.css
+                    crear_caso.css
+                    entregas.css
+                    gestionar_caso.css
+                    home_professor.css
                 simulator/
                     legacy/
                         consulta_rif.css
@@ -49,6 +62,7 @@ tesis_francisco/
                 logos/
                     Logo-SENIAT-principal.png
                     logo-unimar.png
+                professor/
                 seniat-portal/
                     seniat-portal-banner-header.jpg
                     seniat-portal-banner-islr.png
@@ -93,8 +107,32 @@ tesis_francisco/
                     servicios_declaracion/
                         asset_3.png
             js/
+                admin/
+                    home_admin.js
                 auth/
                     register.js
+                global/
+                    catalogos.js
+                    core_modals.js
+                    modal.js
+                    modals_ajax.js
+                    sanitize.js
+                    utils.js
+                professor/
+                    home_professor.js
+                    crear_caso/
+                        direccion.js
+                        herederos.js
+                        inventario.js
+                        main.js
+                        modal.js
+                        navigation.js
+                        prorroga.js
+                        state.js
+                        summary.js
+                    gestionar_caso/
+                        asignaciones.js
+                        gestionar_caso.js
                 simulator/
                     legacy/
                         consulta_rif.js
@@ -103,6 +141,22 @@ tesis_francisco/
                         step_01_seniat_index.js
     resources/
         views/
+            admin/
+                academico/
+                    gestionar_periodos.php
+                    gestionar_secciones.php
+                configuracion/
+                    catalogos.php
+                    marco_legal.php
+                    parametros.php
+                dashboard/
+                    home_admin.php
+                monitoreo/
+                    bitacora.php
+                    reportes.php
+                usuarios/
+                    gestionar_estudiantes.php
+                    gestionar_profesores.php
             auth/
                 _progress-bar-register.php
                 login.php
@@ -110,17 +164,25 @@ tesis_francisco/
                 register.php
                 register_part_2.php
                 register_part_3.php
+            errors/
+                404.php
             landing/
                 landing.php
             layouts/
                 guest.php
-                student_layout.php
+                logged_layout.php
             partials/
                 guest/
                     header_guest.php
                 logged/
                     header_logged.php
                     sidebar_logged.php
+            professor/
+                casos_sucesorales.php
+                crear_caso.php
+                entregas.php
+                gestionar_caso.php
+                home_professor.php
             simulator/
                 legacy/
                     consulta_rif.php
@@ -133,9 +195,15 @@ tesis_francisco/
                 home_st.php
     routes/
         web.php
+    spdss db info schema/
+        relaciones de spdss.txt
+        spdd_documentacion.md
+        spdss create tables.txt
+        spdss.sql
     src/
         Core/
             App.php
+            BitacoraModel.php
             Controller.php
             Csrf.php
             DB.php
@@ -143,6 +211,23 @@ tesis_francisco/
             Router.php
             helpers.php
         Modules/
+            Admin/
+                Controllers/
+                    Academico/
+                        PeriodosController.php
+                        SeccionesController.php
+                    Configuracion/
+                        CatalogosController.php
+                        MarcoLegalController.php
+                        ParametrosController.php
+                    Monitoreo/
+                        BitacoraController.php
+                        ReportesController.php
+                    Usuarios/
+                        EstudiantesController.php
+                        ProfesoresController.php
+                Models/
+                Services/
             Auth/
                 Controllers/
                     LoginController.php
@@ -152,12 +237,45 @@ tesis_francisco/
                     LoginModel.php
                     PasswordRecoveryModel.php
                     RegisterModel.php
+                    UserSessionModel.php
                 Services/
                     LoginService.php
                     PasswordRecoveryService.php
                     RegisterService.php
-            prueba/
-                PruebaController.php
+            Professor/
+                Controllers/
+                    Asignaciones/
+                        AsignacionesController.php
+                    Casos/
+                        CasosController.php
+                    Crear_Caso/
+                        CatalogController.php
+                        Direcciones/
+                            LocationController.php
+                Helpers/
+                    ConfigRulesHelper.php
+                Models/
+                    HomeProfessorModel.php
+                    Asignaciones/
+                        AsignacionesModel.php
+                    Casos/
+                        CasosModel.php
+                        GestionarCasoModel.php
+                        StoreCasoModel.php
+                    Crear_Caso/
+                        CatalogModel.php
+                        Direcciones/
+                            DireccionesModel.php
+                Services/
+                    Crear_Caso/
+                        Direcciones/
+                Validators/
+                    CasoValidator.php
+            Simulator/
+            Student/
+                Controllers/
+                Models/
+                Services/
     storage/
         logs/
             app_errors.log

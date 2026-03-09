@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-03-2026 a las 20:59:42
+-- Tiempo de generación: 09-03-2026 a las 06:55:35
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -149,7 +149,40 @@ INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento
 (104, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:48:38'),
 (105, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:49:01'),
 (106, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:50:06'),
-(107, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:51:57');
+(107, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:51:57'),
+(108, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 20:25:39'),
+(109, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 20:25:46'),
+(110, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 20:25:46'),
+(111, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 20:27:21'),
+(112, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 20:27:21'),
+(113, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 01:50:59'),
+(114, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 01:50:59'),
+(115, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:53:33'),
+(116, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:53:43'),
+(117, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:53:44'),
+(118, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:53:50'),
+(119, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:54:49'),
+(120, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:54:57'),
+(121, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:55:01'),
+(122, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:55:18'),
+(123, NULL, 'cardierv@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-09 02:58:42'),
+(124, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-09 02:58:53'),
+(125, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:04:12'),
+(126, NULL, 'admin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:09:33'),
+(127, NULL, 'admin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:09:43'),
+(128, NULL, 'admin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:09:53'),
+(129, NULL, 'superadmin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:10:15'),
+(130, NULL, 'superadmin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:10:27'),
+(131, NULL, 'superadmin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:11:44'),
+(132, 6, 'superadmin@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:12:00'),
+(133, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:16:03'),
+(134, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:16:15'),
+(135, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 04:09:29'),
+(136, 6, 'superadmin@unimar.edu.ve', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:12:13'),
+(137, 6, 'superadmin@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:12:13'),
+(138, 6, 'superadmin@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:02'),
+(139, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:08'),
+(140, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:08');
 
 -- --------------------------------------------------------
 
@@ -5075,8 +5108,8 @@ INSERT INTO `sim_casos_estudios` (`id`, `profesor_id`, `causante_id`, `represent
 (2, 1, 1, 3, 24, 'Con_Cedula', 'caso 2', 'prueba', 'Publicado', NULL, '2026-03-05 21:01:35', '2026-03-07 19:12:09'),
 (3, 1, NULL, NULL, NULL, 'Con_Cedula', 'este ', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"este \",\"descripcion\":\"\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":3,\"config\":{\"modalidad\":\"\",\"max_intentos\":0,\"fecha_limite\":\"\",\"tipo_asignacion\":\"Seccion\",\"seccion_id\":\"\"},\"herencia\":{\"tipos\":[]},\"causante\":{\"tipo_cedula\":\"E\",\"sexo\":\"\",\"estado_civil\":\"\",\"nacionalidad\":\"\",\"cedula\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"fecha_nacimiento\":\"\",\"fecha_fallecimiento\":\"\"},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"domicilio_causante\":{\"tipo_direccion\":\"Casa_Matriz_Establecimiento_Principal\",\"tipo_vialidad\":\"\",\"tipo_inmueble\":\"\",\"nombre_vialidad\":\"\",\"nro_inmueble\":\"\",\"tipo_nivel\":\"\",\"tipo_sector\":\"\",\"nro_nivel\":\"\",\"nombre_sector\":\"\",\"estado\":\"\",\"municipio\":\"\",\"parroquia\":\"\",\"ciudad\":\"\",\"telefono_fijo\":\"\",\"telefono_celular\":\"\",\"fax\":\"\",\"codigo_postal_id\":\"\",\"punto_referencia\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"\",\"nombres\":\"finalmenter\",\"apellidos\":\"diaz\",\"sexo\":\"\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nacionalidad\":\"\"},\"herederos\":[{\"nombres\":\"Valeria\",\"apellidos\":\"Cardier\",\"tipo_documento\":\"RIF\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2026-03-12\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"17\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2026-04-02\"}],\"herederos_premuertos\":[],\"bienes_inmuebles\":[],\"bienes_muebles\":{\"length\":0},\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorroga\":{\"fecha_solicitud\":\"\",\"nro_resolucion\":\"67\",\"fecha_resolucion\":\"\",\"plazo_dias\":\"\",\"fecha_vencimiento\":\"\"},\"prorrogas\":[],\"estudiantes_asignados\":[]}', '2026-03-05 21:09:30', '2026-03-06 19:29:15'),
 (4, 1, NULL, NULL, NULL, 'Con_Cedula', 'test', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"test\",\"descripcion\":\"\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":4,\"config\":{\"modalidad\":\"\",\"max_intentos\":0,\"fecha_limite\":\"\",\"tipo_asignacion\":\"Seccion\",\"seccion_id\":\"\"},\"herencia\":{\"tipos\":[]},\"causante\":{\"tipo_cedula\":\"V\",\"sexo\":\"F\",\"estado_civil\":\"Soltero\",\"nacionalidad\":190,\"cedula\":\"4079920\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"Maria\",\"apellidos\":\"Sarmiento\",\"fecha_nacimiento\":\"2001-05-29\",\"fecha_fallecimiento\":\"2024-03-28\",\"_locked_fields\":[],\"persona_id\":1},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"sexo\":\"M\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nacionalidad\":190,\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"nacionalidad\"],\"persona_id\":3},\"herederos\":[{\"persona_id\":\"2\",\"nombres\":\"jesus\",\"apellidos\":\"estanga\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"4224014\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2019-03-01\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"17\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2017-03-02\"}],\"herederos_premuertos\":[],\"bienes_inmuebles\":[],\"bienes_muebles\":{\"length\":0},\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorrogas\":[],\"estudiantes_asignados\":[]}', '2026-03-07 05:22:36', '2026-03-07 05:27:10'),
-(10, 1, 1, 3, 24, 'Con_Cedula', 'caso 1', 'prueba', 'Inactivo', NULL, '2026-03-07 07:12:52', '2026-03-08 02:28:40'),
-(11, 1, 8, 9, NULL, 'Sin_Cedula', '3', 'Descripcion de prueba para caso sin cedula', 'Publicado', NULL, '2026-03-08 02:28:25', '2026-03-08 03:33:25');
+(10, 1, 1, 3, 24, 'Con_Cedula', 'caso 1', 'prueba', 'Publicado', NULL, '2026-03-07 07:12:52', '2026-03-08 20:40:34'),
+(11, 1, 8, 9, NULL, 'Sin_Cedula', '3', 'Descripcion de prueba para caso sin cedula', 'Publicado', NULL, '2026-03-08 02:28:25', '2026-03-09 05:27:03');
 
 -- --------------------------------------------------------
 
@@ -5099,14 +5132,12 @@ CREATE TABLE `sim_caso_asignaciones` (
 
 INSERT INTO `sim_caso_asignaciones` (`id`, `config_id`, `estudiante_id`, `created_at`, `estado`, `fecha_completado`) VALUES
 (1, 5, 1, '2026-03-07 07:12:52', 'Pendiente', NULL),
-(2, 5, 2, '2026-03-07 07:12:52', 'Pendiente', NULL),
 (3, 5, 3, '2026-03-07 07:12:52', 'Pendiente', NULL),
 (4, 5, 4, '2026-03-07 07:12:52', 'Pendiente', NULL),
 (5, 6, 1, '2026-03-07 19:12:09', 'Pendiente', NULL),
 (6, 6, 2, '2026-03-07 19:12:09', 'Pendiente', NULL),
 (7, 6, 3, '2026-03-07 19:12:09', 'Pendiente', NULL),
 (8, 6, 4, '2026-03-07 19:12:09', 'Pendiente', NULL),
-(9, 7, 1, '2026-03-08 03:33:25', 'Pendiente', NULL),
 (10, 7, 2, '2026-03-08 03:33:25', 'Pendiente', NULL),
 (11, 7, 3, '2026-03-08 03:33:25', 'Pendiente', NULL),
 (12, 7, 4, '2026-03-08 03:33:25', 'Pendiente', NULL);
@@ -5583,7 +5614,9 @@ CREATE TABLE `sim_caso_configs` (
   `profesor_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Profesor que creó la asignación',
   `modalidad` enum('Practica_Libre','Evaluacion') NOT NULL,
   `max_intentos` tinyint(3) UNSIGNED NOT NULL DEFAULT 0 COMMENT '0 = ilimitados',
+  `fecha_apertura` timestamp NULL DEFAULT NULL COMMENT 'Fecha desde la cual los estudiantes pueden iniciar intentos',
   `fecha_limite` timestamp NULL DEFAULT NULL COMMENT 'Solo aplica si modalidad = Evaluacion',
+  `status` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo' COMMENT 'Inactivo cuando tiene intentos y el profesor quiere deshabilitarla',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -5592,10 +5625,10 @@ CREATE TABLE `sim_caso_configs` (
 -- Volcado de datos para la tabla `sim_caso_configs`
 --
 
-INSERT INTO `sim_caso_configs` (`id`, `caso_id`, `profesor_id`, `modalidad`, `max_intentos`, `fecha_limite`, `created_at`, `updated_at`) VALUES
-(5, 10, 1, 'Evaluacion', 2, '2026-05-30 04:25:00', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
-(6, 2, 1, 'Practica_Libre', 2, '2026-04-30 04:25:00', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
-(7, 11, 1, 'Practica_Libre', 3, NULL, '2026-03-08 03:33:25', '2026-03-08 03:33:25');
+INSERT INTO `sim_caso_configs` (`id`, `caso_id`, `profesor_id`, `modalidad`, `max_intentos`, `fecha_apertura`, `fecha_limite`, `status`, `created_at`, `updated_at`) VALUES
+(5, 10, 1, 'Evaluacion', 2, NULL, '2026-05-30 04:25:00', 'Activo', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(6, 2, 1, 'Practica_Libre', 2, NULL, '2026-04-30 04:25:00', 'Activo', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(7, 11, 1, 'Evaluacion', 3, '2026-03-09 02:39:00', '2026-03-19 02:39:00', 'Activo', '2026-03-08 03:33:25', '2026-03-09 02:40:37');
 
 -- --------------------------------------------------------
 
@@ -6775,6 +6808,23 @@ CREATE TABLE `sim_intento_tipoherencias` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sim_marco_legal`
+--
+
+CREATE TABLE `sim_marco_legal` (
+  `id` smallint(5) UNSIGNED NOT NULL,
+  `titulo` varchar(255) NOT NULL,
+  `tipo` enum('Ley','Codigo','Providencia','Gaceta_Oficial','Reglamento') NOT NULL,
+  `descripcion` text NOT NULL,
+  `url` varchar(500) DEFAULT NULL,
+  `estado` enum('Vigente','Derogado') NOT NULL DEFAULT 'Vigente',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `sim_personas`
 --
 
@@ -6864,7 +6914,7 @@ INSERT INTO `users` (`id`, `persona_id`, `role_id`, `email`, `password`, `status
 (3, 3, 3, 'cardierv@gmail.com', '$2y$10$ZbEymi1ldw5.s46K0t4cdOOCS5EAVPntryBTZCx2ozNskNLTjpMtq', 'active', '2026-02-11 05:13:38', '2026-02-11 05:13:38'),
 (4, 4, 3, 'vcardier.0479@unimar.edu.ve', '$2y$10$KRc/FlxyrUVWliVPC13RK.Vuak8bRsta4f16HeHlXBhovaT5b93r6', 'active', '2026-02-12 18:08:20', '2026-02-12 18:08:20'),
 (5, 5, 3, 'valefrancardiaz@gmail.com', '$2y$10$JCFra4N/FFLg3zA66srZeOWbVXPdaz9m8A8ctl4c0aVosYhzS1SYm', 'active', '2026-02-12 18:10:33', '2026-02-12 18:10:33'),
-(6, 6, 1, 'superadmin@unimar.edu.ve', '$2b$12$DBCRoldI2.DRiUFC.m0VqeIMBVU2PgoWcDQrz6MiJb8xBL1DpxCJW', 'active', '2026-02-23 04:45:28', '2026-02-23 04:46:06');
+(6, 6, 1, 'superadmin@unimar.edu.ve', '$2b$12$MkQGYT/hI/gXvGe.ItqZyuLdEQxN3oFr64c7SDvVdmOnbH1pR8p4C', 'active', '2026-02-23 04:45:28', '2026-03-09 03:11:16');
 
 -- --------------------------------------------------------
 
@@ -6887,8 +6937,8 @@ CREATE TABLE `user_sessions` (
 --
 
 INSERT INTO `user_sessions` (`id`, `user_id`, `session_id`, `ip_address`, `user_agent`, `last_activity`, `created_at`) VALUES
-(4, 1, '3g00lh5796e94utaqaicg9su3e', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 15:47:56', '2026-03-08 14:50:06'),
-(5, 3, 'uv35t9vcpsd7mfj2chovorb3ao', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 14:52:00', '2026-03-08 14:51:57');
+(13, 3, 'ql6v922djf20f5k70vt9rgp77m', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 22:58:53', '2026-03-08 22:58:53'),
+(16, 1, '40kttalvsaf1kpj3k04h22p5of', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 01:51:22', '2026-03-09 00:09:29');
 
 --
 -- Índices para tablas volcadas
@@ -7541,6 +7591,12 @@ ALTER TABLE `sim_intento_tipoherencias`
   ADD KEY `fk_ith_tipo` (`tipo_herencia_id`);
 
 --
+-- Indices de la tabla `sim_marco_legal`
+--
+ALTER TABLE `sim_marco_legal`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `sim_personas`
 --
 ALTER TABLE `sim_personas`
@@ -7581,7 +7637,7 @@ ALTER TABLE `user_sessions`
 -- AUTO_INCREMENT de la tabla `bitacora_accesos`
 --
 ALTER TABLE `bitacora_accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -8070,6 +8126,12 @@ ALTER TABLE `sim_intento_tipoherencias`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `sim_marco_legal`
+--
+ALTER TABLE `sim_marco_legal`
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `sim_personas`
 --
 ALTER TABLE `sim_personas`
@@ -8091,7 +8153,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `user_sessions`
 --
 ALTER TABLE `user_sessions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Restricciones para tablas volcadas

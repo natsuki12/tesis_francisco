@@ -1,0 +1,21 @@
+PENDIENTES DE SEGURIDAD — Corregir antes de producción
+======================================================
+Fecha: 09/03/2026
+
+1. [CRÍTICO] CSRF en controladores Admin
+   - ProfesoresController.php tiene "// TODO: Validate CSRF and inputs"
+   - Agregar Csrf::verify() al inicio de guardar() y eliminar()
+   - Hacer lo mismo en todos los controllers Admin que procesen POST
+
+2. [CRÍTICO] Rate limiting en Login
+   - Los intentos fallidos se registran en bitácora pero nunca se consultan para bloquear
+   - Implementar: bloquear tras 5 intentos fallidos en 15 min (por email o IP)
+   - Consultar tabla bitacora_accesos antes de procesar el login
+
+3. [MEDIO] Header Content-Security-Policy (CSP)
+   - Agregar en App.php -> sendSecurityHeaders()
+   - Restringe de dónde se puede cargar JS/CSS externo
+
+4. [BAJO] Auditar uso de e() en vistas al conectar backend
+   - Asegurar que todo <?= $variable ?> use <?= e($variable) ?>
+   - Especialmente en vistas admin cuando muestren datos dinámicos de BD
