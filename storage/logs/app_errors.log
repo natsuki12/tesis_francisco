@@ -5304,3 +5304,27 @@ Stack trace:
 [09-Mar-2026 02:11:04 Europe/Berlin] [CRITICAL DB ERROR] SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
 [09-Mar-2026 02:11:18 Europe/Berlin] [CRITICAL DB ERROR] SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
 [09-Mar-2026 02:11:24 Europe/Berlin] [CRITICAL DB ERROR] SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[09-Mar-2026 04:48:27 Europe/Berlin] PHP Warning:  require(C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard/../../layouts/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard\home_admin.php on line 276
+[09-Mar-2026 04:48:27 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard/../../layouts/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard\home_admin.php:276
+[09-Mar-2026 04:48:27 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(92): App\Core\App->view('admin/dashboard...')
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/home')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[09-Mar-2026 04:48:27 Europe/Berlin] PHP Warning:  require(C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard/../../layouts/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard\home_admin.php on line 276
+[09-Mar-2026 04:48:27 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard/../../layouts/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard\home_admin.php:276
+[09-Mar-2026 04:48:27 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(92): App\Core\App->view('admin/dashboard...')
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/home')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}
+[09-Mar-2026 04:48:29 Europe/Berlin] PHP Warning:  require(C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard/../../layouts/admin_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard\home_admin.php on line 276
+[09-Mar-2026 04:48:29 Europe/Berlin] [CRITICAL] Failed opening required 'C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard/../../layouts/admin_layout.php' (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard\home_admin.php:276
+[09-Mar-2026 04:48:29 Europe/Berlin] #0 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(92): App\Core\App->view('admin/dashboard...')
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/home')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(17): App\Core\App->run()
+#5 {main}

@@ -89,9 +89,15 @@ $router->get('/home', function () use ($app, $requireAuth) {
         ]);
     }
     return match ($role) {
-        1 => $app->view('admin/home_admin'),
+        1 => $app->view('admin/dashboard/home_admin'),
         default => $app->view('student/home_st'),
     };
+});
+
+$router->get('/admin', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return $app->view('admin/dashboard/home_admin');
 });
 
 $router->get('/simulador_inicio', function () use ($app, $requireAuth) {
