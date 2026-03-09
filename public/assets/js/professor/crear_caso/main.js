@@ -68,8 +68,8 @@ async function submitCase(modo) {
 import { renderHerenciaCheckboxes, initRepresentanteLogic, renderHerederos, renderHerederosPremuertos } from './herederos.js';
 import { fetchEstados, initAddressListeners, saveDireccion, renderDirecciones, editDireccion, deleteDireccion, restoreAddressCascade } from './direccion.js';
 import { initStepperClicks, setStep, nextStep, prevStep } from './navigation.js';
-import { initStudentSearch } from './summary.js';
-import { initCatalogos, getCatalogs, loadSeccionesSelect } from '../../global/catalogos.js';
+
+import { initCatalogos, getCatalogs } from '../../global/catalogos.js';
 import { openModal, closeModal, saveModal, removeItem, removeMueble } from './modal.js';
 import { saveProrroga, renderProrrogas, deleteProrroga, editProrroga } from './prorroga.js';
 import { renderInventario } from './inventario.js';
@@ -136,14 +136,10 @@ function applyConstraints(container) {
     });
 
     // — Enteros sin decimales (bloquear . , e) —
-    ['config.max_intentos', 'anio', 'numero_bonos', 'cantidad'].forEach(name => {
+    ['anio', 'numero_bonos', 'cantidad'].forEach(name => {
         const el = constrain(sel(name));
         if (!el) return;
-        if (name === 'config.max_intentos') {
-            el.setAttribute('step', '1');
-            el.setAttribute('min', '0');
-            el.setAttribute('max', '99');
-        }
+
         if (name === 'anio') {
             el.setAttribute('min', '1900');
             el.setAttribute('max', new Date().getFullYear().toString());
@@ -566,23 +562,7 @@ function validateBeforePublish() {
     const tieneMuebles = Object.values(c.bienes_muebles).some(arr => Array.isArray(arr) && arr.length > 0);
     if (!tieneInmuebles && !tieneMuebles) errors.push('Al menos un bien (inmueble o mueble)');
 
-    // Config
-    if (!c.config.modalidad) errors.push('Modalidad de asignación');
-    const maxInt = c.config.max_intentos;
-    if (maxInt === '' || maxInt === null || parseInt(maxInt) < 0)
-        errors.push('Número máximo de intentos (no puede ser negativo)');
-    else if (String(maxInt).includes('.') || !Number.isInteger(Number(maxInt)))
-        errors.push('Número máximo de intentos debe ser un número entero');
-    else if (parseInt(maxInt) > 99)
-        errors.push('Número máximo de intentos no puede exceder 99');
-    if (!c.config.tipo_asignacion) errors.push('Tipo de asignación');
-    if (c.config.tipo_asignacion === 'Seccion' && !c.config.seccion_id) errors.push('Sección asignada');
-    if (c.config.tipo_asignacion === 'Estudiantes' && !c.estudiantes_asignados.length) errors.push('Al menos un estudiante asignado');
-    // #56 — Fecha límite obligatoria y futura para Evaluación
-    if (c.config.modalidad === 'Evaluacion' && !c.config.fecha_limite)
-        errors.push('Configuración: La fecha límite es obligatoria para modalidad Evaluación');
-    if (c.config.modalidad === 'Evaluacion' && c.config.fecha_limite && c.config.fecha_limite < new Date().toISOString().slice(0, 10))
-        errors.push('Configuración: La fecha límite debe ser una fecha futura');
+
 
     return errors;
 }
@@ -602,7 +582,7 @@ function showValidationPopup(errors, title = 'No se puede publicar') {
 
     const errorItems = errors.map(e =>
         `<li>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cc-red)" stroke-width="2.5" stroke-linecap="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--red-600)" stroke-width="2.5" stroke-linecap="round">
                 <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
             </svg>
             <span>${e}</span>
@@ -611,17 +591,17 @@ function showValidationPopup(errors, title = 'No se puede publicar') {
 
     overlay.innerHTML = `
         <div class="cc-modal" style="width:520px;">
-            <div class="cc-modal__header" style="border-bottom:1px solid var(--cc-slate-200);padding:20px 24px;">
+            <div class="cc-modal__header" style="border-bottom:1px solid var(--gray-200);padding:20px 24px;">
                 <div style="display:flex;align-items:center;gap:10px;">
-                    <div style="width:40px;height:40px;border-radius:10px;background:var(--cc-red-light);display:flex;align-items:center;justify-content:center;">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--cc-red)" stroke-width="2" stroke-linecap="round">
+                    <div style="width:40px;height:40px;border-radius:10px;background:var(--red-50);display:flex;align-items:center;justify-content:center;">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--red-600)" stroke-width="2" stroke-linecap="round">
                             <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
                             <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
                         </svg>
                     </div>
                     <div>
-                        <h3 style="margin:0;font-size:16px;font-weight:700;color:var(--cc-slate-800);">${title}</h3>
-                        <p style="margin:2px 0 0;font-size:13px;color:var(--cc-slate-500);">Completa los siguientes campos antes de publicar:</p>
+                        <h3 style="margin:0;font-size:16px;font-weight:700;color:var(--gray-800);">${title}</h3>
+                        <p style="margin:2px 0 0;font-size:13px;color:var(--gray-500);">Completa los siguientes campos antes de publicar:</p>
                     </div>
                 </div>
             </div>
@@ -630,7 +610,7 @@ function showValidationPopup(errors, title = 'No se puede publicar') {
                     ${errorItems}
                 </ul>
             </div>
-            <div class="cc-modal__footer" style="padding:16px 24px;border-top:1px solid var(--cc-slate-200);display:flex;justify-content:flex-end;">
+            <div class="cc-modal__footer" style="padding:16px 24px;border-top:1px solid var(--gray-200);display:flex;justify-content:flex-end;">
                 <button class="btn btn-primary" id="ccValidationClose" style="min-width:120px;">Entendido</button>
             </div>
         </div>
@@ -640,7 +620,7 @@ function showValidationPopup(errors, title = 'No se puede publicar') {
 
     // Style the list items
     overlay.querySelectorAll('li').forEach(li => {
-        li.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;background:var(--cc-red-light);font-size:13.5px;color:var(--cc-slate-700);';
+        li.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;background:var(--red-50);font-size:13.5px;color:var(--gray-700);';
     });
 
     // Close handlers
@@ -1225,7 +1205,7 @@ async function init() {
     // 1. Cargar catálogos PRIMERO (antes de bindInputs para que los selects tengan opciones)
     await initCatalogos();
     renderSelects();
-    loadSeccionesSelect();
+
 
     // 2. Ahora bindInputs puede poner valores en selects que ya tienen opciones
     bindInputs();
@@ -1234,7 +1214,7 @@ async function init() {
     initCollapsibles();
     initTabs();
     initStepperClicks();
-    initStudentSearch();
+
     renderHerenciaCheckboxes();
     initRepresentanteLogic();
     initAddressListeners();

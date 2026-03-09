@@ -96,14 +96,12 @@ ob_start();
     <div class="cc-stepper__icon">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round">
-        <circle cx="12" cy="12" r="3" />
-        <path
-          d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+        <polyline points="20 6 9 17 4 12" />
       </svg>
     </div>
     <div class="cc-stepper__label">
-      <span class="cc-stepper__name">Configuración</span>
-      <span class="cc-stepper__sub">Resumen y asignación</span>
+      <span class="cc-stepper__name">Resumen</span>
+      <span class="cc-stepper__sub">Verificación final</span>
     </div>
   </div>
 </div>
@@ -1129,111 +1127,22 @@ ob_start();
 </div>
 
 <!-- =============================================================== -->
-<!-- STEP 3: Configuración y Asignación                              -->
+<!-- STEP 3: Resumen del Caso                                        -->
 <!-- =============================================================== -->
 <div class="cc-step" id="step-3" style="display:none;">
 
-  <!-- Sección 1: Configuración de Asignación (→ sim_caso_configs) -->
+  <!-- Resumen del Caso -->
   <div class="cc-card">
-    <div class="cc-card__header">
-      <div>
-        <h3>Configuración de Asignación</h3>
-        <p>Modalidad, intentos y plazos para los estudiantes</p>
-      </div>
-    </div>
-    <div class="cc-card__body">
-      <div class="cc-grid cc-grid--3">
-        <div class="cc-field">
-          <label>Modalidad</label>
-          <select data-bind="config.modalidad">
-            <option value="">Seleccione...</option>
-            <option value="Practica_Libre">Práctica Libre</option>
-            <option value="Evaluacion">Evaluación</option>
-          </select>
-        </div>
-        <div class="cc-field">
-          <label>Máx. intentos</label>
-          <input type="number" data-bind="config.max_intentos" min="0" max="99" value="0">
-          <span class="cc-hint">0 = ilimitados</span>
-        </div>
-        <div class="cc-field" id="fieldFechaLimite" style="display:none;">
-          <label>Fecha límite</label>
-          <input type="datetime-local" data-bind="config.fecha_limite">
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- Asignación del Caso -->
-  <div class="cc-card">
-    <div class="cc-card__header">
-      <div>
-        <h3>Asignación del Caso</h3>
-        <p>Seleccione los destinatarios a los que se publicará este caso</p>
-      </div>
-    </div>
-    <div class="cc-card__body" style="padding: 0;">
-
-      <!-- Método de Asignación -->
-      <div class="cc-p-4 cc-border-b">
-        <label
-          style="display:block; font-size: 11.5px; font-weight: 600; color: var(--cc-slate-600); text-transform: uppercase; margin-bottom: 10px;">Método
-          de asignación</label>
-        <div class="cc-addr-radios cc-addr-radios--inline" style="justify-content: flex-start;">
-          <label class="cc-radio-pill"><input type="radio" name="tipo_asignacion" value="Seccion"
-              data-bind="config.tipo_asignacion"> Por sección completa</label>
-          <label class="cc-radio-pill"><input type="radio" name="tipo_asignacion" value="Estudiantes"
-              data-bind="config.tipo_asignacion"> Estudiantes específicos</label>
-        </div>
-      </div>
-
-      <div class="cc-p-4" id="bloqueSeccion" style="display:none;">
-        <div class="cc-field">
-          <label>Sección</label>
-          <select data-bind="config.seccion_id" id="selectSeccion" style="max-width: 400px;">
-            <option value="">Cargando secciones...</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="cc-p-4" id="bloqueEstudiantes" style="display:none;">
-        <div class="cc-search-box">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round">
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input type="text" id="studentSearch" placeholder="Buscar por nombre o cédula...">
-        </div>
-        <div class="cc-selected-count" id="selectedCount" style="display:none;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-          </svg>
-          <span id="selectedCountText">0 estudiante(s) seleccionado(s)</span>
-        </div>
-        <div class="cc-students-grid" id="studentsGrid">
-          <!-- Rendered by JS -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Resumen -->
-  <div class="cc-card cc-mt">
     <div class="cc-card__header">
       <div>
         <h3>Resumen del Caso</h3>
-        <p>Verificación final antes de guardar</p>
+        <p>Verificación final antes de publicar</p>
       </div>
     </div>
     <div class="cc-card__body">
       <div class="cc-grid cc-grid--2">
         <div class="cc-summary-list">
           <div class="cc-summary-row"><span>Título</span><strong id="sumTitulo">Sin título</strong></div>
-          <div class="cc-summary-row"><span>Modalidad</span><span id="sumModalidad">—</span></div>
           <div class="cc-summary-row"><span>Causante</span><strong id="sumCausante">Sin definir</strong></div>
           <div class="cc-summary-row"><span>Herederos</span><strong id="sumHerederos">0</strong></div>
           <div class="cc-summary-row"><span>Tipo de Herencia</span><span id="sumHerencia">Sin definir</span></div>

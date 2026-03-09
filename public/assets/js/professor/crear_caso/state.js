@@ -136,23 +136,6 @@ const onStateChange = (prop) => {
     saveCaseData();
     const { $, show, hide } = document.ccHelpers; // Inject helpers for binding
     if (!$) return;
-    const flField = $('#fieldFechaLimite');
-    if (flField) {
-        // Sección 1: modalidad ahora vive en config, no en caso
-        caseData.config.modalidad === 'Evaluacion' ? show(flField) : hide(flField);
-    }
-
-    const bSeccion = $('#bloqueSeccion');
-    const bEstudiantes = $('#bloqueEstudiantes');
-    if (bSeccion && bEstudiantes) {
-        if (caseData.config.tipo_asignacion === 'Seccion') {
-            show(bSeccion);
-            hide(bEstudiantes);
-        } else if (caseData.config.tipo_asignacion === 'Estudiantes') {
-            hide(bSeccion);
-            show(bEstudiantes);
-        }
-    }
 
     const bTipoCedula = $('#campo_tipo_cedula_causante');
     const bCedula = $('#campo_cedula_causante');
@@ -181,14 +164,7 @@ export const caseData = createReactiveState({
     },
     caso_id: null,  // ID del borrador existente (para re-saves)
 
-    // ── Sección 1: Configuración de asignación (→ sim_caso_configs) ──
-    config: {
-        modalidad: '',
-        max_intentos: '0',
-        fecha_limite: '',
-        tipo_asignacion: 'Seccion',
-        seccion_id: ''
-    },
+
 
     // ── Sección 3: Tipos de herencia (→ sim_caso_tipoherencia_rel) ──
     herencia: { tipos: [] },
@@ -262,7 +238,7 @@ export const caseData = createReactiveState({
     },
     prorrogas: [],
 
-    estudiantes_asignados: [],
+
 }, onStateChange);
 
 // Variables that need to be globally mutated

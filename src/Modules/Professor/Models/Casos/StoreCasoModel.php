@@ -129,21 +129,17 @@ class StoreCasoModel
                 }
             }
 
-            // 7. Insertar config (sim_caso_configs)
-            $config = $data['config'] ?? [];
-            $configId = $this->insertConfig($config, $casoId, $profesorId);
-
-            // 8. Insertar tipos de herencia
+            // 7. Insertar tipos de herencia
             $herencia = $data['herencia'] ?? [];
             $this->insertTiposHerencia($herencia['tipos'] ?? [], $casoId);
 
-            // 9. Insertar herederos
+            // 8. Insertar herederos
             $herederoIdMap = []; // _ref_index → sim_caso_participantes.id
             foreach (($data['herederos'] ?? []) as $index => $h) {
                 $herederoIdMap[$index] = $this->insertHeredero($h, $casoId, $profesorId, null);
             }
 
-            // 10. Insertar herederos premuertos (con padre referenciado)
+            // 9. Insertar herederos premuertos (con padre referenciado)
             foreach (($data['herederos_premuertos'] ?? []) as $hp) {
                 $padreRefIndex = $hp['premuerto_padre_id'] ?? null;
                 $padreParticipanteId = null;
@@ -153,12 +149,12 @@ class StoreCasoModel
                 $this->insertHeredero($hp, $casoId, $profesorId, $padreParticipanteId);
             }
 
-            // 11. Insertar bienes inmuebles (array)
+            // 10. Insertar bienes inmuebles (array)
             foreach (($data['bienes_inmuebles'] ?? []) as $bi) {
                 $this->insertBienInmueble($bi, $casoId);
             }
 
-            // 12. Insertar bienes muebles (object con categorías como keys)
+            // 11. Insertar bienes muebles (object con categorías como keys)
             $muebles = $data['bienes_muebles'] ?? [];
             if (is_array($muebles) || is_object($muebles)) {
                 foreach ($muebles as $catId => $items) {
@@ -171,55 +167,33 @@ class StoreCasoModel
                 }
             }
 
-            // 13. Insertar pasivos deuda (array)
+            // 12. Insertar pasivos deuda (array)
             foreach (($data['pasivos_deuda'] ?? []) as $pd) {
                 $this->insertPasivoDeuda($pd, $casoId);
             }
 
-            // 14. Insertar pasivos gastos (array)
+            // 13. Insertar pasivos gastos (array)
             foreach (($data['pasivos_gastos'] ?? []) as $pg) {
                 $this->insertPasivoGasto($pg, $casoId);
             }
 
-            // 15. Insertar exenciones (array)
+            // 14. Insertar exenciones (array)
             foreach (($data['exenciones'] ?? []) as $ex) {
                 $this->insertExencion($ex, $casoId);
             }
 
-            // 16. Insertar exoneraciones (array)
+            // 15. Insertar exoneraciones (array)
             foreach (($data['exoneraciones'] ?? []) as $exo) {
                 $this->insertExoneracion($exo, $casoId);
             }
 
-            // 17. Insertar prórrogas (array)
+            // 16. Insertar prórrogas (array)
             foreach (($data['prorrogas'] ?? []) as $pr) {
                 $this->insertProrroga($pr, $casoId);
             }
 
-            // 18. Insertar asignaciones de estudiantes
-            $tipoAsignacion = $config['tipo_asignacion'] ?? '';
-            $estudianteIds = [];
-
-            if ($tipoAsignacion === 'Seccion') {
-                // Resolver sección → estudiantes inscritos
-                $seccionId = (int) ($config['seccion_id'] ?? 0);
-                if ($seccionId > 0) {
-                    $stmt = $this->db->prepare(
-                        "SELECT estudiante_id FROM inscripciones WHERE seccion_id = :seccion_id"
-                    );
-                    $stmt->execute(['seccion_id' => $seccionId]);
-                    $estudianteIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-                    if (empty($estudianteIds)) {
-                        throw new \RuntimeException('La sección seleccionada no tiene estudiantes inscritos.');
-                    }
-                }
-            } else {
-                // Asignación directa por estudiantes específicos
-                $estudianteIds = $data['estudiantes_asignados'] ?? [];
-            }
-
-            $this->insertAsignaciones($estudianteIds, $configId);
+            // Config y asignaciones se manejan desde Gestionar Caso (no desde Crear Caso)
+            // Las tablas sim_caso_configs y sim_caso_asignaciones quedan vacías al publicar.
 
             // Limpiar borrador_json al publicar
             $this->db->prepare("UPDATE sim_casos_estudios SET borrador_json = NULL WHERE id = :id")

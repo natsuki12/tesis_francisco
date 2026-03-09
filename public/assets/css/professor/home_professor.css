@@ -9,7 +9,6 @@
 
 /* Colors, radius, shadows, transition → inherited from base.css */
 :root {
-    --sidebar-width: 260px;
     --topbar-height: 56px;
 }
 
@@ -331,6 +330,13 @@ body {
     color: #b45309;
 }
 
+.student-status.last-seen {
+    background: var(--gray-100);
+    color: var(--gray-500);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
 /* Activity Feed */
 .activity-item {
     display: flex;
@@ -394,15 +400,14 @@ body {
 }
 
 /* ===== RESPONSIVE ===== */
-
-
+@media (max-width: 1024px) {
     .action-cards {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (max-width: 768px) {`r`n    .bottom-grid {
+@media (max-width: 768px) {
+    .bottom-grid {
         grid-template-columns: 1fr;
     }
 }
-

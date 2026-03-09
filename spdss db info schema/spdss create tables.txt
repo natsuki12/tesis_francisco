@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-03-2026 a las 19:31:14
+-- Tiempo de generación: 08-03-2026 a las 20:59:42
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -141,7 +141,15 @@ INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento
 (96, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:39'),
 (97, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 05:32:59'),
 (98, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:33:48'),
-(99, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:13:44');
+(99, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:13:44'),
+(100, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:44:36'),
+(101, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:46:30'),
+(102, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:46:42'),
+(103, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:48:38'),
+(104, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:48:38'),
+(105, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:49:01'),
+(106, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:50:06'),
+(107, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:51:57');
 
 -- --------------------------------------------------------
 
@@ -5081,7 +5089,7 @@ CREATE TABLE `sim_caso_asignaciones` (
   `config_id` bigint(20) UNSIGNED NOT NULL,
   `estudiante_id` bigint(20) UNSIGNED NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `estado` enum('Pendiente','En_Progreso','Completado','Vencido') NOT NULL DEFAULT 'Pendiente',
+  `estado` enum('Pendiente','En_Progreso','Completado','Vencido','Inactivo') NOT NULL DEFAULT 'Pendiente',
   `fecha_completado` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -6322,7 +6330,8 @@ CREATE TABLE `sim_intentos` (
   `reviewed_at` timestamp NULL DEFAULT NULL COMMENT 'Cuando el profesor revisó',
   `approved_at` timestamp NULL DEFAULT NULL COMMENT 'Cuando se aprobó y generó el RIF',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `fuera_de_fecha` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 si el intento se envió después de la fecha de cierre de la configuración'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Intentos de los estudiantes por caso. Observaciones se sobreescriben. Intentos cancelados incrementan numero_intento.';
 
 -- --------------------------------------------------------
@@ -6872,6 +6881,14 @@ CREATE TABLE `user_sessions` (
   `last_activity` datetime NOT NULL DEFAULT current_timestamp(),
   `created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `user_sessions`
+--
+
+INSERT INTO `user_sessions` (`id`, `user_id`, `session_id`, `ip_address`, `user_agent`, `last_activity`, `created_at`) VALUES
+(4, 1, '3g00lh5796e94utaqaicg9su3e', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 15:47:56', '2026-03-08 14:50:06'),
+(5, 3, 'uv35t9vcpsd7mfj2chovorb3ao', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 14:52:00', '2026-03-08 14:51:57');
 
 --
 -- Índices para tablas volcadas
@@ -7564,7 +7581,7 @@ ALTER TABLE `user_sessions`
 -- AUTO_INCREMENT de la tabla `bitacora_accesos`
 --
 ALTER TABLE `bitacora_accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -8074,7 +8091,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `user_sessions`
 --
 ALTER TABLE `user_sessions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas

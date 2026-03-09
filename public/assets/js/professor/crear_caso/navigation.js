@@ -1,8 +1,8 @@
-import { $, $$, show, hide, formatBs } from '../../global/utils.js';
-import { caseData, UIState, saveCaseData } from './state.js';
+import { $, $$, show, hide } from '../../global/utils.js';
+import { UIState, saveCaseData } from './state.js';
 import { renderHerederos } from './herederos.js';
 import { renderInventario } from './inventario.js';
-import { renderSummary, renderStudents } from './summary.js';
+import { renderSummary } from './summary.js';
 
 export function setStep(n) {
     n = Math.max(0, Math.min(3, n));
@@ -41,7 +41,7 @@ export function setStep(n) {
     // Render dynamic content for current step
     if (n === 1) renderHerederos();
     if (n === 2) renderInventario();
-    if (n === 3) { renderSummary(); renderStudents(); }
+    if (n === 3) renderSummary();
 }
 
 export function nextStep() { setStep(UIState.currentStep + 1); }

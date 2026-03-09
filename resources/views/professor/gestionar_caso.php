@@ -141,6 +141,7 @@ if ($source === 'borrador') {
     $herenciaTipos = $casoData['herencia'] ?? [];
     $direcciones = $casoData['direcciones'] ?? [];
     $config = $casoData['config'] ?? [];
+    $configs = $casoData['configs'] ?? [];
     $asignaciones = $casoData['asignaciones'] ?? [];
 
     $resumen = $casoData['resumen'];
@@ -203,8 +204,7 @@ if ($source === 'borrador') {
 <div class="gc-tabs">
     <button class="gc-tab is-active" data-tab="resumen">Resumen General</button>
     <button class="gc-tab" data-tab="patrimonio">Inventario Patrimonial</button>
-    <button class="gc-tab" data-tab="asignaciones">Estudiantes Asignados</button>
-    <button class="gc-tab" data-tab="configuracion">Configuración</button>
+    <button class="gc-tab" data-tab="asignaciones">Asignaciones</button>
 </div>
 
 <!-- Contenedor Principal -->
@@ -433,6 +433,39 @@ if ($source === 'borrador') {
                             </div>
                         </div>
                     <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Prórrogas -->
+        <?php if (!empty($prorrogas)): ?>
+            <div class="gc-card">
+                <div class="gc-card-header">
+                    <h3>Prórrogas (<?= count($prorrogas) ?>)</h3>
+                </div>
+                <div class="gc-card-body gc-table-wrapper">
+                    <table class="gc-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha Solicitud</th>
+                                <th>Nro. Resolución</th>
+                                <th>Plazo (días)</th>
+                                <th>Vencimiento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($prorrogas as $pr): ?>
+                                <tr>
+                                    <td><?= !empty($pr['fecha_solicitud']) ? date('d/m/Y', strtotime($pr['fecha_solicitud'])) : '—' ?>
+                                    </td>
+                                    <td><?= showVal($pr['nro_resolucion'] ?? null) ?></td>
+                                    <td><?= showVal($pr['plazo_otorgado_dias'] ?? $pr['plazo_dias'] ?? null) ?></td>
+                                    <td><?= !empty($pr['fecha_vencimiento']) ? date('d/m/Y', strtotime($pr['fecha_vencimiento'])) : '—' ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         <?php endif; ?>
@@ -674,8 +707,17 @@ if ($source === 'borrador') {
     <!-- Tab: Estudiantes Asignados                -->
     <!-- ========================================= -->
     <div class="gc-panel" id="tab-asignaciones">
-        <?php $asigs = $asignaciones ?? $config['asignaciones'] ?? []; ?>
-        <?php if (empty($asigs)): ?>
+        <div class="gc-asig-toolbar">
+            <button class="btn btn-primary" id="btnNuevaAsignacion" data-caso-id="<?= $caso['id'] ?>">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Nueva Asignación
+            </button>
+        </div>
+
+        <?php if (empty($configs)): ?>
             <div class="empty-state">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -684,102 +726,88 @@ if ($source === 'borrador') {
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
                 <h3>Sin Asignaciones</h3>
-                <p>Aún no se han asignado estudiantes a este caso.</p>
+                <p>Aún no se han creado asignaciones para este caso.</p>
             </div>
         <?php else: ?>
-            <div class="gc-card">
-                <div class="gc-card-header">
-                    <h3>Estudiantes Asignados (<?= count($asigs) ?>)</h3>
-                </div>
-                <div class="gc-card-body gc-table-wrapper">
-                    <table class="gc-table">
-                        <thead>
-                            <tr>
-                                <th>Estudiante</th>
-                                <th>Cédula</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($asigs as $a): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars(($a['nombres'] ?? '') . ' ' . ($a['apellidos'] ?? '')) ?></td>
-                                    <td><?= showVal($a['cedula'] ?? null) ?></td>
-                                    <td>
-                                        <span
-                                            class="gc-badge-small <?= ($a['estado'] ?? '') === 'Completado' ? 'badge-green' : 'badge-amber' ?>">
-                                            <?= showVal($a['estado'] ?? null, 'Pendiente') ?>
-                                        </span>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        <?php endif; ?>
-    </div>
-
-    <!-- ========================================= -->
-    <!-- Tab: Configuración                        -->
-    <!-- ========================================= -->
-    <div class="gc-panel" id="tab-configuracion">
-        <div class="gc-card">
-            <div class="gc-card-header">
-                <h3>Configuración del Caso</h3>
-            </div>
-            <div class="gc-card-body">
-                <div class="gc-info-list">
-                    <div class="gc-info-item">
-                        <span class="gc-info-label">Modalidad</span>
-                        <span
-                            class="gc-info-value"><?= showVal(str_replace('_', ' ', $config['modalidad'] ?? ''), 'No configurada') ?></span>
+            <?php foreach ($configs as $idx => $cfg): ?>
+                <div
+                    class="gc-card gc-assignment-card<?= ($cfg['status'] ?? 'Activo') === 'Inactivo' ? ' gc-card-inactive' : '' ?>">
+                    <div class="gc-card-header gc-assignment-header">
+                        <div>
+                            <h3>Asignación
+                                #<?= $idx + 1 ?><?= ($cfg['status'] ?? 'Activo') === 'Inactivo' ? ' <span class="gc-badge-small badge-gray">Inactiva</span>' : '' ?>
+                            </h3>
+                            <div class="gc-assignment-badges">
+                                <span
+                                    class="gc-badge-pill <?= ($cfg['modalidad'] ?? '') === 'Evaluacion' ? 'pill-red' : 'pill-blue' ?>">
+                                    <?= htmlspecialchars(str_replace('_', ' ', $cfg['modalidad'] ?? 'Sin modalidad')) ?>
+                                </span>
+                                <span class="gc-badge-pill pill-gray">
+                                    <?= ($cfg['max_intentos'] ?? 0) == 0 ? 'Ilimitados' : ($cfg['max_intentos'] . ' intento' . ((int) $cfg['max_intentos'] !== 1 ? 's' : '')) ?>
+                                </span>
+                                <?php if (!empty($cfg['fecha_apertura'])): ?>
+                                    <span class="gc-badge-pill pill-gray">Desde:
+                                        <?= date('d/m/Y H:i', strtotime($cfg['fecha_apertura'])) ?></span>
+                                <?php endif; ?>
+                                <span class="gc-badge-pill pill-gray">
+                                    <?= !empty($cfg['fecha_limite']) ? 'Hasta: ' . date('d/m/Y H:i', strtotime($cfg['fecha_limite'])) : 'Sin límite' ?>
+                                </span>
+                            </div>
+                        </div>
+                        <?php if (($cfg['status'] ?? 'Activo') === 'Activo'): ?>
+                            <div class="gc-card-actions">
+                                <button class="btn btn-sm btn-outline btnEditConfig" data-config-id="<?= $cfg['id'] ?>"
+                                    title="Editar">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"
+                                        height="16">
+                                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                    Editar
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger btnDeleteConfig" data-config-id="<?= $cfg['id'] ?>"
+                                    title="Eliminar">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"
+                                        height="16">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
+                                    </svg>
+                                    Eliminar
+                                </button>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                    <div class="gc-info-item">
-                        <span class="gc-info-label">Máx. Intentos</span>
-                        <span
-                            class="gc-info-value"><?= ($config['max_intentos'] ?? 0) == 0 ? 'Ilimitados' : ($config['max_intentos'] ?? 0) ?></span>
+                    <div class="gc-card-body gc-table-wrapper">
+                        <?php if (empty($cfg['estudiantes'])): ?>
+                            <p class="gc-empty-text">No hay estudiantes en esta asignación.</p>
+                        <?php else: ?>
+                            <table class="gc-table">
+                                <thead>
+                                    <tr>
+                                        <th>Estudiante</th>
+                                        <th>Cédula</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($cfg['estudiantes'] as $a): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars(($a['nombres'] ?? '') . ' ' . ($a['apellidos'] ?? '')) ?></td>
+                                            <td><?= showVal($a['cedula'] ?? null) ?></td>
+                                            <td>
+                                                <span
+                                                    class="gc-badge-small <?= ($a['estado'] ?? '') === 'Completado' ? 'badge-green' : 'badge-amber' ?>">
+                                                    <?= showVal($a['estado'] ?? null, 'Pendiente') ?>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        <?php endif; ?>
                     </div>
-                    <div class="gc-info-item">
-                        <span class="gc-info-label">Fecha Límite</span>
-                        <span
-                            class="gc-info-value"><?= !empty($config['fecha_limite']) ? date('d/m/Y H:i', strtotime($config['fecha_limite'])) : 'Sin límite' ?></span>
-                    </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Prórrogas -->
-        <?php if (!empty($prorrogas)): ?>
-            <div class="gc-card">
-                <div class="gc-card-header">
-                    <h3>Prórrogas (<?= count($prorrogas) ?>)</h3>
-                </div>
-                <div class="gc-card-body gc-table-wrapper">
-                    <table class="gc-table">
-                        <thead>
-                            <tr>
-                                <th>Fecha Solicitud</th>
-                                <th>Nro. Resolución</th>
-                                <th>Plazo (días)</th>
-                                <th>Vencimiento</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($prorrogas as $pr): ?>
-                                <tr>
-                                    <td><?= !empty($pr['fecha_solicitud']) ? date('d/m/Y', strtotime($pr['fecha_solicitud'])) : '—' ?>
-                                    </td>
-                                    <td><?= showVal($pr['nro_resolucion'] ?? null) ?></td>
-                                    <td><?= showVal($pr['plazo_otorgado_dias'] ?? $pr['plazo_dias'] ?? null) ?></td>
-                                    <td><?= !empty($pr['fecha_vencimiento']) ? date('d/m/Y', strtotime($pr['fecha_vencimiento'])) : '—' ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <?php endforeach; ?>
         <?php endif; ?>
     </div>
 
@@ -817,6 +845,68 @@ if ($source === 'borrador') {
         });
     })();
 </script>
+
+<!-- Modal: Crear/Editar Asignación -->
+<div class="gc-modal-overlay" id="asignacionModal" style="display:none">
+    <div class="gc-modal">
+        <div class="gc-modal-header">
+            <h3 id="asignacionModalTitle">Nueva Asignación</h3>
+            <button class="gc-modal-close" id="btnCloseModal">&times;</button>
+        </div>
+        <div class="gc-modal-body">
+            <form id="formAsignacion">
+                <input type="hidden" id="editConfigId" value="">
+
+                <div class="gc-form-row">
+                    <div class="gc-form-group">
+                        <label for="cfgModalidad">Modalidad *</label>
+                        <select id="cfgModalidad" class="gc-input" required>
+                            <option value="Practica_Libre">Práctica Libre</option>
+                            <option value="Evaluacion">Evaluación</option>
+                        </select>
+                    </div>
+                    <div class="gc-form-group">
+                        <label for="cfgMaxIntentos">Máx. Intentos <small>(0 = ilimitados)</small></label>
+                        <input type="number" id="cfgMaxIntentos" class="gc-input" value="0" min="0">
+                    </div>
+                </div>
+
+                <div class="gc-form-row">
+                    <div class="gc-form-group">
+                        <label for="cfgFechaApertura">Fecha Apertura</label>
+                        <input type="datetime-local" id="cfgFechaApertura" class="gc-input">
+                    </div>
+                    <div class="gc-form-group">
+                        <label for="cfgFechaLimite">Fecha Cierre</label>
+                        <input type="datetime-local" id="cfgFechaLimite" class="gc-input">
+                    </div>
+                </div>
+
+                <hr class="gc-divider">
+
+                <div class="gc-form-group">
+                    <label>Estudiantes</label>
+                    <div class="gc-student-search">
+                        <input type="text" id="studentSearch" class="gc-input"
+                            placeholder="Buscar por nombre o cédula...">
+                        <div id="studentResults" class="gc-student-results" style="display:none"></div>
+                    </div>
+                    <div id="selectedStudents" class="gc-selected-students"></div>
+                </div>
+            </form>
+        </div>
+        <div class="gc-modal-footer">
+            <button class="btn btn-secondary" id="btnCancelModal">Cancelar</button>
+            <button class="btn btn-primary" id="btnSaveAsignacion">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.__casoId = <?= (int) $caso['id'] ?>;
+    window.__baseUrl = '<?= base_url('') ?>'.replace(/\/+$/, '');
+</script>
+<script src="<?= base_url('assets/js/professor/gestionar_caso/asignaciones.js') ?>"></script>
 
 <?php
 $content = ob_get_clean();

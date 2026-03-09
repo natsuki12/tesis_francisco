@@ -36,7 +36,6 @@ ob_start();
           <path d="M16 3.13a4 4 0 010 7.75" />
         </svg>
       </div>
-      <span class="stat-trend up">+3</span>
     </div>
     <div class="stat-value">24</div>
     <div class="stat-label">Estudiantes activos</div>
@@ -153,46 +152,46 @@ ob_start();
       <h3>Estudiantes recientes</h3>
       <a href="#">Ver todos</a>
     </div>
-    <div class="student-row">
-      <div class="student-avatar">CG</div>
-      <div class="student-info">
-        <div class="student-name">César González</div>
-        <div class="student-detail">V-28.456.789 · Derecho</div>
+    <?php if (empty($recentStudents)): ?>
+      <div style="text-align:center; padding: 2rem; color: var(--gray-400); font-size: var(--text-md);">
+        Ningún estudiante ha ingresado a la plataforma aún.
       </div>
-      <span class="student-status completed">Completado</span>
-    </div>
-    <div class="student-row">
-      <div class="student-avatar">ML</div>
-      <div class="student-info">
-        <div class="student-name">María López</div>
-        <div class="student-detail">V-29.123.456 · Derecho</div>
-      </div>
-      <span class="student-status in-progress">En progreso</span>
-    </div>
-    <div class="student-row">
-      <div class="student-avatar">AR</div>
-      <div class="student-info">
-        <div class="student-name">Andrés Rodríguez</div>
-        <div class="student-detail">V-27.890.123 · Derecho</div>
-      </div>
-      <span class="student-status pending">Pendiente</span>
-    </div>
-    <div class="student-row">
-      <div class="student-avatar">LP</div>
-      <div class="student-info">
-        <div class="student-name">Laura Pérez</div>
-        <div class="student-detail">V-30.567.890 · Derecho</div>
-      </div>
-      <span class="student-status completed">Completado</span>
-    </div>
-    <div class="student-row">
-      <div class="student-avatar">JM</div>
-      <div class="student-info">
-        <div class="student-name">José Mendoza</div>
-        <div class="student-detail">V-28.234.567 · Derecho</div>
-      </div>
-      <span class="student-status in-progress">En progreso</span>
-    </div>
+    <?php else: ?>
+      <?php foreach ($recentStudents as $st):
+        $fullName = trim(($st['nombres'] ?? '') . ' ' . ($st['apellidos'] ?? ''));
+        preg_match_all('/\b\w/u', $fullName, $m);
+        $initials = mb_strtoupper(implode('', array_slice($m[0], 0, 2)));
+        $ced = $st['cedula']
+          ? ($st['nacionalidad'] ?? 'V') . '-' . number_format((float) $st['cedula'], 0, ',', '.')
+          : 'S/C';
+
+        // Relative time — use DB-computed UNIX timestamp to avoid timezone issues
+        $ts = (int) $st['last_login_ts'];
+        $diff = time() - $ts;
+        if ($diff < 60) {
+          $rel = 'Hace unos segundos';
+        } elseif ($diff < 3600) {
+          $mins = (int) floor($diff / 60);
+          $rel = "Hace {$mins} min";
+        } elseif ($diff < 86400) {
+          $hrs = (int) floor($diff / 3600);
+          $rel = "Hace {$hrs}h";
+        } elseif ($diff < 172800) {
+          $rel = 'Ayer, ' . date('g:i A', $ts);
+        } else {
+          $rel = date('d/m/Y, g:i A', $ts);
+        }
+        ?>
+        <div class="student-row">
+          <div class="student-avatar"><?= htmlspecialchars($initials) ?></div>
+          <div class="student-info">
+            <div class="student-name"><?= htmlspecialchars($fullName) ?></div>
+            <div class="student-detail"><?= htmlspecialchars($ced) ?></div>
+          </div>
+          <span class="student-status last-seen"><?= $rel ?></span>
+        </div>
+      <?php endforeach; ?>
+    <?php endif; ?>
   </div>
 
   <!-- Activity Feed -->

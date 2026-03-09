@@ -5300,3 +5300,7 @@ Stack trace:
 #6 {main}
 [07-Mar-2026 20:12:09 Europe/Berlin] PHP Warning:  Undefined array key "numero_tdc" in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\StoreCasoModel.php on line 875
 [07-Mar-2026 20:12:09 Europe/Berlin] PHP Warning:  Undefined array key "numero_tdc" in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\StoreCasoModel.php on line 875
+[09-Mar-2026 02:10:56 Europe/Berlin] [CRITICAL DB ERROR] SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[09-Mar-2026 02:11:04 Europe/Berlin] [CRITICAL DB ERROR] SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[09-Mar-2026 02:11:18 Europe/Berlin] [CRITICAL DB ERROR] SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[09-Mar-2026 02:11:24 Europe/Berlin] [CRITICAL DB ERROR] SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión

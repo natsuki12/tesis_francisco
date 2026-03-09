@@ -205,6 +205,8 @@
     gap: 14px;
     transition: all var(--transition);
     box-shadow: var(--shadow-card);
+    cursor: default;
+    user-select: none;
 }
 
 .stat-card.stat-card--vertical {

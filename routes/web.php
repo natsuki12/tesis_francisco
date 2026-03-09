@@ -81,9 +81,15 @@ $router->get('/simulador_index_antiguo', function () use ($app, $requireAuth) {
 $router->get('/home', function () use ($app, $requireAuth) {
     $requireAuth();
     $role = (int) ($_SESSION['role_id'] ?? 3);
+    if ($role === 2) {
+        $homeModel = new \App\Modules\Professor\Models\HomeProfessorModel();
+        $recentStudents = $homeModel->getRecentStudents(5);
+        return $app->view('professor/home_professor', [
+            'recentStudents' => $recentStudents,
+        ]);
+    }
     return match ($role) {
         1 => $app->view('admin/home_admin'),
-        2 => $app->view('professor/home_professor'),
         default => $app->view('student/home_st'),
     };
 });
@@ -133,6 +139,21 @@ $router->get('/crear-caso', function () use ($app, $requireAuth, $requireRole) {
     return $app->view('professor/crear_caso');
 });
 
+// Entregas (Profesor)
+$router->get('/entregas', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return $app->view('professor/entregas', [
+        'entregas' => [],
+        'stats' => [
+            'pendientes' => 0,
+            'en_progreso' => 0,
+            'calificadas' => 0,
+            'total' => 0,
+        ],
+    ]);
+});
+
 // API: Guardar/Publicar caso
 $router->post('/api/casos', function () use ($requireAuth, $requireRole) {
     $requireAuth();
@@ -159,6 +180,45 @@ $router->patch('/api/casos/{id}/estado', function ($id) use ($requireAuth, $requ
     $requireAuth();
     $requireRole(2);
     return (new CasosController())->updateEstado((int) $id);
+});
+
+// API: CRUD Asignaciones (Configs)
+use App\Modules\Professor\Controllers\Asignaciones\AsignacionesController;
+
+$router->get('/api/casos/{id}/configs', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new AsignacionesController())->index((int) $id);
+});
+$router->post('/api/casos/{id}/configs', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new AsignacionesController())->store((int) $id);
+});
+$router->patch('/api/configs/{id}', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new AsignacionesController())->update((int) $id);
+});
+$router->delete('/api/configs/{id}', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new AsignacionesController())->destroy((int) $id);
+});
+$router->post('/api/configs/{id}/estudiantes', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new AsignacionesController())->addEstudiantes((int) $id);
+});
+$router->delete('/api/configs/{id}/estudiantes/{aid}', function ($id, $aid) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new AsignacionesController())->removeEstudiante((int) $id, (int) $aid);
+});
+$router->get('/api/casos/{id}/estudiantes-disponibles', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new AsignacionesController())->estudiantesDisponibles((int) $id);
 });
 
 // Perfil

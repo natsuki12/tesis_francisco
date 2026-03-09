@@ -24,8 +24,6 @@ class CasoValidator
      * o se manejan en lógica especial para arrays.
      */
     private const NUMERIC_FIELDS = [
-        'config.max_intentos',
-        'config.seccion_id',
         'datos_fiscales_causante.domiciliado_pais',
     ];
 
@@ -169,7 +167,7 @@ class CasoValidator
             $this->validateExenciones($data['exenciones'] ?? []);
             $this->validateExoneraciones($data['exoneraciones'] ?? []);
             $this->validateProrrogas($data['prorrogas'] ?? []);
-            $this->validateConfig($data['config'] ?? [], $data['estudiantes_asignados'] ?? []);
+
 
             // ── Checks de existencia mínima ──
             if (empty($data['herederos'])) {
@@ -769,40 +767,7 @@ class CasoValidator
         }
     }
 
-    // ====================================================================
-    // Sección: Config
-    // ====================================================================
-    private function validateConfig(array $c, array $estudiantesAsignados = []): void
-    {
-        $validModalidad = ['Practica_Libre', 'Evaluacion'];
-        if (empty($c['modalidad']) || !in_array($c['modalidad'], $validModalidad)) {
-            $this->errors[] = 'Configuración: Debe seleccionar una modalidad.';
-        }
-        if (($c['modalidad'] ?? '') === 'Evaluacion') {
-            if (empty($c['fecha_limite'])) {
-                $this->errors[] = 'Configuración: Fecha límite es obligatoria para evaluaciones.';
-            } elseif ($this->isValidDate($c['fecha_limite']) && $c['fecha_limite'] < date('Y-m-d')) {
-                $this->errors[] = 'Configuración: La fecha límite debe ser una fecha futura.';
-            }
-        }
-        if (!isset($c['max_intentos']) || $c['max_intentos'] === '' || (int) $c['max_intentos'] < 0) {
-            $this->errors[] = 'Configuración: El número máximo de intentos no puede ser negativo.';
-        } elseif ((string) $c['max_intentos'] !== (string) (int) $c['max_intentos']) {
-            $this->errors[] = 'Configuración: El número máximo de intentos debe ser un número entero.';
-        } elseif ((int) $c['max_intentos'] > 99) {
-            $this->errors[] = 'Configuración: El máximo de intentos no puede exceder 99.';
-        }
-        $validAsignacion = ['Seccion', 'Estudiantes'];
-        if (empty($c['tipo_asignacion']) || !in_array($c['tipo_asignacion'], $validAsignacion)) {
-            $this->errors[] = 'Configuración: Debe seleccionar un tipo de asignación.';
-        }
-        if (($c['tipo_asignacion'] ?? '') === 'Seccion' && empty($c['seccion_id'])) {
-            $this->errors[] = 'Configuración: Debe seleccionar una sección.';
-        }
-        if (($c['tipo_asignacion'] ?? '') === 'Estudiantes' && empty($estudiantesAsignados)) {
-            $this->errors[] = 'Configuración: Debe asignar al menos un estudiante.';
-        }
-    }
+
 
     // ====================================================================
     // Helpers

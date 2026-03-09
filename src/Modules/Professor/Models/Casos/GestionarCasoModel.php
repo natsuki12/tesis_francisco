@@ -166,26 +166,35 @@ class GestionarCasoModel
         $stmt->execute(['cid' => $casoId]);
         $prorrogas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // 14. Configuración
-        $stmt = $this->db->prepare("SELECT * FROM sim_caso_configs WHERE caso_id = :cid");
+        // 14. Configuraciones (múltiples por caso) con estudiantes anidados
+        $stmt = $this->db->prepare("SELECT * FROM sim_caso_configs WHERE caso_id = :cid ORDER BY id ASC");
         $stmt->execute(['cid' => $casoId]);
-        $config = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+        $configs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // 15. Asignaciones
-        $asignaciones = [];
-        if ($config) {
+        // 15. Para cada config, traer sus estudiantes asignados
+        foreach ($configs as &$cfg) {
             try {
                 $stmt = $this->db->prepare("SELECT a.*, 
                         per.nombres, per.apellidos, per.cedula
                     FROM sim_caso_asignaciones a
                     JOIN estudiantes est ON a.estudiante_id = est.id
-                    JOIN sim_personas per ON est.persona_id = per.id
-                    WHERE a.config_id = :cid");
-                $stmt->execute(['cid' => $config['id']]);
-                $asignaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    JOIN personas per ON est.persona_id = per.id
+                    WHERE a.config_id = :cid
+                    ORDER BY per.apellidos ASC, per.nombres ASC");
+                $stmt->execute(['cid' => $cfg['id']]);
+                $cfg['estudiantes'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             } catch (\Throwable $e) {
-                // Tabla o estructura no disponible aún
-                $asignaciones = [];
+                $cfg['estudiantes'] = [];
+            }
+        }
+        unset($cfg); // romper referencia
+
+        // Mantener compatibilidad: config plano y asignaciones planas para borrador
+        $config = $configs[0] ?? null;
+        $asignaciones = [];
+        foreach ($configs as $c) {
+            foreach ($c['estudiantes'] as $est) {
+                $asignaciones[] = $est;
             }
         }
 
@@ -217,6 +226,7 @@ class GestionarCasoModel
             'exoneraciones' => $exoneraciones,
             'prorrogas' => $prorrogas,
             'config' => $config,
+            'configs' => $configs,
             'asignaciones' => $asignaciones,
             'resumen' => [
                 'total_herederos' => count($herederos),
