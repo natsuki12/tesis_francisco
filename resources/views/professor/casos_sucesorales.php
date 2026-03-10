@@ -171,8 +171,14 @@ ob_start();
           $patrimonio = 'Bs. 0,00';
 
           // 4. Modalidad del caso
-          $modalidadClase = ($caso['modalidad'] === 'Practica_Libre') ? 'practice-free' : 'practice-guided';
-          $modalidadTexto = ($caso['modalidad'] === 'Practica_Libre') ? 'Libre' : 'Evaluación';
+          $modalidadMap = [
+            'Practica_Libre' => ['practice-free', 'Libre'],
+            'Practica_guiada' => ['practice-guided', 'Guiada'],
+            'Evaluacion' => ['practice-guided', 'Evaluación'],
+          ];
+          $modInfo = $modalidadMap[$caso['modalidad'] ?? ''] ?? ['practice-guided', 'Borrador'];
+          $modalidadClase = $modInfo[0];
+          $modalidadTexto = $modInfo[1];
           if (empty($caso['modalidad'])) {
             $modalidadClase = 'practice-guided';
             $modalidadTexto = 'Borrador';

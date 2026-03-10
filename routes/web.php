@@ -81,11 +81,6 @@ $requireRole = function (int $allowedRole) {
     }
 };
 
-$router->get('/simulador_index_antiguo', function () use ($app, $requireAuth) {
-    $requireAuth();
-    return $app->view('simulator/legacy/index_old');
-});
-
 // /home muestra el dashboard correcto según el rol
 $router->get('/home', function () use ($app, $requireAuth) {
     $requireAuth();
@@ -182,25 +177,46 @@ $router->get('/admin/monitoreo/reportes', function () use ($requireAuth, $requir
     return (new ReportesController())->index();
 });
 
-$router->get('/simulador_inicio', function () use ($app, $requireAuth) {
+// ─── Simulador SENIAT (session-based) ─────────────────────
+// El asignacion_id se guarda en $_SESSION['sim_asignacion_id']
+// al iniciar/continuar un intento desde detalle_asignacion.
+
+$requireSimSession = function () {
+    if (empty($_SESSION['sim_asignacion_id'])) {
+        $_SESSION['flash_error'] = 'No has seleccionado una asignación. Acceso no autorizado.';
+        header('Location: ' . base_url('/mis-asignaciones'));
+        exit;
+    }
+};
+
+$router->get('/simulador', function () use ($app, $requireAuth, $requireSimSession) {
     $requireAuth();
-    return $app->view('simulator/steps/step_01_seniat_index');
+    $requireSimSession();
+    return $app->view('simulator/legacy/seniat_index_old');
 });
-$router->get('/step_01_seniat_index', function () use ($app, $requireAuth) {
+
+$router->get('/simulador/consulta-rif', function () use ($app, $requireAuth, $requireSimSession) {
     $requireAuth();
-    return $app->view('simulator/steps/step_01_seniat_index');
-});
-$router->get('/inscripcion_rif', function () use ($app, $requireAuth) {
-    $requireAuth();
-    return $app->view('simulator/legacy/inscripcion_rif');
-});
-$router->get('/consulta_rif', function () use ($app, $requireAuth) {
-    $requireAuth();
+    $requireSimSession();
     return $app->view('simulator/legacy/consulta_rif');
 });
-$router->get('/servicios_declaracion', function () use ($app, $requireAuth) {
+
+$router->get('/simulador/inscripcion-rif', function () use ($app, $requireAuth, $requireSimSession) {
     $requireAuth();
-    return $app->view('simulator/steps/servicios_declaracion');
+    $requireSimSession();
+    return $app->view('simulator/legacy/inscripcion_rif');
+});
+
+$router->get('/simulador/declaracion', function () use ($app, $requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+    return $app->view('simulator/seniat_actual/servicios_declaracion');
+});
+
+$router->get('/simulador/portal', function () use ($app, $requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+    return $app->view('simulator/seniat_actual/seniat_index_new');
 });
 
 // Casos Sucesorales (Profesor)
@@ -232,12 +248,55 @@ $router->get('/entregas', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
     return $app->view('professor/entregas', [
-        'entregas' => [],
+        'entregas' => [
+            [
+                'id' => 101,
+                'estudiante_nombres' => 'Ana María',
+                'estudiante_apellidos' => 'Martínez López',
+                'estudiante_cedula' => '28456789',
+                'estudiante_nacionalidad' => 'V',
+                'seccion' => '4to A',
+                'caso_titulo' => 'Sucesión González Méndez',
+                'asignacion_nombre' => 'Evaluación parcial 1',
+                'intento_actual' => 2,
+                'intento_max' => 3,
+                'created_at' => '2026-03-07 14:20:00',
+                'estado' => 'Enviado',
+            ],
+            [
+                'id' => 102,
+                'estudiante_nombres' => 'Pedro José',
+                'estudiante_apellidos' => 'López Ramírez',
+                'estudiante_cedula' => '27123456',
+                'estudiante_nacionalidad' => 'V',
+                'seccion' => '4to A',
+                'caso_titulo' => 'Sucesión González Méndez',
+                'asignacion_nombre' => 'Evaluación parcial 1',
+                'intento_actual' => 1,
+                'intento_max' => 3,
+                'created_at' => '2026-03-08 10:15:00',
+                'estado' => 'Calificado',
+            ],
+            [
+                'id' => 103,
+                'estudiante_nombres' => 'María José',
+                'estudiante_apellidos' => 'García Herrera',
+                'estudiante_cedula' => '29876543',
+                'estudiante_nacionalidad' => 'V',
+                'seccion' => '4to B',
+                'caso_titulo' => 'Sucesión Pérez Alvarado',
+                'asignacion_nombre' => 'Evaluación parcial 2',
+                'intento_actual' => 1,
+                'intento_max' => 3,
+                'created_at' => '2026-03-09 09:30:00',
+                'estado' => 'En Progreso',
+            ],
+        ],
         'stats' => [
-            'pendientes' => 0,
-            'en_progreso' => 0,
-            'calificadas' => 0,
-            'total' => 0,
+            'pendientes' => 1,
+            'en_progreso' => 1,
+            'calificadas' => 1,
+            'total' => 3,
         ],
     ]);
 });
@@ -285,6 +344,214 @@ $router->get('/historial', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
     return $app->view('professor/historial');
+});
+
+// Detalle de Intento (Profesor)
+$router->get('/entregas/{id}', function ($id) use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return $app->view('professor/detalle_intento');
+});
+
+// ═══════════════════════════════════════════════════
+// RUTAS ESTUDIANTE (role 3)
+// ═══════════════════════════════════════════════════
+
+// Mis Asignaciones (Estudiante)
+$router->get('/mis-asignaciones', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+
+    $model = new \App\Modules\Student\Models\StudentAssignmentModel();
+    $estudianteId = $model->getEstudianteId((int) $_SESSION['user_id']);
+
+    $asignaciones = [];
+    if ($estudianteId) {
+        $asignaciones = $model->getAsignaciones($estudianteId);
+    }
+
+    return $app->view('student/mis_asignaciones', [
+        'asignaciones' => $asignaciones,
+    ]);
+});
+
+// Detalle de Asignación (Estudiante)
+$router->get('/mis-asignaciones/{id}', function ($id) use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+
+    $model = new \App\Modules\Student\Models\StudentAssignmentModel();
+    $estudianteId = $model->getEstudianteId((int) $_SESSION['user_id']);
+
+    if (!$estudianteId) {
+        http_response_code(404);
+        return $app->view('errors/404');
+    }
+
+    $asignacion = $model->getDetalleAsignacion((int) $id, $estudianteId);
+    if (!$asignacion) {
+        http_response_code(404);
+        return $app->view('errors/404');
+    }
+
+    $intentos = $model->getIntentos((int) $id);
+
+    return $app->view('student/detalle_asignacion', [
+        'asignacion' => $asignacion,
+        'intentos' => $intentos,
+    ]);
+});
+
+// Historial / Planillas (Estudiante)
+$router->get('/historial-planillas', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    return $app->view('student/historial_st');
+});
+
+// Mis Calificaciones (Estudiante)
+$router->get('/mis-calificaciones', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    return $app->view('student/mis_calificaciones');
+});
+
+// Detalle de Corrección (Estudiante)
+$router->get('/mis-calificaciones/{id}', function ($id) use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    return $app->view('student/detalle_correccion');
+});
+
+// Perfil (Compartido: Profesor + Estudiante)
+$router->get('/perfil', function () use ($app, $requireAuth) {
+    $requireAuth();
+    return $app->view('shared/perfil');
+});
+
+// ─── API Intentos (Estudiante) ────────────────────────────
+
+// Iniciar nuevo intento o retomar activo
+$router->post('/api/intentos/iniciar', function () use ($app, $requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+
+    $asignacionId = (int) ($_POST['asignacion_id'] ?? 0);
+    if (!$asignacionId) {
+        http_response_code(400);
+        echo json_encode(['error' => 'asignacion_id requerido']);
+        return;
+    }
+
+    $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+    $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+
+    $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+    if (!$estudianteId) {
+        http_response_code(403);
+        echo json_encode(['error' => 'Estudiante no encontrado']);
+        return;
+    }
+
+    // Si ya tiene uno activo, redirigir
+    $activo = $attemptModel->getIntentoActivo($asignacionId);
+    if ($activo) {
+        $_SESSION['sim_asignacion_id'] = $asignacionId;
+        header('Location: ' . base_url('/simulador'));
+        return;
+    }
+
+    // Verificar si puede iniciar
+    $check = $attemptModel->verificarPuedeIniciar($asignacionId, $estudianteId);
+    if (!$check['ok']) {
+        $_SESSION['flash_error'] = $check['razon'];
+        header('Location: ' . base_url('/mis-asignaciones/' . $asignacionId));
+        return;
+    }
+
+    // Crear intento
+    $intento = $attemptModel->crearIntento($asignacionId);
+    $_SESSION['sim_asignacion_id'] = $asignacionId;
+    header('Location: ' . base_url('/simulador'));
+});
+
+// Auto-save borrador (AJAX)
+$router->post('/api/intentos/{id}/guardar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    header('Content-Type: application/json');
+
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!$input) {
+        http_response_code(400);
+        echo json_encode(['error' => 'JSON inválido']);
+        return;
+    }
+
+    $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+    $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+
+    $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+    $intento = $attemptModel->getIntento((int) $id, $estudianteId);
+
+    if (!$intento || $intento['estado'] !== 'En_Progreso') {
+        http_response_code(403);
+        echo json_encode(['error' => 'Intento no válido']);
+        return;
+    }
+
+    $ok = $attemptModel->guardarBorrador(
+        (int) $id,
+        json_encode($input['borrador'] ?? [], JSON_UNESCAPED_UNICODE),
+        (int) ($input['paso_actual'] ?? $intento['paso_actual']),
+        (string) ($input['pasos_completados'] ?? $intento['pasos_completados'])
+    );
+
+    echo json_encode(['ok' => $ok]);
+});
+
+// Enviar intento
+$router->post('/api/intentos/{id}/enviar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    header('Content-Type: application/json');
+
+    $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+    $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+
+    $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+    $intento = $attemptModel->getIntento((int) $id, $estudianteId);
+
+    if (!$intento || $intento['estado'] !== 'En_Progreso') {
+        http_response_code(403);
+        echo json_encode(['error' => 'Intento no válido']);
+        return;
+    }
+
+    $ok = $attemptModel->enviarIntento((int) $id);
+    echo json_encode(['ok' => $ok]);
+});
+
+// Cancelar intento
+$router->post('/api/intentos/{id}/cancelar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    header('Content-Type: application/json');
+
+    $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+    $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+
+    $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+    $intento = $attemptModel->getIntento((int) $id, $estudianteId);
+
+    if (!$intento || $intento['estado'] !== 'En_Progreso') {
+        http_response_code(403);
+        echo json_encode(['error' => 'Intento no válido']);
+        return;
+    }
+
+    $ok = $attemptModel->cancelarIntento((int) $id);
+    echo json_encode(['ok' => $ok]);
 });
 
 // API: Guardar/Publicar caso

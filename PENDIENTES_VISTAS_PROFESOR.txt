@@ -4,12 +4,12 @@
 ============================================================
 
 ═══════════════════════════════════════════════════════════
- 1. VISTA FALTANTE: DETALLE DE INTENTO
+ 1. VISTA COMPLETADA: DETALLE DE INTENTO ✅
 ═══════════════════════════════════════════════════════════
-  Archivos por crear:
+  Archivos creados:
     - resources/views/professor/detalle_intento.php
     - public/assets/css/professor/detalle_intento.css
-    - Ruta: /detalle-intento/{id} en routes/web.php
+    - Ruta: /entregas/{id} en routes/web.php
 
   Debe contener:
     - Breadcrumb: Entregas > Estudiante > Intento #N

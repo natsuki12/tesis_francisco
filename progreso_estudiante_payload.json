@@ -1,0 +1,459 @@
+{
+  "_meta": {
+    "version": "2.0",
+    "descripcion": "Estructura del borrador_json almacenado en sim_intentos.borrador_json. Cada sección mapea a una tabla sim_intento_* específica. El frontend lo lee/escribe con auto-save; al enviar, el backend persiste cada sección en su tabla normalizada.",
+    "notas": [
+      "intento_id NO va en el JSON — se toma del registro sim_intentos que contiene este borrador.",
+      "Los campos de auditoría (id, created_at, updated_at, deleted_at) los maneja la BD, NO van en el JSON.",
+      "orden en relaciones NO va en el JSON — el backend lo calcula al persistir (0=representante, 1+=herederos).",
+      "empresa_id en detalle de muebles: el frontend envía rif_empresa + razon_social como texto. El backend resuelve/crea en sim_empresas y obtiene empresa_id.",
+      "Los _tabla son documentación para el desarrollador, no se envían al backend."
+    ]
+  },
+
+  "datos_basicos": {
+    "_tabla": "sim_intento_datos_basicos",
+    "tipo_cedula": "V",
+    "cedula": "8456123",
+    "rif_personal": "V-08456123-5",
+    "pasaporte": null,
+    "apellidos": "Pérez Morales",
+    "nombres": "Carlos Eduardo",
+    "fecha_nacimiento": "1955-03-12",
+    "fecha_fallecimiento": "2025-11-20",
+    "sexo": "M",
+    "estado_civil": "Casado",
+    "domiciliado_pais": 1,
+    "nacionalidad": 1,
+    "fecha_cierre_fiscal": "2025-11-20",
+    "email_sucesion": "sucesion.perez@ejemplo.com",
+    "numero_acta": null,
+    "year_acta": null,
+    "parroquia_acta": null
+  },
+
+  "tipos_herencia": {
+    "_tabla": "sim_intento_tipoherencias",
+    "items": [
+      {
+        "tipo_herencia_id": 2,
+        "subtipo_testamento": null,
+        "fecha_testamento": null,
+        "fecha_conclusion_inventario": null
+      }
+    ]
+  },
+
+  "direcciones": {
+    "_tabla": "sim_intento_direcciones",
+    "items": [
+      {
+        "tipo_direccion": "Domicilio_Fiscal",
+        "tipo_vialidad": "Avenida",
+        "nombre_vialidad": "Bolívar",
+        "tipo_inmueble": "Edificio",
+        "nro_inmueble": "Torre Parque Central",
+        "tipo_nivel": "Apartamento",
+        "nro_nivel": "8-A",
+        "tipo_sector": "Urbanizacion",
+        "nombre_sector": "Los Caobos",
+        "estado_id": 7,
+        "municipio_id": 45,
+        "parroquia_id": 203,
+        "ciudad_id": 112,
+        "codigo_postal_id": 89,
+        "telefono_fijo": "02125551234",
+        "telefono_celular": "04141234567",
+        "fax": null,
+        "punto_referencia": "Frente al Parque Los Caobos"
+      }
+    ]
+  },
+
+  "representante": {
+    "_tabla": "sim_intento_relaciones (rol='Representante')",
+    "tipo_cedula": "V",
+    "cedula": "15789432",
+    "pasaporte": null,
+    "nombres": "María Elena",
+    "apellidos": "Pérez García",
+    "fecha_nacimiento": "1980-07-25",
+    "parentesco_id": null,
+    "es_premuerto": false,
+    "fecha_fallecimiento": null,
+    "premuerto_padre_id": null
+  },
+
+  "herederos": {
+    "_tabla": "sim_intento_relaciones (rol='Heredero')",
+    "items": [
+      {
+        "tipo_cedula": "V",
+        "cedula": "10234567",
+        "pasaporte": null,
+        "nombres": "Ana Luisa",
+        "apellidos": "Martínez de Pérez",
+        "fecha_nacimiento": "1958-09-03",
+        "parentesco_id": 1,
+        "es_premuerto": false,
+        "fecha_fallecimiento": null,
+        "premuerto_padre_id": null
+      },
+      {
+        "tipo_cedula": "V",
+        "cedula": "15789432",
+        "pasaporte": null,
+        "nombres": "María Elena",
+        "apellidos": "Pérez García",
+        "fecha_nacimiento": "1980-07-25",
+        "parentesco_id": 5,
+        "es_premuerto": false,
+        "fecha_fallecimiento": null,
+        "premuerto_padre_id": null
+      },
+      {
+        "tipo_cedula": "V",
+        "cedula": "16890123",
+        "pasaporte": null,
+        "nombres": "José Carlos",
+        "apellidos": "Pérez García",
+        "fecha_nacimiento": "1983-01-18",
+        "parentesco_id": 5,
+        "es_premuerto": true,
+        "fecha_fallecimiento": "2024-06-15",
+        "premuerto_padre_id": null
+      },
+      {
+        "_ref_index": 3,
+        "tipo_cedula": "V",
+        "cedula": "28456789",
+        "pasaporte": null,
+        "nombres": "Daniela Sofía",
+        "apellidos": "Pérez Rivas",
+        "fecha_nacimiento": "2005-06-10",
+        "parentesco_id": 5,
+        "es_premuerto": false,
+        "fecha_fallecimiento": null,
+        "premuerto_padre_id": 2
+      }
+    ]
+  },
+
+  "bienes_inmuebles": {
+    "_tabla": "sim_intento_bienes_inmuebles",
+    "_tabla_tipos": "sim_intento_bien_inmueble_tipo_rel",
+    "_tabla_litigio": "sim_intento_bienes_litigiosos (bien_tipo='Inmueble')",
+    "items": [
+      {
+        "es_vivienda_principal": true,
+        "es_bien_litigioso": false,
+        "tipos_bien_inmueble_ids": [1, 3],
+        "porcentaje": 100.00,
+        "descripcion": "Casa ubicada en Calle Los Pinos Nro. 45, Urb. Las Acacias.",
+        "linderos": "Norte: Calle Los Pinos; Sur: Parcela 46; Este: Av. Principal; Oeste: Parcela 44",
+        "superficie_construida": 250.00,
+        "superficie_no_construida": 150.00,
+        "area_superficie": 400.00,
+        "direccion": "Calle Los Pinos Nro. 45, Urb. Las Acacias, Caracas",
+        "oficina_registro": "Oficina Subalterna del Primer Circuito de Registro del Municipio Libertador",
+        "nro_registro": "2010-125",
+        "libro": "Libro 45",
+        "protocolo": "Protocolo Primero",
+        "fecha_registro": "2010-03-15",
+        "trimestre": "1er Trimestre",
+        "asiento_registral": "Asiento 12",
+        "matricula": "219.1.1.5.1234",
+        "folio_real_anio": "2010",
+        "valor_original": 800000.00,
+        "valor_declarado": 2500000.00,
+        "litigioso": null
+      },
+      {
+        "es_vivienda_principal": false,
+        "es_bien_litigioso": true,
+        "tipos_bien_inmueble_ids": [2],
+        "porcentaje": 50.00,
+        "descripcion": "Apartamento en Lechería, Anzoátegui.",
+        "linderos": "Norte: Pasillo; Sur: Apto 8-B; Este: Fachada; Oeste: Apto 8-C",
+        "superficie_construida": 120.00,
+        "superficie_no_construida": 0.00,
+        "area_superficie": 120.00,
+        "direccion": "Res. Costa Azul, Piso 8, Apto 8-A, Lechería",
+        "oficina_registro": "Oficina de Registro Público del Municipio Urbaneja",
+        "nro_registro": "2015-089",
+        "libro": "Libro 12",
+        "protocolo": "Protocolo Primero",
+        "fecha_registro": "2015-08-22",
+        "trimestre": "3er Trimestre",
+        "asiento_registral": "Asiento 5",
+        "matricula": "301.2.3.1.5678",
+        "folio_real_anio": "2015",
+        "valor_original": 500000.00,
+        "valor_declarado": 950000.00,
+        "litigioso": {
+          "numero_expediente": "AP31-V-2025-000456",
+          "tribunal_causa": "Juzgado Tercero Civil, Lechería",
+          "partes_juicio": "Sucesión Pérez vs. Inmobiliaria Costa C.A.",
+          "estado_juicio": "En curso"
+        }
+      }
+    ]
+  },
+
+  "bienes_muebles": {
+    "_tabla": "sim_intento_bienes_muebles",
+    "_tabla_litigio": "sim_intento_bienes_litigiosos (bien_tipo='Mueble')",
+    "items": [
+      {
+        "_categoria": "banco",
+        "categoria_bien_mueble_id": 1,
+        "tipo_bien_mueble_id": 1,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Cuenta corriente en Banco de Venezuela.",
+        "valor_declarado": 450000.00,
+        "detalle_banco": {
+          "_tabla": "sim_intento_bm_banco",
+          "banco_id": 3,
+          "numero_cuenta": "01020345678901234567"
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "seguro",
+        "categoria_bien_mueble_id": 2,
+        "tipo_bien_mueble_id": 7,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Seguro de vida con Seguros Caracas.",
+        "valor_declarado": 200000.00,
+        "detalle_seguro": {
+          "_tabla": "sim_intento_bm_seguro",
+          "rif_empresa": "J-00012345-6",
+          "razon_social": "Seguros Caracas C.A.",
+          "numero_prima": "POL-2023-001"
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "transporte",
+        "categoria_bien_mueble_id": 3,
+        "tipo_bien_mueble_id": 8,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Camioneta Toyota Hilux, color blanco.",
+        "valor_declarado": 35000.00,
+        "detalle_transporte": {
+          "_tabla": "sim_intento_bm_transporte",
+          "anio": "2019",
+          "marca": "Toyota",
+          "modelo": "Hilux 4x4",
+          "serial_placa": "AC123BD"
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "opciones_compra",
+        "categoria_bien_mueble_id": 4,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Opción de compra sobre local comercial en C.C. Sambil.",
+        "valor_declarado": 120000.00,
+        "detalle_opciones_compra": {
+          "_tabla": "sim_intento_bm_opciones_compra",
+          "nombre_oferente": "Inversiones Sambil C.A."
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "cuentas_cobrar",
+        "categoria_bien_mueble_id": 5,
+        "tipo_bien_mueble_id": 10,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Deuda pendiente por cobrar a socio comercial.",
+        "valor_declarado": 30000.00,
+        "detalle_cuentas_cobrar": {
+          "_tabla": "sim_intento_bm_cuentas_cobrar",
+          "rif_cedula": "V-12345678",
+          "apellidos_nombres": "González Ramírez, Pedro José"
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "semovientes",
+        "categoria_bien_mueble_id": 6,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Ganado vacuno en finca La Esperanza, Barinas.",
+        "valor_declarado": 120000.00,
+        "detalle_semovientes": {
+          "_tabla": "sim_intento_bm_semovientes",
+          "tipo_semoviente_id": 1,
+          "cantidad": 45
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "bonos",
+        "categoria_bien_mueble_id": 7,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Bonos de la deuda pública nacional serie A.",
+        "valor_declarado": 25000.00,
+        "detalle_bonos": {
+          "_tabla": "sim_intento_bm_bonos",
+          "tipo_bonos": "Bonos de Deuda Pública",
+          "numero_bonos": "500",
+          "numero_serie": "BDP-2022-A-0045"
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "acciones",
+        "categoria_bien_mueble_id": 8,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "500 acciones de Empresas Polar S.A.",
+        "valor_declarado": 75000.00,
+        "detalle_acciones": {
+          "_tabla": "sim_intento_bm_acciones",
+          "rif_empresa": "J-00006860-9",
+          "razon_social": "Empresas Polar S.A."
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "prestaciones",
+        "categoria_bien_mueble_id": 9,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Prestaciones sociales acumuladas en Empresas Polar S.A.",
+        "valor_declarado": 95000.00,
+        "detalle_prestaciones": {
+          "_tabla": "sim_intento_bm_prestaciones",
+          "posee_banco": true,
+          "banco_id": 5,
+          "numero_cuenta": "01340123456789099999",
+          "rif_empresa": "J-00006860-9",
+          "razon_social": "Empresas Polar S.A."
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "caja_ahorro",
+        "categoria_bien_mueble_id": 10,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Caja de ahorro de empleados de Empresas Polar.",
+        "valor_declarado": 18000.00,
+        "detalle_caja_ahorro": {
+          "_tabla": "sim_intento_bm_caja_ahorro",
+          "rif_empresa": "J-00006860-9",
+          "razon_social": "Empresas Polar S.A."
+        },
+        "litigioso": null
+      },
+      {
+        "_categoria": "plantaciones",
+        "categoria_bien_mueble_id": 11,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": false,
+        "porcentaje": 100.00,
+        "descripcion": "Plantación de cacao en Barlovento, Miranda. 5 hectáreas.",
+        "valor_declarado": 200000.00,
+        "litigioso": null
+      },
+      {
+        "_categoria": "otros",
+        "categoria_bien_mueble_id": 12,
+        "tipo_bien_mueble_id": null,
+        "es_bien_litigioso": true,
+        "porcentaje": 50.00,
+        "descripcion": "Colección de arte (12 cuadros).",
+        "valor_declarado": 85000.00,
+        "litigioso": {
+          "numero_expediente": "AP31-V-2025-000123",
+          "tribunal_causa": "Juzgado Segundo Civil, Caracas",
+          "partes_juicio": "Sucesión Pérez vs. Galería Nacional",
+          "estado_juicio": "En curso - fase de experticia"
+        }
+      }
+    ]
+  },
+
+  "pasivos_deuda": {
+    "_tabla": "sim_intento_pasivos_deuda",
+    "items": [
+      {
+        "tipo_pasivo_deuda_id": 2,
+        "banco_id": 8,
+        "numero_tdc": null,
+        "porcentaje": 100.00,
+        "descripcion": "Crédito hipotecario vigente sobre apartamento en Lechería.",
+        "valor_declarado": 280000.00
+      },
+      {
+        "tipo_pasivo_deuda_id": 1,
+        "banco_id": 5,
+        "numero_tdc": "4966XXXXXXXX1234",
+        "porcentaje": 100.00,
+        "descripcion": "Tarjeta de crédito Visa Gold Banesco.",
+        "valor_declarado": 12500.00
+      }
+    ]
+  },
+
+  "pasivos_gastos": {
+    "_tabla": "sim_intento_pasivos_gastos",
+    "items": [
+      {
+        "tipo_pasivo_gasto_id": 1,
+        "porcentaje": 100.00,
+        "descripcion": "Servicios funerarios completos.",
+        "valor_declarado": 8500.00
+      },
+      {
+        "tipo_pasivo_gasto_id": 5,
+        "porcentaje": 100.00,
+        "descripcion": "Honorarios profesionales del abogado.",
+        "valor_declarado": 15000.00
+      }
+    ]
+  },
+
+  "exenciones": {
+    "_tabla": "sim_intento_exenciones",
+    "items": [
+      {
+        "tipo": "Vivienda Principal",
+        "descripcion": "Casa en Calle Los Pinos Nro. 45, declarada vivienda principal según art. 8 num. 3 LISS.",
+        "valor_declarado": 2500000.00
+      }
+    ]
+  },
+
+  "exoneraciones": {
+    "_tabla": "sim_intento_exoneraciones",
+    "items": []
+  },
+
+  "prorrogas": {
+    "_tabla": "sim_intento_prorrogas",
+    "items": [
+      {
+        "fecha_solicitud": "2025-12-10",
+        "nro_resolucion": "SNAT/2025/RES-00456",
+        "fecha_resolucion": "2025-12-20",
+        "plazo_otorgado_dias": 60,
+        "fecha_vencimiento": "2026-02-18"
+      }
+    ]
+  }
+}

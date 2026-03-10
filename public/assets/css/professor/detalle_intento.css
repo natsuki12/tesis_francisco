@@ -1,0 +1,470 @@
+/* =============================================
+   DETALLE DE INTENTO — Estilos específicos
+   Vista de corrección / revisión de un intento
+   ============================================= */
+
+/* ===== CORRECTION LAYOUT (Grid 70/30) ===== */
+.correction-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+}
+
+
+/* ===== INTENTO HEADER ===== */
+.intento-header {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--gray-100);
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.intento-header-left h2 {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--gray-800);
+    margin: 0 0 4px;
+}
+
+.intento-header-left p {
+    font-size: var(--text-md);
+    color: var(--gray-500);
+    margin: 0;
+}
+
+.intento-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.intento-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--text-xs);
+    color: var(--gray-500);
+    background: var(--gray-50);
+    padding: 4px 10px;
+    border-radius: var(--radius-xs);
+}
+
+.intento-meta-item svg {
+    width: 13px;
+    height: 13px;
+    color: var(--gray-400);
+}
+
+.intento-meta-item strong {
+    color: var(--gray-700);
+    font-weight: 600;
+}
+
+.intento-status-big {
+    padding: 6px 16px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-md);
+    font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.intento-status-big.status-enviado {
+    background: var(--blue-100);
+    color: var(--blue-600);
+}
+
+.intento-status-big.status-calificado {
+    background: var(--green-100);
+    color: var(--green-600);
+}
+
+.intento-status-big.status-progreso {
+    background: var(--amber-100);
+    color: var(--amber-600);
+}
+
+
+/* ===== ACCORDION (Collapsible sections) ===== */
+.accordion {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--gray-100);
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    background: var(--gray-50);
+    border-bottom: 1px solid transparent;
+    transition: all var(--transition);
+    user-select: none;
+}
+
+.accordion-header:hover {
+    background: var(--blue-50);
+}
+
+.accordion.accordion--open .accordion-header {
+    border-bottom-color: var(--gray-100);
+}
+
+.accordion-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--text-md);
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+.accordion-title svg {
+    width: 18px;
+    height: 18px;
+    color: var(--gray-400);
+}
+
+.accordion-badge {
+    font-size: var(--text-2xs);
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+
+.accordion-badge.badge-correct {
+    background: var(--green-100);
+    color: var(--green-600);
+}
+
+.accordion-badge.badge-errors {
+    background: var(--red-100);
+    color: var(--red-600);
+}
+
+.accordion-chevron {
+    width: 20px;
+    height: 20px;
+    color: var(--gray-400);
+    transition: transform 0.2s ease;
+}
+
+.accordion.accordion--open .accordion-chevron {
+    transform: rotate(180deg);
+}
+
+.accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.accordion.accordion--open .accordion-body {
+    max-height: 2000px;
+}
+
+.accordion-content {
+    padding: 20px;
+}
+
+
+/* ===== COMPARISON TABLE ===== */
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+}
+
+.comparison-table thead th {
+    background: var(--gray-50);
+    color: var(--gray-600);
+    font-weight: 600;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.comparison-table tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--gray-50);
+    vertical-align: top;
+}
+
+.comparison-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.comparison-table .field-label {
+    font-weight: 600;
+    color: var(--gray-600);
+    white-space: nowrap;
+}
+
+.comparison-table .cell-correct {
+    background: rgba(22, 163, 74, 0.06);
+    color: var(--green-600);
+}
+
+.comparison-table .cell-error {
+    background: rgba(220, 38, 38, 0.06);
+    color: var(--red-600);
+}
+
+.comparison-table .cell-match-icon {
+    text-align: center;
+    width: 40px;
+}
+
+.comparison-table .cell-match-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.cell-match-icon.match-ok svg {
+    color: var(--green-600);
+}
+
+.cell-match-icon.match-fail svg {
+    color: var(--red-600);
+}
+
+
+/* ===== CORRECTION SIDEBAR (Sticky panel) ===== */
+.correction-sidebar {
+    position: sticky;
+    top: 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.sidebar-panel {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--gray-100);
+    overflow: hidden;
+}
+
+.sidebar-panel-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--gray-100);
+    background: var(--gray-50);
+}
+
+.sidebar-panel-header h3 {
+    font-size: var(--text-md);
+    font-weight: 600;
+    color: var(--gray-700);
+    margin: 0;
+}
+
+.sidebar-panel-body {
+    padding: 20px;
+}
+
+
+/* Grade total (prominent) */
+.grade-total {
+    text-align: center;
+    padding: 24px 0 16px;
+}
+
+.grade-total-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.grade-total-value.pass {
+    color: var(--green-600);
+}
+
+.grade-total-value.fail {
+    color: var(--red-600);
+}
+
+.grade-total-value.pending {
+    color: var(--gray-300);
+}
+
+.grade-total-max {
+    font-size: var(--text-lg);
+    font-weight: 500;
+    color: var(--gray-400);
+}
+
+.grade-total-label {
+    display: block;
+    margin-top: 4px;
+    font-size: var(--text-xs);
+    color: var(--gray-500);
+    font-weight: 500;
+}
+
+
+/* Partial grades */
+.grade-partials {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-100);
+}
+
+.grade-partial-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.grade-partial-label {
+    font-size: var(--text-sm);
+    color: var(--gray-600);
+    flex: 1;
+}
+
+.grade-input {
+    width: 56px;
+    padding: 6px 8px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-xs);
+    font-size: var(--text-md);
+    font-weight: 600;
+    font-family: var(--font-ui);
+    text-align: center;
+    color: var(--gray-700);
+    transition: all var(--transition);
+}
+
+.grade-input:focus {
+    outline: none;
+    border-color: var(--blue-400);
+    box-shadow: 0 0 0 3px rgba(37, 99, 168, 0.1);
+}
+
+.grade-input[readonly] {
+    background: var(--gray-50);
+    cursor: default;
+}
+
+.grade-partial-max {
+    font-size: var(--text-xs);
+    color: var(--gray-400);
+    font-weight: 500;
+    width: 24px;
+}
+
+
+/* Observations textarea */
+.observations-field {
+    margin-top: 16px;
+}
+
+.observations-field label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--gray-600);
+    margin-bottom: 6px;
+}
+
+.observations-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px 14px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    font-family: var(--font-ui);
+    color: var(--gray-700);
+    resize: vertical;
+    transition: all var(--transition);
+}
+
+.observations-textarea:focus {
+    outline: none;
+    border-color: var(--blue-400);
+    box-shadow: 0 0 0 3px rgba(37, 99, 168, 0.1);
+}
+
+.observations-textarea[readonly] {
+    background: var(--gray-50);
+    cursor: default;
+    resize: none;
+}
+
+
+/* Action buttons in sidebar */
+.sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+}
+
+.sidebar-actions .btn {
+    width: 100%;
+    justify-content: center;
+}
+
+
+/* Calificado badge (read-only mode) */
+.calificado-info {
+    text-align: center;
+    padding: 8px 0;
+    font-size: var(--text-xs);
+    color: var(--gray-500);
+}
+
+.calificado-info strong {
+    color: var(--gray-700);
+}
+
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1100px) {
+    .correction-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .correction-sidebar {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .intento-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .intento-meta {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .comparison-table {
+        font-size: var(--text-xs);
+    }
+}

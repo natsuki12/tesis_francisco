@@ -300,52 +300,20 @@ $role = $_SESSION['role_id'] ?? 3;
             <!-- ============================================================= -->
             <div class="sim-nav__section">
                 <span class="sim-nav__section-title">SIMULADOR SENIAT</span>
-                <ul class="sim-nav__list">
-                    <!-- Nueva Declaración con submenú -->
-                    <li
-                        class="sim-nav__item sim-nav__item--parent <?= in_array($activePage, ['nueva-declaracion', 'modo-guiado', 'practica-libre', 'evaluacion']) ? 'sim-nav__item--expanded' : '' ?>">
-                        <button class="sim-nav__link" data-toggle="submenu">
-                            <span class="sim-nav__icon">
-                                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                    <polyline points="14 2 14 8 20 8" />
-                                    <line x1="16" y1="13" x2="8" y2="13" />
-                                    <line x1="16" y1="17" x2="8" y2="17" />
-                                </svg>
-                            </span>
-                            <span class="sim-nav__text">Nueva Declaración</span>
-                            <span class="sim-nav__arrow">
-                                <svg viewBox="0 0 24 24" width="16" height="16">
-                                    <path d="M7 10l5 5 5-5z" fill="currentColor" />
-                                </svg>
-                            </span>
-                        </button>
-
-                        <ul class="sim-nav__submenu">
-                            <li
-                                class="sim-nav__subitem <?= $activePage === 'modo-guiado' ? 'sim-nav__subitem--active' : '' ?>">
-                                <a href="#" class="sim-nav__sublink">
-                                    <span class="sim-nav__subtext">Modo Guiado (Aprender)</span>
-                                </a>
-                            </li>
-                            <li
-                                class="sim-nav__subitem <?= $activePage === 'practica-libre' ? 'sim-nav__subitem--active' : '' ?>">
-                                <a href="<?= base_url('/step_01_seniat_index') ?>" class="sim-nav__sublink">
-                                    <span class="sim-nav__subtext">Práctica Libre</span>
-                                </a>
-                            </li>
-                            <li
-                                class="sim-nav__subitem <?= $activePage === 'evaluacion' ? 'sim-nav__subitem--active' : '' ?>">
-                                <a href="#" class="sim-nav__sublink">
-                                    <span class="sim-nav__subtext">Evaluación Final</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-
-                <a href="#" class="sim-nav__link <?= $activePage === 'historial' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/mis-asignaciones') ?>"
+                    class="sim-nav__link <?= $activePage === 'mis-asignaciones' ? 'sim-nav__link--active' : '' ?>">
+                    <span class="sim-nav__icon">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                            <path d="M9 14l2 2 4-4" />
+                        </svg>
+                    </span>
+                    <span class="sim-nav__text">Mis Asignaciones</span>
+                </a>
+                <a href="<?= base_url('/historial-planillas') ?>"
+                    class="sim-nav__link <?= $activePage === 'historial-planillas' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round">
@@ -371,7 +339,8 @@ $role = $_SESSION['role_id'] ?? 3;
                     </span>
                     <span class="sim-nav__text">Marco Legal</span>
                 </a>
-                <a href="#" class="sim-nav__link <?= $activePage === 'calificaciones' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/mis-calificaciones') ?>"
+                    class="sim-nav__link <?= $activePage === 'mis-calificaciones' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round">

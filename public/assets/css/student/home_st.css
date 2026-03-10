@@ -1,97 +1,208 @@
-/* ARCHIVO: public/assets/css/student/home_st.css
-   DESCRIPCIÓN: Estilos del Dashboard del Estudiante — misma estética que el profesor.
-*/
+/* =============================================
+   HOME ESTUDIANTE — Estilos específicos
+   ============================================= */
 
-/* Colors, radius, shadows, transition → inherited from base.css */
+/* Globals: page-header, stats-row, stat-card, stat-icon,
+   stat-value, stat-label, panel, btn, animate-in → components.css */
 
-/* ===== BOTTOM GRID ===== */
-.bottom-grid {
+/* ===== DASHBOARD GRID (60/40) ===== */
+.dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
 }
 
-.panel {
+/* ===== CONTINUE CARD ===== */
+.continue-card {
     background: var(--white);
     border-radius: var(--radius);
     box-shadow: var(--shadow-card);
     border: 1px solid var(--gray-100);
-    overflow: hidden;
+    padding: 24px 28px;
 }
 
-.panel-header {
+.continue-card-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 18px 22px;
-    border-bottom: 1px solid var(--gray-100);
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
-.panel-header h3 {
+.continue-card-header svg {
+    width: 20px;
+    height: 20px;
+    color: var(--blue-500);
+}
+
+.continue-card-header h3 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--gray-700);
+    margin: 0;
+}
+
+/* Active draft card */
+.draft-card {
+    background: var(--blue-50);
+    border: 1px solid var(--blue-100);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    margin-bottom: 12px;
+}
+
+.draft-card-title {
+    font-size: var(--text-md);
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: 8px;
+}
+
+.draft-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.draft-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--text-xs);
+    color: var(--gray-500);
+}
+
+.draft-meta-item svg {
+    width: 13px;
+    height: 13px;
+    color: var(--gray-400);
+}
+
+.draft-meta-item strong {
+    color: var(--gray-700);
+}
+
+.draft-stepper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+
+.stepper-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--gray-200);
+}
+
+.stepper-dot.stepper-done {
+    background: var(--blue-500);
+}
+
+.stepper-dot.stepper-current {
+    background: var(--blue-500);
+    box-shadow: 0 0 0 3px rgba(37, 99, 168, 0.2);
+}
+
+.stepper-label {
+    font-size: var(--text-xs);
+    color: var(--gray-500);
+    margin-left: 6px;
+}
+
+/* No draft state */
+.no-draft {
+    text-align: center;
+    padding: 28px 16px;
+}
+
+.no-draft-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--green-50);
+    color: var(--green-500);
+    margin-bottom: 12px;
+}
+
+.no-draft-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.no-draft h4 {
     font-size: var(--text-md);
     font-weight: 600;
-    color: var(--gray-800);
+    color: var(--gray-700);
+    margin: 0 0 6px;
 }
 
-.panel-header a {
-    font-size: var(--text-md);
-    color: var(--blue-600);
+.no-draft p {
+    font-size: var(--text-sm);
+    color: var(--gray-500);
+    margin: 0 0 14px;
+}
+
+.continue-footer {
+    margin-top: 8px;
+}
+
+.continue-footer a {
+    font-size: var(--text-xs);
+    color: var(--blue-500);
     text-decoration: none;
     font-weight: 500;
 }
 
-.panel-header a:hover {
+.continue-footer a:hover {
     text-decoration: underline;
 }
 
-/* Guide Items */
-.guide-item {
+
+/* ===== ACTIVITY FEED ===== */
+.activity-panel {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--gray-100);
     display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 14px 22px;
-    border-bottom: 1px solid var(--gray-50);
-    transition: background var(--transition);
+    flex-direction: column;
 }
 
-.guide-item:last-child {
-    border-bottom: none;
-}
-
-.guide-item:hover {
-    background: var(--gray-50);
-}
-
-.guide-step {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--blue-50);
-    color: var(--blue-700);
+.activity-panel-header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: var(--text-md);
-    font-weight: 700;
-    flex-shrink: 0;
-    margin-top: 2px;
+    gap: 10px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--gray-100);
 }
 
-.guide-title {
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--gray-800);
-    margin-bottom: 2px;
-}
-
-.guide-desc {
-    font-size: var(--text-xs);
+.activity-panel-header svg {
+    width: 18px;
+    height: 18px;
     color: var(--gray-400);
-    line-height: 1.4;
 }
 
-/* Legal Items */
-.legal-item {
+.activity-panel-header h3 {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--gray-700);
+    margin: 0;
+}
+
+.activity-list {
+    flex: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.activity-item {
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -100,48 +211,101 @@
     transition: background var(--transition);
 }
 
-.legal-item:last-child {
-    border-bottom: none;
-}
-
-.legal-item:hover {
+.activity-item:hover {
     background: var(--gray-50);
 }
 
-.legal-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: var(--amber-100);
-    color: var(--amber-500);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 6px;
     flex-shrink: 0;
 }
 
-.legal-title {
-    font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--gray-800);
-    margin-bottom: 2px;
+.activity-dot.dot-blue {
+    background: var(--blue-500);
 }
 
-.legal-desc {
-    font-size: var(--text-xs);
-    color: var(--gray-400);
-    line-height: 1.4;
+.activity-dot.dot-green {
+    background: var(--green-500);
 }
+
+.activity-dot.dot-amber {
+    background: var(--amber-500);
+}
+
+.activity-dot.dot-purple {
+    background: var(--purple-500);
+}
+
+.activity-text {
+    flex: 1;
+    font-size: var(--text-sm);
+    color: var(--gray-600);
+    line-height: 1.5;
+}
+
+.activity-text strong {
+    color: var(--gray-800);
+    font-weight: 600;
+}
+
+.activity-time {
+    font-size: var(--text-2xs);
+    color: var(--gray-400);
+    white-space: nowrap;
+    margin-top: 2px;
+}
+
+.activity-empty {
+    padding: 40px 22px;
+    text-align: center;
+    color: var(--gray-400);
+    font-size: var(--text-sm);
+}
+
+.activity-empty svg {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 8px;
+    color: var(--gray-300);
+}
+
+
+/* ===== STAT-CARD DARK VARIANT (for Promedio) ===== */
+.stat-card.stat-dark {
+    background: var(--gray-800);
+    border-color: var(--gray-700);
+}
+
+.stat-card.stat-dark .stat-label {
+    color: var(--gray-400);
+}
+
+.stat-card.stat-dark .stat-value {
+    color: var(--white);
+}
+
+.stat-card.stat-dark .stat-icon {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--gray-300);
+}
+
 
 /* ===== RESPONSIVE ===== */
-
-
-    .action-cards {
-        grid-template-columns: repeat(2, 1fr);
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
     }
 }
 
-@media (max-width: 768px) {`r`n    .bottom-grid {
-        grid-template-columns: 1fr;
+@media (max-width: 600px) {
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

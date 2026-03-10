@@ -15,9 +15,11 @@
         href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////+///////////////////////////////////c4uj/6+vr/+3u7v/t7e3/7O3t/+7u7v/4+Pj///79/+jk5P/L2Oj/8fX5///////+/v////////n5/P/p5un/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
         rel="icon" type="image/x-icon" />
     <link href="https://dgpatrimonios.seniat.gob.ve/auth" rel="canonical" />
-    <link href="<?= asset('css/simulator/steps/servicios_declaracion/bootstrap-icons.css') ?>" rel="stylesheet" />
-    <link href="<?= asset('css/simulator/steps/servicios_declaracion/bootstrap.min.css') ?>" rel="stylesheet" />
-    <link href="<?= asset('css/simulator/steps/servicios_declaracion/servicios_declaracion.css') ?>" rel="stylesheet" />
+    <link href="<?= asset('css/simulator/seniat_actual/servicios_declaracion/bootstrap-icons.css') ?>"
+        rel="stylesheet" />
+    <link href="<?= asset('css/simulator/seniat_actual/servicios_declaracion/bootstrap.min.css') ?>" rel="stylesheet" />
+    <link href="<?= asset('css/simulator/seniat_actual/servicios_declaracion/servicios_declaracion.css') ?>"
+        rel="stylesheet" />
 </head>
 
 <body>
@@ -27,8 +29,7 @@
         </router-outlet>
         <app-login>
             <div class="imgLogin">
-                <div class="page-holder align-items-center py-4 vh-100"
-                    style="opacity:.9;margin-top:16vh">
+                <div class="page-holder align-items-center py-4 vh-100" style="opacity:.9;margin-top:16vh">
                     <div class="container mx-5">
                         <div class="row align-items-center">
                             <div class="col-sm-6 px-sm-4">
@@ -44,20 +45,18 @@
                                             través del Portal Fiscal del SENIAT
                                         <form id="loginForm">
                                             <div class="form-floating mb-3">
-                                                <input
-                                                    class="form-control form-control-sm"
-                                                    id="floatingInput" maxlength="30"
-                                                    placeholder="Usuario*" required="" type="text" value="" />
+                                                <input class="form-control form-control-sm" id="floatingInput"
+                                                    maxlength="30" placeholder="Usuario*" required="" type="text"
+                                                    value="" />
                                                 <label for="floatingInput">
                                                     Usuario
                                                 </label>
                                             </div>
                                             <div class="input-group mb-3">
                                                 <div class="form-floating">
-                                                    <input
-                                                        class="form-control form-control-sm"
-                                                        id="floatingPassword" maxlength="30"
-                                                        placeholder="Password" required="" type="password" />
+                                                    <input class="form-control form-control-sm" id="floatingPassword"
+                                                        maxlength="30" placeholder="Password" required=""
+                                                        type="password" />
                                                     <label for="floatingPassword">
                                                         Clave
                                                     </label>
@@ -75,10 +74,8 @@
                                                 </div>
                                                 <div class="col-md">
                                                     <div class="form-floating">
-                                                        <input
-                                                            class="form-control form-control-sm"
-                                                            id="floatingInputCap"
-                                                            maxlength="6"
+                                                        <input class="form-control form-control-sm"
+                                                            id="floatingInputCap" maxlength="6"
                                                             placeholder="Ingrese el código mostrado en la imagen"
                                                             required="" type="text" value="" />
                                                         <label for="floatingInputCap">
@@ -91,11 +88,11 @@
                                             <div class="form-floating mb-3">
                                                 <div class="row">
                                                     <div class="col align-items-center">
-                                                        <button class="btn btn-seniat"
-                                                            id="btnAceptar" type="button">
+                                                        <button class="btn btn-seniat" id="btnAceptar" type="button">
                                                             Aceptar
                                                         </button>
-                                                        <a href="<?= base_url('/step_01_seniat_index') ?>" class="btn btn-seniat" type="button">
+                                                        <a href="<?= base_url('/simulador') ?>" class="btn btn-seniat"
+                                                            type="button">
                                                             Salir
                                                         </a>
                                                     </div>

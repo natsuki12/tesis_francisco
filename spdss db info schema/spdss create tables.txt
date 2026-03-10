@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-03-2026 a las 19:05:26
+-- Tiempo de generación: 10-03-2026 a las 02:41:27
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -188,7 +188,17 @@ INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento
 (143, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:43:04'),
 (144, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:43:14'),
 (145, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:44:01'),
-(146, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:44:08');
+(146, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:44:08'),
+(147, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 20:02:59'),
+(148, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 20:02:59'),
+(149, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:17:32'),
+(150, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:17:32'),
+(151, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:24:01'),
+(152, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:24:13'),
+(153, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:24:13'),
+(154, NULL, 'fdiaz.6650@unimar.edu.ve', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 23:07:11'),
+(155, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-09 23:21:43'),
+(156, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 00:40:10');
 
 -- --------------------------------------------------------
 
@@ -5146,7 +5156,8 @@ INSERT INTO `sim_caso_asignaciones` (`id`, `config_id`, `estudiante_id`, `create
 (8, 6, 4, '2026-03-07 19:12:09', 'Pendiente', NULL),
 (10, 7, 2, '2026-03-08 03:33:25', 'Pendiente', NULL),
 (11, 7, 3, '2026-03-08 03:33:25', 'Pendiente', NULL),
-(12, 7, 4, '2026-03-08 03:33:25', 'Pendiente', NULL);
+(12, 7, 4, '2026-03-08 03:33:25', 'Pendiente', NULL),
+(13, 5, 2, '2026-03-09 23:31:03', 'Pendiente', NULL);
 
 -- --------------------------------------------------------
 
@@ -5618,10 +5629,11 @@ CREATE TABLE `sim_caso_configs` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `caso_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Caso al que pertenece esta config',
   `profesor_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Profesor que creó la asignación',
-  `modalidad` enum('Practica_Libre','Evaluacion') NOT NULL,
+  `modalidad` enum('Practica_Libre','Evaluacion','Practica_guiada') NOT NULL,
   `max_intentos` tinyint(3) UNSIGNED NOT NULL DEFAULT 0 COMMENT '0 = ilimitados',
   `fecha_apertura` timestamp NULL DEFAULT NULL COMMENT 'Fecha desde la cual los estudiantes pueden iniciar intentos',
   `fecha_limite` timestamp NULL DEFAULT NULL COMMENT 'Solo aplica si modalidad = Evaluacion',
+  `instrucciones` text DEFAULT NULL,
   `status` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo' COMMENT 'Inactivo cuando tiene intentos y el profesor quiere deshabilitarla',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -5631,10 +5643,10 @@ CREATE TABLE `sim_caso_configs` (
 -- Volcado de datos para la tabla `sim_caso_configs`
 --
 
-INSERT INTO `sim_caso_configs` (`id`, `caso_id`, `profesor_id`, `modalidad`, `max_intentos`, `fecha_apertura`, `fecha_limite`, `status`, `created_at`, `updated_at`) VALUES
-(5, 10, 1, 'Evaluacion', 2, NULL, '2026-05-30 04:25:00', 'Activo', '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
-(6, 2, 1, 'Practica_Libre', 2, NULL, '2026-04-30 04:25:00', 'Activo', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
-(7, 11, 1, 'Evaluacion', 3, '2026-03-09 02:39:00', '2026-03-19 02:39:00', 'Activo', '2026-03-08 03:33:25', '2026-03-09 02:40:37');
+INSERT INTO `sim_caso_configs` (`id`, `caso_id`, `profesor_id`, `modalidad`, `max_intentos`, `fecha_apertura`, `fecha_limite`, `instrucciones`, `status`, `created_at`, `updated_at`) VALUES
+(5, 10, 1, 'Practica_guiada', 2, NULL, '2026-05-30 04:25:00', 'no hay instrucciones', 'Activo', '2026-03-07 07:12:52', '2026-03-09 23:59:31'),
+(6, 2, 1, 'Practica_Libre', 2, NULL, '2026-04-30 04:25:00', NULL, 'Activo', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(7, 11, 1, 'Evaluacion', 3, '2026-03-09 02:39:00', '2026-03-19 02:39:00', NULL, 'Activo', '2026-03-08 03:33:25', '2026-03-09 02:40:37');
 
 -- --------------------------------------------------------
 
@@ -6361,16 +6373,21 @@ CREATE TABLE `sim_intentos` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `asignacion_id` bigint(20) UNSIGNED NOT NULL COMMENT 'FK a sim_caso_asignaciones — contiene caso + config + estudiante',
   `numero_intento` smallint(5) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Máximo 65.535 intentos por estudiante por caso',
-  `rif_sucesoral` varchar(12) DEFAULT NULL COMMENT 'Formato J-XXXXXXXX-X, generado al aprobar',
-  `password_rif` varchar(255) DEFAULT NULL COMMENT 'Contraseña hasheada. Generada por el sistema, el estudiante puede cambiarla.',
-  `estatus_rif` enum('Activo','Inactivo') DEFAULT NULL COMMENT 'NULL mientras no se genere el RIF. Inactivo bloquea acceso a Etapa 2.',
+  `estado` enum('En_Progreso','Enviado','Aprobado','Rechazado','Cancelado') NOT NULL DEFAULT 'En_Progreso' COMMENT 'Estado del intento individual',
+  `paso_actual` tinyint(3) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Último paso donde quedó el estudiante (1-6)',
+  `pasos_completados` set('1','2','3','4','5','6') NOT NULL DEFAULT '' COMMENT 'Pasos que el estudiante ya completó y validó',
+  `borrador_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'Snapshot completo del intento. Se sobreescribe en cada auto-save.',
+  `activo` tinyint(1) GENERATED ALWAYS AS (if(`estado` = 'En_Progreso',1,NULL)) VIRTUAL COMMENT 'NULL si no está En_Progreso, 1 si sí. Permite UNIQUE solo en activos.',
   `numero_control` char(11) DEFAULT NULL COMMENT 'Número de control numérico generado al enviar la planilla',
   `submitted_at` timestamp NULL DEFAULT NULL COMMENT 'Cuando el estudiante envió el intento',
   `reviewed_at` timestamp NULL DEFAULT NULL COMMENT 'Cuando el profesor revisó',
   `approved_at` timestamp NULL DEFAULT NULL COMMENT 'Cuando se aprobó y generó el RIF',
+  `rif_sucesoral` varchar(12) DEFAULT NULL COMMENT 'Formato J-XXXXXXXX-X, generado al aprobar',
+  `password_rif` varchar(255) DEFAULT NULL COMMENT 'Contraseña hasheada. Generada por el sistema, el estudiante puede cambiarla.',
+  `estatus_rif` enum('Activo','Inactivo') DEFAULT NULL COMMENT 'NULL mientras no se genere el RIF. Inactivo bloquea acceso a Etapa 2.',
+  `fuera_de_fecha` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 si el intento se envió después de la fecha de cierre de la configuración',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `fuera_de_fecha` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 si el intento se envió después de la fecha de cierre de la configuración'
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Intentos de los estudiantes por caso. Observaciones se sobreescriben. Intentos cancelados incrementan numero_intento.';
 
 -- --------------------------------------------------------
@@ -6610,21 +6627,23 @@ CREATE TABLE `sim_intento_bm_transporte` (
 CREATE TABLE `sim_intento_datos_basicos` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `intento_id` bigint(20) UNSIGNED NOT NULL,
-  `tipo_cedula` enum('V','E','No_Indica') NOT NULL COMMENT 'V=venezolano, E=extranjero, No_Indica=sin cédula',
+  `tipo_cedula` enum('V','E','No_Aplica') NOT NULL COMMENT 'V=venezolano, E=extranjero, No_Indica=sin cédula',
   `cedula` varchar(20) DEFAULT NULL COMMENT 'NULL si tipo_cedula es No_Indica',
+  `rif_personal` varchar(12) DEFAULT NULL COMMENT 'RIF del causante. Formato Ej: V-12345678-9',
   `pasaporte` varchar(20) DEFAULT NULL COMMENT 'Número de pasaporte si aplica',
   `apellidos` varchar(100) NOT NULL,
   `nombres` varchar(100) NOT NULL,
+  `fecha_nacimiento` date DEFAULT NULL COMMENT 'Fecha de nacimiento del causante',
   `fecha_fallecimiento` date NOT NULL,
   `sexo` enum('M','F') NOT NULL,
-  `estado_civil` enum('Soltero','Casado','Viudo','Divorciado') NOT NULL,
+  `estado_civil` enum('Soltero','Casado','Viudo','Divorciado','Concubinato','No_aplica') NOT NULL,
   `domiciliado_pais` tinyint(1) NOT NULL DEFAULT 1,
   `nacionalidad` smallint(5) UNSIGNED NOT NULL COMMENT 'FK a paises',
   `fecha_cierre_fiscal` date NOT NULL,
   `email_sucesion` varchar(150) NOT NULL,
   `numero_acta` varchar(50) DEFAULT NULL,
   `year_acta` year(4) DEFAULT NULL,
-  `parroquia_registro_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'FK a parroquias — parroquia donde se registró la defunción'
+  `parroquia_acta` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Datos básicos del causante ingresados por el estudiante. Incluye datos del acta de defunción si es sucesión sin cédula.';
 
 -- --------------------------------------------------------
@@ -6636,7 +6655,7 @@ CREATE TABLE `sim_intento_datos_basicos` (
 CREATE TABLE `sim_intento_direcciones` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `intento_id` bigint(20) UNSIGNED NOT NULL,
-  `tipo_direccion` enum('Bodega_Almacenamiento_Deposito','Casa_Matriz_Establecimiento_Principal','Direccion_Notificacion_Fisica','Negocio_Independiente','Planta_Industrial_Fabrica','Sucursal_Comercial') NOT NULL,
+  `tipo_direccion` enum('Domicilio_Fiscal','Bodega_Almacenamiento_Deposito','Casa_Matriz_Establecimiento_Principal','Direccion_Notificacion_Fisica','Negocio_Independiente','Planta_Industrial_Fabrica','Sucursal_Comercial') NOT NULL,
   `tipo_vialidad` enum('Calle','Avenida','Vereda','Carretera','Esquina','Carrera') DEFAULT NULL,
   `nombre_vialidad` varchar(100) DEFAULT NULL,
   `tipo_inmueble` enum('Edificio','Centro_Comercial','Quinta','Casa','Local') DEFAULT NULL,
@@ -6792,7 +6811,7 @@ CREATE TABLE `sim_intento_relaciones` (
   `es_premuerto` tinyint(1) NOT NULL DEFAULT 0,
   `fecha_fallecimiento` date DEFAULT NULL COMMENT 'Solo si es_premuerto = 1',
   `premuerto_padre_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Si no es NULL, este heredero representa al premuerto indicado',
-  `orden` tinyint(3) UNSIGNED NOT NULL COMMENT 'Orden de aparición en la planilla'
+  `orden` tinyint(3) UNSIGNED NOT NULL DEFAULT 0 COMMENT '0 = representante, 1+ = herederos en orden de planilla. El backend lo asigna al persistir.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Herederos y representante ingresados por el estudiante en su intento. Espejo de sim_caso_participantes.';
 
 -- --------------------------------------------------------
@@ -6946,8 +6965,9 @@ CREATE TABLE `user_sessions` (
 --
 
 INSERT INTO `user_sessions` (`id`, `user_id`, `session_id`, `ip_address`, `user_agent`, `last_activity`, `created_at`) VALUES
-(13, 3, 'ql6v922djf20f5k70vt9rgp77m', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 22:58:53', '2026-03-08 22:58:53'),
-(21, 1, 'mg6nah4vnorhiotqrim15ncekf', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 14:03:18', '2026-03-09 13:44:08');
+(13, 3, 'hunc7va35j2i9bcdj2lufsqsph', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 20:07:50', '2026-03-08 22:58:53'),
+(25, 1, 'c15h1dn6ae8ee3l3k87lora5v0', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-09 19:32:57', '2026-03-09 19:21:43'),
+(26, 4, 'j7r3s6dt41ckt7p9t3qrtjc49q', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 20:52:54', '2026-03-09 20:40:10');
 
 --
 -- Índices para tablas volcadas
@@ -7399,7 +7419,8 @@ ALTER TABLE `sim_intentos`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uq_asignacion_intento` (`asignacion_id`,`numero_intento`),
   ADD UNIQUE KEY `rif_sucesoral` (`rif_sucesoral`),
-  ADD UNIQUE KEY `numero_control` (`numero_control`);
+  ADD UNIQUE KEY `numero_control` (`numero_control`),
+  ADD UNIQUE KEY `uq_un_intento_activo` (`asignacion_id`,`activo`);
 
 --
 -- Indices de la tabla `sim_intento_bienes_inmuebles`
@@ -7515,8 +7536,7 @@ ALTER TABLE `sim_intento_bm_transporte`
 ALTER TABLE `sim_intento_datos_basicos`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uq_intento_datos` (`intento_id`),
-  ADD KEY `fk_sird_nacionalidad` (`nacionalidad`),
-  ADD KEY `fk_sird_parroquia` (`parroquia_registro_id`);
+  ADD KEY `fk_sird_nacionalidad` (`nacionalidad`);
 
 --
 -- Indices de la tabla `sim_intento_direcciones`
@@ -7646,7 +7666,7 @@ ALTER TABLE `user_sessions`
 -- AUTO_INCREMENT de la tabla `bitacora_accesos`
 --
 ALTER TABLE `bitacora_accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=147;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=157;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -7760,7 +7780,7 @@ ALTER TABLE `sim_casos_estudios`
 -- AUTO_INCREMENT de la tabla `sim_caso_asignaciones`
 --
 ALTER TABLE `sim_caso_asignaciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bienes_inmuebles`
@@ -8162,7 +8182,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `user_sessions`
 --
 ALTER TABLE `user_sessions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Restricciones para tablas volcadas
@@ -8551,8 +8571,7 @@ ALTER TABLE `sim_intento_bm_transporte`
 --
 ALTER TABLE `sim_intento_datos_basicos`
   ADD CONSTRAINT `fk_sird_intento` FOREIGN KEY (`intento_id`) REFERENCES `sim_intentos` (`id`),
-  ADD CONSTRAINT `fk_sird_nacionalidad` FOREIGN KEY (`nacionalidad`) REFERENCES `paises` (`id`),
-  ADD CONSTRAINT `fk_sird_parroquia` FOREIGN KEY (`parroquia_registro_id`) REFERENCES `parroquias` (`id`);
+  ADD CONSTRAINT `fk_sird_nacionalidad` FOREIGN KEY (`nacionalidad`) REFERENCES `paises` (`id`);
 
 --
 -- Filtros para la tabla `sim_intento_direcciones`

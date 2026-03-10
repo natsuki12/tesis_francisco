@@ -128,7 +128,7 @@ ob_start();
                 </svg>
             </div>
         </a>
-        <a href="<?= base_url('/admin/catalogos') ?>" class="admin-quick-card">
+        <a href="<?= base_url('/admin/configuracion/catalogos') ?>" class="admin-quick-card">
             <div class="admin-quick-card__icon text-green">
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
                     stroke-linecap="round">
@@ -200,7 +200,8 @@ ob_start();
                 </div>
             </div>
             <div class="admin-panel__footer">
-                <a href="<?= base_url('/admin/bitacora') ?>" class="admin-link">Ver bitácora completa &rarr;</a>
+                <a href="<?= base_url('/admin/monitoreo/bitacora') ?>" class="admin-link">Ver bitácora completa
+                    &rarr;</a>
             </div>
         </div>
 

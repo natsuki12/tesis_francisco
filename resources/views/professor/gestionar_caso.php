@@ -862,6 +862,7 @@ if ($source === 'borrador') {
                         <label for="cfgModalidad">Modalidad *</label>
                         <select id="cfgModalidad" class="gc-input" required>
                             <option value="Practica_Libre">Práctica Libre</option>
+                            <option value="Practica_guiada">Práctica Guiada</option>
                             <option value="Evaluacion">Evaluación</option>
                         </select>
                     </div>

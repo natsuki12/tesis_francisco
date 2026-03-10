@@ -2,17 +2,66 @@
 declare(strict_types=1);
 
 // ARCHIVO: resources/views/student/home_st.php
+// Dashboard del estudiante — panorama general.
 
-// 1. Configuración de la Vista
 $pageTitle = 'Inicio Estudiante — Simulador SENIAT';
 $activePage = 'inicio';
+$extraCss = '<link rel="stylesheet" href="' . asset('css/student/home_st.css') . '">';
 
-// 2. Cargamos el CSS específico
-$extraCss = '<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&display=swap" rel="stylesheet">';
-$extraCss .= '<link rel="stylesheet" href="' . asset('css/student/home_st.css') . '">';
-
-// 3. Datos (Placeholder: Luego vendrán del Controlador)
+// ── Datos Placeholder ──────────────────────────────────────
 $userName = $_SESSION['user_name'] ?? 'Estudiante';
+
+$stats = [
+  'pendientes' => 3,
+  'en_progreso' => 1,
+  'calificados' => 2,
+  'promedio' => 15.7,
+];
+
+// Draft: borrador activo (null si no hay)
+$draft = [
+  'caso_titulo' => 'Sucesión González Méndez',
+  'paso_actual' => 2,
+  'paso_total' => 5,
+  'paso_nombre' => 'Herederos',
+  'ultima_edicion' => '2026-03-09 12:30:00',
+  'deadline' => '2026-03-15',
+  'asignacion_id' => 1,
+];
+
+// Activity feed
+$actividad = [
+  [
+    'tipo' => 'envio',
+    'dot' => 'dot-blue',
+    'texto' => 'Enviaste el intento <strong>#2</strong> del caso <strong>Sucesión González Méndez</strong>',
+    'tiempo' => 'Hace 1 día',
+  ],
+  [
+    'tipo' => 'calificacion',
+    'dot' => 'dot-green',
+    'texto' => 'Tu intento <strong>#1</strong> del caso <strong>Sucesión Pérez Alvarado</strong> fue calificado: <strong>16/20</strong>',
+    'tiempo' => 'Hace 3 días',
+  ],
+  [
+    'tipo' => 'asignacion',
+    'dot' => 'dot-purple',
+    'texto' => 'El <strong>Prof. César Rodríguez</strong> te asignó el caso <strong>Sucesión Ramírez Torres</strong>',
+    'tiempo' => 'Hace 5 días',
+  ],
+  [
+    'tipo' => 'calificacion',
+    'dot' => 'dot-green',
+    'texto' => 'Tu intento <strong>#1</strong> del caso <strong>Sucesión González Méndez</strong> fue calificado: <strong>14.5/20</strong>',
+    'tiempo' => 'Hace 6 días',
+  ],
+  [
+    'tipo' => 'envio',
+    'dot' => 'dot-blue',
+    'texto' => 'Enviaste el intento <strong>#1</strong> del caso <strong>Sucesión González Méndez</strong>',
+    'tiempo' => 'Hace 8 días',
+  ],
+];
 
 ob_start();
 ?>
@@ -20,198 +69,177 @@ ob_start();
 <!-- Header -->
 <div class="page-header">
   <h1>Bienvenido, <?= htmlspecialchars($userName) ?></h1>
-  <p>Panel de control del estudiante. Seleccione una acción para continuar.</p>
 </div>
 
-<!-- Stats -->
+<!-- Stats Row -->
 <div class="stats-row">
-  <div class="stat-card animate-in">
+  <div class="stat-card stat-card--vertical animate-in">
     <div class="stat-card-top">
+      <span class="stat-label">Asignaciones Pendientes</span>
       <div class="stat-icon blue">
-        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round" viewBox="0 0 24 24">
-          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-          <polyline points="14 2 14 8 20 8" />
-          <line x1="16" y1="13" x2="8" y2="13" />
-          <line x1="16" y1="17" x2="8" y2="17" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+          <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
         </svg>
       </div>
     </div>
-    <div class="stat-value">0</div>
-    <div class="stat-label">Declaraciones realizadas</div>
+    <div class="stat-value"><?= $stats['pendientes'] ?></div>
   </div>
-  <div class="stat-card animate-in">
+
+  <div class="stat-card stat-card--vertical animate-in">
     <div class="stat-card-top">
-      <div class="stat-icon green">
-        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round" viewBox="0 0 24 24">
-          <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-          <polyline points="22 4 12 14.01 9 11.01" />
-        </svg>
-      </div>
-    </div>
-    <div class="stat-value">0</div>
-    <div class="stat-label">Completadas con éxito</div>
-  </div>
-  <div class="stat-card animate-in">
-    <div class="stat-card-top">
+      <span class="stat-label">En Progreso</span>
       <div class="stat-icon amber">
-        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round" viewBox="0 0 24 24">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
           <circle cx="12" cy="12" r="10" />
           <polyline points="12 6 12 12 16 14" />
         </svg>
       </div>
     </div>
-    <div class="stat-value">0</div>
-    <div class="stat-label">En progreso</div>
+    <div class="stat-value"><?= $stats['en_progreso'] ?></div>
+  </div>
+
+  <div class="stat-card stat-card--vertical animate-in">
+    <div class="stat-card-top">
+      <span class="stat-label">Calificados</span>
+      <div class="stat-icon green">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+      </div>
+    </div>
+    <div class="stat-value"><?= $stats['calificados'] ?></div>
+  </div>
+
+  <div class="stat-card stat-card--vertical stat-dark animate-in">
+    <div class="stat-card-top">
+      <span class="stat-label">Promedio General</span>
+      <div class="stat-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+      </div>
+    </div>
+    <div class="stat-value">
+      <?= $stats['promedio'] !== null ? number_format($stats['promedio'], 1) : '—' ?>
+    </div>
   </div>
 </div>
 
-<!-- Action Cards -->
-<div class="action-cards">
-  <a class="action-card animate-in" href="<?= base_url('/simulador_inicio') ?>">
-    <div class="action-card-icon">
-      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-        stroke-linejoin="round" viewBox="0 0 24 24">
-        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-        <polyline points="10 9 9 9 8 9" />
+<!-- Dashboard Grid (60/40) -->
+<div class="dashboard-grid">
+
+  <!-- LEFT: Continuar donde lo dejaste -->
+  <div class="continue-card animate-in">
+    <div class="continue-card-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <polygon points="5 3 19 12 5 21 5 3" />
       </svg>
+      <h3>Continuar donde lo dejaste</h3>
     </div>
-    <h3>Nueva Declaración</h3>
-    <p>Acceda al simulador interactivo para realizar el proceso de declaración sucesoral (Forma 32), cálculos y desglose
-      de herederos.</p>
-    <span class="action-card-link">
-      Iniciar Simulación
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-        stroke-linejoin="round" viewBox="0 0 24 24">
-        <line x1="5" y1="12" x2="19" y2="12" />
-        <polyline points="12 5 19 12 12 19" />
-      </svg>
-    </span>
-  </a>
-  <a class="action-card animate-in" href="<?= base_url('/perfil') ?>">
-    <div class="action-card-icon">
-      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-        stroke-linejoin="round" viewBox="0 0 24 24">
-        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
-        <circle cx="12" cy="7" r="4" />
-      </svg>
-    </div>
-    <h3>Mi Perfil</h3>
-    <p>Revise su información personal registrada, datos académicos y gestione la seguridad de su cuenta.</p>
-    <span class="action-card-link">
-      Ver Datos Personales
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-        stroke-linejoin="round" viewBox="0 0 24 24">
-        <line x1="5" y1="12" x2="19" y2="12" />
-        <polyline points="12 5 19 12 12 19" />
-      </svg>
-    </span>
-  </a>
-  <div class="action-card disabled animate-in">
-    <div class="action-card-icon">
-      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-        stroke-linejoin="round" viewBox="0 0 24 24">
+
+    <?php if ($draft): ?>
+      <div class="draft-card">
+        <div class="draft-card-title"><?= htmlspecialchars($draft['caso_titulo']) ?></div>
+        <div class="draft-card-meta">
+          <span class="draft-meta-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            Última edición: <strong><?php
+            $diff = time() - strtotime($draft['ultima_edicion']);
+            if ($diff < 3600)
+              echo 'Hace ' . max(1, floor($diff / 60)) . ' min';
+            elseif ($diff < 86400)
+              echo 'Hace ' . floor($diff / 3600) . ' horas';
+            else
+              echo 'Hace ' . floor($diff / 86400) . ' días';
+            ?></strong>
+          </span>
+          <?php if ($draft['deadline']): ?>
+            <?php
+            $daysLeft = (int) ((strtotime($draft['deadline']) - time()) / 86400);
+            $dlClass = $daysLeft <= 2 ? 'deadline-urgent' : ($daysLeft <= 5 ? 'deadline-soon' : 'deadline-ok');
+            ?>
+            <span class="deadline-badge <?= $dlClass ?>">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              Fecha límite: <?= date('d/m/Y', strtotime($draft['deadline'])) ?>
+            </span>
+          <?php endif; ?>
+        </div>
+        <div class="draft-stepper">
+          <?php for ($i = 1; $i <= $draft['paso_total']; $i++): ?>
+            <span class="stepper-dot <?php
+            if ($i < $draft['paso_actual'])
+              echo 'stepper-done';
+            elseif ($i === $draft['paso_actual'])
+              echo 'stepper-current';
+            ?>"></span>
+          <?php endfor; ?>
+          <span class="stepper-label">Paso <?= $draft['paso_actual'] ?> de <?= $draft['paso_total'] ?> —
+            <?= htmlspecialchars($draft['paso_nombre']) ?></span>
+        </div>
+        <a href="<?= base_url('/mis-asignaciones/' . $draft['asignacion_id']) ?>" class="btn btn-primary">
+          Continuar →
+        </a>
+      </div>
+      <div class="continue-footer">
+        <a href="<?= base_url('/mis-asignaciones') ?>">Ver todas en Mis Asignaciones</a>
+      </div>
+    <?php else: ?>
+      <div class="no-draft">
+        <div class="no-draft-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
+        <h4>No tienes declaraciones en progreso</h4>
+        <p>¡Revisa tus asignaciones para comenzar!</p>
+        <a href="<?= base_url('/mis-asignaciones') ?>" class="btn btn-primary">
+          Ir a Mis Asignaciones
+        </a>
+      </div>
+    <?php endif; ?>
+  </div>
+
+  <!-- RIGHT: Actividad reciente -->
+  <div class="activity-panel animate-in">
+    <div class="activity-panel-header">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <circle cx="12" cy="12" r="10" />
         <polyline points="12 6 12 12 16 14" />
       </svg>
+      <h3>Actividad reciente</h3>
     </div>
-    <h3>Historial</h3>
-    <p>Consulte sus declaraciones anteriores y reportes de evaluación generados por el sistema.</p>
-    <span class="badge-wip">(Módulo en construcción)</span>
-    <span class="btn-disabled">No disponible</span>
-  </div>
-</div>
 
-<!-- Bottom Panel -->
-<div class="bottom-grid">
-
-  <!-- Quick Guide -->
-  <div class="panel">
-    <div class="panel-header">
-      <h3>Guía rápida</h3>
-    </div>
-    <div class="guide-item">
-      <div class="guide-step">1</div>
-      <div>
-        <div class="guide-title">Iniciar nueva declaración</div>
-        <div class="guide-desc">Acceda al simulador y complete los datos del causante para comenzar.</div>
-      </div>
-    </div>
-    <div class="guide-item">
-      <div class="guide-step">2</div>
-      <div>
-        <div class="guide-title">Completar los formularios</div>
-        <div class="guide-desc">Registre los datos de herederos, bienes y cálculos tributarios paso a paso.</div>
-      </div>
-    </div>
-    <div class="guide-item">
-      <div class="guide-step">3</div>
-      <div>
-        <div class="guide-title">Generar la planilla</div>
-        <div class="guide-desc">Revise los resultados y genere la Forma 32 para su evaluación.</div>
-      </div>
-    </div>
-    <div class="guide-item">
-      <div class="guide-step">4</div>
-      <div>
-        <div class="guide-title">Esperar calificación</div>
-        <div class="guide-desc">Su profesor revisará la declaración y le asignará una calificación.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Marco Legal -->
-  <div class="panel">
-    <div class="panel-header">
-      <h3>Marco Legal Relevante</h3>
-      <a href="#">Ver todo</a>
-    </div>
-    <div class="legal-item">
-      <div class="legal-icon">
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round" viewBox="0 0 24 24">
-          <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
-          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+    <?php if (empty($actividad)): ?>
+      <div class="activity-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
         </svg>
+        <p>Tu actividad aparecerá aquí a medida que uses el simulador.</p>
       </div>
-      <div>
-        <div class="legal-title">Ley de Impuesto sobre Sucesiones</div>
-        <div class="legal-desc">Gaceta Oficial N° 5.391 — Base legal para la Forma 32.</div>
-      </div>
-    </div>
-    <div class="legal-item">
-      <div class="legal-icon">
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round" viewBox="0 0 24 24">
-          <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
-          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
-        </svg>
-      </div>
-      <div>
-        <div class="legal-title">Código Orgánico Tributario</div>
-        <div class="legal-desc">Normativa complementaria sobre deberes formales del contribuyente.</div>
-      </div>
-    </div>
-    <div class="legal-item">
-      <div class="legal-icon">
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round" viewBox="0 0 24 24">
-          <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
-          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
-        </svg>
-      </div>
-      <div>
-        <div class="legal-title">Providencia SENIAT</div>
-        <div class="legal-desc">Procedimiento para la autoliquidación del impuesto sucesoral.</div>
-      </div>
-    </div>
+    <?php else: ?>
+      <ul class="activity-list">
+        <?php foreach ($actividad as $act): ?>
+          <li class="activity-item">
+            <span class="activity-dot <?= $act['dot'] ?>"></span>
+            <div class="activity-text"><?= $act['texto'] ?></div>
+            <span class="activity-time"><?= $act['tiempo'] ?></span>
+          </li>
+        <?php endforeach; ?>
+      </ul>
+    <?php endif; ?>
   </div>
-
 </div>
 
 <?php

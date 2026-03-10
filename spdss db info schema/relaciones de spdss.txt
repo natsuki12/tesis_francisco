@@ -1,6 +1,6 @@
-127.0.0.1/information_schema/KEY_COLUMN_USAGE/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=spdss
+127.0.0.1/spdss/KEY_COLUMN_USAGE/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=spdss
 
-   Mostrando filas 0 - 126 (total de 127, La consulta tardó 0,0012 segundos.)
+   Mostrando filas 0 - 125 (total de 126, La consulta tardó 0,0013 segundos.)
 
 
 SELECT 
@@ -120,7 +120,6 @@ sim_intento_bm_transporte	bien_mueble_id	fk_ibmt_bien	sim_intento_bienes_muebles
 sim_intento_datos_basicos	intento_id	fk_sird_intento	sim_intentos	id	
 sim_intento_datos_basicos	nacionalidad	fk_sird_nacionalidad	paises	id	
 
-sim_intento_datos_basicos	parroquia_registro_id	fk_sird_parroquia	parroquias	id	
 sim_intento_direcciones	ciudad_id	fk_sid_ciudad	ciudades	id	
 sim_intento_direcciones	codigo_postal_id	fk_sid_codigo_postal	codigos_postales	id	
 sim_intento_direcciones	estado_id	fk_sid_estado	estados	id	
