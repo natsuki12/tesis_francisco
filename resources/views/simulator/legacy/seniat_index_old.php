@@ -45,6 +45,48 @@ ob_start();
     /* SENIAT original usaba content-box */
   }
 
+  /* Override base.css globals that leak into the scope */
+  .seniat-scope h1,
+  .seniat-scope h2,
+  .seniat-scope h3 {
+    font-family: inherit;
+    font-weight: inherit;
+    color: inherit;
+  }
+
+  .seniat-scope label {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+  }
+
+  .seniat-scope input[type="text"],
+  .seniat-scope input[type="number"],
+  .seniat-scope input[type="email"],
+  .seniat-scope input[type="date"],
+  .seniat-scope select,
+  .seniat-scope textarea {
+    font-family: Verdana, Arial;
+    font-size: 8pt;
+    color: #000;
+  }
+
+  .seniat-scope ::placeholder {
+    font-family: Verdana, Arial;
+    font-size: 8pt;
+    color: #888;
+  }
+
+  .seniat-scope a,
+  .seniat-scope a:link,
+  .seniat-scope a:visited,
+  .seniat-scope a:hover {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+  }
+
   /* --- Estilos SENIAT originales (con scope) --- */
 
   .seniat-scope .GroupHeaderid1siteid0 {

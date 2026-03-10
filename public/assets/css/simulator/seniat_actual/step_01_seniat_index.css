@@ -6,6 +6,11 @@
     width: 100%;
     padding: 0;
     margin: 0;
+    border-radius: 12px;
+    box-shadow: var(--sim-shadow-lg, 0 4px 6px rgba(0, 0, 0, 0.07));
+    overflow: hidden;
+    border: 1px solid var(--sim-border, #dfe5ee);
+    position: relative;
 }
 
 /* Header ocupa todo el ancho disponible */
@@ -263,7 +268,7 @@
 /* ========================================= */
 
 .floating-sidebar {
-    position: fixed;
+    position: absolute;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);

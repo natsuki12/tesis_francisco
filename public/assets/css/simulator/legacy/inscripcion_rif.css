@@ -282,7 +282,7 @@ div.calendar {
     color: #fff;
 }
 
-BODY {
+.seniat-scope {
     FONT-SIZE: 8pt;
     MARGIN: 0px;
     FONT-FAMILY: Verdana, Arial
@@ -595,7 +595,7 @@ BODY {
 
 
 /* Declaracion.css */
-body {
+.seniat-scope {
     font-family: Verdana, Arial;
     font-size: 8pt;
     margin: 0px;
@@ -605,7 +605,7 @@ body {
     margin-top: 0px;
 }
 
-td {
+.seniat-scope td {
     font-family: Verdana, Arial;
     font-size: 8pt;
 }
@@ -676,19 +676,19 @@ a1 {
     text-decoration: underline;
 }
 
-a:link {
+.seniat-scope a:link {
     font-family: Verdana, Arial;
     font-size: 7pt;
     text-decoration: none;
 }
 
-a:visited {
+.seniat-scope a:visited {
     font-family: Verdana, Arial;
     font-size: 7pt;
     text-decoration: none;
 }
 
-a:hover {
+.seniat-scope a:hover {
     font-family: Verdana, Arial;
     font-size: 7pt;
     text-decoration: none;

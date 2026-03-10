@@ -1,35 +1,40 @@
-<!DOCTYPE html>
-<html lang="es" translate="no">
+<?php
+declare(strict_types=1);
 
-<head>
+$pageTitle = 'Servicios de Declaración — Simulador';
+$activePage = 'simulador';
 
-    <meta charset="utf-8" />
-    <title>iSeniatV2</title>
-    <meta content="no-cache, no-store, must-revalidate" http-equiv="Cache-Control" />
-    <meta content="no-cache" http-equiv="Pragma" />
-    <meta content="0" http-equiv="Expires" />
-    <meta content="0" http-equiv="Last-Modified" />
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <meta content="no-referrer" name="referrer" />
-    <link
-        href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAD////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////+///////////////////////////////////c4uj/6+vr/+3u7v/t7e3/7O3t/+7u7v/4+Pj///79/+jk5P/L2Oj/8fX5///////+/v////////n5/P/p5un/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
-        rel="icon" type="image/x-icon" />
-    <link href="https://dgpatrimonios.seniat.gob.ve/auth" rel="canonical" />
-    <link href="<?= asset('css/simulator/seniat_actual/servicios_declaracion/bootstrap-icons.css') ?>"
-        rel="stylesheet" />
-    <link href="<?= asset('css/simulator/seniat_actual/servicios_declaracion/bootstrap.min.css') ?>" rel="stylesheet" />
-    <link href="<?= asset('css/simulator/seniat_actual/servicios_declaracion/servicios_declaracion.css') ?>"
-        rel="stylesheet" />
-</head>
+ob_start();
+?>
 
-<body>
+<style>
+    /* --- Contenedor externo (hereda estilos del layout) --- */
+    .seniat-wrapper {
+        background: var(--sim-white, #ffffff);
+        border-radius: 12px;
+        box-shadow: var(--sim-shadow-lg, 0 4px 6px rgba(0, 0, 0, 0.07));
+        overflow: hidden;
+        border: 1px solid var(--sim-border, #dfe5ee);
+        position: relative;
+        min-height: 80vh;
+    }
+</style>
+
+<!-- Bootstrap + SENIAT CSS cargados en un @layer para que no sobreescriban el layout/sidebar -->
+<style>
+    @import url("<?= asset('css/simulator/seniat_actual/servicios_declaracion/bootstrap-icons.css') ?>") layer(seniat-bootstrap);
+    @import url("<?= asset('css/simulator/seniat_actual/servicios_declaracion/bootstrap.min.css') ?>") layer(seniat-bootstrap);
+    @import url("<?= asset('css/simulator/seniat_actual/servicios_declaracion/servicios_declaracion.css') ?>") layer(seniat-bootstrap);
+</style>
+
+<div class="seniat-wrapper">
 
     <app-root>
         <router-outlet>
         </router-outlet>
         <app-login>
             <div class="imgLogin">
-                <div class="page-holder align-items-center py-4 vh-100" style="opacity:.9;margin-top:16vh">
+                <div class="page-holder align-items-center py-4 h-100" style="opacity:.9;padding-top:10%">
                     <div class="container mx-5">
                         <div class="row align-items-center">
                             <div class="col-sm-6 px-sm-4">
@@ -41,7 +46,8 @@
                                     </div>
                                     <div class="card-body p-sm-3">
                                         <p class="text-muted text-sm mb-3">
-                                            Coloque el usuario y la clave registrada para ingresar como contribuyente a
+                                            Coloque el usuario y la clave registrada para ingresar como
+                                            contribuyente a
                                             través del Portal Fiscal del SENIAT
                                         <form id="loginForm">
                                             <div class="form-floating mb-3">
@@ -140,7 +146,6 @@
             const inputCaptcha = document.getElementById('floatingInputCap');
 
             if (btnAceptar) {
-                // Ensure enabled
                 btnAceptar.removeAttribute('disabled');
 
                 btnAceptar.addEventListener('click', (e) => {
@@ -155,13 +160,16 @@
                         return;
                     }
 
-                    // Simulation of action
                     console.log('Login attempt:', { usuario, clave, captcha });
                     alert(`¡Datos Enviados!\n\nUsuario: ${usuario}\nClave: ${clave}\nCaptcha: ${captcha}\n\n(Esta es una simulación visual como solicitaste)`);
                 });
             }
         });
     </script>
-</body>
 
-</html>
+</div><!-- /.seniat-wrapper -->
+
+<?php
+$content = ob_get_clean();
+include __DIR__ . '/../../layouts/logged_layout.php';
+?>
