@@ -239,5 +239,44 @@ class StudentAssignmentModel
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Obtiene la asignación más reciente del estudiante que tenga
+     * un intento activo (En_Progreso). Usada para el card
+     * "Continuar donde lo dejaste" en el home.
+     *
+     * Retorna: caso_titulo, fecha_limite, asignacion_id,
+     *          ultima_edicion (updated_at del intento activo).
+     * Retorna null si no hay ningún borrador activo.
+     */
+    public function getUltimaAsignacionAccedida(int $estudianteId): ?array
+    {
+        $sql = "
+            SELECT
+                a.id                AS asignacion_id,
+                ce.titulo           AS caso_titulo,
+                cfg.fecha_limite,
+                i.updated_at        AS ultima_edicion
+
+            FROM sim_intentos i
+            INNER JOIN sim_caso_asignaciones a   ON a.id  = i.asignacion_id
+            INNER JOIN sim_caso_configs cfg       ON cfg.id = a.config_id
+            INNER JOIN sim_casos_estudios ce      ON ce.id  = cfg.caso_id
+
+            WHERE a.estudiante_id = :est_id
+              AND i.estado = 'En_Progreso'
+              AND a.estado != 'Inactivo'
+              AND cfg.status = 'Activo'
+            ORDER BY i.updated_at DESC
+            LIMIT 1
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':est_id', $estudianteId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
 }
 

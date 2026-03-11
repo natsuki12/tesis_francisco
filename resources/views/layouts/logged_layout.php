@@ -159,6 +159,89 @@ if (!isset($user)) {
     <!-- Global AJAX Handlers & Formatters for Modals -->
     <script type="module" src="<?= asset('js/global/modals_ajax.js') ?>"></script>
 
+    <?php
+    // ── Exit-confirmation dialog (solo dentro del simulador con sesión activa) ──
+    $isSimSession = !empty($_SESSION['sim_asignacion_id']);
+    if ($isSimSession):
+        ?>
+        <!-- Dialog: confirmar salida del simulador -->
+        <dialog id="exitSimDialog" class="modal-base">
+            <div class="modal-base__container" style="max-width:420px;">
+                <div class="modal-base__header" style="border-bottom:1px solid #e5e7eb;">
+                    <h3 class="modal-base__title" style="color:#1f2937; margin:0; font-size:1.25rem; font-weight:700;">
+                        ¿Salir de la asignación?</h3>
+                    <button class="modal-base__close" onclick="window.modalManager.close('exitSimDialog')">✕</button>
+                </div>
+                <div class="modal-base__body" style="text-align:center; padding:28px 24px;">
+                    <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#d97706" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px;">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    <p style="margin:0; font-size:.9375rem; color:#4b5563; line-height:1.6;">
+                        Tienes un intento de asignación en progreso.<br>
+                        Si sales, tu progreso no guardado podría perderse.
+                    </p>
+                </div>
+                <div class="modal-base__footer">
+                    <button class="modal-btn modal-btn-cancel" onclick="window.modalManager.close('exitSimDialog')">
+                        Cancelar
+                    </button>
+                    <button class="modal-btn modal-btn-warning" id="exitSimConfirmBtn">
+                        Salir de la asignación
+                    </button>
+                </div>
+            </div>
+        </dialog>
+
+        <script>
+            (function () {
+                var basePath = <?= json_encode(rtrim((string) ($_ENV['APP_BASE'] ?? getenv('APP_BASE') ?: ''), '/')) ?>;
+                var simPrefix = basePath + '/simulador';
+                var pendingHref = null;
+
+                document.addEventListener('click', function (e) {
+                    var link = e.target.closest('a');
+                    if (!link) return;
+
+                    var href = link.getAttribute('href');
+                    // Ignorar: sin href, anclas, javascript:
+                    if (!href || href === '#' || href.charAt(0) === '#' || href.indexOf('javascript:') === 0) return;
+
+                    // Resolver URL absoluta
+                    try {
+                        var url = new URL(href, window.location.origin);
+                    } catch (_) { return; }
+
+                    // Si es enlace externo (otro dominio) → interceptar
+                    if (url.origin !== window.location.origin) {
+                        e.preventDefault();
+                        pendingHref = href;
+                        window.modalManager.open('exitSimDialog');
+                        return;
+                    }
+
+                    // Si es ruta del simulador → dejar pasar
+                    if (url.pathname === simPrefix || url.pathname.indexOf(simPrefix + '/') === 0) return;
+
+                    // Cualquier otra ruta interna → interceptar
+                    e.preventDefault();
+                    pendingHref = href;
+                    window.modalManager.open('exitSimDialog');
+                });
+
+                document.getElementById('exitSimConfirmBtn').addEventListener('click', function () {
+                    if (pendingHref) {
+                        // Limpiar sesión del simulador antes de redirigir
+                        window.location.href = basePath + '/api/simulador/salir?dest=' + encodeURIComponent(pendingHref);
+                    }
+                });
+            })();
+        </script>
+    <?php endif; ?>
+
     <!-- JS extra de la página (si existe) -->
     <?php if (isset($extraJs))
         echo $extraJs; ?>

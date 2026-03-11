@@ -94,7 +94,15 @@ $router->get('/home', function () use ($app, $requireAuth) {
     }
     return match ($role) {
         1 => $app->view('admin/dashboard/home_admin'),
-        default => $app->view('student/home_st'),
+        default => (function () use ($app) {
+                $model = new \App\Modules\Student\Models\StudentAssignmentModel();
+                $estudianteId = $model->getEstudianteId((int) $_SESSION['user_id']);
+                $draft = null;
+                if ($estudianteId) {
+                    $draft = $model->getUltimaAsignacionAccedida($estudianteId);
+                }
+                return $app->view('student/home_st', ['draft' => $draft]);
+            })(),
     };
 });
 
@@ -529,6 +537,9 @@ $router->post('/api/intentos/{id}/enviar', function ($id) use ($requireAuth, $re
     }
 
     $ok = $attemptModel->enviarIntento((int) $id);
+    if ($ok) {
+        unset($_SESSION['sim_asignacion_id']);
+    }
     echo json_encode(['ok' => $ok]);
 });
 
@@ -551,7 +562,23 @@ $router->post('/api/intentos/{id}/cancelar', function ($id) use ($requireAuth, $
     }
 
     $ok = $attemptModel->cancelarIntento((int) $id);
+    if ($ok) {
+        unset($_SESSION['sim_asignacion_id']);
+    }
     echo json_encode(['ok' => $ok]);
+});
+
+// Salir del simulador (limpia sesión y redirige)
+$router->get('/api/simulador/salir', function () use ($requireAuth) {
+    $requireAuth();
+    unset($_SESSION['sim_asignacion_id']);
+    $dest = $_GET['dest'] ?? '/home';
+    // Sanitizar: solo permitir rutas internas
+    if (strpos($dest, '/') !== 0) {
+        $dest = '/home';
+    }
+    header('Location: ' . base_url(ltrim($dest, '/')));
+    exit;
 });
 
 // API: Guardar/Publicar caso

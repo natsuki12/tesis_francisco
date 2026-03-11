@@ -2232,8 +2232,7 @@ function ValidarCedula(cedula) {
             (cedula.value.charAt(0) != 'v' && cedula.value.charAt(0) != 'V' && cedula.value.charAt(0) != 'e' && cedula.value.charAt(0) != 'E') ||
             !Revisa(number, cedula.value.substring(1, 9))) {
             alert("Cedula Inválida. El formato de cédula debe ser vV, eE seguido de ocho dígitos numéricos, ej.: V12345678");
-            //cedula.value="";
-            cedula.focus();
+            cedula.value="";
             return false;
         }
     }

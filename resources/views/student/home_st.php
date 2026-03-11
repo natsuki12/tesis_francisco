@@ -8,25 +8,18 @@ $pageTitle = 'Inicio Estudiante — Simulador SENIAT';
 $activePage = 'inicio';
 $extraCss = '<link rel="stylesheet" href="' . asset('css/student/home_st.css') . '">';
 
-// ── Datos Placeholder ──────────────────────────────────────
+// ── Datos ────────────────────────────────────────────────────
 $userName = $_SESSION['user_name'] ?? 'Estudiante';
+
+// $draft viene del route (StudentAssignmentModel::getUltimaAsignacionAccedida)
+// Claves: asignacion_id, caso_titulo, fecha_limite, ultima_edicion
+// null si no hay borrador activo.
 
 $stats = [
   'pendientes' => 3,
   'en_progreso' => 1,
   'calificados' => 2,
   'promedio' => 15.7,
-];
-
-// Draft: borrador activo (null si no hay)
-$draft = [
-  'caso_titulo' => 'Sucesión González Méndez',
-  'paso_actual' => 2,
-  'paso_total' => 5,
-  'paso_nombre' => 'Herederos',
-  'ultima_edicion' => '2026-03-09 12:30:00',
-  'deadline' => '2026-03-15',
-  'asignacion_id' => 1,
 ];
 
 // Activity feed
@@ -159,9 +152,9 @@ ob_start();
               echo 'Hace ' . floor($diff / 86400) . ' días';
             ?></strong>
           </span>
-          <?php if ($draft['deadline']): ?>
+          <?php if (!empty($draft['fecha_limite'])): ?>
             <?php
-            $daysLeft = (int) ((strtotime($draft['deadline']) - time()) / 86400);
+            $daysLeft = (int) ((strtotime($draft['fecha_limite']) - time()) / 86400);
             $dlClass = $daysLeft <= 2 ? 'deadline-urgent' : ($daysLeft <= 5 ? 'deadline-soon' : 'deadline-ok');
             ?>
             <span class="deadline-badge <?= $dlClass ?>">
@@ -171,25 +164,14 @@ ob_start();
                 <line x1="8" y1="2" x2="8" y2="6" />
                 <line x1="3" y1="10" x2="21" y2="10" />
               </svg>
-              Fecha límite: <?= date('d/m/Y', strtotime($draft['deadline'])) ?>
+              Fecha límite: <?= date('d/m/Y', strtotime($draft['fecha_limite'])) ?>
             </span>
           <?php endif; ?>
         </div>
-        <div class="draft-stepper">
-          <?php for ($i = 1; $i <= $draft['paso_total']; $i++): ?>
-            <span class="stepper-dot <?php
-            if ($i < $draft['paso_actual'])
-              echo 'stepper-done';
-            elseif ($i === $draft['paso_actual'])
-              echo 'stepper-current';
-            ?>"></span>
-          <?php endfor; ?>
-          <span class="stepper-label">Paso <?= $draft['paso_actual'] ?> de <?= $draft['paso_total'] ?> —
-            <?= htmlspecialchars($draft['paso_nombre']) ?></span>
-        </div>
-        <a href="<?= base_url('/mis-asignaciones/' . $draft['asignacion_id']) ?>" class="btn btn-primary">
-          Continuar →
-        </a>
+        <form method="POST" action="<?= base_url('/api/intentos/iniciar') ?>" style="display:inline;">
+          <input type="hidden" name="asignacion_id" value="<?= $draft['asignacion_id'] ?>">
+          <button type="submit" class="btn btn-primary">Continuar →</button>
+        </form>
       </div>
       <div class="continue-footer">
         <a href="<?= base_url('/mis-asignaciones') ?>">Ver todas en Mis Asignaciones</a>
