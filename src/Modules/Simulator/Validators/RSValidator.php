@@ -395,7 +395,6 @@ class RSValidator
                 d.fax, d.punto_referencia
             FROM sim_caso_direcciones d
             WHERE d.sim_caso_estudio_id = :caso_id
-              AND d.deleted_at IS NULL
             ORDER BY d.id ASC
         ";
         $stmt = $this->db->prepare($sql);

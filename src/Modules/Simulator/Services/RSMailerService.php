@@ -78,64 +78,48 @@ class RSMailerService
     ): string {
         $fecha = date('d/m/Y H:i');
 
-        $html = '
-        <div style="font-family: Verdana, Arial, sans-serif; max-width: 640px; margin: 0 auto; color: #333;">
-            <div style="background: #003366; color: #fff; padding: 16px 24px; border-radius: 6px 6px 0 0;">
-                <h2 style="margin: 0; font-size: 18px;">⚠ Discrepancias detectadas en validación R.S.</h2>
-            </div>
+        $html = "
+        <div style='font-family: \"Plus Jakarta Sans\", sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>
+            <h2 style='color: #004085; text-align: center;'>⚠ Discrepancias Detectadas</h2>
+            <p style='text-align: center; color: #555; margin-bottom: 20px;'>Se encontraron diferencias en su validación de RIF Sucesoral.</p>
 
-            <div style="padding: 20px 24px; background: #f9f9f9; border: 1px solid #ddd; border-top: none; border-radius: 0 0 6px 6px;">
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px;">
-                    <tr>
-                        <td style="padding: 6px 0; font-weight: bold; width: 140px;">Estudiante:</td>
-                        <td style="padding: 6px 0;">' . htmlspecialchars($nombreEstudiante, ENT_QUOTES, 'UTF-8') . '</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 6px 0; font-weight: bold;">Intento:</td>
-                        <td style="padding: 6px 0;">#' . $intentoId . '</td>
-                    </tr>';
+            <div style='background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;'>
+                <strong>Estudiante:</strong> " . htmlspecialchars($nombreEstudiante, ENT_QUOTES, 'UTF-8') . "<br>
+                <strong>Intento:</strong> #{$intentoId}<br>";
 
         if ($casoTitulo) {
-            $html .= '
-                    <tr>
-                        <td style="padding: 6px 0; font-weight: bold;">Caso:</td>
-                        <td style="padding: 6px 0;">' . htmlspecialchars($casoTitulo, ENT_QUOTES, 'UTF-8') . '</td>
-                    </tr>';
+            $html .= "                <strong>Caso:</strong> " . htmlspecialchars($casoTitulo, ENT_QUOTES, 'UTF-8') . "<br>";
         }
 
-        $html .= '
-                    <tr>
-                        <td style="padding: 6px 0; font-weight: bold;">Fecha:</td>
-                        <td style="padding: 6px 0;">' . $fecha . '</td>
-                    </tr>
-                </table>';
+        $html .= "                <strong>Fecha:</strong> {$fecha}
+            </div>";
 
         // Secciones de errores
         $secciones = [
-            'causante'   => ['titulo' => 'Datos del Causante',   'icono' => '👤'],
-            'relaciones' => ['titulo' => 'Relaciones',           'icono' => '👥'],
-            'direcciones' => ['titulo' => 'Direcciones',         'icono' => '📍'],
-            'general'    => ['titulo' => 'General',              'icono' => '🔍'],
+            'causante'    => ['titulo' => 'Datos del Causante',   'icono' => '👤'],
+            'relaciones'  => ['titulo' => 'Relaciones',           'icono' => '👥'],
+            'direcciones' => ['titulo' => 'Direcciones',          'icono' => '📍'],
+            'general'     => ['titulo' => 'General',              'icono' => '🔍'],
         ];
 
         foreach ($secciones as $clave => $seccion) {
             if (empty($errores[$clave])) continue;
 
-            $html .= '
-                <div style="margin-bottom: 16px;">
-                    <h3 style="font-size: 14px; color: #003366; margin: 0 0 8px 0; border-bottom: 2px solid #003366; padding-bottom: 4px;">
-                        ' . $seccion['icono'] . ' ' . $seccion['titulo'] . '
-                    </h3>
-                    <ul style="margin: 0; padding-left: 20px; font-size: 12px; line-height: 1.8;">';
+            $html .= "
+            <div style='margin-bottom: 16px;'>
+                <h3 style='font-size: 14px; color: #004085; margin: 0 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 6px;'>
+                    {$seccion['icono']} {$seccion['titulo']}
+                </h3>
+                <ul style='margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.8;'>";
 
             foreach ($errores[$clave] as $error) {
-                $html .= '
-                        <li style="color: #cc0000;">' . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . '</li>';
+                $html .= "
+                    <li style='color: #dc3545;'>" . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . "</li>";
             }
 
-            $html .= '
-                    </ul>
-                </div>';
+            $html .= "
+                </ul>
+            </div>";
         }
 
         $totalErrores = 0;
@@ -143,16 +127,13 @@ class RSMailerService
             $totalErrores += count($arr);
         }
 
-        $html .= '
-                <div style="background: #fff3cd; border: 1px solid #ffc107; padding: 10px 14px; border-radius: 4px; font-size: 12px; margin-top: 12px;">
-                    <strong>Total de discrepancias:</strong> ' . $totalErrores . '
-                </div>
-
-                <p style="font-size: 11px; color: #888; margin-top: 16px; text-align: center;">
-                    Este correo fue generado automáticamente por el Simulador SENIAT.
-                </p>
+        $html .= "
+            <div style='background-color: #fff3cd; padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 16px;'>
+                <strong>Total de discrepancias:</strong> {$totalErrores}
             </div>
-        </div>';
+
+            <p style='color: #777; font-size: 12px; text-align: center;'>Este correo fue generado automáticamente por el Simulador SENIAT.</p>
+        </div>";
 
         return $html;
     }
@@ -169,66 +150,45 @@ class RSMailerService
     ): string {
         $fecha = date('d/m/Y H:i');
 
-        $html = '
-        <div style="font-family: Verdana, Arial, sans-serif; max-width: 640px; margin: 0 auto; color: #333;">
-            <div style="background: #166534; color: #fff; padding: 16px 24px; border-radius: 6px 6px 0 0;">
-                <h2 style="margin: 0; font-size: 18px;">✅ RIF Sucesoral Generado Exitosamente</h2>
-            </div>
+        $html = "
+        <div style='font-family: \"Plus Jakarta Sans\", sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>
+            <h2 style='color: #004085; text-align: center;'>✅ RIF Sucesoral Generado</h2>
+            <p style='text-align: center; color: #555; margin-bottom: 20px;'>Su validación fue exitosa y se ha generado el RIF Sucesoral.</p>
 
-            <div style="padding: 20px 24px; background: #f9f9f9; border: 1px solid #ddd; border-top: none; border-radius: 0 0 6px 6px;">
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 13px;">
-                    <tr>
-                        <td style="padding: 6px 0; font-weight: bold; width: 140px;">Estudiante:</td>
-                        <td style="padding: 6px 0;">' . htmlspecialchars($nombreEstudiante, ENT_QUOTES, 'UTF-8') . '</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 6px 0; font-weight: bold;">Intento:</td>
-                        <td style="padding: 6px 0;">#' . $intentoId . '</td>
-                    </tr>';
+            <div style='background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;'>
+                <strong>Estudiante:</strong> " . htmlspecialchars($nombreEstudiante, ENT_QUOTES, 'UTF-8') . "<br>
+                <strong>Intento:</strong> #{$intentoId}<br>";
 
         if ($casoTitulo) {
-            $html .= '
-                    <tr>
-                        <td style="padding: 6px 0; font-weight: bold;">Caso:</td>
-                        <td style="padding: 6px 0;">' . htmlspecialchars($casoTitulo, ENT_QUOTES, 'UTF-8') . '</td>
-                    </tr>';
+            $html .= "                <strong>Caso:</strong> " . htmlspecialchars($casoTitulo, ENT_QUOTES, 'UTF-8') . "<br>";
         }
 
-        $html .= '
-                    <tr>
-                        <td style="padding: 6px 0; font-weight: bold;">Fecha:</td>
-                        <td style="padding: 6px 0;">' . $fecha . '</td>
-                    </tr>
-                </table>
-
-                <div style="background: #dcfce7; border: 1px solid #86efac; padding: 16px 20px; border-radius: 8px; text-align: center; margin-bottom: 16px;">
-                    <p style="margin: 0 0 8px; font-size: 13px; color: #166534;">Su RIF Sucesoral ha sido generado:</p>
-                    <p style="margin: 0; font-size: 28px; font-weight: bold; color: #166534; letter-spacing: 2px;">'
-                        . htmlspecialchars($rifSucesoral, ENT_QUOTES, 'UTF-8') .
-                    '</p>
-                </div>
-
-                <div style="margin-bottom: 16px; font-size: 13px; line-height: 1.7;">
-                    <h3 style="font-size: 14px; color: #003366; margin: 0 0 8px 0; border-bottom: 2px solid #003366; padding-bottom: 4px;">
-                        📋 Instrucciones
-                    </h3>
-                    <ol style="margin: 0; padding-left: 20px;">
-                        <li style="margin-bottom: 6px;">Guarde este RIF Sucesoral para sus registros.</li>
-                        <li style="margin-bottom: 6px;">En el proceso real, debe presentar la planilla impresa ante la unidad del SENIAT correspondiente a su domicilio fiscal.</li>
-                        <li style="margin-bottom: 6px;">Para fines educativos, este RIF ha sido asignado automáticamente a su caso en el simulador.</li>
-                    </ol>
-                </div>
-
-                <div style="background: #eff6ff; border: 1px solid #93c5fd; padding: 10px 14px; border-radius: 4px; font-size: 12px;">
-                    <strong>📌 Recuerde:</strong> En el proceso real ante el SENIAT, se requiere un correo electrónico exclusivo para el RIF Sucesoral.
-                    Se recomienda crear uno para uso exclusivo de la sucesión.
-                </div>
-
-                <p style="font-size: 11px; color: #888; margin-top: 16px; text-align: center;">
-                    Este correo fue generado automáticamente por el Simulador SENIAT.
-                </p>
+        $html .= "                <strong>Fecha:</strong> {$fecha}
             </div>
-        </div>';
+
+            <div style='background-color: #f8f9fa; padding: 15px; text-align: center; margin: 20px 0;'>
+                <p style='margin: 0 0 8px; font-size: 13px; color: #555;'>Su RIF Sucesoral es:</p>
+                <strong style='font-size: 32px; letter-spacing: 5px; color: #0d6efd;'>" . htmlspecialchars($rifSucesoral, ENT_QUOTES, 'UTF-8') . "</strong>
+            </div>
+
+            <div style='margin-bottom: 16px; font-size: 13px; line-height: 1.7;'>
+                <h3 style='font-size: 14px; color: #004085; margin: 0 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 6px;'>
+                    📋 Instrucciones
+                </h3>
+                <ol style='margin: 0; padding-left: 20px; color: #555;'>
+                    <li style='margin-bottom: 6px;'>Guarde este RIF Sucesoral para sus registros.</li>
+                    <li style='margin-bottom: 6px;'>En el proceso real, debe presentar la planilla impresa ante la unidad del SENIAT correspondiente a su domicilio fiscal.</li>
+                    <li style='margin-bottom: 6px;'>Para fines educativos, este RIF ha sido asignado automáticamente a su caso en el simulador.</li>
+                </ol>
+            </div>
+
+            <div style='background-color: #f8f9fa; padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; color: #555;'>
+                <strong>📌 Recuerde:</strong> En el proceso real ante el SENIAT, se requiere un correo electrónico exclusivo para el RIF Sucesoral.
+                Se recomienda crear uno para uso exclusivo de la sucesión.
+            </div>
+
+            <p style='color: #777; font-size: 12px; text-align: center;'>Este correo fue generado automáticamente por el Simulador SENIAT.</p>
+        </div>";
 
         return $html;
     }
