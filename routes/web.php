@@ -212,8 +212,107 @@ $router->get('/simulador/consulta-rif', function () use ($app, $requireAuth, $re
 $router->get('/simulador/inscripcion-rif', function () use ($app, $requireAuth, $requireSimSession) {
     $requireAuth();
     $requireSimSession();
-    return $app->view('simulator/legacy/inscripcion_rif');
+
+    $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+    $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+    $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+
+    $intentoActivo = null;
+    if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
+        $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+    }
+
+    return $app->view('simulator/legacy/inscripcion_rif', ['intento' => $intentoActivo]);
 });
+
+$enforceInscripcionReferer = function() {
+    $referer = $_SERVER['HTTP_REFERER'] ?? '';
+    $path = parse_url($referer, PHP_URL_PATH) ?? '';
+    if (empty($referer) || strpos($path, '/simulador/inscripcion-rif') === false) {
+        header('Location: ' . base_url('/simulador/inscripcion-rif'));
+        exit;
+    }
+};
+
+$datosBasicosHandler = function () use ($app, $requireAuth, $requireSimSession, $enforceInscripcionReferer) {
+    $requireAuth();
+    $requireSimSession();
+    $enforceInscripcionReferer();
+
+    $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+    $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+    $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+
+    $intentoActivo = null;
+    if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
+        $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+    }
+
+    return $app->view('simulator/legacy/formulario_inscripcion_rif/datos_causante', ['intento' => $intentoActivo]);
+};
+
+$router->get('/simulador/inscripcion-rif/datos-basicos', $datosBasicosHandler);
+$router->post('/simulador/inscripcion-rif/datos-basicos', $datosBasicosHandler);
+
+$direccionesHandler = function () use ($app, $requireAuth, $requireSimSession, $enforceInscripcionReferer) {
+    $requireAuth();
+    $requireSimSession();
+    $enforceInscripcionReferer();
+
+    $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+    $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+    $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+
+    $intentoActivo = null;
+    if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
+        $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+    }
+
+    return $app->view('simulator/legacy/formulario_inscripcion_rif/direcciones', ['intento' => $intentoActivo]);
+};
+
+$router->get('/simulador/inscripcion-rif/direcciones', $direccionesHandler);
+$router->post('/simulador/inscripcion-rif/direcciones', $direccionesHandler);
+
+$relacionesHandler = function () use ($app, $requireAuth, $requireSimSession, $enforceInscripcionReferer) {
+    $requireAuth();
+    $requireSimSession();
+    $enforceInscripcionReferer();
+
+    $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+    $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+    $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+
+    $intentoActivo = null;
+    if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
+        $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+    }
+
+    return $app->view('simulator/legacy/formulario_inscripcion_rif/relaciones', ['intento' => $intentoActivo]);
+};
+
+$router->get('/simulador/inscripcion-rif/relaciones', $relacionesHandler);
+$router->post('/simulador/inscripcion-rif/relaciones', $relacionesHandler);
+
+$validarInscripcionHandler = function () use ($app, $requireAuth, $requireSimSession, $enforceInscripcionReferer) {
+    $requireAuth();
+    $requireSimSession();
+    $enforceInscripcionReferer();
+
+    $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+    $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+    $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+
+    $intentoActivo = null;
+    if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
+        $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+    }
+
+    return $app->view('simulator/legacy/formulario_inscripcion_rif/validar_inscripcion', ['intento' => $intentoActivo]);
+};
+
+$router->get('/simulador/inscripcion-rif/validar-inscripcion', $validarInscripcionHandler);
+$router->post('/simulador/inscripcion-rif/validar-inscripcion', $validarInscripcionHandler);
 
 $router->get('/simulador/declaracion', function () use ($app, $requireAuth, $requireSimSession) {
     $requireAuth();
@@ -516,6 +615,94 @@ $router->post('/api/intentos/{id}/guardar', function ($id) use ($requireAuth, $r
     );
 
     echo json_encode(['ok' => $ok]);
+});
+
+// Validar borrador para generar R.S. y enviar resultados por correo
+$router->post('/api/intentos/{id}/validar-rs', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    header('Content-Type: application/json');
+
+    try {
+        $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+        $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+
+        if (!$estudianteId) {
+            http_response_code(403);
+            echo json_encode(['ok' => false, 'errores' => ['general' => ['Estudiante no encontrado.']]]);
+            return;
+        }
+
+        // ── Obtener título real del caso desde la DB ──
+        $casoTitulo = 'Caso Sucesoral';
+        try {
+            $db = \App\Core\DB::connect();
+            $stmtCaso = $db->prepare("
+                SELECT ce.titulo
+                FROM sim_intentos i
+                INNER JOIN sim_caso_asignaciones a  ON a.id  = i.asignacion_id
+                INNER JOIN sim_caso_configs cfg     ON cfg.id = a.config_id
+                INNER JOIN sim_casos_estudios ce    ON ce.id  = cfg.caso_id
+                WHERE i.id = :intento_id AND a.estudiante_id = :est_id
+                LIMIT 1
+            ");
+            $stmtCaso->execute(['intento_id' => (int) $id, 'est_id' => $estudianteId]);
+            $casoDB = $stmtCaso->fetch(\PDO::FETCH_ASSOC);
+            if ($casoDB && !empty($casoDB['titulo'])) {
+                $casoTitulo = $casoDB['titulo'];
+            }
+        } catch (\Throwable $e) {
+            error_log("validar-rs: Error al obtener título del caso: " . $e->getMessage());
+            // No es crítico, continuar con el título genérico
+        }
+
+        // ── Validar borrador contra los datos reales del caso ──
+        $validator = new \App\Modules\Simulator\Validators\RSValidator();
+        $result = $validator->validar((int) $id, $estudianteId);
+
+        // ── Enviar correo con resultados ──
+        $emailEnviado = false;
+        $emailEstudiante = $_SESSION['email'] ?? '';
+        $nombreEstudiante = $_SESSION['user_name'] ?? 'Estudiante';
+
+        if ($emailEstudiante) {
+            $mailer = new \App\Modules\Simulator\Services\RSMailerService();
+
+            if ($result['ok']) {
+                // Generar RIF Sucesoral simulado (J-XXXXXXXX-0)
+                $rifSucesoral = 'J-' . str_pad((string) random_int(10000000, 99999999), 8, '0', STR_PAD_LEFT) . '-0';
+                $result['rif_sucesoral'] = $rifSucesoral;
+
+                $emailEnviado = $mailer->enviarExito(
+                    $emailEstudiante,
+                    $nombreEstudiante,
+                    (int) $id,
+                    $rifSucesoral,
+                    $casoTitulo
+                );
+            } else {
+                $emailEnviado = $mailer->enviarDiscrepancias(
+                    $emailEstudiante,
+                    $result['errores'],
+                    $nombreEstudiante,
+                    (int) $id,
+                    $casoTitulo
+                );
+            }
+        }
+
+        $result['email_enviado'] = $emailEnviado;
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
+
+    } catch (\Throwable $e) {
+        error_log("validar-rs CRITICAL: " . $e->getMessage() . "\n" . $e->getTraceAsString());
+        http_response_code(500);
+        echo json_encode([
+            'ok' => false,
+            'email_enviado' => false,
+            'errores' => ['general' => ['Error interno del servidor al procesar la validación. Intente nuevamente.']],
+        ], JSON_UNESCAPED_UNICODE);
+    }
 });
 
 // Enviar intento
