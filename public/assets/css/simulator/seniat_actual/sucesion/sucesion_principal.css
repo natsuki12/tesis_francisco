@@ -1,0 +1,26 @@
+/* sucesion_principal.css — Only custom overrides; Bootstrap 5 provides the rest */
+
+/* Font size class from SENIAT original */
+.lenletra {
+    font-size: small;
+}
+
+/* Override btn-danger to SENIAT blue (original uses btn-danger but renders blue) */
+.shadow-lg .btn-danger {
+    background-color: var(--color-principal-btn, #245b98);
+    border-color: var(--color-principal-fuerte, #164193);
+}
+
+.shadow-lg .btn-danger:hover {
+    background-color: var(--color-principal-fuerte, #164193);
+    border-color: #123775;
+}
+
+/* Ensure text-center works on the right action column */
+.border-top .text-center {
+    text-align: center !important;
+}
+.border-top .text-center .btn {
+    display: inline-flex;
+    align-items: center;
+}

@@ -550,6 +550,36 @@ $router->get('/simulador/portal', function () use ($app, $requireAuth, $requireS
     return $app->view('simulator/seniat_actual/seniat_index_new');
 });
 
+$router->get('/simulador/sucesion/bienes_muebles/banco', function () use ($app, $requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+    return $app->view('simulator/seniat_actual/sucesion/banco/banco');
+});
+
+$router->get('/simulador/sucesion/herencia', function () use ($app, $requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+    return $app->view('simulator/seniat_actual/sucesion/herencia/tipo_herencia');
+});
+
+$router->get('/simulador/sucesion/principal', function () use ($app, $requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+    return $app->view('simulator/seniat_actual/sucesion/sucesion_principal');
+});
+
+$router->get('/simulador/servicios_declaracion/sistemas', function () use ($app, $requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+    return $app->view('simulator/seniat_actual/acceder_sistemas');
+});
+
+$router->get('/simulador/servicios_declaracion/dashboard', function () use ($app, $requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+    return $app->view('simulator/seniat_actual/dashboard/sistemas_dashboard');
+});
+
 // Casos Sucesorales (Profesor)
 $router->get('/casos-sucesorales', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();

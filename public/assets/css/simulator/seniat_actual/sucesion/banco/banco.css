@@ -1,0 +1,7 @@
+/* banco.css — Styles specific to the banco page */
+
+/* Active sidebar link */
+.active-link {
+    color: var(--color-principal-btn, #245b98) !important;
+    font-weight: 600;
+}
