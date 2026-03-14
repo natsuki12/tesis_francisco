@@ -1,81 +1,63 @@
-/* ================================================================
-   datos_causante_sc.css
-   CSS extraído de datos_causante_sc.php (página legada del SENIAT)
-   ================================================================ */
+/* ═══════════════════════════════════════════════════════
+   validar_inscripcion.css — Estilos SENIAT legacy
+   ═══════════════════════════════════════════════════════ */
 
-/* --- Variables / Imágenes --- */
-:root {
-    --sf-img-4: url("data:image/gif;base64,R0lGODlhGAAUAKL/AP///8DAwDNmmc5HR9dWVvC0tMSYmMDAwCH5BAEAAAEALAAAAAAYABQAQANlGCHK2/DJdQCo1+JKjDXEJQibZmboNpbpyR7rIc90ba8kLOf87sM5m23QAQ12JJeyQCQMCqJka/qKCa+1kXbL7Xax4NlK2WISnFDgS9n5hNRhGdFgRK6prjF+D49f9XeBXoOEAgkAO3ujlk4pJHvHdEKldV82boKFentjhIGLaY2OABEAOw==");
-}
-
-/* --- Base --- */
+/* ── Estilos base ── */
 BODY {
     FONT-SIZE: 8pt;
     MARGIN: 0px;
     FONT-FAMILY: Verdana, Arial;
 }
 
-/* --- Fondo principal --- */
 .fondoPrincipal {
     background-color: #E52129;
 }
 
-/* --- Texto general --- */
 .letras {
     FONT-SIZE: 11px;
     COLOR: black;
     FONT-FAMILY: Verdana, Arial;
 }
 
-/* --- Botones --- */
-.boton {
-    font-size: 8pt;
-    font-family: Verdana;
-    font-weight: bold;
-    color: #000000;
-    background-color: #ebebeb;
-    width: 120px;
-    height: 20px;
-}
-
-/* --- Barra principal --- */
 .barraPpal {
     background-color: #CCCCCC;
     height: 30px;
+    BORDER-RIGHT: 0px;
+    PADDING-RIGHT: 0px;
+    BORDER-TOP: 0px;
+    PADDING-LEFT: 0px;
     FONT-WEIGHT: bold;
     FONT-SIZE: 12px;
+    PADDING-BOTTOM: 0px;
+    BORDER-LEFT: 0px;
     COLOR: white;
+    PADDING-TOP: 0px;
+    BORDER-BOTTOM: 0px;
     FONT-FAMILY: Verdana, Arial;
+    HEIGHT: 20px;
+    BACKGROUND-COLOR: #EEA429;
     TEXT-ALIGN: center;
-    BORDER: 0;
-    PADDING: 0;
 }
 
-/* --- Título de tabla --- */
 .tablaTitulo {
-    BORDER: 0;
-    PADDING: 0;
+    BORDER-RIGHT: 0px;
+    PADDING-RIGHT: 0px;
+    BORDER-TOP: 0px;
+    PADDING-LEFT: 0px;
     FONT-WEIGHT: bold;
     FONT-SIZE: 12px;
+    PADDING-BOTTOM: 0px;
+    BORDER-LEFT: 0px;
     COLOR: white;
+    PADDING-TOP: 0px;
+    BORDER-BOTTOM: 0px;
     FONT-FAMILY: Verdana, Arial;
     HEIGHT: 25px;
     BACKGROUND-COLOR: #E32227;
     TEXT-ALIGN: center;
 }
 
-/* --- Subtítulo de tabla --- */
-.tablaSubTitulo {
-    BORDER: 0;
-    PADDING: 0;
-    FONT-WEIGHT: bold;
-    COLOR: white;
-    FONT-FAMILY: Verdana, Arial;
-    BACKGROUND-COLOR: #969696;
-    TEXT-ALIGN: center;
-}
-
-/* --- Enlaces --- */
+/* ── Enlaces ── */
 .enlace A:link {
     FONT-SIZE: 9px;
     COLOR: navy;
@@ -128,19 +110,12 @@ BODY {
     text-decoration: none;
 }
 
-/* --- Texto pequeño --- */
-.letrasSmall {
-    FONT-SIZE: 9pt;
-    COLOR: black;
-    FONT-FAMILY: Verdana, Arial;
-}
-
-/* --- Filas alternas --- */
+/* ── Filas alternas ── */
 .row1 {
     background-color: #EFEFEF;
 }
 
-/* --- Declaracion.css (estilos base) --- */
+/* ── Declaracion styles ── */
 td {
     font-family: Verdana, Arial;
     font-size: 8pt;
@@ -170,7 +145,7 @@ a:hover {
     text-decoration: none;
 }
 
-/* --- Clases anteriores --- */
+/* ── Clases auxiliares ── */
 .celdaTitulo3A {
     font-family: Verdana;
     font-size: 8pt;
@@ -183,7 +158,7 @@ a:hover {
     font-size: 9px;
 }
 
-/* --- SISTIGER --- */
+/* ── SISTIGER ── */
 .tamano1 {
     width: 10%;
 }
@@ -228,12 +203,12 @@ a.sistigerCtaCorriente:hover span {
     font-size: 10px;
 }
 
-/* --- Ocultar SingleFile sobrantes --- */
+/* ── SingleFile hidden ── */
 .sf-hidden {
     display: none !important;
 }
 
-/* --- Menú lateral (glossymenu) --- */
+/* ── Glossy Menu ── */
 .glossymenu {
     padding: 0;
     width: 205px;

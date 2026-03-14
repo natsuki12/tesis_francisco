@@ -2232,7 +2232,7 @@ function ValidarCedula(cedula) {
             (cedula.value.charAt(0) != 'v' && cedula.value.charAt(0) != 'V' && cedula.value.charAt(0) != 'e' && cedula.value.charAt(0) != 'E') ||
             !Revisa(number, cedula.value.substring(1, 9))) {
             alert("Cedula Inválida. El formato de cédula debe ser vV, eE seguido de ocho dígitos numéricos, ej.: V12345678");
-            cedula.value="";
+            cedula.value = "";
             return false;
         }
     }
@@ -2941,6 +2941,139 @@ function ActivarBusqPreinscritos() {
 }//ActivarBusqPreinscritos
 
 //------------------------------------------------------------------------------
+window.pendingPayload = null; // Guardar payload temporalmente si se sobreescribirá
+
+function proceedWithOverwrite() {
+    if (!window.pendingPayload || !window.simIntentoId) return;
+
+    if (window.modalManager) {
+        window.modalManager.close('overwriteConfirmDialog');
+    }
+
+    guardarBorradorBackend(window.pendingPayload);
+}
+window.confirmOverwriteAndProceed = proceedWithOverwrite;
+
+function guardarBorradorBackend(payload) {
+    if (!window.simIntentoId) {
+        alert("Error: No se encontró un intento activo.");
+        return;
+    }
+
+    var requestPayload = {
+        borrador: payload,
+        paso_actual: 0
+    };
+
+    fetch('/api/intentos/' + window.simIntentoId + '/guardar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(requestPayload)
+    })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            if (data.ok) {
+                var linkAnchor = document.getElementById('linkRegistrarDatos');
+                if (linkAnchor && linkAnchor.getAttribute('data-url')) {
+                    window.location.href = linkAnchor.getAttribute('data-url');
+                }
+            } else {
+                alert('Error al guardar el progreso en el servidor.');
+            }
+        })
+        .catch(function (error) {
+            console.error('Error:', error);
+            alert('Ocurrió un error de red al intentar guardar.');
+        });
+}
+
+// Función personalizada para mostrar el mensaje con el link dinámico
+function mostrarResultadoBusqueda(reincorporar) {
+    if (!ValidarBusquedaPreinscritos(reincorporar)) {
+        return false;
+    }
+
+    var selectedIndex = obtenerObjeto('personalidad', null).selectedIndex;
+    var resultDiv = document.getElementById('searchResults');
+    var linkAnchor = document.getElementById('linkRegistrarDatos');
+
+    if (!resultDiv) return;
+
+    if (selectedIndex !== 10 && selectedIndex !== 11) {
+        resultDiv.style.display = 'block';
+        if (linkAnchor) {
+            linkAnchor.href = 'javascript:void(0);';
+        }
+        return;
+    }
+
+    var isConCedula = (selectedIndex === 10);
+
+    var cedula = obtenerObjeto('cedulaPasaporte', 'value');
+    var fecha = obtenerObjeto('fecha', 'value');
+    var parroquia = obtenerObjeto('razonSocial', 'value');
+    var numero_acta = obtenerObjeto('registroProvidencia', 'value');
+    var year_acta = obtenerObjeto('tomoGaceta', 'value');
+
+    var payload = {
+        tipo_sucesion: isConCedula ? "Con_Cedula" : "Sin_Cedula",
+        datos_basicos: {
+            cedula: isConCedula ? cedula : null,
+            fecha_fallecimiento: fecha,
+            parroquia_acta: isConCedula ? null : parroquia,
+            numero_acta: isConCedula ? null : numero_acta,
+            year_acta: isConCedula ? null : year_acta
+        }
+    };
+
+    var hasDatosBasicos = false;
+    if (window.simBorrador && window.simBorrador.datos_basicos &&
+        (window.simBorrador.datos_basicos.cedula || window.simBorrador.datos_basicos.fecha_fallecimiento)) {
+        hasDatosBasicos = true;
+    }
+
+    resultDiv.style.display = 'block';
+
+    var baseUrl = linkAnchor ? linkAnchor.getAttribute('data-url') : '#';
+
+    if (hasDatosBasicos) {
+        resultDiv.innerHTML = 'Hay datos guardados para este contribuyente.<br><br>' +
+            '<a href="' + baseUrl + '" style="color: navy; text-decoration: underline; font-size:12px;">Continuar con el progreso actual</a><br><br>' +
+            'O si lo prefiere, puede <a href="javascript:void(0);" id="btnOverwrite" style="color: #E32227; text-decoration: underline;">registrar y sobreescribir con nuevos datos aqui</a>.';
+
+        var btnOverwrite = document.getElementById('btnOverwrite');
+        if (btnOverwrite) {
+            btnOverwrite.onclick = function (e) {
+                e.preventDefault();
+                window.pendingPayload = payload;
+                if (window.modalManager) {
+                    window.modalManager.open('overwriteConfirmDialog');
+                } else {
+                    if (confirm("Ya tiene datos guardados. Si continúa los reemplazará y perderá su progreso. ¿Desea continuar?")) {
+                        proceedWithOverwrite();
+                    }
+                }
+            };
+        }
+    } else {
+        resultDiv.innerHTML = 'No hay datos registrados para ese contribuyente, <a href="javascript:void(0);" id="btnNewDraft" data-url="' + baseUrl + '" style="color: navy; text-decoration: underline;">registrar datos aqui</a>.';
+
+        var btnNewDraft = document.getElementById('btnNewDraft');
+        var newLinkAnchor = document.getElementById('linkRegistrarDatos') || btnNewDraft;
+        if (newLinkAnchor) {
+            newLinkAnchor.id = 'linkRegistrarDatos';
+            newLinkAnchor.onclick = function (e) {
+                e.preventDefault();
+                guardarBorradorBackend(payload);
+            };
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
 // Funcion que valida el formulario de busqueda de contribuyentes preinscritos
 function ValidarBusquedaPreinscritos(reincorporar) {
     //var frm = document.forms[0];
@@ -2965,6 +3098,18 @@ function ValidarBusquedaPreinscritos(reincorporar) {
 
     if (reincorporar != null && reincorporar != '') {
         rifReincorp = obtenerObjeto('rif', 'value');
+    }
+
+    var selectedIndex = obtenerObjeto('personalidad', null).selectedIndex;
+    // index 10: SUCESION CON CÉDULA
+    // index 11: SUCESION SIN CÉDULA
+    if (selectedIndex !== 10 && selectedIndex !== 11) {
+        if (window.modalManager) {
+            window.modalManager.open('sucesionRestrictDialog');
+        } else {
+            alert("Esta funcionalidad solo está disponible para Sucesiones (con o sin cédula).");
+        }
+        return false;
     }
 
     if (personalidad != null && personalidad != '') {

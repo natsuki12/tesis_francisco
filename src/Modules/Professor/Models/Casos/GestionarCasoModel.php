@@ -82,12 +82,14 @@ class GestionarCasoModel
         // 4. Direcciones
         $stmt = $this->db->prepare("SELECT d.*, 
                 e.nombre AS estado_nombre, m.nombre AS municipio_nombre, 
-                p.nombre AS parroquia_nombre, ci.nombre AS ciudad_nombre
+                p.nombre AS parroquia_nombre, ci.nombre AS ciudad_nombre,
+                cp.codigo AS codigo_postal_codigo
             FROM sim_caso_direcciones d
             LEFT JOIN estados e ON d.estado_id = e.id
             LEFT JOIN municipios m ON d.municipio_id = m.id
             LEFT JOIN parroquias p ON d.parroquia_id = p.id
             LEFT JOIN ciudades ci ON d.ciudad_id = ci.id
+            LEFT JOIN codigos_postales cp ON d.codigo_postal_id = cp.id
             WHERE d.sim_caso_estudio_id = :cid");
         $stmt->execute(['cid' => $casoId]);
         $direcciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -105,11 +107,14 @@ class GestionarCasoModel
                 per.nombres, per.apellidos, per.tipo_cedula, per.cedula, per.sexo,
                 per.estado_civil, per.fecha_nacimiento,
                 par.etiqueta AS parentesco_nombre,
-                ad.fecha_fallecimiento
+                ad.fecha_fallecimiento,
+                CONCAT(p_padre.nombres, ' ', p_padre.apellidos) AS premuerto_padre_nombre
             FROM sim_caso_participantes cp
             JOIN sim_personas per ON cp.persona_id = per.id
             LEFT JOIN sim_cat_parentescos par ON cp.parentesco_id = par.id
             LEFT JOIN sim_actas_defunciones ad ON ad.sim_persona_id = per.id
+            LEFT JOIN sim_caso_participantes cp_padre ON cp.premuerto_padre_id = cp_padre.id
+            LEFT JOIN sim_personas p_padre ON cp_padre.persona_id = p_padre.id
             WHERE cp.caso_estudio_id = :cid
             ORDER BY cp.es_premuerto ASC, cp.id ASC");
         $stmt->execute(['cid' => $casoId]);

@@ -1,0 +1,288 @@
+/* ================================================================
+   datos_causante_sc.css
+   CSS extraído de datos_causante_sc.php (página legada del SENIAT)
+   ================================================================ */
+
+/* --- Variables / Imágenes --- */
+:root {
+    --sf-img-4: url("data:image/gif;base64,R0lGODlhGAAUAKL/AP///8DAwDNmmc5HR9dWVvC0tMSYmMDAwCH5BAEAAAEALAAAAAAYABQAQANlGCHK2/DJdQCo1+JKjDXEJQibZmboNpbpyR7rIc90ba8kLOf87sM5m23QAQ12JJeyQCQMCqJka/qKCa+1kXbL7Xax4NlK2WISnFDgS9n5hNRhGdFgRK6prjF+D49f9XeBXoOEAgkAO3ujlk4pJHvHdEKldV82boKFentjhIGLaY2OABEAOw==");
+}
+
+/* --- Base --- */
+.seniat-scope {
+    FONT-SIZE: 8pt;
+    MARGIN: 0px;
+    FONT-FAMILY: Verdana, Arial;
+}
+
+/* --- Fondo principal --- */
+.fondoPrincipal {
+    background-color: #E52129;
+}
+
+/* --- Texto general --- */
+.letras {
+    FONT-SIZE: 11px;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Arial;
+}
+
+/* --- Botones --- */
+.boton {
+    font-size: 8pt;
+    font-family: Verdana;
+    font-weight: bold;
+    color: #000000;
+    background-color: #ebebeb;
+    width: 120px;
+    height: 20px;
+}
+
+/* --- Barra principal --- */
+.barraPpal {
+    background-color: #CCCCCC;
+    height: 30px;
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 12px;
+    COLOR: white;
+    FONT-FAMILY: Verdana, Arial;
+    TEXT-ALIGN: center;
+    BORDER: 0;
+    PADDING: 0;
+}
+
+/* --- Título de tabla --- */
+.tablaTitulo {
+    BORDER: 0;
+    PADDING: 0;
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 12px;
+    COLOR: white;
+    FONT-FAMILY: Verdana, Arial;
+    HEIGHT: 25px;
+    BACKGROUND-COLOR: #E32227;
+    TEXT-ALIGN: center;
+}
+
+/* --- Subtítulo de tabla --- */
+.tablaSubTitulo {
+    BORDER: 0;
+    PADDING: 0;
+    FONT-WEIGHT: bold;
+    COLOR: white;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: #969696;
+    TEXT-ALIGN: center;
+}
+
+/* --- Enlaces --- */
+.enlace A:link {
+    FONT-SIZE: 9px;
+    COLOR: navy;
+    FONT-FAMILY: Verdana, Arial;
+}
+
+.enlace A:visited {
+    FONT-SIZE: 9px;
+    COLOR: green;
+    FONT-FAMILY: Verdana, Arial;
+}
+
+.enlace A:hover {
+    FONT-SIZE: 9px;
+    COLOR: red;
+    FONT-FAMILY: Verdana, Arial;
+}
+
+.enlace A:active {
+    FONT-SIZE: 9px;
+    COLOR: blue;
+    FONT-FAMILY: Verdana, Arial;
+}
+
+.enlaceSencillo A:link {
+    FONT-SIZE: 9px;
+    COLOR: navy;
+    FONT-FAMILY: Verdana, Arial;
+    text-decoration: none;
+}
+
+.enlaceSencillo A:visited {
+    FONT-SIZE: 9px;
+    COLOR: navy;
+    FONT-FAMILY: Verdana, Arial;
+    text-decoration: none;
+}
+
+.enlaceSencillo A:hover {
+    FONT-SIZE: 9px;
+    COLOR: red;
+    FONT-FAMILY: Verdana, Arial;
+    text-decoration: none;
+}
+
+.enlaceSencillo A:active {
+    FONT-SIZE: 9px;
+    COLOR: navy;
+    FONT-FAMILY: Verdana, Arial;
+    text-decoration: none;
+}
+
+/* --- Texto pequeño --- */
+.letrasSmall {
+    FONT-SIZE: 9pt;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Arial;
+}
+
+/* --- Filas alternas --- */
+.row1 {
+    background-color: #EFEFEF;
+}
+
+/* --- Declaracion.css (estilos base) --- */
+.seniat-scope td {
+    font-family: Verdana, Arial;
+    font-size: 8pt;
+}
+
+.menuItem {
+    background-color: #dedede;
+    font-family: Verdana;
+    font-weight: bold;
+}
+
+.seniat-scope a:link {
+    font-family: Verdana, Arial;
+    font-size: 7pt;
+    text-decoration: none;
+}
+
+.seniat-scope a:visited {
+    font-family: Verdana, Arial;
+    font-size: 7pt;
+    text-decoration: none;
+}
+
+.seniat-scope a:hover {
+    font-family: Verdana, Arial;
+    font-size: 7pt;
+    text-decoration: none;
+}
+
+/* --- Clases anteriores --- */
+.celdaTitulo3A {
+    font-family: Verdana;
+    font-size: 8pt;
+    color: Navy;
+}
+
+.letrasFecha {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #666666;
+    font-size: 9px;
+}
+
+/* --- SISTIGER --- */
+.tamano1 {
+    width: 10%;
+}
+
+a.sistigerInfo:hover {
+    z-index: 25;
+}
+
+a.sistigerInfo:hover span {
+    display: block;
+    position: absolute;
+    top: 2em;
+    left: 2em;
+    width: 150px;
+    font-size: 10px;
+}
+
+a.sistigerMontos:hover {
+    z-index: 25;
+}
+
+a.sistigerMontos:hover span {
+    display: block;
+    position: absolute;
+    top: 2em;
+    left: 2em;
+    width: 150px;
+    font-size: 10px;
+}
+
+a.sistigerCtaCorriente:hover {
+    z-index: 25;
+    font-size: 11px;
+}
+
+a.sistigerCtaCorriente:hover span {
+    display: block;
+    position: absolute;
+    top: 2em;
+    left: 2em;
+    width: 150px;
+    font-size: 10px;
+}
+
+/* --- Ocultar SingleFile sobrantes --- */
+.sf-hidden {
+    display: none !important;
+}
+
+/* --- Menú lateral (glossymenu) --- */
+.glossymenu {
+    padding: 0;
+    width: 205px;
+    border: 1px solid #E32227;
+}
+
+.glossymenu a.menuitem {
+    background: #A7A7A7;
+    font: 11px Arial, Verdana;
+    color: black;
+    display: block;
+    position: relative;
+    width: auto;
+    padding: 4px 0;
+    padding-left: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid #FFFFFF;
+}
+
+.glossymenu span.menuitem {
+    background: #E32227;
+    font: bold 11px Verdana, Arial;
+    text-align: center;
+    color: white;
+    display: block;
+    position: relative;
+    width: auto;
+    padding: 4px 0;
+    padding-left: 10px;
+    text-decoration: none;
+    border-bottom: 2px solid #E32227;
+}
+
+.glossymenu a.menuitem:visited {
+    color: black;
+}
+
+.glossymenu a.menuitem:hover {
+    color: #E32227;
+}
+
+.glossymenu div.submenu ul li a:hover {
+    color: #E32227;
+}
+
+.glossymenu div.submenu1 ul li a:hover {
+    color: #E32227;
+}
+
+.glossymenu div.submenu2 ul li a:hover {
+    color: #E32227;
+}

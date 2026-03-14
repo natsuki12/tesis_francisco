@@ -1454,3 +1454,51 @@
 .scorecard-bar-fill.bar-fail {
     background: var(--red-500);
 }
+
+
+/* ===== 12. CARD COMPONENT (Contenedor de sección) ===== */
+/* Componente reutilizable para ambas vistas: crear_caso (.cc-card) y gestionar_caso (.gc-card). */
+.cc-card,
+.gc-card {
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: var(--radius);
+    background: var(--white);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.cc-card:hover,
+.gc-card:hover {
+    box-shadow: var(--shadow-card-hover);
+}
+
+.cc-card__header,
+.gc-card-header {
+    background: linear-gradient(to right, rgba(248, 250, 252, 0.8), var(--white));
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cc-card__header h3,
+.gc-card-header h3 {
+    margin: 0;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--gray-800);
+}
+
+.cc-card__header p,
+.gc-card-header p {
+    font-size: var(--text-xs);
+    color: var(--gray-400);
+    margin: 2px 0 0;
+}
+
+.cc-card__body,
+.gc-card-body {
+    padding: 20px;
+}

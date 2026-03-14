@@ -118,6 +118,7 @@ function applyConstraints(container) {
     [
         { name: 'causante.cedula', maxLen: 10 },
         { name: 'representante.cedula', maxLen: 10 },
+        { name: 'representante.rif_personal', maxLen: 10 },
         { name: 'acta_defuncion.year_acta', maxLen: 4 },
         { name: 'prorroga.plazo_dias', maxLen: 4 },
         { name: 'cedula', maxLen: 10 },           // modal heredero
@@ -506,7 +507,8 @@ function validateBeforePublish() {
     else if (!isValidName(c.representante.nombres)) errors.push('Representante: Nombres no puede contener solo espacios o números');
     if (!c.representante.apellidos?.trim()) errors.push('Representante: Apellidos');
     else if (!isValidName(c.representante.apellidos)) errors.push('Representante: Apellidos no puede contener solo espacios o números');
-    if (!c.representante.cedula?.trim() && !c.representante.pasaporte?.trim()) errors.push('Representante: Cédula o Pasaporte');
+    if (!c.representante.cedula?.trim()) errors.push('Representante: Cédula');
+    if (!c.representante.rif_personal?.trim()) errors.push('Representante: RIF');
     if (!c.representante.sexo) errors.push('Representante: Sexo');
 
     if (!c.representante.fecha_nacimiento) errors.push('Representante: Fecha de nacimiento');
@@ -779,175 +781,223 @@ function initCausanteAutocomplete() {
 function initRepresentanteAutocomplete() {
     const inputCedulaRep = $('[data-bind="representante.cedula"]');
     const selectLetraRep = $('[data-bind="representante.letra_cedula"]');
-    const inputPasaporteRep = $('[data-bind="representante.pasaporte"]');
-    const radiosTipoDoc = $$('[name="rep_tipo_doc"]');
+    const inputRifRep = $('[data-bind="representante.rif_personal"]');
+    const selectLetraRif = $('[data-bind="representante.letra_rif"]');
+
+    // Track which field was used to search ('cedula' | 'rif' | null)
+    let searchOrigin = null;
+
+    const lockStyle = 'var(--cc-slate-50, #f8fafc)';
+
+    // Lock a set of elements (input + select)
+    const lockEls = (...els) => {
+        els.forEach(el => {
+            if (el) { el.disabled = true; el.style.backgroundColor = lockStyle; }
+        });
+    };
+    const unlockEls = (...els) => {
+        els.forEach(el => {
+            if (el) { el.disabled = false; el.style.backgroundColor = ''; }
+        });
+    };
 
     const clearAndEnableAll = () => {
-        radiosTipoDoc.forEach(r => r.disabled = false);
+        const prevOrigin = searchOrigin;
+        searchOrigin = null;
         const lockedFields = caseData.representante._locked_fields || [];
         lockedFields.forEach(f => {
             if (caseData.representante[f] !== undefined) {
                 caseData.representante[f] = '';
             }
             const el = $(`[data-bind="representante.${f}"]`);
-            if (el) {
-                el.value = '';
-                el.disabled = false;
-                el.style.backgroundColor = '';
-            }
+            if (el) { el.value = ''; el.disabled = false; el.style.backgroundColor = ''; }
         });
-        // Also clear persona_id since the person was unlinked
         caseData.representante.persona_id = '';
         caseData.representante._locked_fields = [];
+
+        // Clear the auto-filled document field (the one that was NOT the origin)
+        if (prevOrigin === 'cedula') {
+            // RIF was auto-filled from DB → clear it
+            caseData.representante.rif_personal = '';
+            caseData.representante.letra_rif = 'V';
+            if (inputRifRep) inputRifRep.value = '';
+            if (selectLetraRif) selectLetraRif.value = 'V';
+        } else if (prevOrigin === 'rif') {
+            // Cédula was auto-filled from DB → clear it
+            caseData.representante.cedula = '';
+            caseData.representante.letra_cedula = 'V';
+            if (inputCedulaRep) inputCedulaRep.value = '';
+            if (selectLetraRep) selectLetraRep.value = 'V';
+        }
+
+        // Unlock both document fields
+        unlockEls(inputCedulaRep, selectLetraRep, inputRifRep, selectLetraRif);
     };
 
-    const fetchRepresentante = async (isPasaporte = false) => {
-        let url = '';
-        const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
-
-        const isPasaporteRadio = Array.from(radiosTipoDoc).find(r => r.checked)?.value === 'Pasaporte';
-
-        if (isPasaporteRadio || isPasaporte) {
-            const pasaporte = inputPasaporteRep ? inputPasaporteRep.value.trim() : '';
-            if (!pasaporte || pasaporte.length < 5) {
-                if (pasaporte.length === 0 && caseData.representante.nombres) clearAndEnableAll();
-                return;
-            }
-            url = `${baseUrl}/api/buscar-persona?pasaporte=${pasaporte}`;
-        } else {
-            const cedula = inputCedulaRep ? inputCedulaRep.value.trim() : '';
-            const tipo = selectLetraRep ? selectLetraRep.value : '';
-            const isRif = Array.from(radiosTipoDoc).find(r => r.checked)?.value === 'Rif';
-
-            if (!cedula || cedula.length < 6) {
-                if (cedula.length === 0 && caseData.representante.nombres) clearAndEnableAll();
-                return;
-            }
-
-            if (!tipo) {
-                if (caseData.representante.nombres) clearAndEnableAll();
-                return;
-            }
-
-            if (isRif) {
-                url = `${baseUrl}/api/buscar-persona?rif=${tipo}${cedula}`;
+    const fillAndDisable = (selector, value, forceEnable = false) => {
+        const el = $(selector);
+        if (el && value !== undefined && value !== null) {
+            if (forceEnable) {
+                el.value = ''; el.disabled = false; el.style.backgroundColor = '';
             } else {
-                url = `${baseUrl}/api/buscar-persona?tipo=${tipo}&cedula=${cedula}`;
+                el.value = value; el.disabled = true; el.style.backgroundColor = lockStyle;
+            }
+        }
+    };
+
+    // Shared handler for API response
+    const handlePersonaData = (data, origin) => {
+        // Validar que no sea el mismo causante
+        let isSamePerson = false;
+        if (caseData.causante) {
+            if (caseData.causante.cedula && data.cedula && data.cedula === caseData.causante.cedula && data.tipo_cedula === caseData.causante.tipo_cedula) {
+                isSamePerson = true;
+            }
+            if (data.persona_id && caseData.causante.persona_id && data.persona_id === caseData.causante.persona_id) {
+                isSamePerson = true;
             }
         }
 
+        if (isSamePerson) {
+            showToast('El representante no puede ser el mismo causante.', 'error');
+            clearAndEnableAll();
+            return;
+        }
+
+        searchOrigin = origin;
+
+        // Populate personal data
+        caseData.representante.persona_id = data.persona_id;
+        caseData.representante.nombres = data.nombres;
+        caseData.representante.apellidos = data.apellidos;
+        caseData.representante.fecha_nacimiento = data.fecha_nacimiento;
+        caseData.representante.sexo = data.sexo;
+
+        const normalizedEstadoCivil = data.estado_civil ? data.estado_civil.toLowerCase().replace('_', ' ') : '';
+        if (normalizedEstadoCivil === 'no aplica') {
+            caseData.representante.estado_civil = '';
+        } else {
+            caseData.representante.estado_civil = data.estado_civil;
+        }
+        caseData.representante.nacionalidad = data.nacionalidad;
+
+        // Cross-fill: populate the OTHER document field and lock it
+        if (origin === 'cedula') {
+            // User searched by cédula → auto-fill and lock RIF
+            if (data.rif_personal) {
+                const rifLetra = data.rif_personal.charAt(0);
+                const rifNumero = data.rif_personal.substring(1);
+                caseData.representante.letra_rif = rifLetra;
+                caseData.representante.rif_personal = rifNumero;
+                if (selectLetraRif) selectLetraRif.value = rifLetra;
+                if (inputRifRep) inputRifRep.value = rifNumero;
+            }
+            lockEls(inputRifRep, selectLetraRif);
+            // Keep cédula fields editable (origin)
+            unlockEls(inputCedulaRep, selectLetraRep);
+        } else if (origin === 'rif') {
+            // User searched by RIF → auto-fill and lock Cédula
+            if (data.cedula && data.tipo_cedula) {
+                caseData.representante.letra_cedula = data.tipo_cedula;
+                caseData.representante.cedula = data.cedula;
+                if (selectLetraRep) selectLetraRep.value = data.tipo_cedula;
+                if (inputCedulaRep) inputCedulaRep.value = data.cedula;
+            }
+            lockEls(inputCedulaRep, selectLetraRep);
+            // Keep RIF fields editable (origin)
+            unlockEls(inputRifRep, selectLetraRif);
+        }
+
+        // Lock personal data fields
+        fillAndDisable('[data-bind="representante.nombres"]', data.nombres);
+        fillAndDisable('[data-bind="representante.apellidos"]', data.apellidos);
+        fillAndDisable('[data-bind="representante.fecha_nacimiento"]', data.fecha_nacimiento);
+        fillAndDisable('[data-bind="representante.sexo"]', data.sexo);
+
+        const isEstadoCivilNoAplica = (normalizedEstadoCivil === 'no aplica');
+        fillAndDisable('[data-bind="representante.estado_civil"]', data.estado_civil, isEstadoCivilNoAplica);
+        fillAndDisable('[data-bind="representante.nacionalidad"]', data.nacionalidad);
+
+        showToast('Datos del representante autocompletados', 'success');
+        const lockedFieldsRep = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'nacionalidad']
+            .filter(f => data[f] && !(f === 'estado_civil' && isEstadoCivilNoAplica));
+        caseData.representante._locked_fields = lockedFieldsRep;
+    };
+
+    // Search by Cédula
+    const fetchByCedula = async () => {
+        // If RIF was the origin, ignore cédula input (it's locked anyway)
+        if (searchOrigin === 'rif') return;
+
+        const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+        const cedula = inputCedulaRep ? inputCedulaRep.value.trim() : '';
+        const tipo = selectLetraRep ? selectLetraRep.value : '';
+
+        if (!cedula || cedula.length < 6) {
+            if (cedula.length === 0 && caseData.representante.nombres) clearAndEnableAll();
+            return;
+        }
+        if (!tipo) {
+            if (caseData.representante.nombres) clearAndEnableAll();
+            return;
+        }
+
         try {
-            const resp = await fetch(url);
+            const resp = await fetch(`${baseUrl}/api/buscar-persona?tipo=${tipo}&cedula=${cedula}`);
             const json = await resp.json();
-
             if (json.success && json.data) {
-                const data = json.data;
-
-                // Validar que el representante no sea el mismo causante
-                let isSamePerson = false;
-                if (caseData.causante) {
-                    const isRepRif = Array.from(radiosTipoDoc).find(r => r.checked)?.value === 'Rif';
-
-                    if (isRepRif) {
-                        // Representative is RIF (data.rif_personal will be populated like "V12345678")
-                        // Does it match Causante's explicitly loaded RIF?
-                        if (data.rif_personal && caseData.causante.rif_personal && data.rif_personal === caseData.causante.rif_personal) {
-                            isSamePerson = true;
-                        }
-                        // Did Causante enter their RIF into the Cédula field instead?
-                        if (caseData.causante.cedula && data.rif_personal && (caseData.causante.tipo_cedula + caseData.causante.cedula) === data.rif_personal) {
-                            isSamePerson = true;
-                        }
-                    } else if (isPasaporteRadio) {
-                        // Check by pasaporte
-                        if (data.pasaporte && caseData.causante.pasaporte && data.pasaporte === caseData.causante.pasaporte) {
-                            isSamePerson = true;
-                        }
-                    } else {
-                        // Representative is Cédula
-                        if (caseData.causante.cedula && data.cedula && data.cedula === caseData.causante.cedula && data.tipo_cedula === caseData.causante.tipo_cedula) {
-                            isSamePerson = true;
-                        }
-                    }
-
-                    // ID match, using `persona_id` returned by CatalogModel
-                    // Since causante doesn't always store persona_id, we only check if present
-                    if (data.persona_id && caseData.causante.persona_id && data.persona_id === caseData.causante.persona_id) {
-                        isSamePerson = true;
-                    }
-                }
-
-                if (isSamePerson) {
-                    showToast('El representante no puede ser el mismo causante.', 'error');
-                    clearAndEnableAll();
-                    return;
-                }
-
-                caseData.representante.persona_id = data.persona_id;
-                caseData.representante.nombres = data.nombres;
-                caseData.representante.apellidos = data.apellidos;
-                caseData.representante.fecha_nacimiento = data.fecha_nacimiento;
-                caseData.representante.sexo = data.sexo;
-
-                const normalizedEstadoCivil = data.estado_civil ? data.estado_civil.toLowerCase().replace('_', ' ') : '';
-                if (normalizedEstadoCivil === 'no aplica') {
-                    caseData.representante.estado_civil = '';
-                } else {
-                    caseData.representante.estado_civil = data.estado_civil;
-                }
-
-                caseData.representante.nacionalidad = data.nacionalidad;
-
-                const fillAndDisable = (selector, value, forceEnable = false) => {
-                    const el = $(selector);
-                    if (el && value !== undefined && value !== null) {
-                        if (forceEnable) {
-                            el.value = '';
-                            el.disabled = false;
-                            el.style.backgroundColor = '';
-                        } else {
-                            el.value = value;
-                            el.disabled = true;
-                            el.style.backgroundColor = 'var(--cc-slate-50, #f8fafc)';
-                        }
-                    }
-                };
-
-                fillAndDisable('[data-bind="representante.nombres"]', data.nombres);
-                fillAndDisable('[data-bind="representante.apellidos"]', data.apellidos);
-                fillAndDisable('[data-bind="representante.fecha_nacimiento"]', data.fecha_nacimiento);
-                fillAndDisable('[data-bind="representante.sexo"]', data.sexo);
-
-                const isEstadoCivilNoAplica = (normalizedEstadoCivil === 'no aplica');
-                fillAndDisable('[data-bind="representante.estado_civil"]', data.estado_civil, isEstadoCivilNoAplica);
-
-                fillAndDisable('[data-bind="representante.nacionalidad"]', data.nacionalidad);
-
-                showToast('Datos del representante autocompletados', 'success');
-                const lockedFieldsRep = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'nacionalidad']
-                    .filter(f => data[f] && !(f === 'estado_civil' && isEstadoCivilNoAplica));
-                caseData.representante._locked_fields = lockedFieldsRep;
+                handlePersonaData(json.data, 'cedula');
             } else {
                 clearAndEnableAll();
             }
         } catch (err) {
-            console.error("Error buscando persona", err);
+            console.error("Error buscando persona por cédula", err);
         }
     };
 
+    // Search by RIF
+    const fetchByRif = async () => {
+        // If cédula was the origin, ignore RIF input (it's locked anyway)
+        if (searchOrigin === 'cedula') return;
+
+        const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+        const rifNumero = inputRifRep ? inputRifRep.value.trim() : '';
+        const rifLetra = selectLetraRif ? selectLetraRif.value : '';
+
+        if (!rifNumero || rifNumero.length < 5) {
+            if (rifNumero.length === 0 && caseData.representante.nombres) clearAndEnableAll();
+            return;
+        }
+
+        const rif = `${rifLetra}${rifNumero}`;
+
+        try {
+            const resp = await fetch(`${baseUrl}/api/buscar-persona?rif=${rif}`);
+            const json = await resp.json();
+            if (json.success && json.data) {
+                handlePersonaData(json.data, 'rif');
+            } else {
+                clearAndEnableAll();
+            }
+        } catch (err) {
+            console.error("Error buscando persona por RIF", err);
+        }
+    };
+
+    // Cédula listeners
     if (inputCedulaRep) {
-        inputCedulaRep.addEventListener('input', () => fetchRepresentante(false));
+        inputCedulaRep.addEventListener('input', fetchByCedula);
     }
     if (selectLetraRep) {
-        selectLetraRep.addEventListener('change', () => fetchRepresentante(false));
+        selectLetraRep.addEventListener('change', fetchByCedula);
     }
-    if (inputPasaporteRep) {
-        inputPasaporteRep.addEventListener('input', () => fetchRepresentante(true));
+
+    // RIF listeners
+    if (inputRifRep) {
+        inputRifRep.addEventListener('input', fetchByRif);
     }
-    if (radiosTipoDoc) {
-        radiosTipoDoc.forEach(r => r.addEventListener('change', () => {
-            fetchRepresentante(r.value === 'Pasaporte');
-        }));
+    if (selectLetraRif) {
+        selectLetraRif.addEventListener('change', fetchByRif);
     }
 }
 

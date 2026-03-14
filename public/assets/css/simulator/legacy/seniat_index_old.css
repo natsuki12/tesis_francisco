@@ -1,0 +1,684 @@
+  /* --- Contenedor externo (hereda estilos del layout) --- */
+  .seniat-wrapper {
+    background: var(--sim-white, #ffffff);
+    border-radius: 12px;
+    box-shadow: var(--sim-shadow-lg, 0 4px 6px rgba(0, 0, 0, 0.07));
+    overflow: visible;
+    /* No recortar: el scroll horizontal lo maneja .sim-main */
+    border: 1px solid var(--sim-border, #dfe5ee);
+  }
+
+  /* Mover el scroll horizontal al contenedor principal del layout.
+     Esto replica el comportamiento del SENIAT original donde la
+     página entera hacía scroll, manteniendo el dropdown alineado. */
+  .sim-main:has(.seniat-wrapper) {
+    overflow-x: auto !important;
+  }
+
+  /* --- Barrera de aislamiento --- */
+  .seniat-scope {
+    all: revert;
+    /* Resetea TODA herencia del layout */
+    display: block;
+    position: relative; /* Contiene al dropdown dentro del scroll */
+    min-width: 1030px;
+    /* Ancho real del portal */
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    line-height: normal;
+  }
+
+  /* Ocultar las gigantescas columnas fantasma laterales (25%) del layout original */
+  .seniat-scope>table>tbody>tr>td[style*="width:25%"] {
+    display: none !important;
+  }
+
+  /* Mantener la tabla principal centrada y con su ancho real de 1030px */
+  .seniat-scope>table {
+    width: 1030px !important;
+    margin: 0 auto;
+  }
+
+  /* Asegurar que dentro del scope, el * del layout no aplique */
+  .seniat-scope *,
+  .seniat-scope *::before,
+  .seniat-scope *::after {
+    box-sizing: content-box;
+    /* SENIAT original usaba content-box */
+  }
+
+  /* Override base.css globals that leak into the scope */
+  .seniat-scope h1,
+  .seniat-scope h2,
+  .seniat-scope h3 {
+    font-family: inherit;
+    font-weight: inherit;
+    color: inherit;
+  }
+
+  .seniat-scope label {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+  }
+
+  .seniat-scope input[type="text"],
+  .seniat-scope input[type="number"],
+  .seniat-scope input[type="email"],
+  .seniat-scope input[type="date"],
+  .seniat-scope select,
+  .seniat-scope textarea {
+    font-family: Verdana, Arial;
+    font-size: 8pt;
+    color: #000;
+  }
+
+  .seniat-scope ::placeholder {
+    font-family: Verdana, Arial;
+    font-size: 8pt;
+    color: #888;
+  }
+
+  .seniat-scope a,
+  .seniat-scope a:link,
+  .seniat-scope a:visited,
+  .seniat-scope a:hover {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  /* --- Estilos SENIAT originales (con scope) --- */
+
+  .seniat-scope .GroupHeaderid1siteid0 {
+    Background-Color: #336699;
+    Height: 20px;
+    Text-Align: Left;
+  }
+
+  .seniat-scope .GroupHeaderLinkid1siteid0 {
+    Color: #FFFFFF;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 9pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .GroupHeaderTextid1siteid0 {
+    Color: #FFFFFF;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 9pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .RegionHeaderid1siteid0 {
+    Background-Color: #336699;
+    Height: 20px;
+    Text-Align: Left;
+  }
+
+  .seniat-scope .RegionHeaderTextid1siteid0 {
+    Color: #FFFFFF;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 9pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .Bodyid1siteid0 {
+    Background-Color: #D4CBC6;
+  }
+
+  .seniat-scope .authorid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .createdateid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .creatorid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .defaultattributeid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .descriptionid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .documentsizeid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .expiredateid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .inplacedisplayid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .itemfunctionid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .keywordsid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .perspectivesid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .scoreid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .subpagetitleid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .titleid1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .titleorimageid1siteid0 {
+    Color: #336699;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 9pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .wwsbr_category_id1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .wwsbr_charset_id1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .wwsbr_itemtype_id1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .wwsbr_mime_type_id1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .wwsbr_page_id1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .wwsbr_pagegroup_id1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .wwsbr_publishdate_id1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .wwsbr_updatedate_id1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .wwsbr_updator_id1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .wwsbr_version_number_id1siteid0 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .LeftCurve {
+    Background-Attachment: scroll;
+    Background-Image: url(../../../images/D4CBC6l.html);
+    Background-Position: left top;
+    Background-Repeat: no-repeat;
+  }
+
+  .seniat-scope .PortletBodyColor {
+    Background-Color: #FFFFFF;
+  }
+
+  .seniat-scope .PortletHeaderColor {
+    Background-Color: #336699;
+  }
+
+  .seniat-scope .PortletHeaderLink {
+    Color: #FFFFFF;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .PortletHeaderText {
+    Color: #FFFFFF;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 10pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .PortletHeading1 {
+    Color: #336699;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 9pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .PortletHeading2 {
+    Color: #336699;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .PortletHeading3 {
+    Color: #336699;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 7pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .PortletHeading4 {
+    Color: #336699;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 7pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .PortletSubHeaderColor {
+    Background-Color: #EEEEDD;
+  }
+
+  .seniat-scope .PortletSubHeaderLink {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 9pt;
+  }
+
+  .seniat-scope .PortletSubHeaderText {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 9pt;
+  }
+
+  .seniat-scope .PortletText1 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .PortletText2 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .PortletText3 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 7pt;
+  }
+
+  .seniat-scope .PortletText4 {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 7pt;
+  }
+
+  .seniat-scope .RightCurve {
+    Background-Attachment: scroll;
+    Background-Image: url(../../../images/D4CBC6r.html);
+    Background-Position: right top;
+    Background-Repeat: no-repeat;
+  }
+
+  .seniat-scope .LeftSubTabid1siteid0 {
+    Background-Attachment: scroll;
+    Background-Color: #336699;
+    Background-Image: url(../../../images/D4CBC6sl.html);
+    Background-Position: left top;
+    Background-Repeat: no-repeat;
+  }
+
+  .seniat-scope .LeftTabBgSlantid1siteid0 {
+    Background-Attachment: scroll;
+    Background-Color: #CCCC99;
+    Background-Image: url(../../../images/D4CBC6tl.html);
+    Background-Position: left top;
+    Background-Repeat: no-repeat;
+  }
+
+  .seniat-scope .LeftTabForeSlantid1siteid0 {
+    Background-Attachment: scroll;
+    Background-Color: #336699;
+    Background-Image: url(../../../images/D4CBC6tl.html);
+    Background-Position: left top;
+    Background-Repeat: no-repeat;
+  }
+
+  .seniat-scope .RightSubTabid1siteid0 {
+    Background-Attachment: scroll;
+    Background-Color: #336699;
+    Background-Image: url(../../../images/D4CBC6sr.html);
+    Background-Position: right top;
+    Background-Repeat: no-repeat;
+  }
+
+  .seniat-scope .RightTabBgCurveid1siteid0 {
+    Background-Attachment: scroll;
+    Background-Color: #CCCC99;
+    Background-Image: url(../../../images/D4CBC6tr.html);
+    Background-Position: right top;
+    Background-Repeat: no-repeat;
+  }
+
+  .seniat-scope .RightTabForeCurveid1siteid0 {
+    Background-Attachment: scroll;
+    Background-Color: #336699;
+    Background-Image: url(../../../images/D4CBC6tr.html);
+    Background-Position: right top;
+    Background-Repeat: no-repeat;
+  }
+
+  .seniat-scope .SubTabBgTextid1siteid0 {
+    Color: #CCCC99;
+    Text-Decoration: none;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 11pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .TabBackgroundColorid1siteid0 {
+    Background-Color: #CCCC99;
+  }
+
+  .seniat-scope .TabBackgroundTextid1siteid0 {
+    Color: #003366;
+    Text-Decoration: none;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 10pt;
+  }
+
+  .seniat-scope .TabForegroundColorid1siteid0 {
+    Background-Color: #336699;
+  }
+
+  .seniat-scope .TabForegroundTextid1siteid0 {
+    Color: #FFFFFF;
+    Text-Decoration: none;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 10pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .portlet-font {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-font-dim {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-msg-status {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-msg-info {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-msg-error {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-msg-alert {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-msg-success {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-section-header {
+    Color: #336699;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 9pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .portlet-section-body {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-section-alternate {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-section-selected {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-section-subheader {
+    Color: #336699;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .portlet-section-footer {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-section-text {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-table-header {
+    Color: #336699;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 9pt;
+    Font-Weight: Bold;
+    Background-Color: #EEEEDD;
+  }
+
+  .seniat-scope .portlet-table-body {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-table-alternate {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-table-selected {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-table-subheader {
+    Color: #336699;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+    Font-Weight: Bold;
+  }
+
+  .seniat-scope .portlet-table-footer {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-table-text {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-form-label {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-form-input-field {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-form-button {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-icon-label {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-dlg-icon-label {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-form-field-label {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .portlet-form-field {
+    Color: #000000;
+    Font-Family: Arial, Helvetica;
+    Font-Size: 8pt;
+  }
+
+  .seniat-scope .RegionBorder {
+    border: #336699 1px solid;
+  }
+
+  .seniat-scope .RegionHeaderColor {
+    background-color: #FFFFFF;
+    border: #336699 0px solid;
+  }
+
+  .seniat-scope .PageColor {
+    background-color: #D4CBC6
+  }
+
+
+
+
+
+  .seniat-scope #dropmenudiv {
+    position: absolute;
+    border: 1px solid #EE3822;
+    border-bottom-width: 0;
+    font: normal 9px Verdana;
+    color: red;
+    line-height: 18px;
+    z-index: 100;
+  }
+
+  .seniat-scope #dropmenudiv a {
+    width: 100%;
+    display: block;
+    text-indent: 3px;
+    border-bottom: 1px solid red;
+    padding: 1px 0;
+    text-decoration: none;
+    font-weight: bold;
+    color: #EE3822;
+  }
+
+  .seniat-scope #dropmenudiv a:hover {
+    /*hover background color*/
+    background-color: #CCCCCC;
+    color: white;
+  }

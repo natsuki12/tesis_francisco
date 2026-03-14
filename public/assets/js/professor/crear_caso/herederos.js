@@ -196,60 +196,6 @@ export function renderHerederosPremuertos() {
 }
 
 export function initRepresentanteLogic() {
-  const radios = document.querySelectorAll('input[name="rep_tipo_doc"]');
-  const selLetra = document.getElementById('sel-rep-letra');
-  const lblCedula = document.getElementById('lbl-rep-cedula');
-
-  const inpCedula = document.getElementById('inp-rep-cedula');
-  const inpPasaporte = document.getElementById('inp-rep-pasaporte');
-
-  if (!inpCedula || !inpPasaporte) return;
-
-  const wrapCedula = document.getElementById('wrap-rep-cedula');
-  const wrapPasaporte = inpPasaporte.closest('.cc-field');
-
-  // 1. Variar Cédula/RIF/Pasaporte y la visibilidad
-  const updateDocType = () => {
-    const selected = document.querySelector('input[name="rep_tipo_doc"]:checked');
-    if (selected && selected.value === 'Pasaporte') {
-      if (wrapCedula) wrapCedula.style.display = 'none';
-      if (wrapPasaporte) wrapPasaporte.style.display = '';
-      inpCedula.value = '';
-    } else if (selected && selected.value === 'Rif') {
-      if (wrapCedula) wrapCedula.style.display = '';
-      if (wrapPasaporte) wrapPasaporte.style.display = 'none';
-      inpPasaporte.value = '';
-      if (lblCedula) lblCedula.innerHTML = 'RIF';
-      if (selLetra) {
-        selLetra.style.display = '';
-        selLetra.innerHTML = '<option value="V">V</option><option value="J">J</option>';
-        if (caseData.representante && caseData.representante.letra_cedula) {
-          selLetra.value = caseData.representante.letra_cedula;
-          if (!selLetra.value) selLetra.value = 'J'; // default for missing options
-        } else {
-          selLetra.value = 'J';
-        }
-      }
-    } else { // Default to Cédula
-      if (wrapCedula) wrapCedula.style.display = '';
-      if (wrapPasaporte) wrapPasaporte.style.display = 'none';
-      inpPasaporte.value = '';
-      if (lblCedula) lblCedula.innerHTML = 'Cédula';
-      if (selLetra) {
-        selLetra.style.display = '';
-        selLetra.innerHTML = '<option value="V">V</option><option value="E">E</option>';
-        if (caseData.representante && ['V', 'E'].includes(caseData.representante.letra_cedula)) {
-          selLetra.value = caseData.representante.letra_cedula;
-        } else {
-          selLetra.value = 'V';
-        }
-      }
-    }
-    if (selLetra && caseData.representante && (selected.value === 'Cédula' || selected.value === 'Rif')) {
-      caseData.representante.letra_cedula = selLetra.value;
-    }
-  };
-
-  radios.forEach(r => r.addEventListener('change', updateDocType));
-  updateDocType();
+  // No radio buttons to handle anymore — Cédula and RIF fields are always visible.
+  // Nothing to toggle.
 }

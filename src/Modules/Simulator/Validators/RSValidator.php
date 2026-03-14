@@ -39,39 +39,47 @@ class RSValidator
      */
     public function validar(int $intentoId, int $estudianteId): array
     {
-        // 1. Cargar intento + caso
-        $intento = $this->getIntentoConCaso($intentoId, $estudianteId);
-        if (!$intento) {
-            return ['ok' => false, 'errores' => ['general' => ['Intento no encontrado o no pertenece al estudiante.']]];
+        try {
+            // 1. Cargar intento + caso
+            $intento = $this->getIntentoConCaso($intentoId, $estudianteId);
+            if (!$intento) {
+                return ['ok' => false, 'errores' => ['general' => ['Intento no encontrado o no pertenece al estudiante.']]];
+            }
+
+            $borrador = json_decode($intento['borrador_json'] ?: '{}', true);
+            $casoId = (int) $intento['caso_id'];
+
+            $errores = [];
+
+            // 2. Validar datos del causante
+            $erroresCausante = $this->validarCausante($borrador, $casoId);
+            if (!empty($erroresCausante)) {
+                $errores['causante'] = $erroresCausante;
+            }
+
+            // 3. Validar relaciones (representante + herederos)
+            $erroresRelaciones = $this->validarRelaciones($borrador, $casoId);
+            if (!empty($erroresRelaciones)) {
+                $errores['relaciones'] = $erroresRelaciones;
+            }
+
+            // 4. Validar direcciones
+            $erroresDirecciones = $this->validarDirecciones($borrador, $casoId);
+            if (!empty($erroresDirecciones)) {
+                $errores['direcciones'] = $erroresDirecciones;
+            }
+
+            return [
+                'ok' => empty($errores),
+                'errores' => $errores,
+            ];
+        } catch (\Throwable $e) {
+            error_log('RSValidator::validar() error: ' . $e->getMessage());
+            return [
+                'ok' => false,
+                'errores' => ['general' => ['Error interno durante la validación. Contacte al administrador.']],
+            ];
         }
-
-        $borrador = json_decode($intento['borrador_json'] ?: '{}', true);
-        $casoId = (int) $intento['caso_id'];
-
-        $errores = [];
-
-        // 2. Validar datos del causante
-        $erroresCausante = $this->validarCausante($borrador, $casoId);
-        if (!empty($erroresCausante)) {
-            $errores['causante'] = $erroresCausante;
-        }
-
-        // 3. Validar relaciones (representante + herederos)
-        $erroresRelaciones = $this->validarRelaciones($borrador, $casoId);
-        if (!empty($erroresRelaciones)) {
-            $errores['relaciones'] = $erroresRelaciones;
-        }
-
-        // 4. Validar direcciones
-        $erroresDirecciones = $this->validarDirecciones($borrador, $casoId);
-        if (!empty($erroresDirecciones)) {
-            $errores['direcciones'] = $erroresDirecciones;
-        }
-
-        return [
-            'ok' => empty($errores),
-            'errores' => $errores,
-        ];
     }
 
     // ════════════════════════════════════════════════════════
@@ -119,11 +127,13 @@ class RSValidator
             return ['No se encontró el causante del caso en la base de datos.'];
         }
 
-        // Comparar cédula
-        $cedulaBorrador = trim($datosBasicos['cedula'] ?? '');
+        // Comparar cédula (DB guarda tipo_cedula y cedula por separado, borrador los une como "V4079920")
+        $cedulaBorrador = mb_strtoupper(trim($datosBasicos['cedula'] ?? ''));
+        $tipoCedulaDb = mb_strtoupper(trim($causanteDb['tipo_cedula'] ?? ''));
         $cedulaDb = trim($causanteDb['cedula'] ?? '');
-        if ($cedulaBorrador !== $cedulaDb) {
-            $errores[] = "La cédula del causante no coincide. Esperado: {$cedulaDb}, ingresado: {$cedulaBorrador}.";
+        $cedulaCompletaDb = $tipoCedulaDb . $cedulaDb; // Ej: "V" + "4079920" = "V4079920"
+        if ($cedulaBorrador !== $cedulaCompletaDb) {
+            $errores[] = "La cédula del causante no coincide. Esperado: {$cedulaCompletaDb}, ingresado: {$cedulaBorrador}.";
         }
 
         // Comparar nombres
@@ -147,10 +157,47 @@ class RSValidator
             $errores[] = "La fecha de fallecimiento no coincide. Esperado: {$fechaDb}, ingresado: {$fechaB}.";
         }
 
-        // Comparar RIF si existe en la DB
+        // Comparar sexo
+        $sexoB = mb_strtoupper(trim($datosBasicos['sexo'] ?? ''));
+        $sexoDb = mb_strtoupper(trim($causanteDb['sexo'] ?? ''));
+        if ($sexoB && $sexoDb && $sexoB !== $sexoDb) {
+            $errores[] = "El sexo del causante no coincide. Esperado: {$sexoDb}, ingresado: {$sexoB}.";
+        }
+
+        // Comparar estado civil
+        $ecB = mb_strtoupper(trim($datosBasicos['estado_civil'] ?? ''));
+        $ecDb = mb_strtoupper(trim($causanteDb['estado_civil'] ?? ''));
+        if ($ecB && $ecDb && $ecB !== $ecDb) {
+            $errores[] = "El estado civil del causante no coincide. Esperado: {$ecDb}, ingresado: {$ecB}.";
+        }
+
+        // Comparar nacionalidad
+        $nacB = trim((string)($datosBasicos['nacionalidad'] ?? ''));
+        $nacDb = trim((string)($causanteDb['nacionalidad'] ?? ''));
+        if ($nacB && $nacDb && $nacB !== $nacDb) {
+            $errores[] = "La nacionalidad del causante no coincide. Esperado: {$nacDb}, ingresado: {$nacB}.";
+        }
+
+        // Comparar domiciliado en el país
+        $domB = $datosBasicos['domiciliado_pais'] ?? null;
+        $domDb = $causanteDb['domiciliado_pais'] ?? null;
+        if ($domB !== null && $domDb !== null && (int)$domB !== (int)$domDb) {
+            $esperado = (int)$domDb ? 'Sí' : 'No';
+            $ingresado = (int)$domB ? 'Sí' : 'No';
+            $errores[] = "Domiciliado en el país no coincide. Esperado: {$esperado}, ingresado: {$ingresado}.";
+        }
+
+        // Comparar fecha de cierre fiscal
+        $fcB = $this->normalizarFecha($datosBasicos['fecha_cierre_fiscal'] ?? '');
+        $fcDb = $this->normalizarFecha($causanteDb['fecha_cierre_fiscal'] ?? '');
+        if ($fcB && $fcDb && $fcB !== $fcDb) {
+            $errores[] = "La fecha de cierre fiscal no coincide. Esperado: {$fcDb}, ingresado: {$fcB}.";
+        }
+
+        // Comparar RIF solo si ambos tienen valor (el estudiante no siempre ingresa RIF)
         $rifDb = trim($causanteDb['rif_personal'] ?? '');
         $rifB = trim($datosBasicos['rif_personal'] ?? '');
-        if ($rifDb && $rifB !== $rifDb) {
+        if ($rifDb && $rifB && $rifB !== $rifDb) {
             $errores[] = "El RIF del causante no coincide. Esperado: {$rifDb}, ingresado: {$rifB}.";
         }
 
@@ -164,10 +211,12 @@ class RSValidator
                 p.tipo_cedula, p.cedula, p.pasaporte, p.rif_personal,
                 p.nombres, p.apellidos, p.sexo, p.estado_civil,
                 p.fecha_nacimiento, p.nacionalidad,
-                a.fecha_fallecimiento
+                a.fecha_fallecimiento,
+                df.domiciliado_pais, df.fecha_cierre_fiscal
             FROM sim_casos_estudios c
             INNER JOIN sim_personas p ON p.id = c.causante_id
             LEFT JOIN sim_actas_defunciones a ON a.sim_persona_id = p.id
+            LEFT JOIN sim_causante_datos_fiscales df ON df.sim_persona_id = p.id
             WHERE c.id = :caso_id
             LIMIT 1
         ";
@@ -212,6 +261,13 @@ class RSValidator
         } elseif (!$representanteDb && $representanteB) {
             $errores[] = 'Se ingresó un Representante de la Sucesión pero el caso no tiene uno.';
         } elseif ($representanteDb && $representanteB) {
+            // Verificar que el documento del representante coincida
+            $docRepB = trim($representanteB['idDocumento'] ?? $representanteB['cedula'] ?? '');
+            if ($docRepB && !$this->matchDocumento($docRepB, $representanteDb)) {
+                $esperado = $representanteDb['rif_personal'] ?: ($representanteDb['tipo_cedula'] . $representanteDb['cedula']);
+                $errores[] = "Representante: documento no coincide. Esperado: {$esperado}, ingresado: {$docRepB}.";
+            }
+            // Comparar nombres
             $repErrors = $this->compararPersona($representanteB, $representanteDb, 'Representante');
             $errores = array_merge($errores, $repErrors);
         }
@@ -234,16 +290,7 @@ class RSValidator
             foreach ($participantesDb as $j => $hDb) {
                 if (in_array($j, $dbUsados)) continue;
 
-                $cedulaDb = trim($hDb['cedula'] ?? '');
-                $rifDb = trim($hDb['rif_personal'] ?? '');
-                $pasaporteDb = trim($hDb['pasaporte'] ?? '');
-
-                // Match por cédula, RIF o pasaporte
-                if (
-                    ($cedulaDb && $this->documentoContiene($docB, $cedulaDb)) ||
-                    ($rifDb && $docB === $rifDb) ||
-                    ($pasaporteDb && $docB === $pasaporteDb)
-                ) {
+                if ($this->matchDocumento($docB, $hDb)) {
                     $matched = true;
                     $dbUsados[] = $j;
 
@@ -263,7 +310,8 @@ class RSValidator
         foreach ($participantesDb as $j => $hDb) {
             if (!in_array($j, $dbUsados)) {
                 $nombre = trim(($hDb['nombres'] ?? '') . ' ' . ($hDb['apellidos'] ?? ''));
-                $errores[] = "Falta el heredero: {$nombre} (cédula: {$hDb['cedula']}).";
+                $doc = $hDb['rif_personal'] ?: ($hDb['tipo_cedula'] . $hDb['cedula']);
+                $errores[] = "Falta el heredero: {$nombre} (documento: {$doc}).";
             }
         }
 
@@ -281,6 +329,7 @@ class RSValidator
             INNER JOIN sim_personas p ON p.id = cp.persona_id
             WHERE cp.caso_estudio_id = :caso_id
               AND cp.rol_en_caso = 'Heredero'
+              AND (cp.premuerto_padre_id IS NULL OR cp.premuerto_padre_id = 0)
             ORDER BY cp.id ASC
         ";
         $stmt = $this->db->prepare($sql);
@@ -330,11 +379,31 @@ class RSValidator
             $errores[] = "Se esperan {$countDb} dirección(es) pero se ingresaron {$countB}.";
         }
 
-        // Mapeo: clave del borrador JS (camelCase) → columna de la DB (snake_case)
-        // El borrador usa: tipoDireccion, tipoVialidad, vialidad, tipoEdificacion, edificacion,
-        //                  estado, municipio, parroquia, ciudad
-        // La DB usa:       tipo_direccion, tipo_vialidad, nombre_vialidad, tipo_inmueble, nro_inmueble,
-        //                  estado_id, municipio_id, parroquia_id, ciudad_id
+        // ── Mapas de traducción: código del simulador → enum de la DB ──
+        $mapTipoDireccion = [
+            '01' => 'Casa_Matriz_Establecimiento_Principal',
+            '02' => 'Sucursal_Comercial',
+            '03' => 'Bodega_Almacenamiento_Deposito',
+            '04' => 'Negocio_Independiente',
+            '05' => 'Planta_Industrial_Fabrica',
+            '06' => 'Domicilio_Fiscal',
+            '91' => 'Direccion_Notificacion_Fisica',
+        ];
+        $mapTipoVialidad = [
+            '01' => 'Calle', '02' => 'Avenida', '03' => 'Vereda',
+            '04' => 'Carretera', '05' => 'Esquina', '06' => 'Carrera',
+        ];
+        $mapTipoInmueble = [
+            '01' => 'Edificio', '02' => 'Centro_Comercial', '03' => 'Quinta',
+            '04' => 'Casa', '05' => 'Local',
+        ];
+        $mapTipoSector = [
+            '01' => 'Urbanizacion', '02' => 'Zona', '03' => 'Sector',
+            '04' => 'Conjunto_Residencial', '05' => 'Barrio', '06' => 'Caserio',
+        ];
+        $mapTipoLocal = [
+            '01' => 'Apartamento', '02' => 'Local', '03' => 'Oficina',
+        ];
 
         // Comparar cada dirección del borrador contra la DB
         $dbUsados = [];
@@ -345,7 +414,7 @@ class RSValidator
             foreach ($direccionesDb as $j => $dirDb) {
                 if (in_array($j, $dbUsados)) continue;
 
-                // Match por estado + municipio + parroquia (usando nombres del borrador)
+                // Match por estado + municipio + parroquia (usando IDs)
                 $estadoMatch = (int)($dirB['estado'] ?? 0) === (int)($dirDb['estado_id'] ?? 0);
                 $municipioMatch = (int)($dirB['municipio'] ?? 0) === (int)($dirDb['municipio_id'] ?? 0);
                 $parroquiaMatch = (int)($dirB['parroquia'] ?? 0) === (int)($dirDb['parroquia_id'] ?? 0);
@@ -354,23 +423,142 @@ class RSValidator
                     $matched = true;
                     $dbUsados[] = $j;
 
-                    // Comparar campos individualmente (borrador key → DB column → label)
-                    $campos = [
-                        ['tipoDireccion', 'tipo_direccion', 'Tipo de dirección'],
-                        ['tipoVialidad', 'tipo_vialidad', 'Tipo de vialidad'],
-                        ['vialidad', 'nombre_vialidad', 'Nombre de vialidad'],
-                        ['tipoEdificacion', 'tipo_inmueble', 'Tipo de inmueble'],
-                        ['edificacion', 'nro_inmueble', 'Nro. de inmueble'],
-                        ['ciudad', 'ciudad_id', 'Ciudad'],
-                    ];
-
-                    foreach ($campos as [$keyB, $keyDb, $label]) {
-                        $valB = trim((string)($dirB[$keyB] ?? ''));
-                        $valDb = trim((string)($dirDb[$keyDb] ?? ''));
-                        if ($valB !== $valDb) {
-                            $errores[] = "Dirección #{$pos}: {$label} no coincide. Esperado: '{$valDb}', ingresado: '{$valB}'.";
-                        }
+                    // ── Tipo de dirección (código → enum) ──
+                    $tipoDirB = $mapTipoDireccion[$dirB['tipoDireccion'] ?? ''] ?? ($dirB['tipoDireccion'] ?? '');
+                    $tipoDirDb = trim((string)($dirDb['tipo_direccion'] ?? ''));
+                    if ($tipoDirB !== '' && $tipoDirDb !== '' && mb_strtoupper($tipoDirB) !== mb_strtoupper($tipoDirDb)) {
+                        $errores[] = "Dirección #{$pos}: Tipo de dirección no coincide. Esperado: '{$tipoDirDb}', ingresado: '{$tipoDirB}'.";
                     }
+
+                    // ── Tipo de vialidad (código → enum) ──
+                    $tipoVialB = $mapTipoVialidad[$dirB['tipoVialidad'] ?? ''] ?? ($dirB['tipoVialidad'] ?? '');
+                    $tipoVialDb = trim((string)($dirDb['tipo_vialidad'] ?? ''));
+                    if ($tipoVialB !== '' && $tipoVialDb !== '' && mb_strtoupper($tipoVialB) !== mb_strtoupper($tipoVialDb)) {
+                        $errores[] = "Dirección #{$pos}: Tipo de vialidad no coincide. Esperado: '{$tipoVialDb}', ingresado: '{$tipoVialB}'.";
+                    }
+
+                    // ── Nombre de vialidad (borrador puede incluir número extra) ──
+                    $vialidadB = mb_strtoupper(trim((string)($dirB['vialidad'] ?? '')));
+                    $vialidadDb = mb_strtoupper(trim((string)($dirDb['nombre_vialidad'] ?? '')));
+                    if ($vialidadB !== '' && $vialidadDb !== '' && mb_strpos($vialidadB, $vialidadDb) === false && $vialidadB !== $vialidadDb) {
+                        $errores[] = "Dirección #{$pos}: Nombre de vialidad no coincide. Esperado: '{$vialidadDb}', ingresado: '{$vialidadB}'.";
+                    }
+
+                    // ── Tipo de inmueble (código → enum) ──
+                    $tipoInmB = $mapTipoInmueble[$dirB['tipoEdificacion'] ?? ''] ?? ($dirB['tipoEdificacion'] ?? '');
+                    $tipoInmDb = trim((string)($dirDb['tipo_inmueble'] ?? ''));
+                    if ($tipoInmB !== '' && $tipoInmDb !== '' && mb_strtoupper($tipoInmB) !== mb_strtoupper($tipoInmDb)) {
+                        $errores[] = "Dirección #{$pos}: Tipo de inmueble no coincide. Esperado: '{$tipoInmDb}', ingresado: '{$tipoInmB}'.";
+                    }
+
+                    // ── Nombre/Nro de inmueble ──
+                    // La DB concatena: "NOMBRE - PISO X" o "NOMBRE - NIVEL X" o "NOMBRE - NRO X"
+                    // El borrador guarda por separado: edificacion (nombre) y piso (nro)
+                    $nroInmDb = trim((string)($dirDb['nro_inmueble'] ?? ''));
+                    $edificacionB = mb_strtoupper(trim((string)($dirB['edificacion'] ?? '')));
+                    $pisoB = mb_strtoupper(trim((string)($dirB['piso'] ?? '')));
+
+                    // Descomponer nro_inmueble de la DB: "NOMBRE - PISO/NIVEL/NRO X"
+                    $dbNombreInmueble = mb_strtoupper($nroInmDb);
+                    $dbPisoNivel = '';
+                    if (preg_match('/^(.+?)\s*-\s*(PISO|NIVEL|NRO)\s+(.+)$/i', $nroInmDb, $m)) {
+                        $dbNombreInmueble = mb_strtoupper(trim($m[1]));
+                        $dbPisoNivel = mb_strtoupper(trim($m[3]));
+                    }
+
+                    if ($edificacionB !== '' && $dbNombreInmueble !== '' && $edificacionB !== $dbNombreInmueble) {
+                        $errores[] = "Dirección #{$pos}: Nombre de inmueble no coincide. Esperado: '{$dbNombreInmueble}', ingresado: '{$edificacionB}'.";
+                    }
+                    if ($pisoB !== '' && $dbPisoNivel !== '' && $pisoB !== $dbPisoNivel) {
+                        $errores[] = "Dirección #{$pos}: Piso/Nivel no coincide. Esperado: '{$dbPisoNivel}', ingresado: '{$pisoB}'.";
+                    }
+
+                    // ── Tipo de local/nivel (código → enum) ──
+                    $tipoLocalB = $mapTipoLocal[$dirB['tipoLocal'] ?? ''] ?? ($dirB['tipoLocal'] ?? '');
+                    $tipoNivelDb = trim((string)($dirDb['tipo_nivel'] ?? ''));
+                    if ($tipoLocalB !== '' && $tipoNivelDb !== '' && mb_strtoupper($tipoLocalB) !== mb_strtoupper($tipoNivelDb)) {
+                        $errores[] = "Dirección #{$pos}: Tipo de local no coincide. Esperado: '{$tipoNivelDb}', ingresado: '{$tipoLocalB}'.";
+                    }
+
+                    // ── Nro de local/apto (borrador: local → DB: nro_nivel) ──
+                    $localB = mb_strtoupper(trim((string)($dirB['local'] ?? '')));
+                    $nroNivelDb = mb_strtoupper(trim((string)($dirDb['nro_nivel'] ?? '')));
+                    if ($localB !== '' && $nroNivelDb !== '' && $localB !== $nroNivelDb) {
+                        $errores[] = "Dirección #{$pos}: Nro. de local no coincide. Esperado: '{$nroNivelDb}', ingresado: '{$localB}'.";
+                    }
+
+                    // ── Tipo de sector (código → enum) ──
+                    $tipoSecB = $mapTipoSector[$dirB['tipoSector'] ?? ''] ?? ($dirB['tipoSector'] ?? '');
+                    $tipoSecDb = trim((string)($dirDb['tipo_sector'] ?? ''));
+                    if ($tipoSecB !== '' && $tipoSecDb !== '' && mb_strtoupper($tipoSecB) !== mb_strtoupper($tipoSecDb)) {
+                        $errores[] = "Dirección #{$pos}: Tipo de sector no coincide. Esperado: '{$tipoSecDb}', ingresado: '{$tipoSecB}'.";
+                    }
+
+                    // ── Nombre de sector ──
+                    $sectorB = mb_strtoupper(trim((string)($dirB['sector'] ?? '')));
+                    $sectorDb = mb_strtoupper(trim((string)($dirDb['nombre_sector'] ?? '')));
+                    if ($sectorB !== '' && $sectorDb !== '' && $sectorB !== $sectorDb) {
+                        $errores[] = "Dirección #{$pos}: Nombre de sector no coincide. Esperado: '{$sectorDb}', ingresado: '{$sectorB}'.";
+                    }
+
+                    // ── Ciudad (mostrar nombre, no ID) ──
+                    $ciudadB = (int)($dirB['ciudad'] ?? 0);
+                    $ciudadDb = (int)($dirDb['ciudad_id'] ?? 0);
+                    if ($ciudadB > 0 && $ciudadDb > 0 && $ciudadB !== $ciudadDb) {
+                        $ciudadNombreDb = $dirDb['ciudad_nombre'] ?? $ciudadDb;
+                        $ciudadNombreB = $this->resolverNombre('ciudades', $ciudadB) ?? $ciudadB;
+                        $errores[] = "Dirección #{$pos}: Ciudad no coincide. Esperado: '{$ciudadNombreDb}', ingresado: '{$ciudadNombreB}'.";
+                    }
+
+                    // ── Zona Postal (mostrar código, no ID) ──
+                    $zonaB = (int)($dirB['zonaPostal'] ?? 0);
+                    $zonaDb = (int)($dirDb['codigo_postal_id'] ?? 0);
+                    if ($zonaB > 0 && $zonaDb > 0 && $zonaB !== $zonaDb) {
+                        $zonaNombreDb = $dirDb['codigo_postal_codigo'] ?? $zonaDb;
+                        $zonaNombreB = $this->resolverNombre('codigos_postales', $zonaB, 'codigo') ?? $zonaB;
+                        $errores[] = "Dirección #{$pos}: Zona postal no coincide. Esperado: '{$zonaNombreDb}', ingresado: '{$zonaNombreB}'.";
+                    }
+
+                    // ── Teléfono fijo ──
+                    $telFijoB = trim((string)($dirB['telefono'] ?? ''));
+                    $telFijoDb = trim((string)($dirDb['telefono_fijo'] ?? ''));
+                    if ($telFijoDb !== '' && $telFijoB === '') {
+                        $errores[] = "Dirección #{$pos}: Falta teléfono fijo. Esperado: '{$telFijoDb}'.";
+                    } elseif ($telFijoB !== '' && $telFijoDb === '') {
+                        $errores[] = "Dirección #{$pos}: Se ingresó teléfono fijo '{$telFijoB}' pero no se espera uno.";
+                    } elseif ($telFijoB !== '' && $telFijoDb !== '' && $telFijoB !== $telFijoDb) {
+                        $errores[] = "Dirección #{$pos}: Teléfono fijo no coincide. Esperado: '{$telFijoDb}', ingresado: '{$telFijoB}'.";
+                    }
+
+                    // ── Teléfono celular ──
+                    $celularB = trim((string)($dirB['celular'] ?? ''));
+                    $celularDb = trim((string)($dirDb['telefono_celular'] ?? ''));
+                    if ($celularDb !== '' && $celularB === '') {
+                        $errores[] = "Dirección #{$pos}: Falta teléfono celular. Esperado: '{$celularDb}'.";
+                    } elseif ($celularB !== '' && $celularDb === '') {
+                        $errores[] = "Dirección #{$pos}: Se ingresó teléfono celular '{$celularB}' pero no se espera uno.";
+                    } elseif ($celularB !== '' && $celularDb !== '' && $celularB !== $celularDb) {
+                        $errores[] = "Dirección #{$pos}: Teléfono celular no coincide. Esperado: '{$celularDb}', ingresado: '{$celularB}'.";
+                    }
+
+                    // ── Fax ──
+                    $faxB = trim((string)($dirB['fax'] ?? ''));
+                    $faxDb = trim((string)($dirDb['fax'] ?? ''));
+                    if ($faxDb !== '' && $faxB === '') {
+                        $errores[] = "Dirección #{$pos}: Falta fax. Esperado: '{$faxDb}'.";
+                    } elseif ($faxB !== '' && $faxDb === '') {
+                        $errores[] = "Dirección #{$pos}: Se ingresó fax '{$faxB}' pero no se espera uno.";
+                    } elseif ($faxB !== '' && $faxDb !== '' && $faxB !== $faxDb) {
+                        $errores[] = "Dirección #{$pos}: Fax no coincide. Esperado: '{$faxDb}', ingresado: '{$faxB}'.";
+                    }
+
+                    // ── Punto de referencia ──
+                    $refB = mb_strtoupper(trim((string)($dirB['referencia'] ?? '')));
+                    $refDb = mb_strtoupper(trim((string)($dirDb['punto_referencia'] ?? '')));
+                    if ($refB !== '' && $refDb !== '' && $refB !== $refDb) {
+                        $errores[] = "Dirección #{$pos}: Punto de referencia no coincide. Esperado: '{$refDb}', ingresado: '{$refB}'.";
+                    }
+
                     break;
                 }
             }
@@ -392,8 +580,18 @@ class RSValidator
                 d.tipo_sector, d.nombre_sector,
                 d.estado_id, d.municipio_id, d.parroquia_id, d.ciudad_id,
                 d.codigo_postal_id, d.telefono_fijo, d.telefono_celular,
-                d.fax, d.punto_referencia
+                d.fax, d.punto_referencia,
+                e.nombre  AS estado_nombre,
+                m.nombre  AS municipio_nombre,
+                p.nombre  AS parroquia_nombre,
+                ci.nombre AS ciudad_nombre,
+                cp.codigo AS codigo_postal_codigo
             FROM sim_caso_direcciones d
+            LEFT JOIN estados          e  ON d.estado_id         = e.id
+            LEFT JOIN municipios       m  ON d.municipio_id      = m.id
+            LEFT JOIN parroquias       p  ON d.parroquia_id      = p.id
+            LEFT JOIN ciudades         ci ON d.ciudad_id         = ci.id
+            LEFT JOIN codigos_postales cp ON d.codigo_postal_id  = cp.id
             WHERE d.sim_caso_estudio_id = :caso_id
             ORDER BY d.id ASC
         ";
@@ -403,12 +601,30 @@ class RSValidator
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Resuelve el nombre legible de un ID de catálogo.
+     */
+    private function resolverNombre(string $tabla, int $id, string $campo = 'nombre'): ?string
+    {
+        try {
+            $tablasPermitidas = ['estados', 'municipios', 'parroquias', 'ciudades', 'codigos_postales'];
+            if (!in_array($tabla, $tablasPermitidas)) return null;
+            $stmt = $this->db->prepare("SELECT {$campo} FROM {$tabla} WHERE id = :id LIMIT 1");
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchColumn();
+            return $result !== false ? (string)$result : null;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
     // ════════════════════════════════════════════════════════
     //  UTILIDADES
     // ════════════════════════════════════════════════════════
 
     /**
-     * Compara nombres y apellidos de una relación del borrador
+     * Compara nombres, apellidos y documento de una relación del borrador
      * contra los datos de la DB.
      */
     private function compararPersona(array $borradorRel, array $dbPersona, string $label): array
@@ -427,19 +643,67 @@ class RSValidator
             $errores[] = "{$label}: apellidos no coinciden. Esperado: {$apellidosDb}, ingresado: {$apellidosB}.";
         }
 
+        // Comparar documento (cédula/RIF) usando matchDocumento
+        $docB = trim($borradorRel['idDocumento'] ?? $borradorRel['cedula'] ?? '');
+        if ($docB && !$this->matchDocumento($docB, $dbPersona)) {
+            $rifDb = mb_strtoupper(trim($dbPersona['rif_personal'] ?? ''));
+            $tipoCedulaDb = mb_strtoupper(trim($dbPersona['tipo_cedula'] ?? ''));
+            $cedulaDb = trim($dbPersona['cedula'] ?? '');
+            $esperado = $rifDb ?: ($tipoCedulaDb . $cedulaDb) ?: $cedulaDb;
+            $errores[] = "{$label}: documento no coincide. Esperado: {$esperado}, ingresado: {$docB}.";
+        }
+
         return $errores;
     }
 
     /**
-     * Verifica si un documento del borrador contiene la cédula de la DB.
-     * Ejemplo: "V12345678" contiene "12345678".
+     * Extrae solo la parte numérica de un documento.
+     * Ej: "V-42240148-0" → "422401480", "V42240148" → "42240148", "4224014" → "4224014"
      */
-    private function documentoContiene(string $documento, string $cedula): bool
+    private function limpiarDocumento(string $doc): string
     {
-        if ($documento === $cedula) return true;
-        // Remover prefijo de letra (V, E, J, G)
-        $docLimpio = preg_replace('/^[VEJGP]-?/', '', $documento);
-        return $docLimpio === $cedula;
+        return preg_replace('/[^0-9]/', '', $doc);
+    }
+
+    /**
+     * Intenta hacer match de un documento del borrador contra TODOS los
+     * identificadores de una persona en la DB (cédula, RIF, pasaporte).
+     *
+     * Estrategia:
+     * 1. Comparación exacta (case-insensitive) contra cédula completa, RIF y pasaporte
+     * 2. Comparación numérica pura (sin letras ni guiones) contra cada campo
+     */
+    private function matchDocumento(string $docBorrador, array $personaDb): bool
+    {
+        $docB = mb_strtoupper(trim($docBorrador));
+        if (!$docB) return false;
+
+        // Construir todos los identificadores de la DB
+        $tipoCedula = mb_strtoupper(trim($personaDb['tipo_cedula'] ?? ''));
+        $cedula     = trim($personaDb['cedula'] ?? '');
+        $rif        = mb_strtoupper(trim($personaDb['rif_personal'] ?? ''));
+        $pasaporte  = mb_strtoupper(trim($personaDb['pasaporte'] ?? ''));
+        $cedulaCompleta = $tipoCedula . $cedula; // Ej: "V4224014"
+
+        // ── Paso 1: Comparación exacta (case-insensitive) ──
+        if ($cedulaCompleta && $docB === $cedulaCompleta) return true;
+        if ($rif && $docB === $rif) return true;
+        if ($pasaporte && $docB === $pasaporte) return true;
+        if ($cedula && $docB === $cedula) return true;
+
+        // ── Paso 2: Comparación por número puro ──
+        // Extraer solo dígitos de ambos lados
+        $numB = $this->limpiarDocumento($docB);
+        if (!$numB) return false;
+
+        // Match contra número de cédula
+        if ($cedula && $numB === $this->limpiarDocumento($cedula)) return true;
+        // Match contra número de RIF
+        if ($rif && $numB === $this->limpiarDocumento($rif)) return true;
+        // Match contra pasaporte (puede tener letras, comparar limpio)
+        if ($pasaporte && $numB === $this->limpiarDocumento($pasaporte)) return true;
+
+        return false;
     }
 
     /**

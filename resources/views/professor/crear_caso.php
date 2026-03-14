@@ -664,34 +664,9 @@ ob_start();
           <input type="text" data-bind="representante.apellidos" placeholder="Ej: Pérez Gómez">
         </div>
 
-        <!-- Tipo de Documento -->
-        <div class="cc-field cc-span-1">
-          <label>Tipo de Documento</label>
-          <div class="cc-radio-pills">
-            <label class="cc-radio-pill">
-              <input type="radio" name="rep_tipo_doc" value="Cédula" data-bind="representante.tipo_cedula" checked>
-              <span class="cc-radio-pill__content">
-                <span class="cc-radio-pill__title">Cédula</span>
-              </span>
-            </label>
-            <label class="cc-radio-pill">
-              <input type="radio" name="rep_tipo_doc" value="Rif" data-bind="representante.tipo_cedula">
-              <span class="cc-radio-pill__content">
-                <span class="cc-radio-pill__title">Rif</span>
-              </span>
-            </label>
-            <label class="cc-radio-pill">
-              <input type="radio" name="rep_tipo_doc" value="Pasaporte" data-bind="representante.tipo_cedula">
-              <span class="cc-radio-pill__content">
-                <span class="cc-radio-pill__title">Pasaporte</span>
-              </span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Cédula y Pasaporte -->
+        <!-- Cédula -->
         <div class="cc-field cc-span-1" id="wrap-rep-cedula">
-          <label id="lbl-rep-cedula">Cédula</label>
+          <label>Cédula</label>
           <div style="display: flex; gap: 8px;">
             <select data-bind="representante.letra_cedula" id="sel-rep-letra" style="width: 70px;">
               <option value="V">V</option>
@@ -701,11 +676,22 @@ ob_start();
               style="flex: 1;">
           </div>
         </div>
-        <div class="cc-field cc-span-1">
-          <label>Pasaporte (Sólo extranjeros sin Cédula/RIF)</label>
-          <input type="text" data-bind="representante.pasaporte" id="inp-rep-pasaporte" placeholder=""
-            oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+
+        <!-- RIF -->
+        <div class="cc-field cc-span-1" id="wrap-rep-rif">
+          <label>RIF</label>
+          <div style="display: flex; gap: 8px;">
+            <select data-bind="representante.letra_rif" id="sel-rep-letra-rif" style="width: 70px;">
+              <option value="V">V</option>
+              <option value="J">J</option>
+              <option value="E">E</option>
+              <option value="G">G</option>
+            </select>
+            <input type="text" data-bind="representante.rif_personal" id="inp-rep-rif" placeholder="Ej: 123456789"
+              style="flex: 1;">
+          </div>
         </div>
+
 
         <!-- Sexo y Fecha de Nacimiento -->
         <div class="cc-field cc-span-1">
@@ -725,7 +711,7 @@ ob_start();
       <!-- Footer Buttons -->
       <div class="cc-mt cc-text-right">
         <button type="button" class="btn btn-secondary btn--sm"
-          onclick="const r = document.ccHelpers; if(r) { document.querySelector('[data-bind=\'representante.apellidos\']').value=''; document.querySelector('[data-bind=\'representante.nombres\']').value=''; document.querySelector('[data-bind=\'representante.cedula\']').value=''; document.querySelector('[data-bind=\'representante.pasaporte\']').value=''; document.querySelectorAll('[name=\'rep_tipo_doc\']').forEach(e=>e.checked=false); }">
+          onclick="const r = document.ccHelpers; if(r) { document.querySelector('[data-bind=\'representante.apellidos\']').value=''; document.querySelector('[data-bind=\'representante.nombres\']').value=''; document.querySelector('[data-bind=\'representante.cedula\']').value=''; document.querySelector('[data-bind=\'representante.rif_personal\']').value=''; }">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round">
             <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -741,7 +727,7 @@ ob_start();
     <div class="cc-card__header cc-card__toggle"
       style="display: flex; justify-content: space-between; align-items: center;">
       <div>
-        <h3>Herederos y Legatarios</h3>
+        <h3>Herederos</h3>
         <p>Añada las personas con derecho sobre el patrimonio</p>
       </div>
       <svg class="cc-card__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"

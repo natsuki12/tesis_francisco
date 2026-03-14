@@ -129,8 +129,20 @@ if ($source === 'borrador') {
 
     $acta = $casoData['acta_defuncion'] ?? [];
     $datosFiscales = $casoData['datos_fiscales'] ?? [];
-    $herederos = $casoData['herederos'] ?? [];
-    $allHerederos = $herederos;
+    $allHerederos = $casoData['herederos'] ?? [];
+    // Split herederos into regular and premuerto groups
+    $herederos = [];
+    $herederos_premuertos = [];
+    foreach ($allHerederos as $h) {
+        $isPre = ($h['es_premuerto'] ?? 0);
+        $isPre = ($isPre === 1 || $isPre === '1' || $isPre === 'SI');
+        if (isset($h['premuerto_padre_id']) && !empty($h['premuerto_padre_id'])) {
+            // This is a heredero OF a premuerto (represents a deceased heir)
+            $herederos_premuertos[] = $h;
+        } else {
+            $herederos[] = $h;
+        }
+    }
     $bienesInmuebles = $casoData['bienes_inmuebles'] ?? [];
     $bienesMuebles = $casoData['bienes_muebles'] ?? [];
     $pasivosDeuda = $casoData['pasivos_deuda'] ?? [];
@@ -358,10 +370,10 @@ if ($source === 'borrador') {
         <?php endif; ?>
 
         <!-- Herederos -->
-        <?php if (!empty($allHerederos)): ?>
+        <?php if (!empty($herederos)): ?>
             <div class="gc-card">
                 <div class="gc-card-header">
-                    <h3>Herederos y Legatarios (<?= count($allHerederos) ?>)</h3>
+                    <h3>Herederos (<?= count($herederos) ?>)</h3>
                 </div>
                 <div class="gc-card-body gc-table-wrapper">
                     <table class="gc-table">
@@ -370,22 +382,15 @@ if ($source === 'borrador') {
                                 <th>Nombre</th>
                                 <th>Cédula</th>
                                 <th>Parentesco</th>
-                                <th>Carácter</th>
                                 <th>Premuerto</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($allHerederos as $h): ?>
+                            <?php foreach ($herederos as $h): ?>
                                 <tr>
                                     <td><?= htmlspecialchars(($h['nombres'] ?? '') . ' ' . ($h['apellidos'] ?? '')) ?></td>
                                     <td><?= showVal($h['cedula'] ?? null) ?></td>
                                     <td><?= htmlspecialchars($h['parentesco_nombre'] ?? $h['parentesco_id'] ?? '—') ?></td>
-                                    <td>
-                                        <span
-                                            class="gc-badge-small <?= ($h['rol_en_caso'] ?? $h['caracter'] ?? '') === 'Legatario' ? 'badge-blue' : 'badge-gray' ?>">
-                                            <?= htmlspecialchars($h['rol_en_caso'] ?? $h['caracter'] ?? '—') ?>
-                                        </span>
-                                    </td>
                                     <td>
                                         <?php
                                         $isPremuerto = ($h['es_premuerto'] ?? $h['premuerto'] ?? 'NO');
@@ -405,31 +410,134 @@ if ($source === 'borrador') {
             </div>
         <?php endif; ?>
 
+        <!-- Herederos de Premuertos -->
+        <?php if (!empty($herederos_premuertos)): ?>
+            <div class="gc-card">
+                <div class="gc-card-header">
+                    <h3>Herederos de Premuertos (<?= count($herederos_premuertos) ?>)</h3>
+                </div>
+                <div class="gc-card-body gc-table-wrapper">
+                    <table class="gc-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Cédula</th>
+                                <th>Parentesco</th>
+                                <th>Representa a</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($herederos_premuertos as $hp): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars(($hp['nombres'] ?? '') . ' ' . ($hp['apellidos'] ?? '')) ?></td>
+                                    <td><?= showVal($hp['cedula'] ?? null) ?></td>
+                                    <td><?= htmlspecialchars($hp['parentesco_nombre'] ?? $hp['parentesco_id'] ?? '—') ?></td>
+                                    <td><?= showVal($hp['premuerto_padre_nombre'] ?? $hp['premuerto_padre_id'] ?? null) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <!-- Direcciones -->
         <?php if (!empty($direcciones)): ?>
             <div class="gc-card">
                 <div class="gc-card-header">
                     <h3>Direcciones (<?= count($direcciones) ?>)</h3>
                 </div>
-                <div class="gc-card-body">
-                    <?php foreach ($direcciones as $i => $dir): ?>
-                        <?php if ($i > 0): ?>
-                            <hr class="gc-divider"><?php endif; ?>
-                        <div class="gc-info-list">
-                            <div class="gc-info-item">
-                                <span class="gc-info-label">Tipo</span>
-                                <span
-                                    class="gc-info-value"><?= showVal(str_replace('_', ' ', $dir['tipo_direccion'] ?? '')) ?></span>
+                <div class="gc-card-body" style="padding: 0;">
+                    <?php foreach ($direcciones as $i => $dir):
+                        $tipoDir = str_replace('_', ' ', $dir['tipo_direccion'] ?? 'Sin tipo');
+                        $ubicacion = trim(($dir['estado_nombre'] ?? $dir['estado'] ?? '') . ', ' . ($dir['municipio_nombre'] ?? $dir['municipio'] ?? '') . ', ' . ($dir['parroquia_nombre'] ?? $dir['parroquia'] ?? ''), ', ');
+                        $vialidad = trim(($dir['tipo_vialidad'] ?? '') . ' ' . ($dir['nombre_vialidad'] ?? ''));
+                    ?>
+                        <div class="gc-dir-item" data-dir-index="<?= $i ?>">
+                            <div class="gc-dir-summary">
+                                <div class="gc-dir-summary-left">
+                                    <div class="gc-dir-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <span class="gc-dir-type"><?= htmlspecialchars($tipoDir) ?></span>
+                                        <span class="gc-dir-location"><?= !empty($ubicacion) ? htmlspecialchars($ubicacion) : 'Sin ubicación' ?></span>
+                                    </div>
+                                </div>
+                                <svg class="gc-dir-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
                             </div>
-                            <div class="gc-info-item">
-                                <span class="gc-info-label">Vialidad</span>
-                                <span
-                                    class="gc-info-value"><?= showVal(($dir['tipo_vialidad'] ?? '') . ' ' . ($dir['nombre_vialidad'] ?? '')) ?></span>
-                            </div>
-                            <div class="gc-info-item">
-                                <span class="gc-info-label">Ubicación</span>
-                                <span
-                                    class="gc-info-value"><?= showVal(($dir['estado_nombre'] ?? $dir['estado'] ?? '') . ', ' . ($dir['municipio_nombre'] ?? $dir['municipio'] ?? '') . ', ' . ($dir['parroquia_nombre'] ?? $dir['parroquia'] ?? '')) ?></span>
+                            <div class="gc-dir-details">
+                                <div class="gc-info-list">
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Tipo Dirección</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($tipoDir) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Vialidad</span>
+                                        <span class="gc-info-value"><?= showVal($vialidad) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Inmueble</span>
+                                        <span class="gc-info-value"><?= showVal(($dir['tipo_inmueble'] ?? '') . (!empty($dir['nro_inmueble']) ? ' #' . $dir['nro_inmueble'] : '')) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Nivel</span>
+                                        <span class="gc-info-value"><?= showVal(($dir['tipo_nivel'] ?? '') . (!empty($dir['nro_nivel']) ? ' ' . $dir['nro_nivel'] : '')) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Sector</span>
+                                        <span class="gc-info-value"><?= showVal(($dir['tipo_sector'] ?? '') . (!empty($dir['nombre_sector']) ? ' ' . $dir['nombre_sector'] : '')) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Estado</span>
+                                        <span class="gc-info-value"><?= showVal($dir['estado_nombre'] ?? $dir['estado'] ?? null) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Municipio</span>
+                                        <span class="gc-info-value"><?= showVal($dir['municipio_nombre'] ?? $dir['municipio'] ?? null) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Parroquia</span>
+                                        <span class="gc-info-value"><?= showVal($dir['parroquia_nombre'] ?? $dir['parroquia'] ?? null) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Ciudad</span>
+                                        <span class="gc-info-value"><?= showVal($dir['ciudad_nombre'] ?? $dir['ciudad'] ?? null) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Zona Postal</span>
+                                        <span class="gc-info-value"><?= showVal($dir['codigo_postal_codigo'] ?? $dir['codigo_postal_id'] ?? null) ?></span>
+                                    </div>
+                                    <?php if (!empty($dir['telefono_fijo'])): ?>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Teléfono Fijo</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($dir['telefono_fijo']) ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($dir['telefono_celular'])): ?>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Celular</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($dir['telefono_celular']) ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($dir['fax'])): ?>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Fax</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($dir['fax']) ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($dir['punto_referencia'])): ?>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Punto de Referencia</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($dir['punto_referencia']) ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -519,61 +627,195 @@ if ($source === 'borrador') {
             <div class="gc-card-header">
                 <h3>Bienes Inmuebles (<?= count($bienesInmuebles) ?>)</h3>
             </div>
-            <div class="gc-card-body gc-table-wrapper">
+            <div class="gc-card-body" style="padding: 0;">
                 <?php if (empty($bienesInmuebles)): ?>
-                    <p class="gc-empty-text">No hay bienes inmuebles registrados.</p>
+                    <p class="gc-empty-text" style="padding: 20px;">No hay bienes inmuebles registrados.</p>
                 <?php else: ?>
-                    <table class="gc-table">
-                        <thead>
-                            <tr>
-                                <th>Descripción</th>
-                                <th>Porcentaje</th>
-                                <th>Valor Declarado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($bienesInmuebles as $bi): ?>
-                                <tr>
-                                    <td><?= showVal($bi['descripcion'] ?? null, 'Sin descripción') ?></td>
-                                    <td><?= number_format((float) ($bi['porcentaje'] ?? 0), 2) ?>%</td>
-                                    <td class="gc-money"><?= formatBs((float) ($bi['valor_declarado'] ?? 0)) ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                    <?php foreach ($bienesInmuebles as $i => $bi):
+                        $desc = $bi['descripcion'] ?? 'Inmueble #' . ($i + 1);
+                        $valor = formatBs((float)($bi['valor_declarado'] ?? 0));
+                        $esVivienda = ($bi['es_vivienda_principal'] ?? 0) == 1;
+                        $esLitigioso = ($bi['es_bien_litigioso'] ?? 0) == 1;
+                    ?>
+                        <div class="gc-dir-item" data-dir-index="bi_<?= $i ?>">
+                            <div class="gc-dir-summary">
+                                <div class="gc-dir-summary-left">
+                                    <div class="gc-dir-icon" style="background: var(--green-50); color: var(--green-600);">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18">
+                                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <span class="gc-dir-type"><?= htmlspecialchars($desc) ?></span>
+                                        <span class="gc-dir-location">
+                                            <?= $valor ?>
+                                            <?php if ($esVivienda): ?> · <span style="color: var(--green-600);">Vivienda Principal</span><?php endif; ?>
+                                            <?php if ($esLitigioso): ?> · <span style="color: var(--red-500);">Litigioso</span><?php endif; ?>
+                                        </span>
+                                    </div>
+                                </div>
+                                <svg class="gc-dir-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="gc-dir-details">
+                                <div class="gc-info-list">
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Porcentaje</span>
+                                        <span class="gc-info-value"><?= number_format((float)($bi['porcentaje'] ?? 0), 2) ?>%</span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Vivienda Principal</span>
+                                        <span class="gc-info-value"><?= $esVivienda ? 'Sí' : 'No' ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Bien Litigioso</span>
+                                        <span class="gc-info-value"><?= $esLitigioso ? 'Sí' : 'No' ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Valor Original</span>
+                                        <span class="gc-info-value"><?= formatBs((float)($bi['valor_original'] ?? 0)) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Valor Declarado</span>
+                                        <span class="gc-info-value" style="font-weight:700;color:var(--green-600);"><?= $valor ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Sup. Construida</span>
+                                        <span class="gc-info-value"><?= showVal($bi['superficie_construida'] ?? null) ?> m²</span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Sup. No Construida</span>
+                                        <span class="gc-info-value"><?= showVal($bi['superficie_no_construida'] ?? null) ?> m²</span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Área Superficie</span>
+                                        <span class="gc-info-value"><?= showVal($bi['area_superficie'] ?? null) ?> m²</span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Oficina Registro</span>
+                                        <span class="gc-info-value"><?= showVal($bi['oficina_registro'] ?? null) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Nro. Registro</span>
+                                        <span class="gc-info-value"><?= showVal($bi['nro_registro'] ?? null) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Protocolo</span>
+                                        <span class="gc-info-value"><?= showVal($bi['protocolo'] ?? null) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Fecha Registro</span>
+                                        <span class="gc-info-value"><?= !empty($bi['fecha_registro']) ? date('d/m/Y', strtotime($bi['fecha_registro'])) : '—' ?></span>
+                                    </div>
+                                    <?php if (!empty($bi['linderos'])): ?>
+                                    <div class="gc-info-item" style="grid-column: 1 / -1;">
+                                        <span class="gc-info-label">Linderos</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($bi['linderos']) ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($bi['direccion'])): ?>
+                                    <div class="gc-info-item" style="grid-column: 1 / -1;">
+                                        <span class="gc-info-label">Dirección</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($bi['direccion']) ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 <?php endif; ?>
             </div>
         </div>
 
-        <!-- Bienes Muebles -->
-        <div class="gc-card">
+        <div class="gc-card" id="bmCard">
             <div class="gc-card-header">
                 <h3>Bienes Muebles (<?= count($bienesMuebles) ?>)</h3>
             </div>
-            <div class="gc-card-body gc-table-wrapper">
+            <div class="gc-card-body" style="padding: 0;">
                 <?php if (empty($bienesMuebles)): ?>
-                    <p class="gc-empty-text">No hay bienes muebles registrados.</p>
+                    <p class="gc-empty-text" style="padding: 20px;">No hay bienes muebles registrados.</p>
                 <?php else: ?>
-                    <table class="gc-table">
-                        <thead>
-                            <tr>
-                                <th>Categoría</th>
-                                <th>Descripción</th>
-                                <th>Porcentaje</th>
-                                <th>Valor Declarado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($bienesMuebles as $bm): ?>
-                                <tr>
-                                    <td><?= showVal($bm['categoria_nombre'] ?? $bm['categoria'] ?? null) ?></td>
-                                    <td><?= showVal($bm['descripcion'] ?? null, 'Sin descripción') ?></td>
-                                    <td><?= number_format((float) ($bm['porcentaje'] ?? 0), 2) ?>%</td>
-                                    <td class="gc-money"><?= formatBs((float) ($bm['valor_declarado'] ?? 0)) ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                    <?php
+                    // Collect unique categories for filter pills
+                    $bmCats = [];
+                    foreach ($bienesMuebles as $bm) {
+                        $c = $bm['categoria_nombre'] ?? $bm['categoria'] ?? 'Otros';
+                        if (!in_array($c, $bmCats)) $bmCats[] = $c;
+                    }
+                    ?>
+                    <div class="gc-filter-bar" id="bmFilterBar">
+                        <button class="gc-filter-pill is-active" data-filter="all">Todos (<?= count($bienesMuebles) ?>)</button>
+                        <?php foreach ($bmCats as $catName):
+                            $catCount = count(array_filter($bienesMuebles, fn($b) => ($b['categoria_nombre'] ?? $b['categoria'] ?? 'Otros') === $catName));
+                        ?>
+                            <button class="gc-filter-pill" data-filter="<?= htmlspecialchars($catName) ?>"><?= htmlspecialchars($catName) ?> (<?= $catCount ?>)</button>
+                        <?php endforeach; ?>
+                    </div>
+                    <div id="bmItems">
+                    <?php foreach ($bienesMuebles as $i => $bm):
+                        $cat = $bm['categoria_nombre'] ?? $bm['categoria'] ?? 'Sin categoría';
+                        $tipo = $bm['tipo_nombre'] ?? '';
+                        $descBm = $bm['descripcion'] ?? 'Bien mueble #' . ($i + 1);
+                        $valorBm = formatBs((float)($bm['valor_declarado'] ?? 0));
+                        $esLitigiosoBm = ($bm['es_bien_litigioso'] ?? 0) == 1;
+                    ?>
+                        <div class="gc-dir-item" data-dir-index="bm_<?= $i ?>" data-bm-cat="<?= htmlspecialchars($cat) ?>">
+                            <div class="gc-dir-summary">
+                                <div class="gc-dir-summary-left">
+                                    <div class="gc-dir-icon" style="background: var(--purple-50, #f5f3ff); color: var(--purple-600, #7c3aed);">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18">
+                                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <span class="gc-dir-type"><?= htmlspecialchars($cat) ?><?= !empty($tipo) ? ' — ' . htmlspecialchars($tipo) : '' ?></span>
+                                        <span class="gc-dir-location">
+                                            <?= $valorBm ?>
+                                            <?php if ($esLitigiosoBm): ?> · <span style="color: var(--red-500);">Litigioso</span><?php endif; ?>
+                                        </span>
+                                    </div>
+                                </div>
+                                <svg class="gc-dir-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="gc-dir-details">
+                                <div class="gc-info-list">
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Categoría</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($cat) ?></span>
+                                    </div>
+                                    <?php if (!empty($tipo)): ?>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Tipo</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($tipo) ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Porcentaje</span>
+                                        <span class="gc-info-value"><?= number_format((float)($bm['porcentaje'] ?? 0), 2) ?>%</span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Bien Litigioso</span>
+                                        <span class="gc-info-value"><?= $esLitigiosoBm ? 'Sí' : 'No' ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Valor Declarado</span>
+                                        <span class="gc-info-value" style="font-weight:700;color:var(--green-600);"><?= $valorBm ?></span>
+                                    </div>
+                                    <?php if (!empty($bm['descripcion'])): ?>
+                                    <div class="gc-info-item" style="grid-column: 1 / -1;">
+                                        <span class="gc-info-label">Descripción</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($bm['descripcion']) ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
@@ -903,9 +1145,151 @@ if ($source === 'borrador') {
     </div>
 </div>
 
+<style>
+  .gc-card-header { cursor: pointer; user-select: none; }
+  .gc-card-header .gc-chevron { width: 20px; height: 20px; transition: transform 0.25s ease; flex-shrink: 0; margin-left: 12px; color: var(--cc-slate-400, #94a3b8); }
+  .gc-card.is-collapsed .gc-card-header .gc-chevron { transform: rotate(-90deg); }
+  .gc-card.is-collapsed .gc-card-body { display: none; }
+
+  /* Direcciones Accordion */
+  .gc-dir-item { border-bottom: 1px solid var(--gray-100); }
+  .gc-dir-item:last-child { border-bottom: none; }
+  .gc-dir-summary {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; cursor: pointer; user-select: none;
+    transition: background 0.15s ease;
+  }
+  .gc-dir-summary:hover { background: var(--gray-50); }
+  .gc-dir-summary-left { display: flex; align-items: center; gap: 12px; }
+  .gc-dir-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--blue-50); color: var(--blue-500);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .gc-dir-type {
+    display: block; font-size: var(--text-sm); font-weight: 600;
+    color: var(--gray-800); line-height: 1.3;
+  }
+  .gc-dir-location {
+    display: block; font-size: var(--text-xs); color: var(--gray-500);
+    margin-top: 1px;
+  }
+  .gc-dir-chevron {
+    width: 16px; height: 16px; color: var(--gray-400);
+    transition: transform 0.25s ease; flex-shrink: 0;
+  }
+  .gc-dir-item.is-open .gc-dir-chevron { transform: rotate(180deg); }
+  .gc-dir-item.is-open .gc-dir-summary { background: var(--gray-50); }
+  .gc-dir-details {
+    display: none; padding: 12px 20px 16px 68px;
+  }
+  .gc-dir-item.is-open .gc-dir-details { display: block; }
+  .gc-dir-details .gc-info-list {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px 24px;
+  }
+  .gc-dir-details .gc-info-value { font-size: var(--text-sm); }
+
+  /* Filter pill bar */
+  .gc-filter-bar {
+    display: flex; gap: 6px; padding: 12px 20px;
+    border-bottom: 1px solid var(--gray-100);
+    overflow-x: auto; flex-wrap: wrap;
+  }
+  .gc-filter-pill {
+    padding: 5px 14px; border-radius: 20px;
+    font-size: var(--text-xs); font-weight: 500;
+    border: 1px solid var(--gray-200); background: var(--white, #fff);
+    color: var(--gray-600); cursor: pointer;
+    transition: all 0.15s ease; white-space: nowrap;
+  }
+  .gc-filter-pill:hover { border-color: var(--blue-300); color: var(--blue-600); }
+  .gc-filter-pill.is-active {
+    background: var(--blue-500); color: #fff;
+    border-color: var(--blue-500);
+  }
+</style>
 <script>
     window.__casoId = <?= (int) $caso['id'] ?>;
     window.__baseUrl = '<?= base_url('') ?>'.replace(/\/+$/, '');
+</script>
+<script>
+(function() {
+  const STORAGE_KEY = 'gc_cards_state_' + window.__casoId;
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+  }
+  function saveState(state) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+  }
+
+  const cards = document.querySelectorAll('.gc-card');
+  const state = loadState();
+  const isFirstVisit = Object.keys(state).length === 0;
+
+  cards.forEach((card, idx) => {
+    const header = card.querySelector('.gc-card-header');
+    const body = card.querySelector('.gc-card-body');
+    if (!header || !body) return;
+
+    // Add chevron icon
+    const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    chevron.setAttribute('class', 'gc-chevron');
+    chevron.setAttribute('viewBox', '0 0 24 24');
+    chevron.setAttribute('fill', 'none');
+    chevron.setAttribute('stroke', 'currentColor');
+    chevron.setAttribute('stroke-width', '2');
+    chevron.setAttribute('stroke-linecap', 'round');
+    chevron.setAttribute('stroke-linejoin', 'round');
+    chevron.innerHTML = '<polyline points="6 9 12 15 18 9"></polyline>';
+    header.appendChild(chevron);
+
+    // Apply state: collapsed by default on first visit, restore on revisit
+    const key = 'card_' + idx;
+    const isCollapsed = isFirstVisit ? true : (state[key] !== false);
+    if (isCollapsed) {
+      card.classList.add('is-collapsed');
+    }
+
+    header.addEventListener('click', function(e) {
+      // Don't toggle if clicking buttons inside the header
+      if (e.target.closest('button, a')) return;
+
+      const collapsed = card.classList.toggle('is-collapsed');
+      const st = loadState();
+      st[key] = collapsed;
+      saveState(st);
+    });
+  });
+
+  // Direcciones / Bienes accordion
+  document.querySelectorAll('.gc-dir-summary').forEach(function(summary) {
+    summary.addEventListener('click', function() {
+      summary.closest('.gc-dir-item').classList.toggle('is-open');
+    });
+  });
+
+  // Bienes Muebles category filter
+  var bmFilterBar = document.getElementById('bmFilterBar');
+  if (bmFilterBar) {
+    bmFilterBar.querySelectorAll('.gc-filter-pill').forEach(function(pill) {
+      pill.addEventListener('click', function() {
+        bmFilterBar.querySelectorAll('.gc-filter-pill').forEach(function(p) { p.classList.remove('is-active'); });
+        pill.classList.add('is-active');
+        var filter = pill.getAttribute('data-filter');
+        document.querySelectorAll('#bmItems .gc-dir-item').forEach(function(item) {
+          item.classList.remove('is-open'); // collapse on filter change
+          if (filter === 'all' || item.getAttribute('data-bm-cat') === filter) {
+            item.style.display = '';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    });
+  }
+})();
 </script>
 <script src="<?= base_url('assets/js/professor/gestionar_caso/asignaciones.js') ?>"></script>
 

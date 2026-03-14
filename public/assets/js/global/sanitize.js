@@ -3,7 +3,7 @@
  * Global input sanitization — removes dangerous characters from all text inputs.
  * Loaded in logged_layout.php so it applies across every page in the app.
  *
- * Characters removed:  ' " ` ; \ < > { } | ~ ^
+ * Characters removed:  ' " ` ; \ < > { } | ~ ^ & # $ %
  *
  * To skip sanitization on a specific input, add the attribute:
  *   data-no-sanitize
@@ -20,7 +20,7 @@ document.addEventListener('input', (e) => {
 
     // Remove dangerous characters for SQL/HTML injection
     const original = el.value;
-    const sanitized = original.replace(/['"`;\\\<\>{}|~^]/g, '');
+    const sanitized = original.replace(/['"`;\\\<\>{}|~^&#$%]/g, '');
     if (sanitized !== original) {
         el.value = sanitized;
     }

@@ -1,0 +1,154 @@
+/* ═══════════════════════════════════════════════════════════════
+   relaciones.css
+   Estilos legacy SENIAT extraídos del HTML original de relaciones
+   ═══════════════════════════════════════════════════════════════ */
+
+BODY {
+    FONT-SIZE: 8pt;
+    MARGIN: 0px;
+    FONT-FAMILY: Verdana, Arial;
+}
+
+.fondoPrincipal {
+    background-color: #E52129;
+}
+
+.letras {
+    FONT-SIZE: 11px;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Arial;
+}
+
+.letrasLista {
+    FONT-SIZE: 10px;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Arial;
+}
+
+.boton {
+    font-size: 8pt;
+    font-family: Verdana;
+    font-weight: bold;
+    color: #000000;
+    background-color: #ebebeb;
+    width: 120px;
+    height: 20px;
+}
+
+.barraPpal {
+    BORDER: 0px;
+    PADDING: 0px;
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 12px;
+    COLOR: white;
+    FONT-FAMILY: Verdana, Arial;
+    HEIGHT: 20px;
+    BACKGROUND-COLOR: #EEA429;
+    TEXT-ALIGN: center;
+}
+
+.tablaTitulo {
+    BORDER: 0px;
+    PADDING: 0px;
+    FONT-WEIGHT: bold;
+    FONT-SIZE: 12px;
+    COLOR: white;
+    FONT-FAMILY: Verdana, Arial;
+    HEIGHT: 25px;
+    BACKGROUND-COLOR: #E32227;
+    TEXT-ALIGN: center;
+}
+
+.tablaSubTitulo {
+    BORDER: 0px;
+    PADDING: 0px;
+    FONT-WEIGHT: bold;
+    COLOR: white;
+    FONT-FAMILY: Verdana, Arial;
+    BACKGROUND-COLOR: #969696;
+    TEXT-ALIGN: center;
+}
+
+.letrasSmall {
+    FONT-SIZE: 9pt;
+    COLOR: black;
+    FONT-FAMILY: Verdana, Arial;
+}
+
+.letrasFecha {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    color: #666666;
+    font-size: 9px;
+}
+
+.row1 {
+    background-color: #EFEFEF;
+}
+
+td {
+    font-family: Verdana, Arial;
+    font-size: 8pt;
+}
+
+/* Menú lateral */
+.glossymenu {
+    padding: 0;
+    width: 205px;
+    border: 1px solid #E32227;
+}
+
+.glossymenu a.menuitem {
+    background: #A7A7A7;
+    font: 11px Arial, Verdana;
+    color: black;
+    display: block;
+    position: relative;
+    width: auto;
+    padding: 4px 0 4px 10px;
+    text-decoration: none;
+    border-bottom: 1px solid #FFFFFF;
+}
+
+.glossymenu span.menuitem {
+    background: #E32227;
+    font: bold 11px Verdana, Arial;
+    text-align: center;
+    color: white;
+    display: block;
+    position: relative;
+    width: auto;
+    padding: 4px 0 4px 10px;
+    text-decoration: none;
+    border-bottom: 2px solid #E32227;
+}
+
+.glossymenu a.menuitem:visited {
+    color: black;
+}
+
+.glossymenu a.menuitem:hover {
+    color: #E32227;
+}
+
+/* Enlace styles */
+.enlace A:link { FONT-SIZE: 9px; COLOR: navy; FONT-FAMILY: Verdana, Arial; }
+.enlace A:visited { FONT-SIZE: 9px; COLOR: green; FONT-FAMILY: Verdana, Arial; }
+.enlace A:hover { FONT-SIZE: 9px; COLOR: red; FONT-FAMILY: Verdana, Arial; }
+.enlace A:active { FONT-SIZE: 9px; COLOR: blue; FONT-FAMILY: Verdana, Arial; }
+
+.enlaceSencillo A:link { FONT-SIZE: 9px; COLOR: navy; FONT-FAMILY: Verdana, Arial; text-decoration: none; }
+.enlaceSencillo A:visited { FONT-SIZE: 9px; COLOR: navy; FONT-FAMILY: Verdana, Arial; text-decoration: none; }
+.enlaceSencillo A:hover { FONT-SIZE: 9px; COLOR: red; FONT-FAMILY: Verdana, Arial; text-decoration: none; }
+.enlaceSencillo A:active { FONT-SIZE: 9px; COLOR: navy; FONT-FAMILY: Verdana, Arial; text-decoration: none; }
+
+a:link,
+a:visited,
+a:hover {
+    font-family: Verdana, Arial;
+    font-size: 7pt;
+    text-decoration: none;
+}
+
+.sf-hidden {
+    display: none !important;
+}

@@ -1,0 +1,30 @@
+/* ==========================================================================
+   Registro Contribuyente - Estilos extraídos y refactorizados
+   Originalmente inline en un archivo SingleFile de 419KB.
+   Refactorizado: fuente Bootstrap Icons externalizada como woff2,
+   CSS de Bootstrap cargado vía @layer.
+   ========================================================================== */
+
+/* --- Variables propias de la aplicación SENIAT --- */
+:root {
+    --color-principal-btn: #245b98;
+    --color-principal-fuerte: #164193;
+    --accordion-color-ligth: #dce9fc;
+}
+
+/* --- Bootstrap Icons - Fuente externalizada --- */
+/*!
+ * Bootstrap Icons v1.13.1 (https://icons.getbootstrap.com/)
+ * Copyright 2019-2024 The Bootstrap Authors
+ * Licensed under MIT (https://github.com/twbs/icons/blob/main/LICENSE)
+ */
+@font-face {
+    font-family: bootstrap-icons;
+    src: url('/assets/fonts/simulator/seniat_actual/registro/bootstrap-icons.woff2') format('woff2');
+    font-display: swap;
+}
+
+/* --- Estilos propios del componente --- */
+.sombra:hover {
+    box-shadow: 10px 4px 20px var(--accordion-color-ligth);
+}

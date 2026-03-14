@@ -134,17 +134,27 @@ class StoreCasoModel
             $this->insertTiposHerencia($herencia['tipos'] ?? [], $casoId);
 
             // 8. Insertar herederos
-            $herederoIdMap = []; // _ref_index → sim_caso_participantes.id
+            $herederoIdMap = []; // cedula → sim_caso_participantes.id
             foreach (($data['herederos'] ?? []) as $index => $h) {
-                $herederoIdMap[$index] = $this->insertHeredero($h, $casoId, $profesorId, null);
+                $participanteId = $this->insertHeredero($h, $casoId, $profesorId, null);
+                // Key by cedula since frontend uses cedula as premuerto_padre_id reference
+                $ced = $h['cedula'] ?? null;
+                if ($ced) {
+                    $herederoIdMap[$ced] = $participanteId;
+                    // Also store with letra prefix (e.g. "V-12345678") for flexible matching
+                    $letra = $h['letra_cedula'] ?? $h['tipo_cedula'] ?? '';
+                    if ($letra) {
+                        $herederoIdMap[$letra . '-' . $ced] = $participanteId;
+                    }
+                }
             }
 
             // 9. Insertar herederos premuertos (con padre referenciado)
             foreach (($data['herederos_premuertos'] ?? []) as $hp) {
-                $padreRefIndex = $hp['premuerto_padre_id'] ?? null;
+                $padreRef = $hp['premuerto_padre_id'] ?? null;
                 $padreParticipanteId = null;
-                if ($padreRefIndex !== null && isset($herederoIdMap[(int) $padreRefIndex])) {
-                    $padreParticipanteId = $herederoIdMap[(int) $padreRefIndex];
+                if ($padreRef !== null && $padreRef !== '' && isset($herederoIdMap[$padreRef])) {
+                    $padreParticipanteId = $herederoIdMap[$padreRef];
                 }
                 $this->insertHeredero($hp, $casoId, $profesorId, $padreParticipanteId);
             }

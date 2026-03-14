@@ -208,30 +208,9 @@
 }
 
 /* ===== CARDS (Content Containers) ===== */
+/* Base styles (.gc-card, .gc-card-header, .gc-card-body) → components.css */
 .gc-card {
-    background: var(--white);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-card);
-    border: 1px solid var(--gray-100);
-    overflow: hidden;
-    margin-bottom: 2rem;
-}
-
-.gc-card-header {
-    background: var(--gray-50);
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid var(--gray-100);
-}
-
-.gc-card-header h3 {
-    margin: 0;
-    font-size: var(--text-lg);
-    font-weight: 600;
-    color: var(--gray-800);
-}
-
-.gc-card-body {
-    padding: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
 /* ===== INFO GRID ===== */

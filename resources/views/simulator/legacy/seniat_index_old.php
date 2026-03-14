@@ -12,676 +12,7 @@ ob_start();
      Evita que los estilos del layout afecten al contenido SENIAT
      y viceversa.
      ============================================================ -->
-<style>
-  /* --- Contenedor externo (hereda estilos del layout) --- */
-  .seniat-wrapper {
-    background: var(--sim-white, #ffffff);
-    border-radius: 12px;
-    box-shadow: var(--sim-shadow-lg, 0 4px 6px rgba(0, 0, 0, 0.07));
-    overflow: hidden;
-    /* Recorta el contenido SENIAT que desborde */
-    border: 1px solid var(--sim-border, #dfe5ee);
-  }
-
-  /* --- Barrera de aislamiento --- */
-  .seniat-scope {
-    all: revert;
-    /* Resetea TODA herencia del layout */
-    display: block;
-    background-color: #ffffff;
-    margin: 0;
-    padding: 0;
-    color: #000000;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 8pt;
-    line-height: normal;
-  }
-
-  /* Asegurar que dentro del scope, el * del layout no aplique */
-  .seniat-scope *,
-  .seniat-scope *::before,
-  .seniat-scope *::after {
-    box-sizing: content-box;
-    /* SENIAT original usaba content-box */
-  }
-
-  /* Override base.css globals that leak into the scope */
-  .seniat-scope h1,
-  .seniat-scope h2,
-  .seniat-scope h3 {
-    font-family: inherit;
-    font-weight: inherit;
-    color: inherit;
-  }
-
-  .seniat-scope label {
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: inherit;
-    color: inherit;
-  }
-
-  .seniat-scope input[type="text"],
-  .seniat-scope input[type="number"],
-  .seniat-scope input[type="email"],
-  .seniat-scope input[type="date"],
-  .seniat-scope select,
-  .seniat-scope textarea {
-    font-family: Verdana, Arial;
-    font-size: 8pt;
-    color: #000;
-  }
-
-  .seniat-scope ::placeholder {
-    font-family: Verdana, Arial;
-    font-size: 8pt;
-    color: #888;
-  }
-
-  .seniat-scope a,
-  .seniat-scope a:link,
-  .seniat-scope a:visited,
-  .seniat-scope a:hover {
-    font-family: inherit;
-    font-size: inherit;
-    color: inherit;
-  }
-
-  /* --- Estilos SENIAT originales (con scope) --- */
-
-  .seniat-scope .GroupHeaderid1siteid0 {
-    Background-Color: #336699;
-    Height: 20px;
-    Text-Align: Left;
-  }
-
-  .seniat-scope .GroupHeaderLinkid1siteid0 {
-    Color: #FFFFFF;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 9pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .GroupHeaderTextid1siteid0 {
-    Color: #FFFFFF;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 9pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .RegionHeaderid1siteid0 {
-    Background-Color: #336699;
-    Height: 20px;
-    Text-Align: Left;
-  }
-
-  .seniat-scope .RegionHeaderTextid1siteid0 {
-    Color: #FFFFFF;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 9pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .Bodyid1siteid0 {
-    Background-Color: #D4CBC6;
-  }
-
-  .seniat-scope .authorid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .createdateid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .creatorid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .defaultattributeid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .descriptionid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .documentsizeid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .expiredateid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .inplacedisplayid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .itemfunctionid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .keywordsid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .perspectivesid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .scoreid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .subpagetitleid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .titleid1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .titleorimageid1siteid0 {
-    Color: #336699;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 9pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .wwsbr_category_id1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .wwsbr_charset_id1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .wwsbr_itemtype_id1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .wwsbr_mime_type_id1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .wwsbr_page_id1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .wwsbr_pagegroup_id1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .wwsbr_publishdate_id1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .wwsbr_updatedate_id1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .wwsbr_updator_id1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .wwsbr_version_number_id1siteid0 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .LeftCurve {
-    Background-Attachment: scroll;
-    Background-Image: url(../../../images/D4CBC6l.html);
-    Background-Position: left top;
-    Background-Repeat: no-repeat;
-  }
-
-  .seniat-scope .PortletBodyColor {
-    Background-Color: #FFFFFF;
-  }
-
-  .seniat-scope .PortletHeaderColor {
-    Background-Color: #336699;
-  }
-
-  .seniat-scope .PortletHeaderLink {
-    Color: #FFFFFF;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .PortletHeaderStyle {}
-
-  .seniat-scope .PortletHeaderText {
-    Color: #FFFFFF;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 10pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .PortletHeading1 {
-    Color: #336699;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 9pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .PortletHeading2 {
-    Color: #336699;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .PortletHeading3 {
-    Color: #336699;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 7pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .PortletHeading4 {
-    Color: #336699;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 7pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .PortletSubHeaderColor {
-    Background-Color: #EEEEDD;
-  }
-
-  .seniat-scope .PortletSubHeaderLink {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 9pt;
-  }
-
-  .seniat-scope .PortletSubHeaderText {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 9pt;
-  }
-
-  .seniat-scope .PortletText1 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .PortletText2 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .PortletText3 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 7pt;
-  }
-
-  .seniat-scope .PortletText4 {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 7pt;
-  }
-
-  .seniat-scope .RightCurve {
-    Background-Attachment: scroll;
-    Background-Image: url(../../../images/D4CBC6r.html);
-    Background-Position: right top;
-    Background-Repeat: no-repeat;
-  }
-
-  .seniat-scope .LeftSubTabid1siteid0 {
-    Background-Attachment: scroll;
-    Background-Color: #336699;
-    Background-Image: url(../../../images/D4CBC6sl.html);
-    Background-Position: left top;
-    Background-Repeat: no-repeat;
-  }
-
-  .seniat-scope .LeftTabBgSlantid1siteid0 {
-    Background-Attachment: scroll;
-    Background-Color: #CCCC99;
-    Background-Image: url(../../../images/D4CBC6tl.html);
-    Background-Position: left top;
-    Background-Repeat: no-repeat;
-  }
-
-  .seniat-scope .LeftTabForeSlantid1siteid0 {
-    Background-Attachment: scroll;
-    Background-Color: #336699;
-    Background-Image: url(../../../images/D4CBC6tl.html);
-    Background-Position: left top;
-    Background-Repeat: no-repeat;
-  }
-
-  .seniat-scope .RightSubTabid1siteid0 {
-    Background-Attachment: scroll;
-    Background-Color: #336699;
-    Background-Image: url(../../../images/D4CBC6sr.html);
-    Background-Position: right top;
-    Background-Repeat: no-repeat;
-  }
-
-  .seniat-scope .RightTabBgCurveid1siteid0 {
-    Background-Attachment: scroll;
-    Background-Color: #CCCC99;
-    Background-Image: url(../../../images/D4CBC6tr.html);
-    Background-Position: right top;
-    Background-Repeat: no-repeat;
-  }
-
-  .seniat-scope .RightTabForeCurveid1siteid0 {
-    Background-Attachment: scroll;
-    Background-Color: #336699;
-    Background-Image: url(../../../images/D4CBC6tr.html);
-    Background-Position: right top;
-    Background-Repeat: no-repeat;
-  }
-
-  .seniat-scope .SubTabBgTextid1siteid0 {
-    Color: #CCCC99;
-    Text-Decoration: none;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 11pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .TabBackgroundColorid1siteid0 {
-    Background-Color: #CCCC99;
-  }
-
-  .seniat-scope .TabBackgroundTextid1siteid0 {
-    Color: #003366;
-    Text-Decoration: none;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 10pt;
-  }
-
-  .seniat-scope .TabForegroundColorid1siteid0 {
-    Background-Color: #336699;
-  }
-
-  .seniat-scope .TabForegroundTextid1siteid0 {
-    Color: #FFFFFF;
-    Text-Decoration: none;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 10pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .portlet-font {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-font-dim {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-msg-status {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-msg-info {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-msg-error {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-msg-alert {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-msg-success {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-section-header {
-    Color: #336699;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 9pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .portlet-section-body {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-section-alternate {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-section-selected {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-section-subheader {
-    Color: #336699;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .portlet-section-footer {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-section-text {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-table-header {
-    Color: #336699;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 9pt;
-    Font-Weight: Bold;
-    Background-Color: #EEEEDD;
-  }
-
-  .seniat-scope .portlet-table-body {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-table-alternate {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-table-selected {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-table-subheader {
-    Color: #336699;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-    Font-Weight: Bold;
-  }
-
-  .seniat-scope .portlet-table-footer {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-table-text {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-form-label {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-form-input-field {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-form-button {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-icon-label {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-dlg-icon-label {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-form-field-label {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .portlet-form-field {
-    Color: #000000;
-    Font-Family: Arial, Helvetica;
-    Font-Size: 8pt;
-  }
-
-  .seniat-scope .RegionNoBorder {}
-
-  .seniat-scope .RegionBorder {
-    border: #336699 1px solid;
-  }
-
-  .seniat-scope .RegionHeaderColor {
-    background-color: #FFFFFF;
-    border: #336699 0px solid;
-  }
-
-  .seniat-scope .PageColor {
-    background-color: #D4CBC6
-  }
-
-
-
-
-
-  .seniat-scope #dropmenudiv {
-    position: absolute;
-    border: 1px solid #EE3822;
-    border-bottom-width: 0;
-    font: normal 9px Verdana;
-    font-color: red;
-    color: red;
-    line-height: 18px;
-    z-index: 100;
-  }
-
-  .seniat-scope #dropmenudiv a {
-    width: 100%;
-    display: block;
-    text-indent: 3px;
-    border-bottom: 1px solid red;
-    padding: 1px 0;
-    text-decoration: none;
-    font-weight: bold;
-    color: #EE3822;
-  }
-
-  .seniat-scope #dropmenudiv a:hover {
-    /*hover background color*/
-    background-color: #CCCCCC;
-    color: white;
-  }
-</style>
+<link rel="stylesheet" href="<?= asset('css/simulator/legacy/seniat_index_old.css') ?>">
 
 <!-- ============================================================
      Contenido SENIAT encapsulado
@@ -1166,7 +497,7 @@ ob_start();
                                     document.onclick = hidemenu
                                 </script>
                                 <div id="dropmenudiv" onmouseout="dynamichide(event)" onmouseover="clearhidemenu()"
-                                  style="visibility: hidden; width: 210px; background-color: white; top: 367px; left: 441px;">
+                                  style="visibility: hidden; width: 210px; background-color: white; top: -500px; left: -500px;">
                                   <a href="<?= base_url('/simulador/inscripcion-rif') ?>">Inscripción de RIF
                                   </a>
                                   <a href="<?= base_url('/simulador/consulta-rif') ?>">Consulta de RIF
@@ -2593,7 +1924,7 @@ ob_start();
                           <!-- NOTICIAS -->
                           <tr border="1" bordercolor="#CC0000">
                             <td align="center" bordercolor="#FF0000">
-                              <table border="1" bordercolor="#FF0000" height="511" style="border-collapse: collapse">
+                              <table border="1" bordercolor="#FF0000" height="507" style="border-collapse: collapse">
                                 <tbody>
                                   <tr>
                                     <td bordercolor="#FFFFFF" valign="top" width="261">
@@ -2647,7 +1978,7 @@ ob_start();
               <tbody>
                 <tr valign="top">
                   <td align="center" colspan="3" height="18">
-                    <a href="#" rel="noopener" target="_blank">
+                    <a href="<?= base_url('/simulador/servicios_declaracion') ?>">
                       <img border="0" height="140" src="<?= asset('img/seniat-index-viejo/cd18ca8322c9.jpg') ?>"
                         width="150" />
                     </a>
@@ -2750,8 +2081,123 @@ ob_start();
 </table>
 <!-- Page Metadata Generated On: 15-JAN-2014:16:46:03  Time Taken: 750 msecs -->
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const scope = document.querySelector('.seniat-scope');
+    if (!scope) return;
+
+    const links = scope.querySelectorAll('a');
+    const baseUrl = '<?= rtrim(base_url(), '/') ?>';
+
+    links.forEach(link => {
+      const href = link.getAttribute('href');
+
+      // Valid links that should be allowed
+      const isSimulatorLink = href && (href.startsWith(baseUrl) || href.startsWith('/simulador'));
+      
+      if (!isSimulatorLink) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+        });
+        
+        // Remove target="_blank" to prevent opening empty tabs before JS fires (just in case)
+        if (link.getAttribute('target') === '_blank') {
+          link.removeAttribute('target');
+        }
+      }
+    });
+
+    // Patch dropdown positioning: .seniat-scope now has position:relative,
+    // so the dropdown's left/top are relative to it, not the page.
+    // We override the legacy function to subtract .seniat-scope's page offset.
+    if (typeof window.dropdownmenu === 'function') {
+      const _origDropdown = window.dropdownmenu;
+      window.dropdownmenu = function (obj, e, menucontents, menuwidth) {
+        const result = _origDropdown.call(this, obj, e, menucontents, menuwidth);
+        if (typeof dropmenuobj !== 'undefined' && dropmenuobj && scope) {
+          const scopeX = getposOffset(scope, 'left');
+          const scopeY = getposOffset(scope, 'top');
+          const rawX = dropmenuobj.x - clearbrowseredge(obj, 'rightedge');
+          // Siempre abrir hacia abajo: .sim-main tiene scroll vertical,
+          // así que siempre hay espacio. Sin clearbrowseredge('bottomedge')
+          // que erróneamente lo flipea hacia arriba por el header del layout.
+          const rawY = dropmenuobj.y + obj.offsetHeight;
+          dropmenuobj.style.left = (rawX - scopeX) + 'px';
+          dropmenuobj.style.top = (rawY - scopeY) + 'px';
+        }
+        return result;
+      };
+    }
+  });
+</script>
+
 </div><!-- /.seniat-scope -->
 </div><!-- /.seniat-wrapper -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('validado') !== '1') return;
+
+    var emailEnviado = params.get('email') === '1';
+    var resultado = params.get('resultado');
+    var msg = '';
+
+    if (resultado === 'ok') {
+        if (emailEnviado) {
+            msg = '✅ Validación exitosa. Se ha generado su RIF Sucesoral y se envió a su correo electrónico.';
+        } else {
+            msg = '✅ Validación exitosa, pero no se pudo enviar el correo. Contacte al administrador.';
+        }
+    }
+
+    if (!msg) return;
+
+    // Crear toast con estilos inline para evitar conflictos con seniat-scope
+    var toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;top:20px;right:20px;z-index:99999;max-width:420px;' +
+        'background:#f0fdf4;color:#166534;border:1px solid #bbf7d0;border-radius:8px;' +
+        'padding:14px 18px;font:500 14px/1.5 \"Plus Jakarta Sans\",-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,sans-serif;' +
+        'box-shadow:0 4px 20px rgba(0,0,0,.12),0 1px 4px rgba(0,0,0,.06);' +
+        'display:flex;align-items:center;gap:10px;opacity:0;transform:translateX(40px);' +
+        'transition:opacity .3s ease,transform .3s ease;';
+
+    var closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '✕';
+    closeBtn.style.cssText = 'background:none;border:none;cursor:pointer;color:#166534;opacity:.5;' +
+        'padding:2px 4px;border-radius:4px;font-size:14px;margin-left:8px;flex-shrink:0;';
+    closeBtn.onmouseover = function() { this.style.opacity = '1'; };
+    closeBtn.onmouseout = function() { this.style.opacity = '.5'; };
+
+    var msgSpan = document.createElement('span');
+    msgSpan.style.cssText = 'flex:1;';
+    msgSpan.textContent = msg;
+
+    toast.appendChild(msgSpan);
+    toast.appendChild(closeBtn);
+    document.body.appendChild(toast);
+
+    // Animate in
+    requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(0)';
+        });
+    });
+
+    function dismiss() {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(40px)';
+        setTimeout(function() { toast.remove(); }, 300);
+    }
+
+    closeBtn.onclick = dismiss;
+    setTimeout(dismiss, 6000);
+
+    // Limpiar params de la URL sin recargar
+    history.replaceState(null, '', window.location.pathname);
+});
+</script>
 
 <?php
 $content = ob_get_clean();

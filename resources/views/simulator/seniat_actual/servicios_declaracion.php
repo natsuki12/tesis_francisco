@@ -76,15 +76,26 @@ ob_start();
         border: 1px solid transparent;
         transform-origin: 0 0;
         transition: opacity .1s ease-in-out, transform .1s ease-in-out;
-        color: #6c757d;
-        font-size: 1rem;
-        font-weight: 400;
+        color: #6c757d !important;
+        font-size: 1rem !important;
+        font-weight: 400 !important;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
     }
 
     .seniat-wrapper .form-floating>.form-control:focus~label,
     .seniat-wrapper .form-floating>.form-control:not(:placeholder-shown)~label {
         opacity: .65;
         transform: scale(.85) translateY(-.5rem) translateX(.15rem);
+    }
+
+    /* Mover el texto del input hacia abajo cuando el label está flotando */
+    .seniat-wrapper .form-floating>.form-control:not(:placeholder-shown) {
+        padding-top: 1.625rem;
+        padding-bottom: .625rem;
+    }
+    .seniat-wrapper .form-floating>.form-control:focus {
+        padding-top: 1.625rem;
+        padding-bottom: .625rem;
     }
 
     .seniat-wrapper .form-control {
@@ -414,10 +425,11 @@ ob_start();
                                                     </div>
                                                     <div class="row">
                                                         <div class="col align-items-center d-flex justify-content mt-3">
-                                                            <a class="btn btn-light">
+                                                            <a class="btn btn-light"
+                                                                href="<?= base_url('/simulador/registro/contribuyente') ?>">
                                                                 Regístrese
                                                             </a>
-                                                            <a class="btn btn-light">
+                                                            <a class="btn btn-light" id="btnOlvido" href="#" style="cursor:pointer;">
                                                                 ¿Olvidó su Información?
                                                             </a>
                                                             <a class="btn btn-light">
@@ -473,11 +485,103 @@ ob_start();
                         alert(`¡Datos Enviados!\n\nUsuario: ${usuario}\nClave: ${clave}\nCaptcha: ${captcha}\n\n(Esta es una simulación visual como solicitaste)`);
                     });
                 }
+
+                // ¿Olvidó su Información?
+                const btnOlvido = document.getElementById('btnOlvido');
+                const olvidoBody = document.getElementById('olvidoBody');
+
+                const usuarioSeniat = <?= json_encode($usuarioSeniat ?? null) ?>;
+                const passwordRif   = <?= json_encode($passwordRif ?? null) ?>;
+
+                if (btnOlvido) {
+                    btnOlvido.addEventListener('click', (e) => {
+                        e.preventDefault();
+
+                        if (!usuarioSeniat || !passwordRif) {
+                            olvidoBody.innerHTML = `
+                                <div class="olvido-note olvido-note--info">
+                                    <strong>ℹ️ Nota educativa:</strong> En el portal SENIAT real, la recuperación de credenciales requiere un proceso de cambio de contraseña mediante correo electrónico y preguntas de seguridad. Para fines prácticos del simulador educativo, se le mostrarían sus datos directamente.
+                                </div>
+                                <div class="olvido-note olvido-note--warn">
+                                    <strong>⚠️</strong> Usted todavía no se ha registrado en el sistema simulado del SENIAT. Utilice el botón "Regístrese" para crear sus credenciales de acceso.
+                                </div>
+                            `;
+                        } else {
+                            olvidoBody.innerHTML = `
+                                <div class="olvido-note olvido-note--info">
+                                    <strong>ℹ️ Nota educativa:</strong> En el portal SENIAT real, la recuperación de credenciales requiere un proceso de cambio de contraseña mediante correo electrónico y preguntas de seguridad. Para fines prácticos del simulador educativo, se le muestran sus datos directamente.
+                                </div>
+                                <div class="olvido-cred">
+                                    <div style="margin-bottom: 8px;">
+                                        <strong>Usuario:</strong> <span class="olvido-val">${usuarioSeniat}</span>
+                                    </div>
+                                    <div>
+                                        <strong>Clave:</strong> <span class="olvido-val">${passwordRif}</span>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        window.modalManager.open('olvidoDialog');
+                    });
+                }
             });
         </script>
 
     </div><!-- /.seniat-scope-bs -->
 </div><!-- /.seniat-wrapper -->
+
+<!-- Dialog: ¿Olvidó su Información? (Estilo del sistema, fuera del wrapper SENIAT) -->
+<style>
+    .olvido-note {
+        border-radius: var(--radius-xs);
+        padding: 12px 16px;
+        font-family: var(--font-ui);
+        font-size: var(--text-sm);
+        margin-bottom: 16px;
+        line-height: 1.6;
+    }
+    .olvido-note--warn {
+        background-color: var(--amber-50);
+        border: 1px solid var(--amber-100);
+        color: var(--amber-600);
+    }
+    .olvido-note--info {
+        background-color: var(--blue-50);
+        border: 1px solid var(--blue-100);
+        color: var(--blue-600);
+    }
+    .olvido-cred {
+        background-color: var(--gray-50);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-xs);
+        padding: 14px 18px;
+        font-family: var(--font-ui);
+        font-size: var(--text-md);
+    }
+    .olvido-cred strong {
+        color: var(--gray-800);
+    }
+    .olvido-val {
+        color: var(--blue-500);
+        font-family: monospace;
+        font-weight: var(--weight-semibold);
+        user-select: all;
+    }
+</style>
+
+<dialog id="olvidoDialog" class="modal-base">
+    <div class="modal-base__container" style="max-width:500px;">
+        <div class="modal-base__header">
+            <h3 class="modal-base__title" style="margin:0; font-size:1.25rem; font-weight:700; color:var(--gray-800);">
+                Recuperación de Información</h3>
+            <button class="modal-base__close" onclick="window.modalManager.close('olvidoDialog')">✕</button>
+        </div>
+        <div class="modal-base__body" id="olvidoBody">
+            <!-- Contenido dinámico -->
+        </div>
+    </div>
+</dialog>
 
 <?php
 $content = ob_get_clean();

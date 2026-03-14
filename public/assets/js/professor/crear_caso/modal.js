@@ -101,8 +101,7 @@ const MODAL_CONFIGS = {
           </select></div>
         <div class="cc-field"><label>Carácter</label>
           <select data-modal="caracter">
-            <option value="HEREDERO" ${form.caracter === 'HEREDERO' ? 'selected' : ''}>Heredero</option>
-            <option value="LEGATARIO" ${form.caracter === 'LEGATARIO' ? 'selected' : ''}>Legatario</option>
+            <option value="HEREDERO" selected>Heredero</option>
           </select></div>
         <div class="cc-field"><label>Parentesco</label>
           <select data-modal="parentesco_id">
@@ -134,6 +133,13 @@ const MODAL_CONFIGS = {
       if (form.cedula && caseData.causante.cedula) {
         const causanteCed = (caseData.causante.tipo_cedula || '') + caseData.causante.cedula;
         if (fullCed === causanteCed) return "La cédula del heredero no puede ser igual a la del causante.";
+      }
+      // Duplicados por persona_id (misma persona desde BD, sin importar si se buscó por cédula o RIF)
+      if (form.persona_id) {
+        const dupById = caseData.herederos.some((h, i) => i !== UIState.editIndex && h.persona_id && h.persona_id === form.persona_id);
+        if (dupById) return "Ya existe un heredero con esta persona (misma cédula/RIF en la base de datos).";
+        const dupByIdHP = caseData.herederos_premuertos.some(h => h.persona_id && h.persona_id === form.persona_id);
+        if (dupByIdHP) return "Ya existe un heredero del premuerto que es la misma persona.";
       }
       // Cédula compuesta no puede estar repetida entre herederos
       if (form.cedula) {
@@ -211,8 +217,7 @@ const MODAL_CONFIGS = {
           </select></div>
         <div class="cc-field"><label>Carácter</label>
           <select data-modal="caracter">
-            <option value="HEREDERO" ${form.caracter === 'HEREDERO' ? 'selected' : ''}>Heredero</option>
-            <option value="LEGATARIO" ${form.caracter === 'LEGATARIO' ? 'selected' : ''}>Legatario</option>
+            <option value="HEREDERO" selected>Heredero</option>
           </select></div>
         <div class="cc-field"><label>Parentesco</label>
           <select data-modal="parentesco_id">
@@ -247,6 +252,13 @@ const MODAL_CONFIGS = {
       if (form.cedula && caseData.causante.cedula) {
         const causanteCed = (caseData.causante.tipo_cedula || '') + caseData.causante.cedula;
         if (fullCed === causanteCed) return "La cédula del heredero del premuerto no puede ser igual a la del causante.";
+      }
+      // Duplicados por persona_id
+      if (form.persona_id) {
+        const dupById = caseData.herederos.some(h => h.persona_id && h.persona_id === form.persona_id);
+        if (dupById) return "Ya existe un heredero que es la misma persona.";
+        const dupByIdHP = caseData.herederos_premuertos.some((h, i) => i !== UIState.editIndex && h.persona_id && h.persona_id === form.persona_id);
+        if (dupByIdHP) return "Ya existe un heredero del premuerto que es la misma persona.";
       }
       // Cédula compuesta no puede estar repetida entre herederos/premuertos
       if (form.cedula) {
@@ -1010,11 +1022,42 @@ export function openModal(type, editIdx) {
   if (type === 'heredero' || type === 'heredero_premuerto') {
     const premuertoSelect = bodyEl.querySelector('select[data-modal="premuerto"]');
     const bloqueFallecimiento = bodyEl.querySelector(type === 'heredero' ? '#bloqueFallecimiento' : '#bloqueFallecimiento2');
+    const inputFechaFall = bloqueFallecimiento ? bloqueFallecimiento.querySelector('[data-modal="fecha_fallecimiento"]') : null;
+
+    // Store DB fecha_fallecimiento so it can be restored on toggle
+    let _dbFechaFallecimiento = null;
+    if (UIState.editIndex !== null) {
+      const col = type === 'heredero' ? caseData.herederos : caseData.herederos_premuertos;
+      const itm = col[UIState.editIndex];
+      if (itm && itm.fecha_fallecimiento) _dbFechaFallecimiento = itm.fecha_fallecimiento;
+    }
+
     if (premuertoSelect && bloqueFallecimiento) {
       premuertoSelect.addEventListener('change', () => {
-        bloqueFallecimiento.style.display = premuertoSelect.value === 'SI' ? 'block' : 'none';
+        const isSI = premuertoSelect.value === 'SI';
+        bloqueFallecimiento.style.display = isSI ? 'block' : 'none';
+        // When toggling to SI, load stored DB fecha if field is empty
+        if (isSI && inputFechaFall && !inputFechaFall.value && _dbFechaFallecimiento) {
+          inputFechaFall.value = _dbFechaFallecimiento;
+          // Lock if it came from DB
+          const lockedEl = bodyEl.querySelector('[data-modal="_locked_fields"]');
+          if (lockedEl) {
+            try {
+              const arr = JSON.parse(lockedEl.value || '[]');
+              if (!arr.includes('fecha_fallecimiento')) {
+                arr.push('fecha_fallecimiento');
+                lockedEl.value = JSON.stringify(arr);
+              }
+            } catch(e) {}
+          }
+          inputFechaFall.disabled = true;
+          inputFechaFall.style.backgroundColor = 'var(--cc-slate-50, #f8fafc)';
+        }
       });
     }
+
+    // Expose setter so autocomplete can store the DB fecha
+    bodyEl._setDbFechaFallecimiento = (val) => { _dbFechaFallecimiento = val; };
 
     // Si estamos editando un heredero/premuerto cargado de la BD, deshabilitar campos
     if (UIState.editIndex !== null) {
@@ -1039,6 +1082,12 @@ export function openModal(type, editIdx) {
             el.style.backgroundColor = lockStyle;
           }
         });
+
+        // Also lock fecha_fallecimiento if it came from DB and premuerto is SI
+        if (item?.persona_id && item?.fecha_fallecimiento && item?.premuerto === 'SI' && inputFechaFall) {
+          inputFechaFall.disabled = true;
+          inputFechaFall.style.backgroundColor = lockStyle;
+        }
       }
     }
     const radiosDoc = bodyEl.querySelectorAll('input[data-modal="tipo_documento"]');
@@ -1089,6 +1138,8 @@ export function openModal(type, editIdx) {
             if (wrapCedula) wrapCedula.style.display = 'none';
             if (wrapPasaporte) wrapPasaporte.style.display = '';
             inputCed.value = '';
+            // Clear DB-loaded persona data when switching to pasaporte
+            clearPersonaData();
           } else {
             if (wrapCedula) wrapCedula.style.display = '';
             if (wrapPasaporte) wrapPasaporte.style.display = 'none';
@@ -1220,9 +1271,13 @@ export function openModal(type, editIdx) {
               if (elPersonaId) elPersonaId.value = data.persona_id;
             }
 
-            // Fill fecha de fallecimiento if premuerto is SI
-            if (premuertoSelect && premuertoSelect.value === 'SI' && data.fecha_fallecimiento) {
-              fillIfExist('[data-modal="fecha_fallecimiento"]', data.fecha_fallecimiento, 'fecha_fallecimiento');
+            // Store fecha_fallecimiento from DB for later use on premuerto toggle
+            if (data.fecha_fallecimiento) {
+              if (bodyEl._setDbFechaFallecimiento) bodyEl._setDbFechaFallecimiento(data.fecha_fallecimiento);
+              // If premuerto is already SI, fill and lock immediately
+              if (premuertoSelect && premuertoSelect.value === 'SI') {
+                fillIfExist('[data-modal="fecha_fallecimiento"]', data.fecha_fallecimiento, 'fecha_fallecimiento');
+              }
             }
 
             // Guardar qué campos vienen de la BD en un input oculto

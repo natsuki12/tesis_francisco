@@ -1408,4 +1408,55 @@ a.sistigerCtaCorriente:hover span {
 .formBusqueda {
     FONT-SIZE: 9pt;
     text-transform: uppercase;
+}.glossymenu {
+    padding: 0;
+    width: 205px;
+    border: 1px solid #E32227;
+}
+
+.glossymenu a.menuitem {
+    background: #A7A7A7;
+    font: 11px Arial, Verdana;
+    color: black;
+    display: block;
+    position: relative;
+    width: auto;
+    padding: 4px 0;
+    padding-left: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid #FFFFFF;
+}
+
+.glossymenu span.menuitem {
+    background: #E32227;
+    font: bold 11px Verdana, Arial;
+    text-align: center;
+    color: white;
+    display: block;
+    position: relative;
+    width: auto;
+    padding: 4px 0;
+    padding-left: 10px;
+    text-decoration: none;
+    border-bottom: 2px solid #E32227;
+}
+
+.glossymenu a.menuitem:visited {
+    color: black;
+}
+
+.glossymenu a.menuitem:hover {
+    color: #E32227;
+}
+
+.glossymenu div.submenu ul li a:hover {
+    color: #E32227;
+}
+
+.glossymenu div.submenu1 ul li a:hover {
+    color: #E32227;
+}
+
+.glossymenu div.submenu2 ul li a:hover {
+    color: #E32227;
 }

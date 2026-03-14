@@ -458,12 +458,21 @@ class CasoValidator
         } elseif (!$this->isValidName($r['apellidos'])) {
             $this->errors[] = 'Representante: Apellidos no puede contener solo espacios o números.';
         }
-        if (empty($r['cedula']) && empty($r['pasaporte'])) {
-            $this->errors[] = 'Representante: Debe ingresar Cédula o Pasaporte.';
-        }
-        if (!empty($r['cedula']) && !preg_match('/^\d{6,10}$/', $r['cedula'])) {
+
+        // Cédula obligatoria
+        if (empty($r['cedula'])) {
+            $this->errors[] = 'Representante: Cédula es obligatoria.';
+        } elseif (!preg_match('/^\d{6,10}$/', $r['cedula'])) {
             $this->errors[] = 'Representante: La cédula debe contener solo números (6-10 dígitos).';
         }
+
+        // RIF obligatorio
+        if (empty($r['rif_personal'])) {
+            $this->errors[] = 'Representante: RIF es obligatorio.';
+        } elseif (!preg_match('/^\d{5,10}$/', $r['rif_personal'])) {
+            $this->errors[] = 'Representante: El RIF debe contener solo números (5-10 dígitos).';
+        }
+
         if (empty($r['sexo']) || !in_array($r['sexo'], ['M', 'F'])) {
             $this->errors[] = 'Representante: Sexo es obligatorio.';
         }
@@ -477,6 +486,104 @@ class CasoValidator
             if ($edad < 18) {
                 $this->errors[] = 'Representante: Debe ser mayor de 18 años.';
             }
+        }
+
+        // ── DB cross-validation: si la cédula o RIF ya existe, los datos deben coincidir ──
+        $this->validateRepresentanteAgainstDB($r);
+    }
+
+    /**
+     * Verifica que si la cédula o RIF del representante ya existen en sim_personas,
+     * los datos enviados coincidan con los de la BD (previene condiciones de carrera).
+     */
+    private function validateRepresentanteAgainstDB(array $r): void
+    {
+        $cedula = trim($r['cedula'] ?? '');
+        $letraCedula = trim($r['letra_cedula'] ?? '');
+        $rifNumero = trim($r['rif_personal'] ?? '');
+        $letraRif = trim($r['letra_rif'] ?? '');
+
+        if (empty($cedula) && empty($rifNumero)) return;
+
+        try {
+            $db = DB::connect();
+
+            // Buscar por cédula
+            if ($cedula && $letraCedula) {
+                $stmt = $db->prepare(
+                    "SELECT id, nombres, apellidos, rif_personal
+                     FROM sim_personas
+                     WHERE tipo_cedula = :tipo AND cedula = :cedula
+                     LIMIT 1"
+                );
+                $stmt->execute(['tipo' => $letraCedula, 'cedula' => $cedula]);
+                $personaByCedula = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($personaByCedula) {
+                    // Verificar que los nombres coinciden
+                    if (
+                        strtolower(trim($personaByCedula['nombres'])) !== strtolower(trim($r['nombres'] ?? ''))
+                        || strtolower(trim($personaByCedula['apellidos'])) !== strtolower(trim($r['apellidos'] ?? ''))
+                    ) {
+                        $this->errors[] = 'Representante: La cédula ' . $letraCedula . '-' . $cedula
+                            . ' ya está registrada con nombres diferentes ('
+                            . $personaByCedula['nombres'] . ' ' . $personaByCedula['apellidos']
+                            . '). Verifique los datos.';
+                    }
+
+                    // Verificar que el RIF coincide si ambos existen
+                    if ($rifNumero && $letraRif && !empty($personaByCedula['rif_personal'])) {
+                        $rifEnviado = $letraRif . $rifNumero;
+                        if ($personaByCedula['rif_personal'] !== $rifEnviado) {
+                            $this->errors[] = 'Representante: La cédula ' . $letraCedula . '-' . $cedula
+                                . ' tiene un RIF diferente en la base de datos ('
+                                . $personaByCedula['rif_personal']
+                                . '). Verifique los datos.';
+                        }
+                    }
+                }
+            }
+
+            // Buscar por RIF
+            if ($rifNumero && $letraRif) {
+                $rifCompleto = $letraRif . $rifNumero;
+                $stmt = $db->prepare(
+                    "SELECT id, nombres, apellidos, tipo_cedula, cedula
+                     FROM sim_personas
+                     WHERE rif_personal = :rif
+                     LIMIT 1"
+                );
+                $stmt->execute(['rif' => $rifCompleto]);
+                $personaByRif = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($personaByRif) {
+                    // Verificar que los nombres coinciden
+                    if (
+                        strtolower(trim($personaByRif['nombres'])) !== strtolower(trim($r['nombres'] ?? ''))
+                        || strtolower(trim($personaByRif['apellidos'])) !== strtolower(trim($r['apellidos'] ?? ''))
+                    ) {
+                        $this->errors[] = 'Representante: El RIF ' . $rifCompleto
+                            . ' ya está registrado con nombres diferentes ('
+                            . $personaByRif['nombres'] . ' ' . $personaByRif['apellidos']
+                            . '). Verifique los datos.';
+                    }
+
+                    // Verificar que la cédula coincide si ambos existen
+                    if ($cedula && $letraCedula && !empty($personaByRif['cedula'])) {
+                        if (
+                            $personaByRif['cedula'] !== $cedula
+                            || $personaByRif['tipo_cedula'] !== $letraCedula
+                        ) {
+                            $this->errors[] = 'Representante: El RIF ' . $rifCompleto
+                                . ' tiene una cédula diferente en la base de datos ('
+                                . $personaByRif['tipo_cedula'] . '-' . $personaByRif['cedula']
+                                . '). Verifique los datos.';
+                        }
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            // Si falla la BD, no bloquear — la validación es best-effort
         }
     }
 

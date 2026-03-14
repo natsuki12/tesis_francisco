@@ -248,6 +248,12 @@ $datosBasicosHandler = function () use ($app, $requireAuth, $requireSimSession, 
         $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
     }
 
+    // Bloquear si ya se generó el RIF Sucesoral
+    if ($intentoActivo && !empty($intentoActivo['rif_sucesoral'])) {
+        header('Location: ' . base_url('/simulador'));
+        exit;
+    }
+
     return $app->view('simulator/legacy/formulario_inscripcion_rif/datos_causante', ['intento' => $intentoActivo]);
 };
 
@@ -266,6 +272,11 @@ $direccionesHandler = function () use ($app, $requireAuth, $requireSimSession, $
     $intentoActivo = null;
     if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
         $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+    }
+
+    if ($intentoActivo && !empty($intentoActivo['rif_sucesoral'])) {
+        header('Location: ' . base_url('/simulador'));
+        exit;
     }
 
     return $app->view('simulator/legacy/formulario_inscripcion_rif/direcciones', ['intento' => $intentoActivo]);
@@ -288,6 +299,11 @@ $relacionesHandler = function () use ($app, $requireAuth, $requireSimSession, $e
         $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
     }
 
+    if ($intentoActivo && !empty($intentoActivo['rif_sucesoral'])) {
+        header('Location: ' . base_url('/simulador'));
+        exit;
+    }
+
     return $app->view('simulator/legacy/formulario_inscripcion_rif/relaciones', ['intento' => $intentoActivo]);
 };
 
@@ -308,18 +324,226 @@ $validarInscripcionHandler = function () use ($app, $requireAuth, $requireSimSes
         $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
     }
 
+    if ($intentoActivo && !empty($intentoActivo['rif_sucesoral'])) {
+        header('Location: ' . base_url('/simulador'));
+        exit;
+    }
+
     return $app->view('simulator/legacy/formulario_inscripcion_rif/validar_inscripcion', ['intento' => $intentoActivo]);
 };
 
 $router->get('/simulador/inscripcion-rif/validar-inscripcion', $validarInscripcionHandler);
 $router->post('/simulador/inscripcion-rif/validar-inscripcion', $validarInscripcionHandler);
 
-$router->get('/simulador/declaracion', function () use ($app, $requireAuth, $requireSimSession) {
+$router->get('/simulador/servicios_declaracion', function () use ($app, $requireAuth, $requireSimSession) {
     $requireAuth();
     $requireSimSession();
-    return $app->view('simulator/seniat_actual/servicios_declaracion');
+
+    // Obtener credenciales del intento activo para "¿Olvidó su información?"
+    $usuarioSeniat = null;
+    $passwordRif = null;
+    try {
+        if (!empty($_SESSION['sim_asignacion_id'])) {
+            $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+            $intento = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+            if ($intento) {
+                $usuarioSeniat = $intento['usuario_seniat'] ?? null;
+                $passwordRif = $intento['password_rif'] ?? null;
+            }
+        }
+    } catch (\Throwable $e) {
+        error_log('servicios-declaracion: ' . $e->getMessage());
+    }
+
+    return $app->view('simulator/seniat_actual/servicios_declaracion', [
+        'usuarioSeniat' => $usuarioSeniat,
+        'passwordRif' => $passwordRif,
+    ]);
 });
 
+$router->get('/simulador/registro/contribuyente', function () use ($app, $requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+
+    // Obtener el RIF asignado al estudiante desde su intento activo
+    $rifAsignado = null;
+    try {
+        if (!empty($_SESSION['sim_asignacion_id'])) {
+            $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+            $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+            if ($intentoActivo && !empty($intentoActivo['rif_sucesoral'])) {
+                $rifAsignado = $intentoActivo['rif_sucesoral'];
+            }
+        }
+    } catch (\Throwable $e) {
+        error_log('registro-contribuyente-get: ' . $e->getMessage());
+    }
+
+    return $app->view('simulator/seniat_actual/registro/registro_contribuyente', [
+        'rifAsignado' => $rifAsignado
+    ]);
+});
+
+// POST: Validar RIF del paso 1 y marcar sesión para acceder al paso 2
+$router->post('/simulador/registro/contribuyente/validar', function () use ($requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+    header('Content-Type: application/json');
+
+    try {
+        $rifIngresado = trim($_POST['rif'] ?? '');
+
+        if (empty($rifIngresado)) {
+            echo json_encode(['ok' => false, 'msg' => 'Debe ingresar un RIF.']);
+            return;
+        }
+
+        // Obtener RIF asignado
+        $rifAsignado = null;
+        $intentoActivo = null;
+        if (!empty($_SESSION['sim_asignacion_id'])) {
+            $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+            $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+            if ($intentoActivo && !empty($intentoActivo['rif_sucesoral'])) {
+                $rifAsignado = $intentoActivo['rif_sucesoral'];
+            }
+        }
+
+        if (!$rifAsignado) {
+            echo json_encode(['ok' => false, 'msg' => 'No tiene un RIF asignado aún.']);
+            return;
+        }
+
+        // Normalizar (quitar guiones) para comparar
+        $normalizar = fn($rif) => str_replace('-', '', $rif);
+        if ($normalizar($rifIngresado) !== $normalizar($rifAsignado)) {
+            echo json_encode(['ok' => false, 'msg' => 'No hay ningún contribuyente registrado con esos datos.']);
+            return;
+        }
+
+        // Verificar si ya posee un usuario registrado
+        if (!empty($intentoActivo['usuario_seniat'])) {
+            echo json_encode(['ok' => false, 'msg' => 'Ya posee un usuario registrado en el sistema.']);
+            return;
+        }
+
+        // Marcar sesión como válida para acceder al paso 2
+        $_SESSION['registro_paso1_ok'] = true;
+        echo json_encode(['ok' => true]);
+    } catch (\Throwable $e) {
+        error_log('registro-validar: ' . $e->getMessage());
+        echo json_encode(['ok' => false, 'msg' => 'Error interno del servidor. Intente de nuevo.']);
+    }
+});
+
+$router->get('/simulador/registro/contribuyente/paso-2', function () use ($app, $requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+
+    // Solo accesible si pasó la validación del paso 1
+    if (empty($_SESSION['registro_paso1_ok'])) {
+        header('Location: ' . base_url('/simulador/registro/contribuyente'));
+        exit;
+    }
+
+    try {
+        // Verificar si ya posee un usuario registrado (guard adicional)
+        if (!empty($_SESSION['sim_asignacion_id'])) {
+            $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+            $intento = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+            if ($intento && !empty($intento['usuario_seniat'])) {
+                unset($_SESSION['registro_paso1_ok']);
+                header('Location: ' . base_url('/simulador/registro/contribuyente'));
+                exit;
+            }
+        }
+    } catch (\Throwable $e) {
+        error_log('registro-paso2-get: ' . $e->getMessage());
+    }
+
+    return $app->view('simulator/seniat_actual/registro/registro_contribuyente_2');
+});
+
+// POST: Guardar usuario y clave en sim_intentos
+$router->post('/simulador/registro/contribuyente/paso-2/guardar', function () use ($requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+    header('Content-Type: application/json');
+
+    // Validar que pasó por el paso 1
+    if (empty($_SESSION['registro_paso1_ok'])) {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'msg' => 'Debe completar el paso 1 primero.']);
+        return;
+    }
+
+    $usuario = trim($_POST['usuario'] ?? '');
+    $clave   = trim($_POST['clave'] ?? '');
+
+    // Validaciones básicas
+    if (empty($usuario) || empty($clave)) {
+        echo json_encode(['ok' => false, 'msg' => 'Los campos Usuario y Clave son obligatorios.']);
+        return;
+    }
+
+    if (strlen($clave) < 8) {
+        echo json_encode(['ok' => false, 'msg' => 'La clave debe tener mínimo 8 caracteres.']);
+        return;
+    }
+
+    // Guardar en la DB
+    try {
+        // Obtener intento activo
+        $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+        $intento = $attemptModel->getIntentoActivo((int) ($_SESSION['sim_asignacion_id'] ?? 0));
+
+        if (!$intento) {
+            echo json_encode(['ok' => false, 'msg' => 'No se encontró un intento activo.']);
+            return;
+        }
+
+        // Verificar que no tenga ya un usuario registrado
+        if (!empty($intento['usuario_seniat'])) {
+            echo json_encode(['ok' => false, 'msg' => 'Ya posee un usuario registrado.']);
+            return;
+        }
+        $db = \App\Core\DB::connect();
+        $stmt = $db->prepare("
+            UPDATE sim_intentos
+            SET usuario_seniat = :usuario,
+                password_rif   = :clave,
+                updated_at     = NOW()
+            WHERE id = :id
+        ");
+        $stmt->execute([
+            'usuario' => $usuario,
+            'clave'   => $clave,
+            'id'      => (int) $intento['id'],
+        ]);
+
+        // Limpiar flag de sesión (el registro ya se completó)
+        unset($_SESSION['registro_paso1_ok']);
+
+        // Flash toast para mostrar en la siguiente página
+        $_SESSION['flash_toast'] = [
+            'type' => 'success',
+            'msg'  => 'Se ha registrado exitosamente su usuario y clave de acceso.'
+        ];
+
+        echo json_encode([
+            'ok' => true,
+            'redirect' => base_url('/simulador/portal')
+        ]);
+    } catch (\PDOException $e) {
+        // Duplicate key en usuario_seniat
+        if ($e->getCode() == '23000') {
+            echo json_encode(['ok' => false, 'msg' => 'El nombre de usuario ya está en uso. Elija otro.']);
+        } else {
+            error_log("registro-paso2: Error DB: " . $e->getMessage());
+            echo json_encode(['ok' => false, 'msg' => 'Error al guardar. Intente de nuevo.']);
+        }
+    }
+});
 $router->get('/simulador/portal', function () use ($app, $requireAuth, $requireSimSession) {
     $requireAuth();
     $requireSimSession();
@@ -633,16 +857,26 @@ $router->post('/api/intentos/{id}/validar-rs', function ($id) use ($requireAuth,
             return;
         }
 
-        // ── Obtener título real del caso desde la DB ──
+        // ── Bloquear si ya se generó el RIF ──
+        $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+        $intentoCheck = $attemptModel->getIntentoActivo((int) ($_SESSION['sim_asignacion_id'] ?? 0));
+        if ($intentoCheck && !empty($intentoCheck['rif_sucesoral'])) {
+            echo json_encode(['ok' => false, 'errores' => ['general' => ['El RIF Sucesoral ya fue generado para este intento.']]]);
+            return;
+        }
+
+        // ── Obtener título real del caso y tipo_cedula del causante desde la DB ──
         $casoTitulo = 'Caso Sucesoral';
+        $tipoCedulaCausante = 'V'; // Default
         try {
             $db = \App\Core\DB::connect();
             $stmtCaso = $db->prepare("
-                SELECT ce.titulo
+                SELECT ce.titulo, p.tipo_cedula
                 FROM sim_intentos i
                 INNER JOIN sim_caso_asignaciones a  ON a.id  = i.asignacion_id
                 INNER JOIN sim_caso_configs cfg     ON cfg.id = a.config_id
                 INNER JOIN sim_casos_estudios ce    ON ce.id  = cfg.caso_id
+                INNER JOIN sim_personas p           ON p.id   = ce.causante_id
                 WHERE i.id = :intento_id AND a.estudiante_id = :est_id
                 LIMIT 1
             ");
@@ -651,9 +885,13 @@ $router->post('/api/intentos/{id}/validar-rs', function ($id) use ($requireAuth,
             if ($casoDB && !empty($casoDB['titulo'])) {
                 $casoTitulo = $casoDB['titulo'];
             }
+            if ($casoDB && !empty($casoDB['tipo_cedula'])) {
+                // V, E o No_Aplica → si es E usa E, si no usa V
+                $tipoCedulaCausante = ($casoDB['tipo_cedula'] === 'E') ? 'E' : 'V';
+            }
         } catch (\Throwable $e) {
             error_log("validar-rs: Error al obtener título del caso: " . $e->getMessage());
-            // No es crítico, continuar con el título genérico
+            // No es crítico, continuar con valores por defecto
         }
 
         // ── Validar borrador contra los datos reales del caso ──
@@ -669,8 +907,38 @@ $router->post('/api/intentos/{id}/validar-rs', function ($id) use ($requireAuth,
             $mailer = new \App\Modules\Simulator\Services\RSMailerService();
 
             if ($result['ok']) {
-                // Generar RIF Sucesoral simulado (J-XXXXXXXX-0)
-                $rifSucesoral = 'J-' . str_pad((string) random_int(10000000, 99999999), 8, '0', STR_PAD_LEFT) . '-0';
+                // Generar RIF Sucesoral simulado (V12345678 o E12345678) y persistir en DB
+                // La columna tiene UNIQUE KEY — reintentamos solo si hay colisión
+                $rifSucesoral = null;
+                $maxReintentos = 5;
+                for ($r = 0; $r < $maxReintentos; $r++) {
+                    $rifCandidate = $tipoCedulaCausante . str_pad((string) random_int(10000000, 99999999), 8, '0', STR_PAD_LEFT);
+                    try {
+                        $stmtRif = $db->prepare("
+                            UPDATE sim_intentos
+                            SET rif_sucesoral = :rif,
+                                updated_at    = NOW()
+                            WHERE id = :id
+                        ");
+                        $stmtRif->execute([
+                            'rif' => $rifCandidate,
+                            'id'  => (int) $id,
+                        ]);
+                        $rifSucesoral = $rifCandidate;
+                        break;
+                    } catch (\PDOException $e) {
+                        // 23000 = Integrity constraint (duplicate key) → reintentar
+                        if ($e->getCode() == '23000') {
+                            continue;
+                        }
+                        // Otro error de DB → no reintentar
+                        error_log("validar-rs: Error de DB al guardar RIF: " . $e->getMessage());
+                        break;
+                    } catch (\Throwable $e) {
+                        error_log("validar-rs: Error inesperado al guardar RIF: " . $e->getMessage());
+                        break;
+                    }
+                }
                 $result['rif_sucesoral'] = $rifSucesoral;
 
                 $emailEnviado = $mailer->enviarExito(

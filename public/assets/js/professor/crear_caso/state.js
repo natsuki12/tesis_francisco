@@ -218,7 +218,7 @@ export const caseData = createReactiveState({
     representante: {
         tipo_cedula: 'Cédula', letra_cedula: 'V', cedula: '', nombres: '', apellidos: '',
         sexo: '', estado_civil: '', fecha_nacimiento: '',
-        pasaporte: '', rif_personal: '', nacionalidad: '',
+        letra_rif: 'V', rif_personal: '', nacionalidad: '',
         _locked_fields: []                    // helper: campos deshabilitados por autocomplete
     },
 

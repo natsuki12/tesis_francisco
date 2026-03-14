@@ -486,11 +486,18 @@ ob_start();
                     return r.json();
                 })
                 .then(function(data) {
-                    // Construir query params con el resultado real
+                    // Redirigir al index SENIAT con los parámetros de resultado
+                    var baseUrl = window.simBaseUrl || '';
                     var params = 'validado=1';
                     params += '&email=' + (data.email_enviado ? '1' : '0');
                     params += '&resultado=' + (data.ok ? 'ok' : 'errores');
-                    window.location.href = window.location.pathname + '?' + params;
+                    if (data.ok) {
+                        // Éxito: ir al portal SENIAT principal
+                        window.location.href = baseUrl + '/simulador?' + params;
+                    } else {
+                        // Errores: quedarse en validar_inscripcion para que corrija
+                        window.location.href = window.location.pathname + '?' + params;
+                    }
                 })
                 .catch(function(error) {
                     console.error('Error al validar:', error);

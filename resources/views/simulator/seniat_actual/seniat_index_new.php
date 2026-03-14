@@ -78,7 +78,7 @@ ob_start();
                         <div class="ingresar-header">SENIAT en Línea</div>
                         <a href="#" class="ingresar-item">Persona Natural</a>
                         <a href="#" class="ingresar-item">Persona Jurídica</a>
-                        <a href="<?= base_url('/simulador/declaracion') ?>" class="ingresar-item">Servicios de
+                        <a href="<?= base_url('/simulador/servicios_declaracion') ?>" class="ingresar-item">Servicios de
                             Declaración</a>
                     </div>
                 </div>

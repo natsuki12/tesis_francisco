@@ -87,7 +87,7 @@ class StudentAttemptModel
     public function getIntentoActivo(int $asignacionId): ?array
     {
         $sql = "
-            SELECT id, numero_intento, paso_actual, pasos_completados, borrador_json
+            SELECT id, numero_intento, paso_actual, pasos_completados, borrador_json, rif_sucesoral, usuario_seniat, password_rif
             FROM sim_intentos
             WHERE asignacion_id = :asig_id AND estado = 'En_Progreso'
             LIMIT 1
