@@ -1,4 +1,5 @@
-/* tipo_herencia.css — Only custom overrides; Bootstrap 5 provides the rest */
+/* tipo_herencia.css — Styles specific to the Tipo Herencia page
+   Shared styles (btn-danger) are in tabla_seniat.css */
 
 /* Font size class from SENIAT original */
 .lenletra {
@@ -7,15 +8,4 @@
 
 .lenletrabreadcrumb {
     font-size: 12px;
-}
-
-/* Override btn-danger to SENIAT blue */
-.shadow-lg .btn-danger {
-    background-color: var(--color-principal-btn, #245b98);
-    border-color: var(--color-principal-fuerte, #164193);
-}
-
-.shadow-lg .btn-danger:hover {
-    background-color: var(--color-principal-fuerte, #164193);
-    border-color: #123775;
 }

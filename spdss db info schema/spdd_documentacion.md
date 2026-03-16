@@ -4,7 +4,7 @@
 
 La base de datos **spdss** soporta un simulador educativo del sistema REDESU del SENIAT (Servicio Nacional Integrado de Administración Aduanera y Tributaria) de Venezuela. Su propósito es permitir a estudiantes de Derecho practicar el proceso de declaración sucesoral en un entorno controlado, mientras los profesores crean y evalúan casos de estudio.
 
-El esquema contiene **88 tablas** organizadas en los siguientes módulos:
+El esquema contiene **90 tablas** organizadas en los siguientes módulos:
 
 - **Sistema base**: Autenticación, roles, bitácora, gestión académica (usuarios, estudiantes, profesores, carreras, secciones, sesiones)
 - **Geografía venezolana**: Estados, municipios, parroquias, ciudades, códigos postales, países
@@ -446,6 +446,47 @@ Cada uno de los 19 parentescos tiene FK a su grupo de tarifa (o NULL para `Sin_D
 | porcentaje | DECIMAL(5,2) | Tarifa aplicable al rango |
 | sustraendo_ut | DECIMAL(10,2) | Sustraendo en UT |
 
+**Nota:** Esta tabla contiene los datos históricos/de referencia. Para el cálculo activo se usa `sim_cat_tramos_tarifa` (ver 9.5).
+
+### 9.5 Tramos de Tarifa Progresiva — sim_cat_tramos_tarifa (NUEVA)
+
+32 registros (4 grupos × 8 tramos). Implementa el Artículo 7 de la Ley de Impuesto sobre Sucesiones con una estructura normalizada orientada al cálculo programático. FK a `sim_cat_grupos_tarifa`.
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| id | INT UNSIGNED | PK |
+| grupo_tarifa_id | TINYINT UNSIGNED | FK a sim_cat_grupos_tarifa |
+| tramo | TINYINT UNSIGNED | Número de tramo (1-8) |
+| limite_inferior_ut | DECIMAL(10,2) | Desde (en UT) |
+| limite_superior_ut | DECIMAL(10,2) | Hasta (en UT). NULL = sin límite superior |
+| porcentaje | DECIMAL(5,2) | Porcentaje aplicable |
+| sustraendo_ut | DECIMAL(10,2) | Sustraendo en UT (default 0.00) |
+| activo | TINYINT(1) | Estado activo/inactivo (default 1) |
+
+### 9.6 Reducciones al Impuesto Sucesoral — sim_cat_reducciones (NUEVA)
+
+7 registros. Implementa el Artículo 11 de la Ley de Impuesto sobre Sucesiones. Tabla independiente sin FKs a otras tablas.
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| id | INT UNSIGNED | PK |
+| ordinal | TINYINT UNSIGNED | Ordinal del Art. 11 (1-7) |
+| clave | VARCHAR(50) | Identificador interno (ej: CONYUGE_SOBREVIVIENTE, HIJO_MENOR_21) |
+| etiqueta | VARCHAR(120) | Descripción para mostrar en UI |
+| porcentaje_reduccion | DECIMAL(5,2) | Porcentaje de reducción sobre el impuesto |
+| es_por_dependiente | TINYINT(1) | 1 = se aplica por cada hijo < 21 a cargo (ordinal 6). Default 0 |
+| cuota_max_beneficiario_ut | DECIMAL(10,2) | Tope de cuota del beneficiario para aplicar (ordinal 7 = 20 UT). NULL = sin tope |
+| activo | TINYINT(1) | Estado activo/inactivo (default 1) |
+
+**Los 7 tipos de reducción:**
+1. Cónyuge sobreviviente (40%)
+2. Incapacitado total y permanente (30%)
+3. Incapacitado parcial y permanente (25%)
+4. Hijo menor de 21 años (40%)
+5. Mayor de 60 años (30%)
+6. Por cada hijo menor de 21 a cargo del heredero (5% cada uno, `es_por_dependiente = 1`)
+7. Gratificación por años de servicio al causante, cuota ≤ 20 UT (30%)
+
 **Ejemplo de cálculo:** Un hijo hereda una cuota parte de 600 UT.
 1. Parentesco "Hijo" → grupo_tarifa_id = 1
 2. 600 UT cae en el rango 500.01–1000.00 UT del grupo 1 → porcentaje = 15%, sustraendo = 35.23
@@ -605,11 +646,11 @@ Catálogo de tipos de evento para la bitácora de accesos.
 
 ## 16. Secciones Pendientes
 
-Las siguientes secciones están pendientes de diseño, ya que requieren acceso a las vistas correspondientes del sistema SENIAT real:
+Las siguientes secciones están pendientes o en progreso:
 
-- **Desgravámenes** — Se generan automáticamente a partir de los bienes registrados
-- **Resumen de la Declaración** — Totaliza activos, pasivos, deducciones y base imponible
-- **Cálculo por Heredero** — Aplica la tarifa según cuota parte y parentesco de cada heredero
+- **Desgravámenes** — Se generan automáticamente a partir de los bienes registrados (pendiente de diseño de tablas)
+- **Resumen de la Declaración** — Totaliza activos, pasivos, deducciones y base imponible (pendiente de diseño de tablas)
+- **Cálculo por Heredero** — Los catálogos necesarios ya existen: `sim_cat_tramos_tarifa` (tarifa progresiva por tramo/grupo) y `sim_cat_reducciones` (Art. 11). Falta diseñar las tablas de resultado del cálculo por heredero.
 
 Estas tablas se agregarán sin afectar la estructura existente.
 
@@ -627,8 +668,10 @@ Estas tablas se agregarán sin afectar la estructura existente.
 | sim_cat_tipos_pasivo_deuda | 4 | Pasivos Deuda |
 | sim_cat_tipos_pasivo_gasto | 7 | Pasivos Gastos |
 | sim_cat_unidades_tributarias | 25 | Casos de estudio (valor UT) |
-| sim_cat_grupos_tarifa | 4 | Parentescos, Tarifas |
-| sim_cat_tarifas_sucesion | 32 | Cálculo del impuesto |
+| sim_cat_grupos_tarifa | 4 | Parentescos, Tarifas, Tramos |
+| sim_cat_tarifas_sucesion | 32 | Cálculo del impuesto (referencia) |
+| sim_cat_tramos_tarifa | 32 | Cálculo del impuesto (tramos progresivos, Art. 7) |
+| sim_cat_reducciones | 7 | Reducciones al impuesto (Art. 11) |
 | sim_cat_parentescos | 19 | Herederos (ambas capas) |
 | sim_cat_tipoherencias | 6 | Tipos de herencia |
 
@@ -712,6 +755,8 @@ sim_intentos (espejo completo de la capa maestro)
     └── ... (todas las demás tablas intento espejo)
 
 sim_cat_tarifas_sucesion → sim_cat_grupos_tarifa ← sim_cat_parentescos
+sim_cat_tramos_tarifa → sim_cat_grupos_tarifa
+sim_cat_reducciones (independiente, sin FKs)
 ```
 
 ---
@@ -724,13 +769,15 @@ sim_cat_tarifas_sucesion → sim_cat_grupos_tarifa ← sim_cat_parentescos
 | Tablas de geografía | 6 |
 | Tablas del simulador — Capa maestro | 25 |
 | Tablas del simulador — Capa intento | 26 |
-| Tablas del simulador — Catálogos | 12 |
+| Tablas del simulador — Catálogos | 14 |
 | Tablas del simulador — Entidades globales | 5 |
-| **Total** | **88** |
-| **Foreign keys** | **126** |
+| **Total** | **90** |
+| **Foreign keys** | **127** |
 
 **Desglose del sistema base (14):** bitacora_accesos, carreras, estudiantes, inscripciones, materias, password_resets, periodos, personas, profesores, roles, secciones, tipos_eventos, users, user_sessions.
 
 **Desglose de geografía (6):** estados, municipios, parroquias, ciudades, codigos_postales, paises.
 
 **Desglose de entidades globales (5):** sim_personas, sim_empresas, sim_actas_defunciones, sim_causante_datos_fiscales, sim_marco_legals.
+
+**Desglose de catálogos (14):** sim_cat_categorias_bien_mueble, sim_cat_tipos_bien_mueble, sim_cat_tipos_bien_inmueble, sim_cat_bancos, sim_cat_tipos_semoviente, sim_cat_tipos_pasivo_deuda, sim_cat_tipos_pasivo_gasto, sim_cat_unidades_tributarias, sim_cat_grupos_tarifa, sim_cat_tarifas_sucesion, sim_cat_tramos_tarifa, sim_cat_reducciones, sim_cat_parentescos, sim_cat_tipoherencias.

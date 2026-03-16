@@ -204,9 +204,10 @@ final class App
             ini_set('session.cookie_secure', '1');
         }
 
-        // Tiempo de vida (2 horas de inactividad)
+        // Tiempo de vida: 2 horas de INACTIVIDAD (gc limpia la sesión del servidor)
+        // cookie_lifetime=0 → cookie vive hasta cerrar el navegador (no expira por tiempo fijo)
         ini_set('session.gc_maxlifetime', '7200');
-        ini_set('session.cookie_lifetime', '7200');
+        ini_set('session.cookie_lifetime', '0');
 
         session_start();
 

@@ -72,6 +72,13 @@ if ($source === 'borrador') {
             $bienesMuebles[] = $item;
         }
     }
+    // Also load bienes_muebles_banco (new MVC format)
+    foreach (($b['bienes_muebles_banco'] ?? []) as $bancoItem) {
+        $bancoItem['categoria'] = 'Banco';
+        $bancoItem['tipo_nombre'] = $bancoItem['tipo_bien_nombre'] ?? '';
+        $bancoItem['es_bien_litigioso'] = ($bancoItem['bien_litigioso'] ?? 'false') === 'true' ? 1 : 0;
+        $bienesMuebles[] = $bancoItem;
+    }
     $pasivosDeuda = $b['pasivos_deuda'] ?? [];
     $pasivosGastos = $b['pasivos_gastos'] ?? [];
     $exenciones = $b['exenciones'] ?? [];
@@ -632,10 +639,14 @@ if ($source === 'borrador') {
                     <p class="gc-empty-text" style="padding: 20px;">No hay bienes inmuebles registrados.</p>
                 <?php else: ?>
                     <?php foreach ($bienesInmuebles as $i => $bi):
+                        $tipoBien = $bi['tipo_bien_nombres'] ?? $bi['tipo_bien_nombre'] ?? '';
                         $desc = $bi['descripcion'] ?? 'Inmueble #' . ($i + 1);
+                        $headerLabel = !empty($tipoBien) ? $tipoBien : $desc;
                         $valor = formatBs((float)($bi['valor_declarado'] ?? 0));
-                        $esVivienda = ($bi['es_vivienda_principal'] ?? 0) == 1;
-                        $esLitigioso = ($bi['es_bien_litigioso'] ?? 0) == 1;
+                        $esVivienda = ($bi['vivienda_principal'] ?? $bi['es_vivienda_principal'] ?? 0);
+                        $esVivienda = ($esVivienda === 'true' || $esVivienda == 1);
+                        $esLitigioso = ($bi['bien_litigioso'] ?? $bi['es_bien_litigioso'] ?? 0);
+                        $esLitigioso = ($esLitigioso === 'true' || $esLitigioso == 1);
                     ?>
                         <div class="gc-dir-item" data-dir-index="bi_<?= $i ?>">
                             <div class="gc-dir-summary">
@@ -647,7 +658,7 @@ if ($source === 'borrador') {
                                         </svg>
                                     </div>
                                     <div>
-                                        <span class="gc-dir-type"><?= htmlspecialchars($desc) ?></span>
+                                        <span class="gc-dir-type"><?= htmlspecialchars($headerLabel) ?></span>
                                         <span class="gc-dir-location">
                                             <?= $valor ?>
                                             <?php if ($esVivienda): ?> · <span style="color: var(--green-600);">Vivienda Principal</span><?php endif; ?>
@@ -661,6 +672,12 @@ if ($source === 'borrador') {
                             </div>
                             <div class="gc-dir-details">
                                 <div class="gc-info-list">
+                                    <?php if (!empty($tipoBien)): ?>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Tipo de Bien</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($tipoBien) ?></span>
+                                    </div>
+                                    <?php endif; ?>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Porcentaje</span>
                                         <span class="gc-info-value"><?= number_format((float)($bi['porcentaje'] ?? 0), 2) ?>%</span>
@@ -695,11 +712,15 @@ if ($source === 'borrador') {
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Oficina Registro</span>
-                                        <span class="gc-info-value"><?= showVal($bi['oficina_registro'] ?? null) ?></span>
+                                        <span class="gc-info-value"><?= showVal($bi['oficina_registro'] ?? $bi['oficina_subalterna'] ?? null) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Nro. Registro</span>
-                                        <span class="gc-info-value"><?= showVal($bi['nro_registro'] ?? null) ?></span>
+                                        <span class="gc-info-value"><?= showVal($bi['nro_registro'] ?? $bi['numero_registro'] ?? null) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Libro</span>
+                                        <span class="gc-info-value"><?= showVal($bi['libro'] ?? null) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Protocolo</span>
@@ -709,6 +730,28 @@ if ($source === 'borrador') {
                                         <span class="gc-info-label">Fecha Registro</span>
                                         <span class="gc-info-value"><?= !empty($bi['fecha_registro']) ? date('d/m/Y', strtotime($bi['fecha_registro'])) : '—' ?></span>
                                     </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Trimestre</span>
+                                        <span class="gc-info-value"><?= showVal($bi['trimestre'] ?? null) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Asiento Registral</span>
+                                        <span class="gc-info-value"><?= showVal($bi['asiento_registral'] ?? null) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Matrícula</span>
+                                        <span class="gc-info-value"><?= showVal($bi['matricula'] ?? null) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Libro Folio Real</span>
+                                        <span class="gc-info-value"><?= showVal($bi['folio_real_anio'] ?? $bi['libro_folio_real'] ?? null) ?></span>
+                                    </div>
+                                    <?php if (!empty($bi['descripcion'])): ?>
+                                    <div class="gc-info-item" style="grid-column: 1 / -1;">
+                                        <span class="gc-info-label">Descripción</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($bi['descripcion']) ?></span>
+                                    </div>
+                                    <?php endif; ?>
                                     <?php if (!empty($bi['linderos'])): ?>
                                     <div class="gc-info-item" style="grid-column: 1 / -1;">
                                         <span class="gc-info-label">Linderos</span>
@@ -719,6 +762,40 @@ if ($source === 'borrador') {
                                     <div class="gc-info-item" style="grid-column: 1 / -1;">
                                         <span class="gc-info-label">Dirección</span>
                                         <span class="gc-info-value"><?= htmlspecialchars($bi['direccion']) ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                    <?php
+                                    $litData = $bi['litigioso_data'] ?? null;
+                                    if (!$litData && $esLitigioso) {
+                                        // Borrador: datos litigiosos pueden estar inline
+                                        $litData = [
+                                            'tribunal_causa' => $bi['tribunal_causa'] ?? null,
+                                            'numero_expediente' => $bi['numero_expediente'] ?? null,
+                                            'partes_juicio' => $bi['partes_juicio'] ?? null,
+                                            'estado_juicio' => $bi['estado_juicio'] ?? null,
+                                        ];
+                                    }
+                                    if ($esLitigioso && $litData): ?>
+                                    <div style="grid-column: 1 / -1; margin-top: 8px; padding: 12px 16px; background: var(--red-50, #fef2f2); border-left: 3px solid var(--red-400, #f87171); border-radius: 6px;">
+                                        <div style="font-weight: 600; color: var(--red-600, #dc2626); margin-bottom: 8px; font-size: 0.85rem;">⚠️ Datos Litigiosos</div>
+                                        <div class="gc-info-list" style="gap: 6px 24px;">
+                                            <div class="gc-info-item">
+                                                <span class="gc-info-label">Tribunal</span>
+                                                <span class="gc-info-value"><?= showVal($litData['tribunal_causa'] ?? null) ?></span>
+                                            </div>
+                                            <div class="gc-info-item">
+                                                <span class="gc-info-label">Nro. Expediente</span>
+                                                <span class="gc-info-value"><?= showVal($litData['numero_expediente'] ?? null) ?></span>
+                                            </div>
+                                            <div class="gc-info-item">
+                                                <span class="gc-info-label">Partes del Juicio</span>
+                                                <span class="gc-info-value"><?= showVal($litData['partes_juicio'] ?? null) ?></span>
+                                            </div>
+                                            <div class="gc-info-item">
+                                                <span class="gc-info-label">Estado del Juicio</span>
+                                                <span class="gc-info-value"><?= showVal($litData['estado_juicio'] ?? null) ?></span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <?php endif; ?>
                                 </div>
@@ -805,10 +882,58 @@ if ($source === 'borrador') {
                                         <span class="gc-info-label">Valor Declarado</span>
                                         <span class="gc-info-value" style="font-weight:700;color:var(--green-600);"><?= $valorBm ?></span>
                                     </div>
+                                    <?php
+                                    $catCheck = strtolower($bm['categoria_nombre'] ?? $bm['categoria'] ?? '');
+                                    if (strpos($catCheck, 'banco') !== false):
+                                        $bancoNombre = $bm['banco_nombre'] ?? $bm['nombre_banco'] ?? $bm['banco'] ?? '—';
+                                        $numCuenta = $bm['numero_cuenta'] ?? $bm['numeroCuenta'] ?? '—';
+                                    ?>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Banco</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($bancoNombre) ?></span>
+                                    </div>
+                                    <div class="gc-info-item">
+                                        <span class="gc-info-label">Número de Cuenta</span>
+                                        <span class="gc-info-value"><?= htmlspecialchars($numCuenta) ?></span>
+                                    </div>
+                                    <?php endif; ?>
                                     <?php if (!empty($bm['descripcion'])): ?>
                                     <div class="gc-info-item" style="grid-column: 1 / -1;">
                                         <span class="gc-info-label">Descripción</span>
                                         <span class="gc-info-value"><?= htmlspecialchars($bm['descripcion']) ?></span>
+                                    </div>
+                                    <?php endif; ?>
+                                    <?php
+                                    $litDataBm = $bm['litigioso_data'] ?? null;
+                                    if (!$litDataBm && $esLitigiosoBm) {
+                                        $litDataBm = [
+                                            'tribunal_causa' => $bm['tribunal_causa'] ?? null,
+                                            'numero_expediente' => $bm['numero_expediente'] ?? null,
+                                            'partes_juicio' => $bm['partes_juicio'] ?? null,
+                                            'estado_juicio' => $bm['estado_juicio'] ?? null,
+                                        ];
+                                    }
+                                    if ($esLitigiosoBm && $litDataBm): ?>
+                                    <div style="grid-column: 1 / -1; margin-top: 8px; padding: 12px 16px; background: var(--red-50, #fef2f2); border-left: 3px solid var(--red-400, #f87171); border-radius: 6px;">
+                                        <div style="font-weight: 600; color: var(--red-600, #dc2626); margin-bottom: 8px; font-size: 0.85rem;">⚠️ Datos Litigiosos</div>
+                                        <div class="gc-info-list" style="gap: 6px 24px;">
+                                            <div class="gc-info-item">
+                                                <span class="gc-info-label">Tribunal</span>
+                                                <span class="gc-info-value"><?= showVal($litDataBm['tribunal_causa'] ?? null) ?></span>
+                                            </div>
+                                            <div class="gc-info-item">
+                                                <span class="gc-info-label">Nro. Expediente</span>
+                                                <span class="gc-info-value"><?= showVal($litDataBm['numero_expediente'] ?? null) ?></span>
+                                            </div>
+                                            <div class="gc-info-item">
+                                                <span class="gc-info-label">Partes del Juicio</span>
+                                                <span class="gc-info-value"><?= showVal($litDataBm['partes_juicio'] ?? null) ?></span>
+                                            </div>
+                                            <div class="gc-info-item">
+                                                <span class="gc-info-label">Estado del Juicio</span>
+                                                <span class="gc-info-value"><?= showVal($litDataBm['estado_juicio'] ?? null) ?></span>
+                                            </div>
+                                        </div>
                                     </div>
                                     <?php endif; ?>
                                 </div>

@@ -27,6 +27,9 @@ use App\Modules\Admin\Controllers\Monitoreo\ReportesController;
 $router->get('/health', fn() => 'OK');
 $router->get('/', fn() => $app->view('landing/landing'));
 
+// DEV: vista de ejemplo para previsualizar HTML durante desarrollo
+$router->get('/ejemplo', fn() => require __DIR__ . '/../ejemplo_sucesion_html/ejemplo.php');
+
 
 // =============================================================================
 // 🔐 RUTAS DE AUTENTICACIÓN (LOGIN)
@@ -197,6 +200,13 @@ $requireSimSession = function () {
     }
 };
 
+$requireSeniatLogin = function () {
+    if (empty($_SESSION['sim_seniat_logged_in'])) {
+        header('Location: ' . base_url('/simulador/servicios_declaracion'));
+        exit;
+    }
+};
+
 $router->get('/simulador', function () use ($app, $requireAuth, $requireSimSession) {
     $requireAuth();
     $requireSimSession();
@@ -225,7 +235,7 @@ $router->get('/simulador/inscripcion-rif', function () use ($app, $requireAuth, 
     return $app->view('simulator/legacy/inscripcion_rif', ['intento' => $intentoActivo]);
 });
 
-$enforceInscripcionReferer = function() {
+$enforceInscripcionReferer = function () {
     $referer = $_SERVER['HTTP_REFERER'] ?? '';
     $path = parse_url($referer, PHP_URL_PATH) ?? '';
     if (empty($referer) || strpos($path, '/simulador/inscripcion-rif') === false) {
@@ -361,6 +371,60 @@ $router->get('/simulador/servicios_declaracion', function () use ($app, $require
     ]);
 });
 
+// POST: Login SENIAT simulado — valida usuario_seniat + password_rif del intento activo
+$router->post('/simulador/servicios_declaracion/login', function () use ($requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+    header('Content-Type: application/json');
+
+    try {
+        $usuario = trim($_POST['usuario'] ?? '');
+        $clave = trim($_POST['clave'] ?? '');
+
+        if (empty($usuario) || empty($clave)) {
+            echo json_encode(['ok' => false, 'msg' => 'Debe ingresar usuario y clave.']);
+            return;
+        }
+
+        if (empty($_SESSION['sim_asignacion_id'])) {
+            echo json_encode(['ok' => false, 'msg' => 'No se encontró una asignación activa.']);
+            return;
+        }
+
+        $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+        $intento = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+
+        if (!$intento) {
+            echo json_encode(['ok' => false, 'msg' => 'No se encontró un intento en progreso.']);
+            return;
+        }
+
+        $usuarioDb = $intento['usuario_seniat'] ?? null;
+        $claveDb = $intento['password_rif'] ?? null;
+
+        if (empty($usuarioDb) || empty($claveDb)) {
+            echo json_encode(['ok' => false, 'msg' => 'Usted no posee credenciales registradas. Utilice el botón "Regístrese" para crear su usuario.']);
+            return;
+        }
+
+        if ($usuario !== $usuarioDb || $clave !== $claveDb) {
+            echo json_encode(['ok' => false, 'msg' => 'Usuario o clave incorrectos.']);
+            return;
+        }
+
+        // Credenciales válidas — marcar sesión
+        $_SESSION['sim_seniat_logged_in'] = true;
+
+        echo json_encode([
+            'ok' => true,
+            'redirect' => base_url('/simulador/servicios_declaracion/sistemas'),
+        ]);
+    } catch (\Throwable $e) {
+        error_log('servicios-declaracion-login: ' . $e->getMessage());
+        echo json_encode(['ok' => false, 'msg' => 'Error interno del servidor. Intente de nuevo.']);
+    }
+});
+
 $router->get('/simulador/registro/contribuyente', function () use ($app, $requireAuth, $requireSimSession) {
     $requireAuth();
     $requireSimSession();
@@ -478,7 +542,7 @@ $router->post('/simulador/registro/contribuyente/paso-2/guardar', function () us
     }
 
     $usuario = trim($_POST['usuario'] ?? '');
-    $clave   = trim($_POST['clave'] ?? '');
+    $clave = trim($_POST['clave'] ?? '');
 
     // Validaciones básicas
     if (empty($usuario) || empty($clave)) {
@@ -517,8 +581,8 @@ $router->post('/simulador/registro/contribuyente/paso-2/guardar', function () us
         ");
         $stmt->execute([
             'usuario' => $usuario,
-            'clave'   => $clave,
-            'id'      => (int) $intento['id'],
+            'clave' => $clave,
+            'id' => (int) $intento['id'],
         ]);
 
         // Limpiar flag de sesión (el registro ya se completó)
@@ -527,7 +591,7 @@ $router->post('/simulador/registro/contribuyente/paso-2/guardar', function () us
         // Flash toast para mostrar en la siguiente página
         $_SESSION['flash_toast'] = [
             'type' => 'success',
-            'msg'  => 'Se ha registrado exitosamente su usuario y clave de acceso.'
+            'msg' => 'Se ha registrado exitosamente su usuario y clave de acceso.'
         ];
 
         echo json_encode([
@@ -550,34 +614,349 @@ $router->get('/simulador/portal', function () use ($app, $requireAuth, $requireS
     return $app->view('simulator/seniat_actual/seniat_index_new');
 });
 
-$router->get('/simulador/sucesion/bienes_muebles/banco', function () use ($app, $requireAuth, $requireSimSession) {
+$router->get('/simulador/sucesion/bienes_muebles/banco', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
     $requireAuth();
     $requireSimSession();
-    return $app->view('simulator/seniat_actual/sucesion/banco/banco');
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\BancoController();
+    return $controller->index($app);
 });
 
-$router->get('/simulador/sucesion/herencia', function () use ($app, $requireAuth, $requireSimSession) {
+$router->get('/simulador/sucesion/bienes_muebles/seguro', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
     $requireAuth();
     $requireSimSession();
-    return $app->view('simulator/seniat_actual/sucesion/herencia/tipo_herencia');
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\SeguroController();
+    return $controller->index($app);
 });
 
-$router->get('/simulador/sucesion/principal', function () use ($app, $requireAuth, $requireSimSession) {
+$router->get('/simulador/sucesion/bienes_muebles/transporte', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
     $requireAuth();
     $requireSimSession();
-    return $app->view('simulator/seniat_actual/sucesion/sucesion_principal');
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\TransporteController();
+    return $controller->index($app);
 });
 
-$router->get('/simulador/servicios_declaracion/sistemas', function () use ($app, $requireAuth, $requireSimSession) {
+$router->get('/simulador/sucesion/prorrogas', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
     $requireAuth();
     $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\ProrrogaController();
+    return $controller->index($app);
+});
+
+$router->get('/simulador/sucesion/herederos', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+
+    $intentoActivo = null;
+    $catalogoParentescos = [];
+    try {
+        $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+        $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+        $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+
+        if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
+            $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+        }
+
+        $catalog = new \App\Modules\Professor\Models\Crear_Caso\CatalogModel();
+        $rows = $catalog->getParentescos();
+        foreach ($rows as $row) {
+            $catalogoParentescos[(int) $row['parentesco_id']] = $row['nombre'];
+        }
+    } catch (\Throwable $e) {
+        error_log('[HEREDEROS] Error cargando datos: ' . $e->getMessage());
+    }
+
+    return $app->view('simulator/seniat_actual/sucesion/identificacion_herederos/herederos', [
+        'intento' => $intentoActivo,
+        'catalogoParentescos' => $catalogoParentescos,
+    ]);
+});
+
+$router->get('/simulador/sucesion/herencia', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+
+    $intentoActivo = null;
+    try {
+        $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+        $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+        $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+
+        if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
+            $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+        }
+    } catch (\Throwable $e) {
+        error_log('[TIPO_HERENCIA] Error cargando intento: ' . $e->getMessage());
+    }
+
+    return $app->view('simulator/seniat_actual/sucesion/herencia/tipo_herencia', ['intento' => $intentoActivo]);
+});
+
+// ── Herederos Premuerto ──
+$router->get('/simulador/sucesion/herederos_premuerto', function () use ($requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $ctrl = new \App\Modules\Simulator\Controllers\SucesionController();
+    return $ctrl->herederos_premuerto();
+});
+
+// ── Bienes Inmuebles ──
+$router->get('/simulador/sucesion/bienes_inmuebles', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+
+    $catalog = new \App\Modules\Professor\Models\Crear_Caso\CatalogModel();
+    $tiposBienInmueble = $catalog->getTiposBienInmueble();
+
+    $intentoActivo = null;
+    try {
+        $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
+        $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+        $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+        if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
+            $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+        }
+    } catch (\Throwable $e) {
+        error_log('[BIENES_INMUEBLES] Error cargando intento: ' . $e->getMessage());
+    }
+
+    return $app->view('simulator/seniat_actual/sucesion/bienes_inmuebles/bienes_inmuebles', [
+        'tiposBienInmueble' => $tiposBienInmueble,
+        'intento' => $intentoActivo,
+    ]);
+});
+
+// ── Bienes Muebles ──
+$router->get('/simulador/sucesion/bienes_muebles/seguro', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    return $app->view('simulator/seniat_actual/sucesion/bienes_muebles/seguro');
+});
+$router->get('/simulador/sucesion/bienes_muebles/transporte', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    return $app->view('simulator/seniat_actual/sucesion/bienes_muebles/transporte');
+});
+$router->get('/simulador/sucesion/bienes_muebles/opciones_compra', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\OpcionesCompraController();
+    return $controller->index($app);
+});
+$router->get('/simulador/sucesion/bienes_muebles/cuentas_efectos', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\CuentasEfectosController();
+    return $controller->index($app);
+});
+$router->get('/simulador/sucesion/bienes_muebles/semovientes', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\SemovientesController();
+    return $controller->index($app);
+});
+$router->get('/simulador/sucesion/bienes_muebles/bonos', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\BonosController();
+    return $controller->index($app);
+});
+$router->get('/simulador/sucesion/bienes_muebles/acciones', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\AccionesController();
+    return $controller->index($app);
+});
+$router->get('/simulador/sucesion/bienes_muebles/prestaciones_sociales', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\PrestacionesSocialesController();
+    return $controller->index($app);
+});
+$router->get('/simulador/sucesion/bienes_muebles/caja_ahorro', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\CajaAhorroController();
+    return $controller->index($app);
+});
+$router->get('/simulador/sucesion/bienes_muebles/plantaciones', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\PlantacionesController();
+    return $controller->index($app);
+});
+$router->get('/simulador/sucesion/bienes_muebles/otros', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\OtrosController();
+    return $controller->index($app);
+});
+
+// ── Pasivos Deuda ──
+$router->get('/simulador/sucesion/pasivos_deuda/tarjetas_credito', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\TarjetasCreditoController();
+    return $controller->index($app);
+});
+$router->get('/simulador/sucesion/pasivos_deuda/credito_hipotecario', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\CreditoHipotecarioController();
+    return $controller->index($app);
+});
+$router->get('/simulador/sucesion/pasivos_deuda/prestamos', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\PrestamosController();
+    return $controller->index($app);
+});
+$router->get('/simulador/sucesion/pasivos_deuda/otros', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\PasivosOtrosController();
+    return $controller->index($app);
+});
+
+// ── Pasivos Gastos ──
+$router->get('/simulador/sucesion/pasivos_gastos', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\PasivosGastosController();
+    return $controller->index($app);
+});
+
+// ── Desgravámenes ──
+$router->get('/simulador/sucesion/desgravamenes', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $model = new \App\Modules\Simulator\Models\PasivosGastosModel();
+    $intento = $model->getIntentoActivo();
+    return $app->view('simulator/seniat_actual/sucesion/desgravamanes/desgravamenes', [
+        'intento' => $intento,
+    ]);
+});
+
+// ── Exenciones ──
+$router->get('/simulador/sucesion/exenciones', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\ExencionesController();
+    return $controller->index($app);
+});
+
+// ── Exoneraciones ──
+$router->get('/simulador/sucesion/exoneraciones', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $controller = new \App\Modules\Simulator\Controllers\ExoneracionesController();
+    return $controller->index($app);
+});
+
+// ── Bienes Litigiosos ──
+$router->get('/simulador/sucesion/bienes_litigiosos', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $model = new \App\Modules\Simulator\Models\PasivosGastosModel();
+    $intento = $model->getIntentoActivo();
+    return $app->view('simulator/seniat_actual/sucesion/bienes_litigiosos/bienes_litigiosos', [
+        'intento' => $intento,
+    ]);
+});
+
+// ── Resumen Declaración ──
+$router->get('/simulador/sucesion/resumen_declaracion', function () use ($requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $ctrl = new \App\Modules\Simulator\Controllers\SucesionController();
+    return $ctrl->resumen();
+});
+
+// ── Resumen Cálculo Manual ──
+$router->get('/simulador/sucesion/resumen_calculo_manual', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    return $app->view('simulator/seniat_actual/sucesion/resumen_declaracion/resumen_calculo_manual');
+});
+
+// ── Ver Declaración (Anverso) ──
+$router->get('/simulador/sucesion/declaracion_anverso', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    return $app->view('simulator/seniat_actual/sucesion/resumen_declaracion/declaracion_anverso');
+});
+
+// ── Ver Declaración (Reverso) ──
+$router->get('/simulador/sucesion/declaracion_reverso', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    return $app->view('simulator/seniat_actual/sucesion/resumen_declaracion/declaracion_reverso');
+});
+
+$router->get('/simulador/sucesion/principal', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    return (new \App\Modules\Simulator\Controllers\SucesionController())->principal();
+});
+
+$router->get('/simulador/servicios_declaracion/sistemas', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
     return $app->view('simulator/seniat_actual/acceder_sistemas');
 });
 
-$router->get('/simulador/servicios_declaracion/dashboard', function () use ($app, $requireAuth, $requireSimSession) {
+$router->get('/simulador/servicios_declaracion/dashboard', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
     $requireAuth();
     $requireSimSession();
+    $requireSeniatLogin();
     return $app->view('simulator/seniat_actual/dashboard/sistemas_dashboard');
+});
+
+// Cerrar sesión SENIAT simulada (no cierra la sesión de la app)
+$router->get('/simulador/servicios_declaracion/logout', function () use ($requireAuth, $requireSimSession) {
+    $requireAuth();
+    $requireSimSession();
+    try {
+        unset($_SESSION['sim_seniat_logged_in']);
+    } catch (\Throwable $e) {
+        error_log('servicios-declaracion-logout: ' . $e->getMessage());
+    }
+    header('Location: ' . base_url('/simulador/servicios_declaracion?sesion_cerrada=1'));
+    exit;
 });
 
 // Casos Sucesorales (Profesor)
@@ -836,6 +1215,454 @@ $router->post('/api/intentos/iniciar', function () use ($app, $requireAuth, $req
     header('Location: ' . base_url('/simulador'));
 });
 
+// ── API: Herederos Premuertos CRUD ──
+$router->post('/api/herederos-premuertos/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\HerederosPremuertosController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/herederos-premuertos/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\HerederosPremuertosController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/herederos-premuertos/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\HerederosPremuertosController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Bienes Inmuebles CRUD ──
+$router->post('/api/bienes-inmuebles/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\BienesInmueblesController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/bienes-inmuebles/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\BienesInmueblesController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/bienes-inmuebles/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\BienesInmueblesController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Banco (Bienes Muebles) CRUD ──
+$router->post('/api/banco/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\BancoController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/banco/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\BancoController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/banco/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\BancoController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Opciones de Compra (Bienes Muebles) CRUD ──
+$router->post('/api/opciones-compra/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\OpcionesCompraController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/opciones-compra/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\OpcionesCompraController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/opciones-compra/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\OpcionesCompraController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Cuentas y Efectos por Cobrar (Bienes Muebles) CRUD ──
+$router->post('/api/cuentas-efectos/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\CuentasEfectosController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/cuentas-efectos/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\CuentasEfectosController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/cuentas-efectos/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\CuentasEfectosController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Semovientes (Bienes Muebles) CRUD ──
+$router->post('/api/semovientes/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\SemovientesController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/semovientes/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\SemovientesController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/semovientes/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\SemovientesController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Bonos (Bienes Muebles) CRUD ──
+$router->post('/api/bonos/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\BonosController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/bonos/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\BonosController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/bonos/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\BonosController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Seguro (Bienes Muebles) CRUD ──
+$router->post('/api/seguro/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\SeguroController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/seguro/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\SeguroController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/seguro/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\SeguroController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Búsqueda de RIF (compartida por todos los módulos) ──
+$router->post('/api/buscar-rif', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\RifController();
+    $ctrl->buscarRif();
+});
+
+// ── API: Acciones (Bienes Muebles) CRUD ──
+$router->post('/api/acciones/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\AccionesController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/acciones/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\AccionesController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/acciones/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\AccionesController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Prestaciones Sociales (Bienes Muebles) CRUD ──
+$router->post('/api/prestaciones-sociales/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PrestacionesSocialesController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/prestaciones-sociales/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PrestacionesSocialesController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/prestaciones-sociales/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PrestacionesSocialesController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Caja de Ahorro (Bienes Muebles) CRUD ──
+$router->post('/api/caja-ahorro/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\CajaAhorroController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/caja-ahorro/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\CajaAhorroController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/caja-ahorro/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\CajaAhorroController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Plantaciones (Bienes Muebles) CRUD ──
+$router->post('/api/plantaciones/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PlantacionesController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/plantaciones/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PlantacionesController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/plantaciones/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PlantacionesController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Otros (Bienes Muebles) CRUD ──
+$router->post('/api/otros/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\OtrosController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/otros/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\OtrosController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/otros/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\OtrosController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Transporte (Bienes Muebles) CRUD ──
+$router->post('/api/transporte/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\TransporteController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/transporte/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\TransporteController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/transporte/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\TransporteController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Prórrogas CRUD ──
+$router->post('/api/prorrogas/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\ProrrogaController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/prorrogas/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\ProrrogaController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/prorrogas/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\ProrrogaController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Tarjetas de Crédito (Pasivos Deuda) CRUD ──
+$router->post('/api/tarjetas_credito/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\TarjetasCreditoController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/tarjetas_credito/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\TarjetasCreditoController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/tarjetas_credito/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\TarjetasCreditoController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Crédito Hipotecario (Pasivos Deuda) CRUD ──
+$router->post('/api/credito_hipotecario/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\CreditoHipotecarioController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/credito_hipotecario/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\CreditoHipotecarioController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/credito_hipotecario/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\CreditoHipotecarioController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Préstamos, Cuentas y Efectos por Pagar (Pasivos Deuda) CRUD ──
+$router->post('/api/prestamos/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PrestamosController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/prestamos/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PrestamosController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/prestamos/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PrestamosController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Pasivos Deuda → Otros CRUD ──
+$router->post('/api/pasivos_otros/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PasivosOtrosController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/pasivos_otros/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PasivosOtrosController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/pasivos_otros/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PasivosOtrosController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Pasivos Gastos CRUD ──
+$router->post('/api/pasivos_gastos/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PasivosGastosController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/pasivos_gastos/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PasivosGastosController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/pasivos_gastos/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PasivosGastosController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Exenciones CRUD ──
+$router->post('/api/exenciones/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\ExencionesController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/exenciones/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\ExencionesController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/exenciones/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\ExencionesController();
+    $ctrl->eliminar((int) $id);
+});
+
+// ── API: Exoneraciones CRUD ──
+$router->post('/api/exoneraciones/{id}/agregar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\ExoneracionesController();
+    $ctrl->agregar((int) $id);
+});
+$router->post('/api/exoneraciones/{id}/editar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\ExoneracionesController();
+    $ctrl->editar((int) $id);
+});
+$router->post('/api/exoneraciones/{id}/eliminar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\ExoneracionesController();
+    $ctrl->eliminar((int) $id);
+});
+
 // Auto-save borrador (AJAX)
 $router->post('/api/intentos/{id}/guardar', function ($id) use ($requireAuth, $requireRole) {
     $requireAuth();
@@ -952,7 +1779,7 @@ $router->post('/api/intentos/{id}/validar-rs', function ($id) use ($requireAuth,
                         ");
                         $stmtRif->execute([
                             'rif' => $rifCandidate,
-                            'id'  => (int) $id,
+                            'id' => (int) $id,
                         ]);
                         $rifSucesoral = $rifCandidate;
                         break;

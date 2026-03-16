@@ -120,23 +120,53 @@ class GestionarCasoModel
         $stmt->execute(['cid' => $casoId]);
         $herederos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // 7. Bienes inmuebles
-        $stmt = $this->db->prepare("SELECT * FROM sim_caso_bienes_inmuebles 
-            WHERE caso_estudio_id = :cid AND deleted_at IS NULL");
+        // 7. Bienes inmuebles (con tipos de bien)
+        $stmt = $this->db->prepare("SELECT bi.*, 
+                GROUP_CONCAT(tbi.nombre ORDER BY tbi.nombre SEPARATOR ', ') AS tipo_bien_nombre
+            FROM sim_caso_bienes_inmuebles bi
+            LEFT JOIN sim_caso_bien_inmueble_tipo_rel rel ON bi.id = rel.bien_inmueble_id
+            LEFT JOIN sim_cat_tipos_bien_inmueble tbi ON rel.tipo_bien_inmueble_id = tbi.id
+            WHERE bi.caso_estudio_id = :cid AND bi.deleted_at IS NULL
+            GROUP BY bi.id");
         $stmt->execute(['cid' => $casoId]);
         $bienesInmuebles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // 8. Bienes muebles
+        // 8. Bienes muebles (con detalle banco para categoría 1)
         $stmt = $this->db->prepare("SELECT bm.*, 
-                cat.nombre AS categoria_nombre, tbm.nombre AS tipo_nombre
+                cat.nombre AS categoria_nombre, tbm.nombre AS tipo_nombre,
+                bmb.numero_cuenta, b_cat.nombre AS banco_nombre
             FROM sim_caso_bienes_muebles bm
             LEFT JOIN sim_cat_categorias_bien_mueble cat ON bm.categoria_bien_mueble_id = cat.id
             LEFT JOIN sim_cat_tipos_bien_mueble tbm ON bm.tipo_bien_mueble_id = tbm.id
+            LEFT JOIN sim_caso_bm_banco bmb ON bmb.bien_mueble_id = bm.id
+            LEFT JOIN sim_cat_bancos b_cat ON bmb.banco_id = b_cat.id
             WHERE bm.caso_estudio_id = :cid AND bm.deleted_at IS NULL");
         $stmt->execute(['cid' => $casoId]);
         $bienesMuebles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // 9. Pasivos deuda
+        // 8b. Datos litigiosos (para inmuebles y muebles)
+        $stmt = $this->db->prepare("SELECT * FROM sim_caso_bienes_litigiosos WHERE caso_estudio_id = :cid");
+        $stmt->execute(['cid' => $casoId]);
+        $litigiosos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Indexar por tipo+id para acceso rápido
+        $litigiosoMap = [];
+        foreach ($litigiosos as $lit) {
+            $key = ($lit['bien_tipo'] ?? '') . '_' . ($lit['bien_id'] ?? 0);
+            $litigiosoMap[$key] = $lit;
+        }
+        // Adjuntar a bienes inmuebles
+        foreach ($bienesInmuebles as &$bi) {
+            $key = 'Inmueble_' . $bi['id'];
+            $bi['litigioso_data'] = $litigiosoMap[$key] ?? null;
+        }
+        unset($bi);
+        // Adjuntar a bienes muebles
+        foreach ($bienesMuebles as &$bm) {
+            $key = 'Mueble_' . $bm['id'];
+            $bm['litigioso_data'] = $litigiosoMap[$key] ?? null;
+        }
+        unset($bm);
+
         $stmt = $this->db->prepare("SELECT pd.*, 
                 tpd.nombre AS tipo_nombre, b.nombre AS banco_nombre
             FROM sim_caso_pasivos_deuda pd

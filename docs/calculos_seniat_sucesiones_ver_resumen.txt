@@ -1,0 +1,415 @@
+================================================================================
+  DOCUMENTACIÓN COMPLETA: CÁLCULOS DE LA PÁGINA "RESUMEN DECLARACIÓN"
+  SENIAT — Autoliquidación de Impuesto sobre Sucesiones
+  Extraído de: https://dgpatrimonios.seniat.gob.ve/sucesion/resumen
+  Fecha de extracción: 2026-03-14
+  Angular v12.2.17 — Bundle: main.ec9ce77cf8c29593594b.js
+================================================================================
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN 1: DATOS DE ENTRADA                                                ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  • Unidad Tributaria (UT):   Valor vigente en Bs. (ej: 0.4000000000 Bs)
+  • Total de Herederos:       Conteo automático de herederos registrados
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN 2: TABLA DE GRAVAMEN (Ítems 1 al 8)                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  #   Concepto                                                     Fórmula
+  ─── ─────────────────────────────────────────────────────────────────────────
+  1   Total Bienes Inmuebles                                       Σ de todos los bienes inmuebles registrados
+  2   Total Bienes Muebles                                         Σ de todos los bienes muebles registrados
+  3   Patrimonio Hereditario Bruto (1 + 2)                         = Ítem 1 + Ítem 2
+  4   Activo Hereditario Bruto (Patrimonio Hereditario Bruto)      = Ítem 3 (mismo valor)
+  5   Desgravámenes                                                Σ de todos los desgravámenes registrados
+  6   Exenciones                                                   Σ de todas las exenciones registradas
+  7   Exoneraciones                                                Σ de todas las exoneraciones registradas
+  8   Total de Exclusiones (Desgravámenes + Exenciones + Exoneraciones) = Ítem 5 + Ítem 6 + Ítem 7
+                                                                         NOTA: La UI del SENIAT muestra el
+                                                                         label con signos "−" pero el cálculo
+                                                                         es una SUMA de las exclusiones.
+
+  NOTA: Los ítems 1 y 2 se alimentan de las secciones "Bienes Inmuebles"
+        y "Bienes Muebles" respectivamente.
+        Los ítems 5, 6, 7 se alimentan de sus secciones correspondientes
+        del menú lateral.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN 3: PATRIMONIO NETO HEREDITARIO (Ítems 9 al 11)                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  #   Concepto                                                     Fórmula
+  ─── ─────────────────────────────────────────────────────────────────────────
+  9   Activo Hereditario Neto                                      = Ítem 4 − Ítem 8
+      (Activo Hereditario Bruto − Total de Exclusiones)              (si negativo → 0)
+
+  10  Total Pasivo                                                 Σ de (Pasivos Deuda + Pasivos Gastos)
+
+  11  Patrimonio Neto Hereditario o Líquido Hereditario Gravable   = Ítem 9 − Ítem 10
+      (Activo Hereditario Neto − Total Pasivo)                       (si negativo → 0)
+
+  NOTA: El Total Pasivo (ítem 10) se alimenta de las secciones
+        "Pasivos Deuda" y "Pasivos Gastos" del menú lateral.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN 4: DETERMINACIÓN DE TRIBUTO (Ítems 12 al 15)                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  #   Concepto                                                     Fórmula
+  ─── ─────────────────────────────────────────────────────────────────────────
+  12  Impuesto Determinado por Según Tarifa                        = Σ del "Impuesto a Pagar" de cada heredero
+                                                                     (ver Sección 5 más abajo)
+
+  13  Reducciones                                                  = Reducciones aplicables (normalmente 0.00)
+
+  14  Total Impuesto Pagado en Declaración Sustituida              = Impuesto ya pagado si es declaración
+                                                                     sustitutiva (normalmente 0.00)
+
+  15  Total Impuesto a Pagar                                       = Ítem 12 − Ítem 13 − Ítem 14
+                                                                     (si negativo → 0)
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN 5: CÁLCULO POR HEREDERO (Tabla de Liquidación)                     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Fórmulas mostradas en pantalla:
+────────────────────────────────────────────────────────────────────────────────
+  Cuota Parte Hereditaria (Bs.) = Patrimonio Hereditario / Totales Herederos
+  Impuesto Determinado = (Cuota Parte × Porcentaje) − Sustraendo
+  Impuesto Determinado = 0 (Si la Cuota Parte es menor o igual a 75 UT
+                              y el parentesco es de 1er grado)
+────────────────────────────────────────────────────────────────────────────────
+
+Columnas de la tabla por heredero:
+  • Apellido(s) y Nombre(s)
+  • C.I./Pasaporte
+  • Parentesco                    (ej: HUA/HIJO, CONYUGE, HERMANO, etc.)
+  • Grado                         (1, 2, 3 o 4 — según tabla de parentesco)
+  • Premuerto                     (SI / NO)
+  • Cuota Parte Hereditaria (UT)  (editable)
+  • Porcentaje o Tarifa (%)       (editable)
+  • Sustraendo (UT)               (editable)
+  • Impuesto Determinado (Bs.)    (editable)
+  • Reducción (Bs.)               (editable)
+  • Impuesto a Pagar              (= Impuesto Determinado − Reducción)
+
+Proceso de cálculo por cada heredero:
+─────────────────────────────────────
+
+  PASO 1: Cuota Parte en Bs.
+          cuotaParteBs = Patrimonio Neto Hereditario (ítem 11) / Total Herederos
+
+  PASO 2: Cuota Parte en UT
+          cuotaParteUT = cuotaParteBs / Valor_UT
+
+  PASO 3: Determinar Grado de Parentesco
+          Se asigna grado 1, 2, 3 o 4 según el tipo de parentesco
+          (ver Sección 7 para mapeo)
+
+  PASO 4: Regla de Exoneración
+          SI grado == 1 Y cuotaParteUT <= 75:
+              impuesto = 0
+          FIN SI
+
+  PASO 5: Buscar en Tabla de Tarifas (ver Sección 6)
+          Según el grado y el rango de cuotaParteUT, obtener:
+            - porcentaje (%)
+            - sustraendo (UT)
+
+  PASO 6: Calcular Impuesto en UT
+          impuestoUT = (cuotaParteUT × porcentaje / 100) − sustraendo
+
+  PASO 7: Convertir a Bs.
+          impuestoBs = impuestoUT × Valor_UT
+
+  PASO 8: Aplicar Reducción
+          impuestoAPagar = impuestoBs − reduccion
+          (si negativo → 0)
+
+  NOTA: Los campos son editables ("Modificar Cálculo"), lo que permite
+        al usuario ajustar manualmente los valores.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN 6: TABLAS DE TARIFAS COMPLETAS (4 Grados de Parentesco)            ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+── 1° ASCENDIENTES, DESCENDIENTES, CÓNYUGES E HIJOS ADOPTIVOS ──────────────
+┌──────────────────────────┬───────────┬──────────────┐
+│ Rango de Cuota (UT)      │ Porcentaje│ Sustraendo   │
+├──────────────────────────┼───────────┼──────────────┤
+│ Hasta 15.00 UT           │   1%      │   0.23 UT    │
+│ Desde 15.01 hasta 50.00  │   2.5%    │   1.48 UT    │
+│ Desde 50.01 hasta 100.00 │   5%      │   3.98 UT    │
+│ Desde 100.01 hasta 250.00│   7.50%   │  10.23 UT    │
+│ Desde 250.01 hasta 500.00│  10%      │  35.23 UT    │
+│ Desde 500.01 hasta 1000  │  15%      │  85.23 UT    │
+│ Desde 1000.01 hasta 4000 │  20%      │ 285.23 UT    │
+│ A partir de 4000.01      │  25%      │ 485.23 UT *  │
+└──────────────────────────┴───────────┴──────────────┘
+
+── 2° HERMANOS, SOBRINOS POR DERECHO DE REPRESENTACIÓN ──────────────────────
+┌──────────────────────────┬───────────┬──────────────┐
+│ Rango de Cuota (UT)      │ Porcentaje│ Sustraendo   │
+├──────────────────────────┼───────────┼──────────────┤
+│ Hasta 15.00 UT           │   2.5%    │   0.38 UT    │
+│ Desde 15.01 hasta 50.00  │   5%      │   2.88 UT    │
+│ Desde 50.01 hasta 100.00 │  10%      │   7.88 UT    │
+│ Desde 100.01 hasta 250.00│  15%      │  20.38 UT    │
+│ Desde 250.01 hasta 500.00│  20%      │  45.38 UT    │
+│ Desde 500.01 hasta 1000  │  25%      │  95.38 UT    │
+│ Desde 1000.01 hasta 4000 │  30%      │ 495.38 UT    │
+│ A partir de 4000.01      │  40%      │ 895.38 UT *  │
+└──────────────────────────┴───────────┴──────────────┘
+
+── 3° OTROS COLATERALES DE 3° GRADO Y LOS DE 4° GRADO ──────────────────────
+┌──────────────────────────┬───────────┬──────────────┐
+│ Rango de Cuota (UT)      │ Porcentaje│ Sustraendo   │
+├──────────────────────────┼───────────┼──────────────┤
+│ Hasta 15.00 UT           │   6%      │   0.98 UT    │
+│ Desde 15.01 hasta 50.00  │  12.5%    │   4.73 UT    │
+│ Desde 50.01 hasta 100.00 │  20%      │   9.73 UT    │
+│ Desde 100.01 hasta 250.00│  25%      │  22.23 UT    │
+│ Desde 250.01 hasta 500.00│  30%      │  47.23 UT    │
+│ Desde 500.01 hasta 1000  │  35%      │  97.23 UT    │
+│ Desde 1000.01 hasta 4000 │  40%      │ 497.23 UT    │
+│ A partir de 4000.01      │  50%      │ 897.23 UT *  │
+└──────────────────────────┴───────────┴──────────────┘
+
+── 4° AFINES, OTROS PARIENTES Y EXTRAÑOS ────────────────────────────────────
+┌──────────────────────────┬───────────┬──────────────┐
+│ Rango de Cuota (UT)      │ Porcentaje│ Sustraendo   │
+├──────────────────────────┼───────────┼──────────────┤
+│ Hasta 15.00 UT           │  10%      │   0.75 UT    │
+│ Desde 15.01 hasta 50.00  │  15%      │   5.75 UT    │
+│ Desde 50.01 hasta 100.00 │  25%      │  10.75 UT    │
+│ Desde 100.01 hasta 250.00│  30%      │  23.25 UT    │
+│ Desde 250.01 hasta 500.00│  35%      │  48.25 UT    │
+│ Desde 500.01 hasta 1000  │  40%      │  98.25 UT    │
+│ Desde 1000.01 hasta 4000 │  45%      │ 498.25 UT    │
+│ A partir de 4000.01      │  55%      │ 898.25 UT *  │
+└──────────────────────────┴───────────┴──────────────┘
+
+* Los sustraendos del último rango (>4000 UT) fueron calculados por
+  continuidad de la fórmula; verificar con la ley vigente.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN 7: MAPEO PARENTESCO → GRADO                                       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  GRADO 1: Ascendientes, Descendientes, Cónyuges e Hijos Adoptivos
+    → Hija/Hijo, Madre, Padre, Cónyuge, Hija/Hijo Adoptivo
+    → Parentesco SENIAT: HUA/HIJO, MADRE, PADRE, CONYUGE
+
+  GRADO 2: Hermanos, Sobrinos por Derecho de Representación
+    → Hermana(o) Simple, Hermana(o) Doble, Sobrina/Sobrino
+    → Parentesco SENIAT: HERMANO/A
+
+  GRADO 3: Otros Colaterales de 3° y 4° Grado
+    → Nieta/Nieto, Bisnieta/Bisnieto, Abuela/Abuelo,
+      Tía/Tío, Prima/Primo, Prima/Primo Segundo
+    → Parentesco SENIAT: NIETO/A, TIO/A, PRIMO/A
+
+  GRADO 4: Afines, Otros Parientes y Extraños
+    → Concubina, Otro pariente, Extraño, Otro
+    → Parentesco SENIAT: CONCUBINO/A, EXTRAÑO
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN 8: EJEMPLO VERIFICADO CON DATOS REALES                            ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Datos de entrada:
+    Unidad Tributaria         = 0.40 Bs
+    Patrimonio Neto (ítem 11) = 160.00 Bs
+    Total Herederos           = 3
+    Parentesco de todos       = HUA/HIJO (Grado 1)
+
+  Cálculo heredero 1 (BAUZA PEDRONI RAMON ERNESTO):
+    cuotaParteBs = 160.00 / 3 = 53.333 Bs
+    cuotaParteUT = 53.333 / 0.40 = 133.333 UT
+
+    Grado 1, 133.333 UT → rango "100.01 a 250.00"
+    Porcentaje = 7.50%
+    Sustraendo = 10.23 UT
+
+    ★ PERO la tabla de herederos muestra Sustraendo = 3.98 UT
+    ★ Esto sugiere que el sustraendo usado corresponde al rango ANTERIOR
+      (50.01 - 100.00) o que hay una lógica particular en el JS.
+
+    VERIFICACIÓN CON VALORES MOSTRADOS EN PANTALLA:
+      impuestoUT = (133.333 × 0.075) − 3.98 = 10.00 − 3.98 = 6.02 UT
+      impuestoBs = 6.02 × 0.40 = 2.41 Bs ✓ (coincide con pantalla)
+
+    Alternativa con sustraendo 10.23:
+      impuestoUT = (133.333 × 0.075) − 10.23 = 10.00 − 10.23 = -0.23 UT
+      Esto daría negativo → 0 Bs (NO coincide)
+
+    CONCLUSIÓN: La tabla general de la UI muestra los sustraendos de la LEY,
+    pero el CÁLCULO REAL usa la columna del rango ANTERIOR como sustraendo.
+    Es posible que el JS aplique el sustraendo de forma acumulativa o
+    que los sustraendos sean diferentes a la tabla estática mostrada.
+
+    ★ VALOR REAL USADO: Porcentaje = 7.50%, Sustraendo = 3.98 UT
+
+  Total:
+    impuesto total = 2.41 × 3 = 7.23 Bs ✓
+
+  Reducciones     = 0.00
+  Imp. Sustituida = 0.00
+  TOTAL A PAGAR   = 7.23 Bs ✓
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN 9: NOTAS IMPORTANTES                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  1. BOTÓN "MODIFICAR CÁLCULO":
+     Permite al usuario editar manualmente los campos:
+     Cuota Parte (UT), Porcentaje, Sustraendo, Impuesto Determinado,
+     Reducción e Impuesto a Pagar.
+
+  2. DECLARACIÓN SUSTITUTIVA:
+     Si la declaración es de tipo sustitutiva, el ítem 14
+     (Impuesto Pagado en Declaración Sustituida) descuenta
+     lo que ya se pagó previamente.
+
+  3. PREMUERTO:
+     Si un heredero tiene estatus de PREMUERTO = SI, su cuota parte
+     se redistribuye entre los herederos restantes (o sus representantes).
+     En el ejemplo, un heredero tiene Premuerto = SI pero su cuota
+     parte aparece igual; esto podría variar según el caso.
+
+  4. FUENTES DE DATOS:
+     Los totales de cada sección se obtienen de los bienes/pasivos/
+     desgravámenes registrados en sus respectivas páginas del menú lateral.
+
+  5. DISCREPANCIA VERIFICADA EN SUSTRAENDOS (CONFIRMADO EN PÁGINA OFICIAL):
+     ─────────────────────────────────────────────────────────────────────────
+     La tabla estática de tarifas (visible en la misma página) muestra:
+       • Grado 1, rango 100.01-250.00 UT → Porcentaje: 7.50%, Sustraendo: 10.23 UT
+
+     Pero el cálculo REAL aplicado a los herederos usa:
+       • Porcentaje: 7.50% (CORRECTO, del rango 100.01-250.00)
+       • Sustraendo: 3.98 UT (del rango ANTERIOR: 50.01-100.00)
+
+     VERIFICACIÓN MATEMÁTICA:
+       Con 3.98:  (133.333 × 0.075) − 3.98  = 6.02 UT → 2.41 Bs ✓ COINCIDE
+       Con 10.23: (133.333 × 0.075) − 10.23 = −0.23 UT → 0 Bs ✗ NO COINCIDE
+
+     CONCLUSIÓN PARA EL SIMULADOR:
+     Este es el comportamiento REAL de la página oficial del SENIAT.
+     El sistema selecciona el % del rango correcto pero aplica el sustraendo
+     del rango inmediatamente anterior. Para nuestro simulador, debemos
+     REPLICAR este comportamiento exacto, ya que es lo que hace la
+     plataforma oficial. Sea un bug o diseño intencional, es lo vigente.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN 10: OBSERVACIONES DE VERIFICACIÓN EN PÁGINA OFICIAL               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Fecha de verificación: 2026-03-14
+URL verificada: https://dgpatrimonios.seniat.gob.ve/sucesion/resumen
+Versión Angular: 12.2.17
+Bundle JS principal: main.ec9ce77cf8c29593594b.js
+
+── OBSERVACIÓN 1: DESPLAZAMIENTO DEL SUSTRAENDO ────────────────────────────
+
+  El sistema SENIAT aplica un DESPLAZAMIENTO en el sustraendo respecto
+  a la tabla de tarifas oficial que muestra en la misma página.
+
+  Comportamiento observado:
+    • El PORCENTAJE se toma del rango CORRECTO según la cuota parte UT.
+    • El SUSTRAENDO se toma del rango ANTERIOR (un nivel más abajo).
+
+  Ejemplo concreto (verificado con datos reales en pantalla):
+    Cuota Parte = 133.333 UT → cae en rango 100.01-250.00 UT (Grado 1)
+
+    Tabla estática (visible en la página):
+      Rango 50.01-100.00  → %: 5.00%  | Sustraendo: 3.98 UT
+      Rango 100.01-250.00 → %: 7.50%  | Sustraendo: 10.23 UT  ← debería usar este
+
+    Valores aplicados por el sistema:
+      Porcentaje: 7.50% (del rango correcto ✓)
+      Sustraendo: 3.98 UT (del rango ANTERIOR ✗)
+
+── OBSERVACIÓN 2: PRUEBA MATEMÁTICA ────────────────────────────────────────
+
+  Cálculo con sustraendo 3.98 UT (lo que usa el sistema):
+    impuestoUT = (133.333 × 0.075) − 3.98
+    impuestoUT = 10.00 − 3.98 = 6.02 UT
+    impuestoBs = 6.02 × 0.40 = 2.408 → redondeado = 2.41 Bs
+    ✅ COINCIDE con el valor mostrado en pantalla (2.41)
+
+  Cálculo con sustraendo 10.23 UT (lo que dice la tabla):
+    impuestoUT = (133.333 × 0.075) − 10.23
+    impuestoUT = 10.00 − 10.23 = −0.23 UT (negativo)
+    impuestoBs = 0.00 Bs (por regla de mínimo 0)
+    ❌ NO COINCIDE con pantalla
+
+── OBSERVACIÓN 3: IMPACTO DEL COMPORTAMIENTO ──────────────────────────────
+
+  Este desplazamiento hace que:
+    • Los herederos paguen MÁS impuesto del que indica la tabla visible.
+    • En montos bajos (como este caso), la diferencia es entre pagar
+      2.41 Bs por heredero vs 0.00 Bs.
+    • El efecto es más notorio en los límites entre rangos.
+
+── OBSERVACIÓN 4: HEREDERO PREMUERTO ──────────────────────────────────────
+
+  Se observó que un heredero con Premuerto = SI (BAUZA PEDRONI RAMON
+  ERNESTO) tiene la misma Cuota Parte (133.333 UT) que los demás.
+  Esto indica que:
+    • Los herederos premuertos SÍ cuentan para el Total de Herederos.
+    • Su cuota parte se calcula igual que los demás.
+    • El impuesto se les calcula normalmente.
+  
+  En otros casos el premuerto podría redistribuir su cuota entre
+  representantes; no se pudo verificar con los datos actuales.
+
+── OBSERVACIÓN 5: CAMPOS EDITABLES ────────────────────────────────────────
+
+  El botón "Modificar Cálculo" permite editar manualmente TODOS los
+  campos de la tabla de herederos:
+    • Cuota Parte Hereditaria (UT)
+    • Porcentaje o Tarifa (%)
+    • Sustraendo (UT)
+    • Impuesto Determinado (Bs.)
+    • Reducción (Bs.)
+    • Impuesto a Pagar (Bs.)
+
+  Esto significa que el usuario puede corregir cualquier valor calculado
+  automáticamente si considera que es incorrecto.
+
+── OBSERVACIÓN 6: REDONDEO ────────────────────────────────────────────────
+
+  El sistema usa 2 decimales para Bs. y 3 decimales para UT (basado
+  en los valores visibles):
+    • 133.333 UT (3 decimales, truncado o redondeado a mils)
+    • 2.41 Bs (2 decimales)
+    • 7.23 Bs total (= 2.41 × 3, posible redondeo por heredero)
+
+── OBSERVACIÓN 7: RECOMENDACIÓN PARA EL SIMULADOR ────────────────────────
+
+  Para replicar fielmente el comportamiento del SENIAT, el simulador debe:
+    1. Usar el PORCENTAJE del rango correcto según cuota parte UT.
+    2. Usar el SUSTRAENDO del rango inmediatamente anterior.
+    3. Aplicar regla de exoneración: si Grado 1 y cuota ≤ 75 UT → 0.
+    4. Redondear a 2 decimales el impuesto en Bs.
+    5. Redondear a 3 decimales la cuota parte en UT.
+    6. Permitir edición manual de todos los campos de cálculo.
+    7. Calcular Total (ítem 12) = Σ de impuestos a pagar de cada heredero.
+    8. Total a Pagar (ítem 15) = ítem 12 − reducciones − impuesto sustituido.
+
+================================================================================
+  FIN DEL DOCUMENTO
+================================================================================

@@ -465,24 +465,121 @@ ob_start();
                 const inputUsuario = document.getElementById('floatingInput');
                 const inputClave = document.getElementById('floatingPassword');
                 const inputCaptcha = document.getElementById('floatingInputCap');
+                const captchaLabel = document.querySelector('.imageninput');
+
+                // Generar captcha aleatorio
+                function generarCaptcha() {
+                    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+                    let code = '';
+                    for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+                    return code;
+                }
+
+                let captchaCode = generarCaptcha();
+                if (captchaLabel) {
+                    captchaLabel.textContent = captchaCode;
+                    captchaLabel.style.cursor = 'pointer';
+                    captchaLabel.title = 'Clic para generar un nuevo código';
+                    captchaLabel.addEventListener('click', () => {
+                        captchaCode = generarCaptcha();
+                        captchaLabel.textContent = captchaCode;
+                        if (inputCaptcha) inputCaptcha.value = '';
+                    });
+                }
+
+                // Crear contenedor de error si no existe
+                let errorDiv = document.getElementById('loginError');
+                if (!errorDiv) {
+                    errorDiv = document.createElement('div');
+                    errorDiv.id = 'loginError';
+                    errorDiv.style.cssText = 'display:none; background:#f8d7da; color:#842029; border:1px solid #f5c2c7; border-radius:6px; padding:10px 14px; margin-bottom:12px; font-size:.9rem;';
+                    const form = document.getElementById('loginForm');
+                    if (form) form.parentNode.insertBefore(errorDiv, form);
+                }
+
+                function showError(msg) {
+                    errorDiv.textContent = msg;
+                    errorDiv.style.display = 'block';
+                }
+
+                function hideError() {
+                    errorDiv.style.display = 'none';
+                }
 
                 if (btnAceptar) {
                     btnAceptar.removeAttribute('disabled');
 
-                    btnAceptar.addEventListener('click', (e) => {
+                    btnAceptar.addEventListener('click', async (e) => {
                         e.preventDefault();
+                        hideError();
 
-                        const usuario = inputUsuario ? inputUsuario.value : '';
-                        const clave = inputClave ? inputClave.value : '';
-                        const captcha = inputCaptcha ? inputCaptcha.value : '';
+                        const usuario = (inputUsuario ? inputUsuario.value : '').trim();
+                        const clave = (inputClave ? inputClave.value : '').trim();
+                        const captcha = (inputCaptcha ? inputCaptcha.value : '').trim();
 
                         if (!usuario || !clave || !captcha) {
-                            alert('Por favor, complete todos los campos (Usuario, Clave y Captcha).');
+                            showError('Por favor, complete todos los campos (Usuario, Clave y Captcha).');
                             return;
                         }
 
-                        console.log('Login attempt:', { usuario, clave, captcha });
-                        alert(`¡Datos Enviados!\n\nUsuario: ${usuario}\nClave: ${clave}\nCaptcha: ${captcha}\n\n(Esta es una simulación visual como solicitaste)`);
+                        // Validar captcha en frontend
+                        if (captcha.toLowerCase() !== captchaCode.toLowerCase()) {
+                            showError('El código captcha es incorrecto. Intente de nuevo.');
+                            captchaCode = generarCaptcha();
+                            if (captchaLabel) captchaLabel.textContent = captchaCode;
+                            if (inputCaptcha) inputCaptcha.value = '';
+                            return;
+                        }
+
+                        // Deshabilitar botón para evitar doble envío
+                        btnAceptar.disabled = true;
+                        btnAceptar.textContent = 'Validando...';
+
+                        try {
+                            const fd = new FormData();
+                            fd.append('usuario', usuario);
+                            fd.append('clave', clave);
+
+                            const resp = await fetch('<?= base_url("/simulador/servicios_declaracion/login") ?>', {
+                                method: 'POST',
+                                body: fd,
+                            });
+
+                            const data = await resp.json();
+
+                            if (data.ok && data.redirect) {
+                                window.location.href = data.redirect;
+                                return;
+                            }
+
+                            showError(data.msg || 'Error desconocido. Intente de nuevo.');
+                        } catch (err) {
+                            console.error('Login error:', err);
+                            showError('Error de conexión. Intente de nuevo.');
+                        } finally {
+                            btnAceptar.disabled = false;
+                            btnAceptar.textContent = 'Aceptar';
+                            // Regenerar captcha tras cada intento
+                            captchaCode = generarCaptcha();
+                            if (captchaLabel) captchaLabel.textContent = captchaCode;
+                            if (inputCaptcha) inputCaptcha.value = '';
+                        }
+                    });
+                }
+
+                // Toggle password visibility
+                const toggleBtn = document.querySelector('.input-group-text');
+                if (toggleBtn && inputClave) {
+                    toggleBtn.style.cursor = 'pointer';
+                    toggleBtn.addEventListener('click', () => {
+                        const icon = toggleBtn.querySelector('i');
+                        if (inputClave.type === 'password') {
+                            inputClave.type = 'text';
+                            if (icon) { icon.classList.remove('bi-eye'); icon.classList.add('bi-eye-slash'); }
+                        } else {
+                            inputClave.type = 'password';
+                            if (icon) { icon.classList.remove('bi-eye-slash'); icon.classList.add('bi-eye'); }
+                        }
                     });
                 }
 
@@ -582,6 +679,110 @@ ob_start();
         </div>
     </div>
 </dialog>
+
+<!-- Modal SweetAlert: Sesión expirada (estilo SENIAT original) -->
+<style>
+    .swal2-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.4);
+        z-index: 99999;
+        justify-content: center;
+        align-items: center;
+    }
+    .swal2-overlay.swal2-show {
+        display: flex;
+    }
+    .swal2-popup {
+        background: #fff;
+        border-radius: 1rem;
+        padding: 2rem 1.5rem 1.5rem;
+        max-width: 420px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0,0,0,.2);
+        animation: swal2-fadein .3s;
+    }
+    @keyframes swal2-fadein {
+        from { opacity: 0; transform: scale(.85); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    .swal2-icon-warning {
+        width: 80px;
+        height: 80px;
+        border: 4px solid #facea8;
+        border-radius: 50%;
+        margin: 0 auto 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #f8bb86;
+    }
+    .swal2-icon-warning .swal2-icon-content {
+        font-size: 3.5rem;
+        font-weight: 600;
+        line-height: 1;
+    }
+    .swal2-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #595959;
+        margin: 0 0 .5rem;
+    }
+    .swal2-html-container {
+        font-size: 1.1rem;
+        color: #545454;
+        margin-bottom: 1.5rem;
+    }
+    .swal2-confirm {
+        background-color: #164193;
+        color: #fff;
+        border: none;
+        border-radius: .375rem;
+        padding: .625rem 2rem;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color .15s;
+    }
+    .swal2-confirm:hover {
+        background-color: #0f2d66;
+    }
+    .swal2-confirm:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(22, 65, 147, 0.5);
+    }
+</style>
+
+<div class="swal2-overlay" id="sesionExpiradaOverlay">
+    <div class="swal2-popup" role="dialog" aria-modal="true">
+        <div class="swal2-icon-warning">
+            <div class="swal2-icon-content">!</div>
+        </div>
+        <h2 class="swal2-title">Información</h2>
+        <div class="swal2-html-container">Su sesión ha expirado</div>
+        <div>
+            <button type="button" class="swal2-confirm" id="btnSesionContinuar">Continuar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('sesion_cerrada') === '1') {
+        document.getElementById('sesionExpiradaOverlay').classList.add('swal2-show');
+        // Limpiar el query param de la URL sin recargar
+        const url = new URL(window.location);
+        url.searchParams.delete('sesion_cerrada');
+        window.history.replaceState({}, '', url);
+    }
+    document.getElementById('btnSesionContinuar').addEventListener('click', function() {
+        document.getElementById('sesionExpiradaOverlay').classList.remove('swal2-show');
+    });
+})();
+</script>
 
 <?php
 $content = ob_get_clean();

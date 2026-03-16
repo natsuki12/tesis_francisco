@@ -1,0 +1,285 @@
+================================================================================
+  DOCUMENTACIÓN COMPLETA: ANVERSO DE LA DECLARACIÓN
+  SENIAT — Autoliquidación de Impuesto sobre Sucesiones
+  Extraído de: https://dgpatrimonios.seniat.gob.ve/sucesion/verdeclaracion
+  Fecha de extracción: 2026-03-14
+  Botón activo: ← Anverso
+================================================================================
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  NAVEGACIÓN DE LA PÁGINA                                                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  La página "Ver Declaración" tiene 3 botones de navegación:
+    [← Anverso]   [⊘ Declarar]   [Reverso →]
+
+  • Anverso  = Parte frontal de la declaración (secciones A–I)
+  • Declarar = Acción de enviar/declarar
+  • Reverso  = Parte trasera de la declaración (sección J - Anexos)
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN A: DATOS DEL CONTRIBUYENTE                                        ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Campos:
+  ┌─────────────────────────────────┬────────────────────────────────────────┐
+  │ Campo                           │ Valor ejemplo                          │
+  ├─────────────────────────────────┼────────────────────────────────────────┤
+  │ Contribuyente (sucesión)        │ SUCESION BAUZA MARIN RAMON ERNESTO     │
+  │ N° RIF                          │ J504705900                             │
+  │ FECHA DE DECLARACIÓN            │ 14/03/2026                             │
+  │ FECHA DE VENCIMIENTO            │ 17/01/2023                             │
+  └─────────────────────────────────┴────────────────────────────────────────┘
+
+  Cálculos: NINGUNO — Datos informativos solamente.
+  Fuente: Se genera al crear la sucesión (RIF generado por el sistema).
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN B: DATOS DEL CAUSANTE O DONANTE                                   ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Campos:
+  ┌─────────────────────────────────┬────────────────────────────────────────┐
+  │ Campo                           │ Valor ejemplo                          │
+  ├─────────────────────────────────┼────────────────────────────────────────┤
+  │ Nombre del Causante             │ BAUZA MARIN, RAMON ERNESTO             │
+  │ RIF O CEDULA DE IDENTIDAD       │ J504705900 / 6145727                   │
+  └─────────────────────────────────┴────────────────────────────────────────┘
+
+  Cálculos: NINGUNO — Datos informativos.
+  Fuente: Datos del causante registrado en la inscripción RIF.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN C: DIRECCIÓN DEL CAUSANTE O DONANTE                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Campos:
+  ┌─────────────────────────────────┬────────────────────────────────────────┐
+  │ Campo                           │ Valor ejemplo                          │
+  ├─────────────────────────────────┼────────────────────────────────────────┤
+  │ Dirección completa              │ CALLE OESTE CASA CONJUNTO RESIDENCIAL  │
+  │                                 │ LAS TUNAS NRO 04-04 NO APLICA         │
+  │                                 │ URBANIZACION MANEIRO CIUDAD PAMPATAR   │
+  │                                 │ PARROQUIA: CAPITAL MANEIRO MUNICIPIO:  │
+  │                                 │ MANEIRO ESTADO: NUEVA ESPARTA          │
+  │ FECHA DE FALLECIMIENTO          │ 21/04/2022                             │
+  └─────────────────────────────────┴────────────────────────────────────────┘
+
+  Cálculos: NINGUNO — Datos informativos.
+  Fuente: Dirección registrada y fecha de fallecimiento del causante.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN D: DATOS DEL REPRESENTANTE LEGAL O RESPONSABLE                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Campos:
+  ┌─────────────────────────────────┬────────────────────────────────────────┐
+  │ Campo                           │ Valor ejemplo                          │
+  ├─────────────────────────────────┼────────────────────────────────────────┤
+  │ Nombre                          │ PEDRONI LEPERVANCHE, PAOLA MARIA       │
+  │ N°- RIF                         │ V069727138                             │
+  └─────────────────────────────────┴────────────────────────────────────────┘
+
+  Cálculos: NINGUNO — Datos informativos.
+  Fuente: Del heredero designado como representante legal.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN E: TIPO DE HERENCIA                                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Campos:
+  ┌─────────────────────────────────┬────────────────────────────────────────┐
+  │ Campo                           │ Valor ejemplo                          │
+  ├─────────────────────────────────┼────────────────────────────────────────┤
+  │ Tipo de Herencia                │ (vacío — no se muestra texto)          │
+  └─────────────────────────────────┴────────────────────────────────────────┘
+
+  Cálculos: NINGUNO — Dato informativo.
+  Fuente: Tipo de herencia seleccionado (Ab Intestato, Testamentaria, etc.)
+  NOTA: En el ejemplo capturado, este campo aparece vacío.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN F: DATOS DE LA PRÓRROGA                                           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Columnas de la tabla:
+  ┌───────────────────┬──────────────────┬──────────────────┬───────────────────┬───────────────────┐
+  │ Fecha Solicitud   │ Nro. Resolución  │ Fecha Resolución │ Plazo Otorgado    │ Fecha Vencimiento │
+  │                   │                  │                  │ (días)            │                   │
+  └───────────────────┴──────────────────┴──────────────────┴───────────────────┴───────────────────┘
+
+  Cálculos: NINGUNO — Tabla informativa.
+  Fuente: Datos de la prórroga solicitada (si aplica).
+  NOTA: En el ejemplo capturado, esta tabla está vacía (sin prórroga).
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN G: HEREDEROS                                                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Columnas de la tabla:
+  ┌──────────────────────┬─────────────┬────────────┬───────┬───────────┬──────────┬───────────┬──────────┬────────────┬────────────┬──────────────┐
+  │ Apellido(s) y        │ C.I./       │ Parentesco │ Grado │ Premuerto │ Cuota    │ Porcentaje│ Sustra-  │ Impuesto   │ Reducción  │ Impuesto a   │
+  │ Nombre(s)            │ Pasaporte   │            │       │           │ Parte    │ o Tarifa  │ endo(Bs) │ Determinado│ (Bs)       │ Pagar        │
+  │                      │             │            │       │           │ Hereditaria│ (%)     │          │ (Bs)       │            │ (Imp.Det -   │
+  │                      │             │            │       │           │ (Bs)     │           │          │            │            │ Reduccion)   │
+  └──────────────────────┴─────────────┴────────────┴───────┴───────────┴──────────┴───────────┴──────────┴────────────┴────────────┴──────────────┘
+
+  Datos del ejemplo:
+  ┌──────────────────────────┬─────────────┬──────────┬───┬────┬────────┬──────┬──────┬──────┬──────┬──────┐
+  │ BAUZA PEDRONI RAMON      │ V213264954  │ HUA/HIJO │ 1 │ SI │ 133.33 │ 7.50 │ 3.98 │ 2.41 │ 0.00 │ 2.41 │
+  │ ERNESTO                  │             │          │   │    │        │      │      │      │      │      │
+  │ BAUZA PEDRONI ANDRES     │ V213264962  │ HUA/HIJO │ 1 │ NO │ 133.33 │ 7.50 │ 3.98 │ 2.41 │ 0.00 │ 2.41 │
+  │ ALEJANDRO                │             │          │   │    │        │      │      │      │      │      │
+  │ PEDRONI LEPERVANCHE      │ V069727138  │ HUA/HIJO │ 1 │ NO │ 133.33 │ 7.50 │ 3.98 │ 2.41 │ 0.00 │ 2.41 │
+  │ PAOLA MARIA              │             │          │   │    │        │      │      │      │      │      │
+  └──────────────────────────┴─────────────┴──────────┴───┴────┴────────┴──────┴──────┴──────┴──────┴──────┘
+
+  IMPORTANTE: En el ANVERSO la columna dice "Cuota Parte Hereditaria(Bs)"
+  pero el valor mostrado (133.33) está en UNIDADES TRIBUTARIAS.
+  Esto se confirma porque: 160.00 Bs / 3 herederos = 53.33 Bs (no 133.33).
+  Pero: 53.33 Bs / 0.40 Bs/UT = 133.33 UT ← Este es el valor real.
+
+  Cálculos por heredero:
+    cuotaParteBs  = Patrimonio Neto (ítem 11) / Total Herederos
+    cuotaParteUT  = cuotaParteBs / Unidad Tributaria
+    porcentaje    = según tabla de tarifas (ver calculos_seniat_sucesiones_ver_resumen.txt)
+    sustraendo    = según tabla de tarifas (con desplazamiento, rango anterior)
+    impuestoUT    = (cuotaParteUT × porcentaje / 100) − sustraendo
+    impuestoBs    = impuestoUT × Unidad Tributaria
+    impuestoPagar = impuestoBs − reducción
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN H: IDENTIFICACIÓN DE HEREDERO PREMUERTO                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Columnas de la tabla:
+  ┌──────────────────────────────────────┬──────────────────────────────────────┬─────────────┬────────────┐
+  │ Apellidos y Nombre del Heredero     │ Apellidos y Nombre de lo(s)         │ C.I./       │ Parentesco │
+  │ Premuerto                           │ Heredero(s) del Premuerto           │ Pasaporte   │            │
+  └──────────────────────────────────────┴──────────────────────────────────────┴─────────────┴────────────┘
+
+  Cálculos: NINGUNO — Tabla informativa.
+  Fuente: Lista de herederos marcados como premuertos y sus representantes.
+  NOTA: En el ejemplo, la tabla está vacía aunque el heredero BAUZA PEDRONI
+        RAMON ERNESTO tiene Premuerto = SI en la sección G. Esto indica que
+        no se registraron herederos representantes para él.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SECCIÓN I: AUTOLIQUIDACIÓN DEL IMPUESTO                                   ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Aviso importante en la UI:
+  "Los bienes litigiosos y vivienda principal no se muestra en esta sección.
+   Puede visualizarlo en el Reverso sección Anexos"
+
+  Tabla de Autoliquidación:
+  ┌────┬──────────────────────────────────────────────────────────────────────┬──────────────────┐
+  │ #  │ Concepto                                                           │ Gravamen (Bs.)   │
+  ├────┼──────────────────────────────────────────────────────────────────────┼──────────────────┤
+  │    │                                                                    │                  │
+  │ 1  │ Total Bienes Inmuebles                                             │   3,700,000.00   │
+  │    │                                                                    │                  │
+  │ 2  │ Total Bienes Muebles                                               │         500.00   │
+  │    │                                                                    │                  │
+  │ 3  │ Patrimonio Hereditario Bruto (1 + 2)                               │   3,700,500.00   │
+  │    │                                                                    │                  │
+  │ 4  │ Activo Hereditario Bruto (Patrimonio Hereditario Bruto)            │   3,700,500.00   │
+  │    │                                                                    │                  │
+  │ 5  │ Desgravámenes                                                      │   3,700,000.00   │
+  │    │                                                                    │                  │
+  │ 6  │ Exenciones                                                         │          10.00   │
+  │    │                                                                    │                  │
+  │ 7  │ Exoneraciones                                                      │          10.00   │
+  │    │                                                                    │                  │
+  │ 8  │ Total de Exclusiones (Desgravámenes - Exenciones - Exoneraciones)  │   3,700,020.00   │
+  │    │                                                                    │                  │
+  │    │             ────── Patrimonio Neto Hereditario ──────              │                  │
+  │    │                                                                    │                  │
+  │ 9  │ Activo Hereditario Neto                                            │         480.00   │
+  │    │ (Activo Hereditario Bruto - Total de Exclusiones)                  │                  │
+  │    │                                                                    │                  │
+  │ 10 │ Total Pasivo                                                       │         320.00   │
+  │    │                                                                    │                  │
+  │ 11 │ Patrimonio Neto Hereditario o Líquido Hereditario Gravable        │         160.00   │
+  │    │ (Activo Hereditario Neto - Total Pasivo)                           │                  │
+  │    │                                                                    │                  │
+  │    │             ────── Determinación de Tributo ──────                │                  │
+  │    │                                                                    │                  │
+  │ 12 │ Impuesto Determinado por Según Tarifa                              │           7.23   │
+  │    │                                                                    │                  │
+  │ 13 │ Reducciones                                                        │           0.00   │
+  │    │                                                                    │                  │
+  │ 14 │ Total Impuesto Pagado en Declaración Sustituida                    │           0.00   │
+  │    │                                                                    │                  │
+  │ 15 │ Total Impuesto a Pagar                                             │           7.23   │
+  └────┴──────────────────────────────────────────────────────────────────────┴──────────────────┘
+
+  Fórmulas (idénticas a las de la página Resumen):
+  ───────────────────────────────────────────────────
+    Ítem 3  = Ítem 1 + Ítem 2
+    Ítem 4  = Ítem 3
+    Ítem 8  = Ítem 5 + Ítem 6 + Ítem 7  (SUMA, aunque label diga "−")
+    Ítem 9  = Ítem 4 − Ítem 8
+    Ítem 11 = Ítem 9 − Ítem 10
+    Ítem 12 = Σ de "Impuesto a Pagar" de cada heredero (sección G)
+    Ítem 15 = Ítem 12 − Ítem 13 − Ítem 14
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  OBSERVACIONES DEL ANVERSO                                                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  1. DIFERENCIA ENTRE ANVERSO Y RESUMEN:
+     La Sección I del Anverso contiene la MISMA tabla de autoliquidación
+     (ítems 1-15) que la página "Resumen Declaración". Los valores y
+     fórmulas son idénticos. La diferencia es que:
+     - El RESUMEN permite "Modificar Cálculo" (editar campos).
+     - El ANVERSO es de SÓLO LECTURA (no editable).
+
+  2. NOTA SOBRE BIENES LITIGIOSOS Y VIVIENDA PRINCIPAL:
+     El anverso NO muestra los bienes litigiosos ni la vivienda principal.
+     Estos se muestran exclusivamente en el Reverso (Sección Anexos).
+     En la tabla de Bienes Inmuebles del Reverso, hay columnas para
+     "Vivienda Principal" (SÍ/NO) y "Bien Litigioso" (SÍ/NO).
+
+  3. CUOTA PARTE: LABEL INCORRECTO
+     La columna dice "Cuota Parte Hereditaria(Bs)" pero el valor está
+     en UNIDADES TRIBUTARIAS, no en Bolívares.
+     Verificación: 160 Bs / 3 = 53.33 Bs ≠ 133.33
+                   53.33 / 0.40 = 133.33 UT = 133.33 ✓
+
+  4. SECCIÓN H VACÍA:
+     Aunque hay un heredero con Premuerto = SI, la sección H
+     (Identificación de Heredero Premuerto) está vacía. Esto podría
+     significar que no se registraron representantes para ese premuerto.
+
+  5. SECCIONES SIN CÁLCULOS:
+     Las secciones A, B, C, D, E, F y H son puramente informativas.
+     No tienen ningún cálculo. Los cálculos están únicamente en:
+     - Sección G (tabla de herederos con impuesto por heredero)
+     - Sección I (autoliquidación, ítems 1-15)
+
+  6. VINCULACIÓN CON EL REVERSO:
+     Los valores del anverso se calculan a partir de los datos
+     detallados en el reverso:
+     - Ítem 1 ← Monto Total de Bienes Inmuebles (Reverso)
+     - Ítem 2 ← Monto Total de Bienes Muebles (Reverso)
+     - Ítem 5 ← Monto Total de Desgravámenes (Reverso)
+     - Ítem 6 ← Monto Total de Exenciones (Reverso)
+     - Ítem 7 ← Monto Total de Exoneraciones (Reverso)
+     - Ítem 10 ← Monto Total de Pasivos (deuda + gastos) (Reverso)
+
+================================================================================
+  FIN DEL DOCUMENTO — ANVERSO
+  Siguiente: calculos_seniat_reverso.txt
+================================================================================

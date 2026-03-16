@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-03-2026 a las 03:48:36
+-- Tiempo de generación: 16-03-2026 a las 06:44:21
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -264,7 +264,46 @@ INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento
 (219, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:06'),
 (220, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:06'),
 (221, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:12'),
-(222, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:22');
+(222, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:22'),
+(223, 4, 'vcardier.0479@unimar.edu.ve', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:23:13'),
+(224, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:23:13'),
+(225, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:32:05'),
+(226, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:32:16'),
+(227, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:32:16'),
+(228, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 05:39:52'),
+(229, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 05:39:52'),
+(230, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 18:09:43'),
+(231, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 18:09:43'),
+(232, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 18:20:24'),
+(233, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 18:20:39'),
+(234, NULL, 'cardierv@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:24:07'),
+(235, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:24:13'),
+(236, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:24:13'),
+(237, NULL, 'cardierv@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:48:40'),
+(238, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:48:46'),
+(239, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:48:46'),
+(240, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 22:37:28'),
+(241, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 22:37:28'),
+(242, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 00:30:32'),
+(243, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 00:31:22'),
+(244, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 00:43:41'),
+(245, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 00:43:41'),
+(246, NULL, 'frank@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:35:35'),
+(247, NULL, 'frank@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:35:58'),
+(248, NULL, 'frank@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:36:02'),
+(249, NULL, 'frank@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:36:13'),
+(250, NULL, 'frank@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:36:58'),
+(251, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 03:23:23'),
+(252, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 03:23:23');
+INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento_id`, `fail_reason`, `ip_address`, `user_agent`, `created_at`) VALUES
+(253, NULL, 'cardierv@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 22:03:19'),
+(254, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 22:03:27'),
+(255, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 22:03:27'),
+(256, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 04:13:05'),
+(257, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 04:13:25'),
+(258, NULL, 'admin@admin.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 05:35:33'),
+(259, NULL, 'admin@admin.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 05:35:49'),
+(260, NULL, 'admin@admin.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 05:35:55');
 
 -- --------------------------------------------------------
 
@@ -5475,10 +5514,10 @@ CREATE TABLE `sim_caso_bm_banco` (
 --
 
 INSERT INTO `sim_caso_bm_banco` (`id`, `bien_mueble_id`, `banco_id`, `numero_cuenta`, `created_at`) VALUES
-(1, 1, 1, '010256556', '2026-03-07 07:12:52'),
-(2, 2, 2, '5555', '2026-03-07 07:12:52'),
-(3, 30, 1, '010256556', '2026-03-07 19:12:09'),
-(4, 31, 2, '5555', '2026-03-07 19:12:09');
+(1, 1, 1, '88888888888888888888', '2026-03-07 07:12:52'),
+(2, 2, 2, '88888888888888888888', '2026-03-07 07:12:52'),
+(3, 30, 1, '88888888888888888888', '2026-03-07 19:12:09'),
+(4, 31, 2, '88888888888888888888', '2026-03-07 19:12:09');
 
 -- --------------------------------------------------------
 
@@ -6050,10 +6089,10 @@ CREATE TABLE `sim_cat_grupos_tarifa` (
 --
 
 INSERT INTO `sim_cat_grupos_tarifa` (`id`, `nombre`, `activo`, `created_at`) VALUES
-(1, 'Ascendientes, Descendientes, Cónyuge e Hijos Adoptivos', 1, '2026-03-02 03:59:40'),
-(2, 'Hermanos, Sobrinos por Derecho de Representación', 1, '2026-03-02 03:59:40'),
-(3, 'Otros Colaterales de 3er y 4to Grado', 1, '2026-03-02 03:59:40'),
-(4, 'Afines, Otros Parientes y Extraños', 1, '2026-03-02 03:59:40');
+(1, 'Ascendientes Descendientes Cónyuges e Hijos Adoptivos', 1, '2026-03-02 03:59:40'),
+(2, 'Hermanos Sobrinos por Derecho de Representación', 1, '2026-03-02 03:59:40'),
+(3, 'Otros Colaterales de 3° y los de 4° Grado', 1, '2026-03-02 03:59:40'),
+(4, 'Afines Otros Parientes y Extraños', 1, '2026-03-02 03:59:40');
 
 -- --------------------------------------------------------
 
@@ -6093,6 +6132,37 @@ INSERT INTO `sim_cat_parentescos` (`id`, `clave`, `etiqueta`, `activo`, `grupo_t
 (17, 'Primo', 'Prima/Primo', 1, 3),
 (18, 'Otro', 'Otro', 1, 4),
 (19, 'Sin_Definir', 'Sin definir', 1, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sim_cat_reducciones`
+--
+
+CREATE TABLE `sim_cat_reducciones` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `ordinal` tinyint(2) UNSIGNED NOT NULL COMMENT 'Ordinal del Art. 11 (1-7)',
+  `clave` varchar(50) NOT NULL COMMENT 'Identificador interno',
+  `etiqueta` varchar(120) NOT NULL COMMENT 'Descripción para mostrar en UI',
+  `porcentaje_reduccion` decimal(5,2) NOT NULL COMMENT 'Porcentaje de reducción sobre el impuesto',
+  `es_por_dependiente` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 = se aplica por cada hijo < 21 a cargo (ordinal 6)',
+  `cuota_max_beneficiario_ut` decimal(10,2) DEFAULT NULL COMMENT 'Tope de cuota del beneficiario para aplicar (ordinal 7 = 20 UT). NULL = sin tope específico',
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Reducciones al impuesto sucesoral - Art. 11 Ley de Sucesiones';
+
+--
+-- Volcado de datos para la tabla `sim_cat_reducciones`
+--
+
+INSERT INTO `sim_cat_reducciones` (`id`, `ordinal`, `clave`, `etiqueta`, `porcentaje_reduccion`, `es_por_dependiente`, `cuota_max_beneficiario_ut`, `activo`, `created_at`) VALUES
+(1, 1, 'CONYUGE_SOBREVIVIENTE', 'Cónyuge sobreviviente', 40.00, 0, NULL, 1, '2026-03-16 04:32:27'),
+(2, 2, 'INCAPACITADO_TOTAL', 'Incapacitado total y permanentemente para trabajar o ganarse la vida', 30.00, 0, NULL, 1, '2026-03-16 04:32:27'),
+(3, 3, 'INCAPACITADO_PARCIAL', 'Incapacitado parcial y permanentemente para trabajar y ganarse la vida', 25.00, 0, NULL, 1, '2026-03-16 04:32:27'),
+(4, 4, 'HIJO_MENOR_21', 'Hijo menor de 21 años', 40.00, 0, NULL, 1, '2026-03-16 04:32:27'),
+(5, 5, 'MAYOR_60', 'Mayor de 60 años', 30.00, 0, NULL, 1, '2026-03-16 04:32:27'),
+(6, 6, 'POR_HIJO_MENOR_21_A_CARGO', 'Por cada hijo (aún adoptivo) menor de 21 años a cargo del heredero', 5.00, 1, NULL, 1, '2026-03-16 04:32:27'),
+(7, 7, 'GRATIFICACION_SERVICIOS', 'Gratificación por años de servicios prestados al causante (cuota ≤ 20 UT)', 30.00, 0, 20.00, 1, '2026-03-16 04:32:27');
 
 -- --------------------------------------------------------
 
@@ -6340,6 +6410,62 @@ INSERT INTO `sim_cat_tipos_semoviente` (`id`, `nombre`, `activo`, `created_at`) 
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sim_cat_tramos_tarifa`
+--
+
+CREATE TABLE `sim_cat_tramos_tarifa` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `grupo_tarifa_id` tinyint(3) UNSIGNED NOT NULL,
+  `tramo` tinyint(2) UNSIGNED NOT NULL COMMENT 'Número de tramo (1-8)',
+  `limite_inferior_ut` decimal(10,2) NOT NULL COMMENT 'Desde (en UT)',
+  `limite_superior_ut` decimal(10,2) DEFAULT NULL COMMENT 'Hasta (en UT). NULL = sin límite superior',
+  `porcentaje` decimal(5,2) NOT NULL COMMENT 'Porcentaje aplicable',
+  `sustraendo_ut` decimal(10,2) NOT NULL DEFAULT 0.00 COMMENT 'Sustraendo en UT',
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Tramos de tarifa progresiva - Art. 7 Ley de Sucesiones';
+
+--
+-- Volcado de datos para la tabla `sim_cat_tramos_tarifa`
+--
+
+INSERT INTO `sim_cat_tramos_tarifa` (`id`, `grupo_tarifa_id`, `tramo`, `limite_inferior_ut`, `limite_superior_ut`, `porcentaje`, `sustraendo_ut`, `activo`, `created_at`) VALUES
+(1, 1, 1, 0.00, 15.00, 1.00, 0.00, 1, '2026-03-16 04:27:37'),
+(2, 1, 2, 15.01, 50.00, 2.50, 0.23, 1, '2026-03-16 04:27:37'),
+(3, 1, 3, 50.01, 100.00, 5.00, 1.48, 1, '2026-03-16 04:27:37'),
+(4, 1, 4, 100.01, 250.00, 7.50, 3.98, 1, '2026-03-16 04:27:37'),
+(5, 1, 5, 250.01, 500.00, 10.00, 10.23, 1, '2026-03-16 04:27:37'),
+(6, 1, 6, 500.01, 1000.00, 15.00, 35.23, 1, '2026-03-16 04:27:37'),
+(7, 1, 7, 1000.01, 4000.00, 20.00, 85.23, 1, '2026-03-16 04:27:37'),
+(8, 1, 8, 4000.01, NULL, 25.00, 285.23, 1, '2026-03-16 04:27:37'),
+(9, 2, 1, 0.00, 15.00, 2.50, 0.00, 1, '2026-03-16 04:27:37'),
+(10, 2, 2, 15.01, 50.00, 5.00, 0.38, 1, '2026-03-16 04:27:37'),
+(11, 2, 3, 50.01, 100.00, 10.00, 2.88, 1, '2026-03-16 04:27:37'),
+(12, 2, 4, 100.01, 250.00, 15.00, 7.88, 1, '2026-03-16 04:27:37'),
+(13, 2, 5, 250.01, 500.00, 20.00, 20.38, 1, '2026-03-16 04:27:37'),
+(14, 2, 6, 500.01, 1000.00, 25.00, 45.38, 1, '2026-03-16 04:27:37'),
+(15, 2, 7, 1000.01, 4000.00, 30.00, 95.38, 1, '2026-03-16 04:27:37'),
+(16, 2, 8, 4000.01, NULL, 40.00, 495.38, 1, '2026-03-16 04:27:37'),
+(17, 3, 1, 0.00, 15.00, 6.00, 0.00, 1, '2026-03-16 04:27:37'),
+(18, 3, 2, 15.01, 50.00, 12.50, 0.98, 1, '2026-03-16 04:27:37'),
+(19, 3, 3, 50.01, 100.00, 20.00, 4.73, 1, '2026-03-16 04:27:37'),
+(20, 3, 4, 100.01, 250.00, 25.00, 9.73, 1, '2026-03-16 04:27:37'),
+(21, 3, 5, 250.01, 500.00, 30.00, 22.23, 1, '2026-03-16 04:27:37'),
+(22, 3, 6, 500.01, 1000.00, 35.00, 47.23, 1, '2026-03-16 04:27:37'),
+(23, 3, 7, 1000.01, 4000.00, 40.00, 97.23, 1, '2026-03-16 04:27:37'),
+(24, 3, 8, 4000.01, NULL, 50.00, 497.23, 1, '2026-03-16 04:27:37'),
+(25, 4, 1, 0.00, 15.00, 10.00, 0.00, 1, '2026-03-16 04:27:37'),
+(26, 4, 2, 15.01, 50.00, 15.00, 0.75, 1, '2026-03-16 04:27:37'),
+(27, 4, 3, 50.01, 100.00, 25.00, 5.75, 1, '2026-03-16 04:27:37'),
+(28, 4, 4, 100.01, 250.00, 30.00, 10.75, 1, '2026-03-16 04:27:37'),
+(29, 4, 5, 250.01, 500.00, 35.00, 23.25, 1, '2026-03-16 04:27:37'),
+(30, 4, 6, 500.01, 1000.00, 40.00, 48.25, 1, '2026-03-16 04:27:37'),
+(31, 4, 7, 1000.01, 4000.00, 45.00, 98.25, 1, '2026-03-16 04:27:37'),
+(32, 4, 8, 4000.01, NULL, 55.00, 498.25, 1, '2026-03-16 04:27:37');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `sim_cat_unidades_tributarias`
 --
 
@@ -6424,7 +6550,7 @@ CREATE TABLE `sim_empresas` (
 
 INSERT INTO `sim_empresas` (`id`, `rif`, `razon_social`, `activo`, `created_at`, `updated_at`) VALUES
 (1, 'J123456789', 'unimar', 1, '2026-03-05 02:29:50', '2026-03-05 02:29:50'),
-(2, '123456789', 'unimar', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(2, '1239876548', 'unimar', 1, '2026-03-07 07:12:52', '2026-03-15 04:47:46'),
 (3, 'J012345678', 'alados c.o', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
 (4, 'J987654321', 'seguros vidal', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
 (5, 'J321654987', 'crunchyroll', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52');
@@ -6450,7 +6576,6 @@ CREATE TABLE `sim_intentos` (
   `approved_at` timestamp NULL DEFAULT NULL COMMENT 'Cuando se aprobó y generó el RIF',
   `rif_sucesoral` varchar(12) DEFAULT NULL COMMENT 'Formato J-XXXXXXXX-X, generado al aprobar',
   `password_rif` varchar(30) DEFAULT NULL COMMENT 'Contraseña simulada del RIF. Texto plano, visible para el estudiante.',
-  `estatus_rif` enum('Activo','Inactivo') DEFAULT NULL COMMENT 'NULL mientras no se genere el RIF. Inactivo bloquea acceso a Etapa 2.',
   `usuario_seniat` varchar(30) DEFAULT NULL COMMENT 'Usuario SENIAT simulado, generado al aprobar o al crear el intento',
   `fuera_de_fecha` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 si el intento se envió después de la fecha de cierre de la configuración',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -6461,11 +6586,11 @@ CREATE TABLE `sim_intentos` (
 -- Volcado de datos para la tabla `sim_intentos`
 --
 
-INSERT INTO `sim_intentos` (`id`, `asignacion_id`, `numero_intento`, `estado`, `paso_actual`, `pasos_completados`, `borrador_json`, `numero_control`, `submitted_at`, `reviewed_at`, `approved_at`, `rif_sucesoral`, `password_rif`, `estatus_rif`, `usuario_seniat`, `fuera_de_fecha`, `created_at`, `updated_at`) VALUES
-(1, 13, 1, 'En_Progreso', 1, '', '{\"tipo_sucesion\":\"Con_Cedula\",\"datos_basicos\":{\"cedula\":\"V4079920\",\"fecha_fallecimiento\":\"2024-03-28\",\"parroquia_acta\":null,\"numero_acta\":null,\"year_acta\":null,\"apellidos\":\"SARMIENTO\",\"nombres\":\"MARIA\",\"sexo\":\"F\",\"estado_civil\":\"CASADO\",\"domiciliado_pais\":1,\"nacionalidad\":\"190\",\"fecha_cierre_fiscal\":\"2024-12-31\",\"email_sucesion\":\"fadr2001@gmail.com\"},\"direcciones\":[{\"tipoDireccion\":\"06\",\"tipoDireccionText\":\"DOMICILIO FISCAL\",\"tipoVialidad\":\"01\",\"tipoVialidadLabel\":\"calle\",\"vialidad\":\"ROJAS 5\",\"tipoEdificacion\":\"01\",\"tipoEdificacionLabel\":\"edificio\",\"edificacion\":\"GARAJONAY\",\"piso\":\"PH\",\"tipoLocal\":\"01\",\"tipoLocalLabel\":\"apartamento\",\"local\":\"PH2\",\"tipoSector\":\"01\",\"tipoSectorLabel\":\"urbanizacion\",\"sector\":\"URB PRUEBA 1\",\"estado\":\"6\",\"estadoText\":\"Bolívar\",\"municipio\":\"71\",\"municipioText\":\"Heres\",\"parroquia\":\"244\",\"ciudad\":\"71\",\"ciudadText\":\"Ciudad Bolívar\",\"zonaPostal\":\"527\",\"telefono\":\"\",\"celular\":\"0412-7048856\",\"fax\":\"\",\"referencia\":\"\"},{\"tipoDireccion\":\"03\",\"tipoDireccionText\":\"BODEGA, ALMACENAMIENTO, DEPÓSITO\",\"tipoVialidad\":\"04\",\"tipoVialidadLabel\":\"carretera\",\"vialidad\":\"PARA POZ\",\"tipoEdificacion\":\"02\",\"tipoEdificacionLabel\":\"centro comercial\",\"edificacion\":\"LA VELA\",\"piso\":\"1\",\"tipoLocal\":\"02\",\"tipoLocalLabel\":\"local\",\"local\":\"A-05\",\"tipoSector\":\"03\",\"tipoSectorLabel\":\"sector\",\"sector\":\"MANEIRO\",\"estado\":\"16\",\"estadoText\":\"Nueva Esparta\",\"municipio\":\"215\",\"municipioText\":\"Maneiro\",\"parroquia\":\"713\",\"ciudad\":\"215\",\"ciudadText\":\"Pampatar\",\"zonaPostal\":\"1833\",\"telefono\":\"\",\"celular\":\"0416-6864545\",\"fax\":\"\",\"referencia\":\"LA VELA\"}],\"relaciones\":[{\"apellido\":\"DIAZ\",\"nombre\":\"FRANCISCO\",\"tipodocumento\":\"R\",\"cedula\":\"27836650\",\"parentesco\":\"50\",\"parentescoText\":\"REPRESENTANTE DE LA SUCESION\",\"pasaporte\":\"\",\"idDocumento\":\"J37836650\"},{\"apellido\":\"RODRIGUEZ\",\"nombre\":\"JANETSY\",\"tipodocumento\":\"C\",\"cedula\":\"11171151\",\"parentesco\":\"51\",\"parentescoText\":\"HEREDERO\",\"pasaporte\":\"\",\"idDocumento\":\"J11171151\"},{\"apellido\":\"ESTANGA\",\"nombre\":\"JESUS\",\"tipodocumento\":\"C\",\"cedula\":\"4224014\",\"parentesco\":\"51\",\"parentescoText\":\"HEREDERO\",\"pasaporte\":\"\",\"idDocumento\":\"V42240148\"}]}', NULL, NULL, NULL, NULL, 'V-70017894-0', NULL, 'Activo', NULL, 0, '2026-03-10 03:08:01', '2026-03-14 02:33:50'),
-(2, 6, 1, 'En_Progreso', 1, '', '{}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-10 03:54:31', '2026-03-10 03:54:31'),
-(3, 11, 1, 'En_Progreso', 1, '', '{}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-11 00:38:40', '2026-03-11 00:38:40'),
-(4, 3, 1, 'En_Progreso', 0, '', '{\"tipo_sucesion\":\"Con_Cedula\",\"datos_basicos\":{\"cedula\":\"V31120479\",\"fecha_fallecimiento\":\"09\\/03\\/2026\",\"parroquia_acta\":null,\"numero_acta\":null,\"year_acta\":null}}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-11 03:01:26', '2026-03-11 05:35:42');
+INSERT INTO `sim_intentos` (`id`, `asignacion_id`, `numero_intento`, `estado`, `paso_actual`, `pasos_completados`, `borrador_json`, `numero_control`, `submitted_at`, `reviewed_at`, `approved_at`, `rif_sucesoral`, `password_rif`, `usuario_seniat`, `fuera_de_fecha`, `created_at`, `updated_at`) VALUES
+(1, 13, 1, 'En_Progreso', 2, '', '{\"tipo_sucesion\":\"Con_Cedula\",\"datos_basicos\":{\"cedula\":\"V4079920\",\"fecha_fallecimiento\":\"2024-03-28\",\"parroquia_acta\":null,\"numero_acta\":null,\"year_acta\":null,\"apellidos\":\"SARMIENTO\",\"nombres\":\"MARIA\",\"sexo\":\"F\",\"estado_civil\":\"CASADO\",\"domiciliado_pais\":1,\"nacionalidad\":\"190\",\"fecha_cierre_fiscal\":\"2024-12-31\",\"email_sucesion\":\"fadr2001@gmail.com\"},\"direcciones\":[{\"tipoDireccion\":\"06\",\"tipoDireccionText\":\"DOMICILIO FISCAL\",\"tipoVialidad\":\"01\",\"tipoVialidadLabel\":\"calle\",\"vialidad\":\"ROJAS 5\",\"tipoEdificacion\":\"01\",\"tipoEdificacionLabel\":\"edificio\",\"edificacion\":\"GARAJONAY\",\"piso\":\"PH\",\"tipoLocal\":\"01\",\"tipoLocalLabel\":\"apartamento\",\"local\":\"PH2\",\"tipoSector\":\"01\",\"tipoSectorLabel\":\"urbanizacion\",\"sector\":\"URB PRUEBA 1\",\"estado\":\"6\",\"estadoText\":\"Bolívar\",\"municipio\":\"71\",\"municipioText\":\"Heres\",\"parroquia\":\"244\",\"ciudad\":\"71\",\"ciudadText\":\"Ciudad Bolívar\",\"zonaPostal\":\"527\",\"telefono\":\"\",\"celular\":\"0412-7048856\",\"fax\":\"\",\"referencia\":\"\"},{\"tipoDireccion\":\"03\",\"tipoDireccionText\":\"BODEGA, ALMACENAMIENTO, DEPÓSITO\",\"tipoVialidad\":\"04\",\"tipoVialidadLabel\":\"carretera\",\"vialidad\":\"PARA POZ\",\"tipoEdificacion\":\"02\",\"tipoEdificacionLabel\":\"centro comercial\",\"edificacion\":\"LA VELA\",\"piso\":\"1\",\"tipoLocal\":\"02\",\"tipoLocalLabel\":\"local\",\"local\":\"A-05\",\"tipoSector\":\"03\",\"tipoSectorLabel\":\"sector\",\"sector\":\"MANEIRO\",\"estado\":\"16\",\"estadoText\":\"Nueva Esparta\",\"municipio\":\"215\",\"municipioText\":\"Maneiro\",\"parroquia\":\"713\",\"ciudad\":\"215\",\"ciudadText\":\"Pampatar\",\"zonaPostal\":\"1833\",\"telefono\":\"\",\"celular\":\"0416-6864545\",\"fax\":\"\",\"referencia\":\"LA VELA\"}],\"relaciones\":[{\"apellido\":\"DIAZ\",\"nombre\":\"FRANCISCO\",\"tipodocumento\":\"R\",\"cedula\":\"27836650\",\"parentesco\":\"50\",\"parentescoText\":\"REPRESENTANTE DE LA SUCESION\",\"pasaporte\":\"\",\"idDocumento\":\"J37836650\"},{\"apellido\":\"RODRIGUEZ\",\"nombre\":\"JANETSY\",\"tipodocumento\":\"C\",\"cedula\":\"11171151\",\"parentesco\":\"51\",\"parentescoText\":\"HEREDERO\",\"pasaporte\":\"\",\"idDocumento\":\"J11171151\",\"premuerto\":\"Si\",\"fecha_nacimiento\":\"2026-03-11\",\"fecha_fallecimiento\":\"2026-03-12\",\"parentesco_id\":1},{\"apellido\":\"ESTANGA\",\"nombre\":\"JESUS\",\"tipodocumento\":\"C\",\"cedula\":\"4224014\",\"parentesco\":\"51\",\"parentescoText\":\"HEREDERO\",\"pasaporte\":\"\",\"idDocumento\":\"V42240148\"}],\"tipos_herencia\":{\"items\":[{\"tipo_herencia_id\":3,\"subtipo_testamento\":null,\"fecha_testamento\":null,\"fecha_conclusion_inventario\":null},{\"tipo_herencia_id\":4,\"subtipo_testamento\":null,\"fecha_testamento\":null,\"fecha_conclusion_inventario\":null}]},\"herederos_premuertos\":[{\"nombre\":\"edddd\",\"apellido\":\"dddd\",\"cedula\":\"\",\"fecha_nacimiento\":\"05\\/03\\/2026\",\"parentesco_id\":1,\"premuerto_padre_id\":\"11171151\"}],\"bienes_inmuebles\":[{\"tipo_bien_inmueble_id\":[\"1\",\"2\"],\"tipo_bien_nombres\":\"Anexo, Apartamento\",\"vivienda_principal\":\"true\",\"bien_litigioso\":\"false\",\"porcentaje\":\"50,50\",\"descripcion\":\"5656\",\"linderos\":\"5656\",\"superficie_construida\":\"666.30\",\"superficie_no_construida\":\"66.30\",\"area_superficie\":\"66.30\",\"direccion\":\"la asuncion\",\"oficina_registro\":\"45\",\"nro_registro\":\"33\",\"libro\":\"055\",\"protocolo\":\"0221\",\"fecha_registro\":\"14\\/03\\/2026\",\"trimestre\":\"553\",\"asiento_registral\":\"54\",\"matricula\":\"443\",\"folio_real_anio\":\"56\",\"valor_original\":\"3\",\"valor_declarado\":\"2,20\"},{\"tipo_bien_inmueble_id\":[\"1\",\"2\",\"5\",\"6\"],\"tipo_bien_nombres\":\"Anexo, Apartamento, Construcción destinado a Explotación, Consultorio\",\"vivienda_principal\":\"false\",\"bien_litigioso\":\"false\",\"porcentaje\":\"10,50\",\"descripcion\":\"ccc\",\"linderos\":\"cc\",\"superficie_construida\":\"33.30\",\"superficie_no_construida\":\"33.30\",\"area_superficie\":\"3.30\",\"direccion\":\"3333\",\"oficina_registro\":\"33\",\"nro_registro\":\"33\",\"libro\":\"33\",\"protocolo\":\"33\",\"fecha_registro\":\"03\\/03\\/2026\",\"trimestre\":\"33\",\"asiento_registral\":\"33\",\"matricula\":\"33\",\"folio_real_anio\":\"33\",\"valor_original\":\"33,30\",\"valor_declarado\":\"333,30\"}],\"bienes_muebles_banco\":[{\"tipo_bien\":\"37\",\"tipo_bien_nombre\":\"Acciones\",\"banco\":\"13\",\"banco_nombre\":\"100% BANCO\",\"numero_cuenta\":\"88888888888888888888\",\"bien_litigioso\":\"false\",\"porcentaje\":\"90.50\",\"descripcion\":\"juju\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"37\",\"tipo_bien_nombre\":\"Acciones\",\"banco\":\"21\",\"banco_nombre\":\"BANCAMIGA\",\"numero_cuenta\":\"88888888888888888888\",\"bien_litigioso\":\"false\",\"porcentaje\":\"90.50\",\"descripcion\":\"5.5.5\",\"valor_declarado\":\"555.5\"}],\"bienes_muebles_seguro\":[{\"tipo_bien\":\"07\",\"tipo_bien_nombre\":\"Caja de Ahorro\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"numero_prima\":\"44\",\"bien_litigioso\":\"true\",\"num_expediente\":\"dd\",\"tribunal_causa\":\"dd\",\"partes_juicio\":\"dd\",\"estado_juicio\":\"dd\",\"porcentaje\":\"0,01\",\"descripcion\":\"frfr\",\"valor_declarado\":\"10,00\"}],\"bienes_muebles_transporte\":[{\"tipo_bien\":\"41\",\"tipo_bien_nombre\":\"Maquinaria\",\"anio\":\"ddsd\",\"marca\":\"sdsdsd\",\"modelo\":\"sdsds\",\"serial\":\"sddsdsd\",\"bien_litigioso\":\"true\",\"num_expediente\":\"xcxc\",\"tribunal_causa\":\"xcxc\",\"partes_juicio\":\"xcxc\",\"estado_juicio\":\"xsx4\",\"porcentaje\":\"0,01\",\"descripcion\":\"sdsdsds\",\"valor_declarado\":\"12\"},{\"tipo_bien\":\"11\",\"tipo_bien_nombre\":\"Aereos\",\"anio\":\"3333\",\"marca\":\"toyotra\",\"modelo\":\"333333333\",\"serial\":\"333\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"33\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_opciones_compra\":[{\"tipo_bien\":\"13\",\"tipo_bien_nombre\":\"Opciones de Compras\",\"nombre_oferente\":\"2005\",\"bien_litigioso\":\"true\",\"num_expediente\":\"44\",\"tribunal_causa\":\"44\",\"partes_juicio\":\"44\",\"estado_juicio\":\"44\",\"porcentaje\":\"0,01\",\"descripcion\":\"ffffff\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"13\",\"tipo_bien_nombre\":\"Opciones de Compras\",\"nombre_oferente\":\"88888888888888888888\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"www\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"13\",\"tipo_bien_nombre\":\"Opciones de Compras\",\"nombre_oferente\":\"dddd\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_semovientes\":[{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Semovientes\",\"tipo_semoviente\":\"02\",\"tipo_semoviente_nombre\":\"Aves\",\"cantidad\":\"dde\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"eee\",\"valor_declarado\":\"1000\"},{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Semovientes\",\"tipo_semoviente\":\"01\",\"tipo_semoviente_nombre\":\"Abejas\",\"cantidad\":\"34\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"33\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Semovientes\",\"tipo_semoviente\":\"02\",\"tipo_semoviente_nombre\":\"Aves\",\"cantidad\":\"4444\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fffff\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_bonos\":[{\"tipo_bien\":\"18\",\"tipo_bien_nombre\":\"Bonos\",\"tipo_bonos\":\"eee\",\"numero_bonos\":\"ee\",\"numero_serie\":\"ee\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ee\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"18\",\"tipo_bien_nombre\":\"Bonos\",\"tipo_bonos\":\"eee\",\"numero_bonos\":\"ee\",\"numero_serie\":\"ee\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fffff\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_acciones\":[{\"tipo_bien\":\"46\",\"tipo_bien_nombre\":\"EN CLUBES\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"frfr\",\"valor_declarado\":\"5450,00\"},{\"tipo_bien\":\"45\",\"tipo_bien_nombre\":\"COTIZADAS EN LA BOLSA DE VALORES\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_prestaciones_sociales\":[{\"posee_banco\":\"false\",\"cod_banco\":\"\",\"nombre_banco\":\"-- Seleccione --\",\"numero_cuenta\":\"NO APLICA\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"Derecha\",\"valor_declarado\":\"3330,00\"},{\"posee_banco\":\"false\",\"cod_banco\":\"\",\"nombre_banco\":\"-- Seleccione --\",\"numero_cuenta\":\"NO APLICA\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"eeeeee\",\"valor_declarado\":\"0,00\"},{\"posee_banco\":\"false\",\"cod_banco\":\"\",\"nombre_banco\":\"-- Seleccione --\",\"numero_cuenta\":\"NO APLICA\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_caja_ahorro\":[{\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"cool\",\"valor_declarado\":\"0,00\"},{\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_plantaciones\":[{\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"},{\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddd\",\"valor_declarado\":\"0,00\"},{\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ffffff\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_otros\":[{\"cod_tipo_bien\":\"19\",\"nombre_tipo_bien\":\"Otros Especifique\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_bien\":\"19\",\"nombre_tipo_bien\":\"Otros Especifique\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_bien\":\"19\",\"nombre_tipo_bien\":\"Otros Especifique\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"vvvvv\",\"valor_declarado\":\"0,00\"}],\"prorrogas\":[{\"fecha_solicitud\":\"05\\/03\\/2026\",\"nro_resolucion\":\"reree\",\"fecha_resolucion\":\"04\\/03\\/2026\",\"plazo_dias\":\"35\",\"fecha_vencimiento\":\"06\\/03\\/2026\"}],\"pasivos_deuda_tdc\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"1\",\"nombre_tipo_deuda\":\"Tarjeta de Crédito\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO PROVINCIAL\",\"numero_tdc\":\"88888888888888888888\",\"porcentaje\":\"0,01\",\"descripcion\":\"ee\",\"valor_declarado\":\"110,00\"}],\"pasivos_deuda_ch\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"2\",\"nombre_tipo_deuda\":\"Crédito Hipotecario\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO PROVINCIAL\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"2\",\"nombre_tipo_deuda\":\"Crédito Hipotecario\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO PROVINCIAL\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"20,00\"}],\"pasivos_deuda_pce\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"3\",\"nombre_tipo_deuda\":\"Préstamos, Cuentas y Efectos por Pagar\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO PROVINCIAL\",\"porcentaje\":\"0,01\",\"descripcion\":\"hhgghg\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"3\",\"nombre_tipo_deuda\":\"Préstamos, Cuentas y Efectos por Pagar\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO PROVINCIAL\",\"porcentaje\":\"0,01\",\"descripcion\":\"ccc\",\"valor_declarado\":\"0,00\"}],\"pasivos_deuda_otros\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"4\",\"nombre_tipo_deuda\":\"Otro Especifique\",\"porcentaje\":\"0,01\",\"descripcion\":\"rrrr\",\"valor_declarado\":\"0,00\"}],\"pasivos_gastos\":[{\"cod_tipo_pasivo\":\"2\",\"nombre_tipo_pasivo\":\"Gastos\",\"cod_tipo_gasto\":\"7\",\"nombre_tipo_gasto\":\"Apertura de Testamento\",\"porcentaje\":\"0,01\",\"descripcion\":\"gggg\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_pasivo\":\"2\",\"nombre_tipo_pasivo\":\"Gastos\",\"cod_tipo_gasto\":\"7\",\"nombre_tipo_gasto\":\"Apertura de Testamento\",\"porcentaje\":\"0,01\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"}],\"exenciones\":[{\"tipo\":\"trtf\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"eee\",\"descripcion\":\"ee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"33\",\"descripcion\":\"33\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dd\",\"descripcion\":\"dd\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"ggg\",\"descripcion\":\"gggg\",\"valor_declarado\":\"0,00\"}],\"exoneraciones\":[{\"tipo\":\"fff\",\"descripcion\":\"fffff\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"ggg\",\"descripcion\":\"gggg\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_cuentas_efectos\":[{\"tipo_bien\":\"15\",\"tipo_bien_nombre\":\"Asociación Civil\",\"rif_cedula\":\"V278366509\",\"nombre_apellido\":\"dddddddd\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"23\"},{\"tipo_bien\":\"15\",\"tipo_bien_nombre\":\"Asociación Civil\",\"rif_cedula\":\"V278366509\",\"nombre_apellido\":\"dddddddd\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"w\",\"valor_declarado\":\"0,00\"}]}', NULL, NULL, NULL, NULL, 'V-70017894-0', 'Fadr2001+', 'franciscoadr', 0, '2026-03-10 03:08:01', '2026-03-16 04:09:12'),
+(2, 6, 1, 'En_Progreso', 1, '', '{}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-10 03:54:31', '2026-03-14 03:02:11'),
+(3, 11, 1, 'En_Progreso', 1, '', '{}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-11 00:38:40', '2026-03-11 00:38:40'),
+(4, 3, 1, 'En_Progreso', 0, '', '{\"tipo_sucesion\":\"Con_Cedula\",\"datos_basicos\":{\"cedula\":\"V4079920\",\"fecha_fallecimiento\":\"28\\/03\\/2024\",\"parroquia_acta\":null,\"numero_acta\":null,\"year_acta\":null}}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-11 03:01:26', '2026-03-15 00:31:07');
 
 -- --------------------------------------------------------
 
@@ -6967,8 +7092,8 @@ CREATE TABLE `sim_personas` (
 INSERT INTO `sim_personas` (`id`, `tipo_cedula`, `nacionalidad`, `cedula`, `pasaporte`, `rif_personal`, `nombres`, `apellidos`, `fecha_nacimiento`, `estado_civil`, `sexo`, `created_by`, `created_at`, `updated_at`) VALUES
 (1, 'V', 190, '4079920', '0123456', 'J4079921', 'Maria', 'Sarmiento', '2001-05-29', 'Casado', 'F', 1, '2026-03-06 18:14:28', '2026-03-11 20:17:13'),
 (2, 'V', 190, '4224014', '12345678', 'v42240148', 'jesus', 'estanga', '2000-03-01', 'Soltero', 'M', 1, '2026-03-06 18:52:53', '2026-03-07 06:27:58'),
-(3, 'V', 190, '27836650', '47836650', 'J37836650', 'francisco', 'diaz', '2001-05-29', 'No_aplica', 'M', 1, '2026-03-07 03:15:53', '2026-03-07 03:18:25'),
-(4, 'V', 190, '31120479', '311204790', 'J31120479', 'valeria', 'cardier', '2004-11-20', 'Casado', 'F', 1, '2026-03-07 03:34:56', '2026-03-07 03:34:56'),
+(3, 'V', 190, '27836650', '47836650', 'J37836650', 'francisco', 'diaz', '2001-05-29', 'No_aplica', 'M', 1, '2026-03-07 03:15:53', '2026-03-15 01:05:35'),
+(4, 'V', 190, '31120479', '311204790', 'V278366509', 'valeria', 'cardier', '2004-11-20', 'Casado', 'F', 1, '2026-03-07 03:34:56', '2026-03-15 04:49:29'),
 (5, 'V', 190, '11171151', '111711510', 'J11171151', 'janetsy', 'rodriguez', '1971-03-01', 'Soltero', 'M', 1, '2026-03-07 05:18:14', '2026-03-07 05:18:14'),
 (6, 'V', 190, '30061516', '30061516', 'J30061516', 'Daniel', 'Diaz', '2002-12-30', 'Concubinato', 'M', 1, '2026-03-07 05:18:14', '2026-03-07 06:30:41'),
 (7, 'V', NULL, '28555555', NULL, NULL, 'sebastian', 'astudillo', '2001-01-01', 'Soltero', 'M', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
@@ -7052,9 +7177,8 @@ CREATE TABLE `user_sessions` (
 --
 
 INSERT INTO `user_sessions` (`id`, `user_id`, `session_id`, `ip_address`, `user_agent`, `last_activity`, `created_at`) VALUES
-(26, 4, 'ijk6g2t3ml682dr6hgmhic8kls', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 01:36:21', '2026-03-09 20:40:10'),
-(41, 1, '5k6ejl7k2v3derqhtha5i6dqmd', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 17:35:27', '2026-03-11 16:15:43'),
-(57, 3, 'j53spafa8sib67pojmvniacn7h', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 22:46:36', '2026-03-13 21:21:22');
+(41, 1, 'uq6epn6bl3ra3f1ga2f5tsebsn', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 00:19:18', '2026-03-11 16:15:43'),
+(70, 3, 'dgs3h0nj085o3vq7mjbv8sulnm', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 01:42:07', '2026-03-16 00:13:25');
 
 --
 -- Índices para tablas volcadas
@@ -7432,6 +7556,14 @@ ALTER TABLE `sim_cat_parentescos`
   ADD KEY `fk_par_grupo_tarifa` (`grupo_tarifa_id`);
 
 --
+-- Indices de la tabla `sim_cat_reducciones`
+--
+ALTER TABLE `sim_cat_reducciones`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ordinal` (`ordinal`),
+  ADD UNIQUE KEY `uq_clave` (`clave`);
+
+--
 -- Indices de la tabla `sim_cat_tarifas_sucesion`
 --
 ALTER TABLE `sim_cat_tarifas_sucesion`
@@ -7478,6 +7610,13 @@ ALTER TABLE `sim_cat_tipos_pasivo_gasto`
 ALTER TABLE `sim_cat_tipos_semoviente`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `sim_cat_tramos_tarifa`
+--
+ALTER TABLE `sim_cat_tramos_tarifa`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_grupo_tramo` (`grupo_tarifa_id`,`tramo`);
 
 --
 -- Indices de la tabla `sim_cat_unidades_tributarias`
@@ -7754,7 +7893,7 @@ ALTER TABLE `user_sessions`
 -- AUTO_INCREMENT de la tabla `bitacora_accesos`
 --
 ALTER TABLE `bitacora_accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=223;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=261;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -8033,6 +8172,12 @@ ALTER TABLE `sim_cat_parentescos`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
+-- AUTO_INCREMENT de la tabla `sim_cat_reducciones`
+--
+ALTER TABLE `sim_cat_reducciones`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- AUTO_INCREMENT de la tabla `sim_cat_tarifas_sucesion`
 --
 ALTER TABLE `sim_cat_tarifas_sucesion`
@@ -8073,6 +8218,12 @@ ALTER TABLE `sim_cat_tipos_pasivo_gasto`
 --
 ALTER TABLE `sim_cat_tipos_semoviente`
   MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT de la tabla `sim_cat_tramos_tarifa`
+--
+ALTER TABLE `sim_cat_tramos_tarifa`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_cat_unidades_tributarias`
@@ -8270,7 +8421,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `user_sessions`
 --
 ALTER TABLE `user_sessions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- Restricciones para tablas volcadas
@@ -8547,6 +8698,12 @@ ALTER TABLE `sim_cat_tarifas_sucesion`
 --
 ALTER TABLE `sim_cat_tipos_bien_mueble`
   ADD CONSTRAINT `fk_ctbm_categoria` FOREIGN KEY (`categoria_bien_mueble_id`) REFERENCES `sim_cat_categorias_bien_mueble` (`id`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sim_cat_tramos_tarifa`
+--
+ALTER TABLE `sim_cat_tramos_tarifa`
+  ADD CONSTRAINT `fk_tramos_grupo_tarifa` FOREIGN KEY (`grupo_tarifa_id`) REFERENCES `sim_cat_grupos_tarifa` (`id`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `sim_causante_datos_fiscales`

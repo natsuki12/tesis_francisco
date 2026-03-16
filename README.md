@@ -39,7 +39,7 @@ Proyecto de tesis: simulador interactivo del portal SENIAT para la práctica de 
 | Software | Versión Recomendada |
 |----------|-------------------|
 | XAMPP | 8.2.x o superior |
-| PHP | 8.2+ |
+| PHP | 8.2+ (con extensión `gd` habilitada) |
 | MariaDB / MySQL | 10.4+ |
 | Composer | 2.x |
 | Navegador | Chrome, Firefox o Edge actualizado |
@@ -56,13 +56,23 @@ git clone <URL_DEL_REPOSITORIO> tesis_francisco
 cd tesis_francisco
 ```
 
-### 2. Instalar dependencias
+### 2. Habilitar extensiones PHP requeridas
+
+Abrir `C:\xampp\php\php.ini` y asegurarse de que la extensión `gd` esté habilitada (sin `;` al inicio):
+
+```ini
+extension=gd
+```
+
+> Esta extensión es requerida por **mPDF** para la generación de documentos PDF.
+
+### 3. Instalar dependencias
 
 ```bash
 composer install
 ```
 
-### 3. Configurar la base de datos
+### 4. Configurar la base de datos
 
 1. Iniciar **Apache** y **MySQL** desde el panel de XAMPP.
 2. Abrir phpMyAdmin en `http://localhost/phpmyadmin`.
@@ -71,7 +81,7 @@ composer install
 
 > La base de datos incluye las tablas: `users`, `roles`, `personas`, `estudiantes`, `profesores`, `profesores_autorizados`, `carreras`, `materias`, `secciones`, `periodos`, `inscripciones`, `password_resets`, `bitacora_accesos` y `tipos_eventos`.
 
-### 4. Configurar el archivo `.env`
+### 5. Configurar el archivo `.env`
 
 Copiar `.env.example` a `.env` y ajustar las variables:
 
@@ -92,12 +102,12 @@ SMTP_FROM=tu_correo@gmail.com
 SMTP_FROM_NAME="SPDSS - Simulador SENIAT"
 ```
 
-### 5. Verificar Apache
+### 6. Verificar Apache
 
 - Asegurarse de que `mod_rewrite` esté habilitado en Apache.
 - La carpeta del proyecto debe estar en `C:\xampp\htdocs\tesis_francisco`.
 
-### 6. Acceder al sistema
+### 7. Acceder al sistema
 
 Abrir el navegador en:
 
@@ -135,6 +145,16 @@ tesis_francisco/
 ├── spdss.sql                # Dump de la base de datos
 └── .env                     # Variables de entorno (no se sube al repo)
 ```
+
+---
+
+## Dependencias PHP (Composer)
+
+| Paquete | Versión | Propósito |
+|---------|---------|----------|
+| `phpmailer/phpmailer` | ^6.x | Envío de correos SMTP (recuperación de contraseña, notificaciones) |
+| `vlucas/phpdotenv` | ^5.x | Carga de variables de entorno desde `.env` |
+| `mpdf/mpdf` | ^8.3 | Generación de documentos PDF (declaraciones de sucesiones) |
 
 ---
 

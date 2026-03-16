@@ -5734,3 +5734,86 @@ Stack trace:
 [14-Mar-2026 00:38:10 America/Caracas] PHP Warning:  include(): Failed opening 'C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesiones\banco/../../layouts/sim_sucesiones_layout.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesiones\banco\banco.php on line 17
 [14-Mar-2026 00:38:14 America/Caracas] PHP Warning:  include(C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesiones\banco/../../layouts/sim_sucesiones_layout.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesiones\banco\banco.php on line 17
 [14-Mar-2026 00:38:14 America/Caracas] PHP Warning:  include(): Failed opening 'C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesiones\banco/../../layouts/sim_sucesiones_layout.php' for inclusion (include_path='C:\xampp\php\PEAR') in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesiones\banco\banco.php on line 17
+[14-Mar-2026 22:04:52 America/Caracas] [CRITICAL] syntax error, unexpected identifier "http" in C:\xampp\htdocs\tesis_francisco\resources\views\layouts\sim_sucesiones_layout.php:124
+[14-Mar-2026 22:04:52 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(649): App\Core\App->view('simulator/senia...', Array)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/simulador/suce...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[14-Mar-2026 22:04:57 America/Caracas] [CRITICAL] syntax error, unexpected identifier "http" in C:\xampp\htdocs\tesis_francisco\resources\views\layouts\sim_sucesiones_layout.php:124
+[14-Mar-2026 22:04:57 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(649): App\Core\App->view('simulator/senia...', Array)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/simulador/suce...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[14-Mar-2026 22:04:59 America/Caracas] [CRITICAL] syntax error, unexpected identifier "http" in C:\xampp\htdocs\tesis_francisco\resources\views\layouts\sim_sucesiones_layout.php:124
+[14-Mar-2026 22:04:59 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(672): App\Core\App->view('simulator/senia...', Array)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/simulador/suce...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[14-Mar-2026 22:05:00 America/Caracas] [CRITICAL] syntax error, unexpected identifier "http" in C:\xampp\htdocs\tesis_francisco\resources\views\layouts\sim_sucesiones_layout.php:124
+[14-Mar-2026 22:05:00 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(672): App\Core\App->view('simulator/senia...', Array)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/simulador/suce...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[14-Mar-2026 22:05:00 America/Caracas] [CRITICAL] syntax error, unexpected identifier "http" in C:\xampp\htdocs\tesis_francisco\resources\views\layouts\sim_sucesiones_layout.php:124
+[14-Mar-2026 22:05:00 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(680): App\Core\App->view('simulator/senia...')
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/simulador/suce...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[14-Mar-2026 22:05:00 America/Caracas] [CRITICAL] syntax error, unexpected identifier "http" in C:\xampp\htdocs\tesis_francisco\resources\views\layouts\sim_sucesiones_layout.php:124
+[14-Mar-2026 22:05:00 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(649): App\Core\App->view('simulator/senia...', Array)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/simulador/suce...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[14-Mar-2026 22:05:01 America/Caracas] [CRITICAL] syntax error, unexpected identifier "http" in C:\xampp\htdocs\tesis_francisco\resources\views\layouts\sim_sucesiones_layout.php:124
+[14-Mar-2026 22:05:01 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(680): App\Core\App->view('simulator/senia...')
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/simulador/suce...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[14-Mar-2026 22:05:03 America/Caracas] [CRITICAL] syntax error, unexpected identifier "http" in C:\xampp\htdocs\tesis_francisco\resources\views\layouts\sim_sucesiones_layout.php:124
+[14-Mar-2026 22:05:03 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(672): App\Core\App->view('simulator/senia...', Array)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/simulador/suce...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[14-Mar-2026 22:05:09 America/Caracas] [CRITICAL] syntax error, unexpected identifier "http" in C:\xampp\htdocs\tesis_francisco\resources\views\layouts\sim_sucesiones_layout.php:124
+[14-Mar-2026 22:05:09 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(672): App\Core\App->view('simulator/senia...', Array)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/simulador/suce...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[15-Mar-2026 23:02:36 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:02:44 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:02:49 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:02:53 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:02:53 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:02:53 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:02:54 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:02:54 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:02:54 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:02:54 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:02:55 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:02:57 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:04:07 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:04:09 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:04:13 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:04:27 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:04:29 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:04:51 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:05:49 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()
+[15-Mar-2026 23:07:34 America/Caracas] [ExencionesModel::getIntentoActivo] Call to undefined method App\Modules\Student\Models\StudentAttemptModel::getActiveAttempt()

@@ -1,0 +1,237 @@
+================================================================================
+  QUÉ SE NECESITA PARA REPLICAR "VER DECLARACIÓN" EN EL SIMULADOR
+  Página original: https://dgpatrimonios.seniat.gob.ve/sucesion/verdeclaracion
+  Fecha: 2026-03-14
+================================================================================
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  1. ARCHIVOS DE REFERENCIA (guardar con SingleFile)                        ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Guardar AMBAS vistas como HTML con SingleFile:
+    □ verdeclaracion_anverso.html  — con botón "← Anverso" activo
+    □ verdeclaracion_reverso.html  — con botón "Reverso →" activo
+
+  SingleFile captura:
+    ✓ Estructura HTML completa
+    ✓ CSS (Bootstrap + estilos propios del SENIAT)
+    ✓ Layout y posicionamiento
+    ✓ Íconos y colores (botones verde/rojo, badges)
+    ✓ Fuentes
+
+  SingleFile NO captura:
+    ✗ Lógica Angular (componentes, bindings, routing)
+    ✗ Cálculos dinámicos (son del servidor)
+    ✗ Interacciones (click en botones Anverso/Reverso/Declarar)
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  2. ESTRUCTURA DE NAVEGACIÓN A REPLICAR                                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  URL simulador: /simulador/sucesion/verdeclaracion
+
+  3 botones de navegación (centrados, horizontalmente):
+    [← Anverso]   [⊘ Declarar]   [Reverso →]
+
+  Comportamiento:
+    • Anverso y Reverso alternan la vista (mostrar/ocultar secciones)
+    • Declarar = acción de enviar/confirmar la declaración
+    • En nuestro simulador serían tabs o botones que muestran/ocultan divs
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  3. DATOS NECESARIOS DEL BACKEND (borrador_json)                           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Para renderizar esta página, se necesitan estos datos del borrador_json:
+
+  ANVERSO:
+  ─────────
+  Sección A - Datos del Contribuyente:
+    • nombre_sucesion (ej: "SUCESION BAUZA MARIN RAMON ERNESTO")
+    • rif_sucesion
+    • fecha_declaracion
+    • fecha_vencimiento
+
+  Sección B - Datos del Causante:
+    • causante.nombre + causante.apellido
+    • causante.rif
+    • causante.cedula
+
+  Sección C - Dirección del Causante:
+    • causante.direccion (concatenación de todos los campos)
+    • causante.fecha_fallecimiento
+
+  Sección D - Representante Legal:
+    • representante.nombre + representante.apellido
+    • representante.rif o cedula
+
+  Sección E - Tipo de Herencia:
+    • tipo_herencia (Ab Intestato, Testamentaria, etc.)
+
+  Sección F - Prórroga:
+    • prorrogas[] (array, puede estar vacío)
+      - fecha_solicitud
+      - nro_resolucion
+      - fecha_resolucion
+      - plazo_otorgado_dias
+      - fecha_vencimiento
+
+  Sección G - Herederos (con cálculos):
+    • relaciones[] filtrado por herederos
+      - apellido, nombre
+      - cedula o pasaporte
+      - parentescoText (ej: HUA/HIJO)
+      - grado (1-4, calculado desde parentesco)
+      - premuerto (SI/NO)
+    • Campos CALCULADOS por heredero:
+      - cuota_parte_ut
+      - porcentaje
+      - sustraendo
+      - impuesto_determinado_bs
+      - reduccion_bs
+      - impuesto_a_pagar_bs
+
+  Sección H - Herederos Premuertos:
+    • Filtrar herederos donde premuerto = SI
+    • Sus representantes (si los hay)
+
+  Sección I - Autoliquidación (ítems 1-15):
+    • ítem 1: Σ bienes_inmuebles[].monto
+    • ítem 2: Σ bienes_muebles[].monto
+    • ítem 3: ítem1 + ítem2
+    • ítem 4: = ítem3
+    • ítem 5: Σ desgravamenes[].monto
+    • ítem 6: Σ exenciones[].monto
+    • ítem 7: Σ exoneraciones[].monto
+    • ítem 8: ítem5 + ítem6 + ítem7
+    • ítem 9: ítem4 - ítem8
+    • ítem10: Σ pasivos[].monto
+    • ítem11: ítem9 - ítem10
+    • ítem12: Σ impuesto_a_pagar de cada heredero
+    • ítem13: reducciones (normalmente 0)
+    • ítem14: impuesto_pagado_declaracion_sustituida (normalmente 0)
+    • ítem15: ítem12 - ítem13 - ítem14
+
+  REVERSO:
+  ─────────
+  Sección J - Anexos (7 tablas):
+
+  J.1 Bienes Inmuebles:
+    • bienes_inmuebles[]
+      - tipo (Townhouse, Casa, Apartamento, Terreno, etc.)
+      - descripcion (linderos, superficie, dirección)
+      - registro (oficina, número, libro, tomo, protocolo, fecha)
+      - vivienda_principal (SÍ/NO) → botón circular verde/rojo
+      - bien_litigioso (SÍ/NO) → botón circular verde/rojo
+      - monto_declarado
+    • Fila final: Monto Total = Σ monto_declarado
+
+  J.2 Bienes Muebles:
+    • bienes_muebles[]
+      - tipo (Acciones, Plantaciones, Caja Ahorro, Otros, Opciones de Compra)
+      - descripcion (%, empresa, RIF empresa, oferente)
+      - bien_litigioso (SÍ/NO)
+      - monto_declarado
+    • Fila final: Monto Total
+
+  J.3 Pasivos:
+    • pasivos[] (deudas + gastos combinados)
+      - tipo (Deuda Tarjeta, Crédito Hipotecario, Gasto Testamento, etc.)
+      - descripcion (banco, número cuenta)
+      - monto_declarado
+    • Fila final: Monto Total
+
+  J.4 Desgravámenes:
+    • desgravamenes[]
+      - tipo
+      - descripcion
+      - monto_declarado
+    • Fila final: Monto Total
+    • REGLA: Si un inmueble tiene vivienda_principal=SÍ, su monto
+      se copia aquí automáticamente
+
+  J.5 Exenciones:
+    • exenciones[]
+      - tipo, descripcion, monto_declarado
+    • Fila final: Monto Total
+
+  J.6 Exoneraciones:
+    • exoneraciones[]
+      - tipo, descripcion, monto_declarado
+    • Fila final: Monto Total
+
+  J.7 Bienes Litigiosos:
+    • Filtrado automático: bienes donde bien_litigioso=SÍ
+      - tipo, descripcion, monto_declarado
+    • Fila final: Monto Total
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  4. LÓGICA DE CÁLCULOS A IMPLEMENTAR (JavaScript o PHP)                   ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  A. SUMATORIAS (simples):
+     Todos los ítems 1-11 y los Montos Totales del reverso son
+     sumas y restas directas. Ver fórmulas en Sección I del anverso.
+
+  B. CÁLCULO POR HEREDERO (complejo):
+     Referencia completa: calculos_seniat_sucesiones_ver_resumen.txt
+
+     1. cuotaParteBs = ítem11 / totalHerederos
+     2. cuotaParteUT = cuotaParteBs / valorUT
+     3. grado = mapearParentesco(parentescoText) → 1, 2, 3 o 4
+     4. Si grado==1 Y cuotaParteUT <= 75 → impuesto = 0
+     5. Buscar en tabla de tarifas: porcentaje y sustraendo
+     6. impuestoUT = (cuotaParteUT × porcentaje/100) − sustraendo
+     7. impuestoBs = impuestoUT × valorUT
+     8. impuestoPagar = impuestoBs − reduccion
+
+  C. TABLA DE TARIFAS:
+     4 tablas (una por grado) × 8 rangos cada una = 32 reglas
+     Ver Sección 6 de calculos_seniat_sucesiones_ver_resumen.txt
+
+  D. MAPEO PARENTESCO → GRADO:
+     Ver Sección 7 de calculos_seniat_sucesiones_ver_resumen.txt
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  5. ELEMENTOS VISUALES ESPECÍFICOS A REPLICAR                             ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  • Banner superior azul oscuro "Autoliquidación de Impuesto sobre Sucesiones"
+  • Banner amarillo "SU DECLARACIÓN ES TIPO SUSTITUTIVA" (condicional)
+  • Breadcrumb: Inicio > Ver Declaración
+  • 3 botones nav: ← Anverso | ⊘ Declarar | Reverso →
+  • Tablas con bordes finos, headers con fondo gris claro
+  • Filas alternas sin color (fondo blanco)
+  • Ítems en negrita: 3, 4, 8, 11, 15 (los calculados/importantes)
+  • Sub-headers centrados: "Patrimonio Neto Hereditario", "Determinación de Tributo"
+  • Aviso cyan: "Los bienes litigiosos y vivienda principal no se muestra..."
+  • Botones circulares verde SÍ / rojo NO (vivienda principal, bien litigioso)
+  • Columna "Registro" expandible en Bienes Inmuebles (textarea-like)
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  6. RESUMEN: ¿SINGLEFILE ES SUFICIENTE?                                   ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  SingleFile es ÚTIL como referencia visual pero NO SUFICIENTE porque:
+
+  ✗ No captura la lógica de calculados
+  ✗ No captura el switch Anverso/Reverso (es Angular routing)
+  ✗ No captura las validaciones
+  ✗ No captura el flujo de datos
+
+  LO QUE NECESITAS PARA REPLICAR:
+    ✓ SingleFile de ambas vistas (anverso + reverso) → para el HTML/CSS
+    ✓ Este archivo → para saber qué datos necesitas
+    ✓ calculos_seniat_sucesiones_ver_resumen.txt → para las fórmulas
+    ✓ calculos_seniat_anverso.txt → estructura del anverso
+    ✓ calculos_seniat_reverso.txt → estructura del reverso
+
+================================================================================
+  FIN DEL DOCUMENTO
+================================================================================

@@ -1,0 +1,23 @@
+/* bienes_inmuebles.css — Styles specific to the Bienes Inmuebles page
+   Shared styles (btn-danger, accionesicono, lthgtextarea2) are in tabla_seniat.css */
+
+/* ═══ Table grid (borders) ═══ */
+#tableim {
+    border-collapse: collapse;
+}
+
+#tableim th,
+#tableim td {
+    border: 1px solid #dee2e6;
+    padding: .3rem .5rem;
+}
+
+.lth {
+    width: 2%;
+    text-align: left;
+}
+
+.lthg {
+    width: 15%;
+    text-align: left;
+}

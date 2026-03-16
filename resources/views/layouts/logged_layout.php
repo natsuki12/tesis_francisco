@@ -98,15 +98,15 @@ if (!isset($user)) {
         }
     </style>
 
-    <!-- CSS de los parciales -->
+    <!-- CSS extra de la página (Bootstrap, etc.) — carga ANTES de los parciales -->
+    <?php if (isset($extraCss))
+        echo $extraCss; ?>
+
+    <!-- CSS de los parciales (cargan DESPUÉS para tener prioridad sobre Bootstrap) -->
     <link rel="stylesheet" href="<?= asset('css/partials/logged/header_logged.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/partials/logged/sidebar_logged.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/global/toast.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/global/components.css') ?>">
-
-    <!-- CSS extra de la página (si existe) -->
-    <?php if (isset($extraCss))
-        echo $extraCss; ?>
 </head>
 
 <body class="sim-layout">

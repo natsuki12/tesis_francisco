@@ -1,0 +1,350 @@
+================================================================================
+  DOCUMENTACIÓN COMPLETA: REVERSO DE LA DECLARACIÓN
+  SENIAT — Autoliquidación de Impuesto sobre Sucesiones
+  Extraído de: https://dgpatrimonios.seniat.gob.ve/sucesion/verdeclaracion
+  Fecha de extracción: 2026-03-14
+  Botón activo: Reverso →
+================================================================================
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  ESTRUCTURA GENERAL DEL REVERSO                                            ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  El Reverso contiene la Sección J - ANEXOS, que es el desglose detallado
+  de todos los activos, pasivos y exclusiones que alimentan los cálculos
+  del Anverso (Sección I).
+
+  Encabezado: Repite las secciones A-D del Anverso (Datos del Contribuyente,
+  Datos del Causante, Dirección, Representante Legal).
+
+  Subsecciones del Reverso:
+    1. Bienes Inmuebles
+    2. Bienes Muebles
+    3. Pasivos
+    4. Desgravámenes
+    5. Exenciones
+    6. Exoneraciones
+    7. Bienes Litigiosos
+
+  Cada subsección tiene:
+    • Una tabla con columnas específicas
+    • Una fila final "Monto Total" con la sumatoria
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SUBSECCIÓN 1: BIENES INMUEBLES                                            ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Columnas:
+  ┌──────────┬──────────────────┬──────────────────┬───────────┬──────────┬──────────────┐
+  │ Tipo     │ Descripción      │ Registro         │ Vivienda  │ Bien     │ Monto        │
+  │          │                  │                  │ Principal │ Litigioso│ Declarado    │
+  └──────────┴──────────────────┴──────────────────┴───────────┴──────────┴──────────────┘
+
+  Datos del ejemplo:
+  ┌──────────┬──────────────────────────────────────┬─────────┬──────────┬──────────────┐
+  │ Townhouse│ 100% de casa quinta tipo townhouse    │ (datos  │   SÍ    │    NO        │ 3,700,000.00
+  │          │ identificada con el numero 04-04.     │  de     │ (verde) │   (rojo)     │
+  │          │ Tipo de Bien Inmueble: Townhouse.     │ registro│         │              │
+  │          │ Linderos: norte con townhouse 04-03;  │ público)│         │              │
+  │          │ sur con townhouse 04-05; este con     │         │         │              │
+  │          │ zona de jardín... Superficie          │         │         │              │
+  │          │ Construida: 184 metros cuadrados.     │         │         │              │
+  │          │ Dirección: Cunjunto residencial       │         │         │              │
+  │          │ "Las tunas", urbanización Maneiro.    │         │         │              │
+  └──────────┴──────────────────────────────────────┴─────────┴──────────┴──────────────┘
+                                                              Monto Total: 3,700,000.00
+
+  Campos especiales:
+    • Vivienda Principal: Botón verde SÍ / rojo NO
+      → Si es SÍ, el monto se replica automáticamente en Desgravámenes
+    • Bien Litigioso: Botón verde SÍ / rojo NO
+      → Si es SÍ, el monto se muestra en la tabla de Bienes Litigiosos
+
+  Campos de la Descripción (contenido expandido):
+    • Tipo de Bien Inmueble
+    • Linderos (norte, sur, este, oeste)
+    • Superficie Construida (m²)
+    • Superficie Sin Construir
+    • Área o Superficie
+    • Dirección del inmueble
+
+  Campos del Registro:
+    • Oficina Subalterna/Juzgado/Notaría/Misión Vivienda
+    • Número de Registro
+    • Libro, Tomo, Protocolo
+    • Fecha de Registro
+    • Trimestre
+    • Asiento Registral
+    • Matrícula
+    • Libro de Folio Real del Año
+
+  Cálculo:
+    Monto Total = Σ de Monto Declarado de cada bien inmueble
+    → Este valor alimenta el Ítem 1 del Anverso (Total Bienes Inmuebles)
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SUBSECCIÓN 2: BIENES MUEBLES                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Columnas:
+  ┌────────────────────────────┬──────────────────────────────┬──────────┬──────────────┐
+  │ Tipo                       │ Descripción                  │ Bien     │ Monto        │
+  │                            │                              │ Litigioso│ Declarado    │
+  └────────────────────────────┴──────────────────────────────┴──────────┴──────────────┘
+
+  NOTA: No tiene columna "Vivienda Principal" ni "Registro" (a diferencia
+  de Bienes Inmuebles).
+
+  Datos del ejemplo:
+  ┌────────────────────────────┬──────────────────────────────────────────┬────┬──────────┐
+  │ Acciones                   │ 0.01% de dddd. Empresa: ESTACION DE     │ NO │   100.00 │
+  │                            │ SERVICIO MAYU C.A. RIF: J317483154.     │    │          │
+  │ Plantaciones               │ 0.01% de texto que esta en la descrip.  │ NO │   100.00 │
+  │ Caja Ahorro                │ 0.01% Empresa: ESTACION DE SERVICIO     │ NO │   100.00 │
+  │                            │ MAYU C.A.                               │    │          │
+  │ Acciones                   │ 0.01% de dddd. Empresa: FRANCISCO       │ NO │   100.00 │
+  │                            │ ALEJANDRO DIAZ RODRIGUEZ. RIF:          │    │          │
+  │                            │ V278366509.                              │    │          │
+  │ Acciones                   │ 0.01% de dddd. Empresa: ESTACION DE     │ NO │     0.00 │
+  │                            │ SERVICIO MAYU C.A. RIF: J317483154.     │    │          │
+  │ Otros                      │ 0.01% de texto que esta en la descrip.  │ NO │   100.00 │
+  │ Opciones de Compra /       │ 0.01% de eeeeee. Nombre del Oferente:   │ NO │     0.00 │
+  │ Opciones de Compras        │ 2005.                                   │    │          │
+  └────────────────────────────┴──────────────────────────────────────────┴────┴──────────┘
+                                                              Monto Total:       500.00
+
+  Tipos de Bienes Muebles posibles:
+    • Acciones
+    • Plantaciones
+    • Caja Ahorro (Caja de Ahorro)
+    • Otros
+    • Opciones de Compra / Opciones de Compras
+
+  Campos de la Descripción según tipo:
+    • Porcentaje de participación (%)
+    • Nombre de la Empresa
+    • RIF de la Empresa
+    • Nombre del Oferente (para Opciones de Compra)
+
+  Cálculo:
+    Monto Total = Σ de Monto Declarado de cada bien mueble
+    → Este valor alimenta el Ítem 2 del Anverso (Total Bienes Muebles)
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SUBSECCIÓN 3: PASIVOS                                                     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Columnas:
+  ┌──────────────────────────────────┬──────────────────────────────┬──────────────┐
+  │ Tipo                             │ Descripción                  │ Monto        │
+  │                                  │                              │ Declarado    │
+  └──────────────────────────────────┴──────────────────────────────┴──────────────┘
+
+  Datos del ejemplo:
+  ┌──────────────────────────────────┬──────────────────────────────────────┬──────────┐
+  │ Deuda Otro Especifique           │ 0.01% de texto...                    │    10.00 │
+  │ Deuda Tarjeta de Crédito         │ 0.01% de texto... Banco: BANCO DE   │   100.00 │
+  │                                  │ VENEZUELA. Número de Cuenta/Tarjeta: │          │
+  │                                  │ 1234567891011123.                    │          │
+  │ Gasto Apertura de Testamento     │ 0.01% de texto...                    │   100.00 │
+  │ Deuda Préstamos, Cuentas y       │ 0.01% de texto... Banco: BANCO DE   │   100.00 │
+  │ Efectos por Pagar                │ VENEZUELA.                           │          │
+  │ Deuda Crédito Hipotecario        │ 0.01% de texto... Banco: BANCO      │    10.00 │
+  │                                  │ CENTRAL DE VENEZUELA.                │          │
+  └──────────────────────────────────┴──────────────────────────────────────┴──────────┘
+                                                              Monto Total:     320.00
+
+  Tipos de Pasivos posibles:
+    • Deuda Otro Especifique
+    • Deuda Tarjeta de Crédito
+    • Gasto Apertura de Testamento
+    • Deuda Préstamos, Cuentas y Efectos por Pagar
+    • Deuda Crédito Hipotecario
+
+  Campos de la Descripción según tipo:
+    • Descripción libre
+    • Banco (nombre del banco)
+    • Número de Cuenta/Tarjeta
+
+  Cálculo:
+    Monto Total = Σ de Monto Declarado de cada pasivo
+    → Este valor alimenta el Ítem 10 del Anverso (Total Pasivo)
+
+  NOTA: Los pasivos incluyen tanto DEUDAS como GASTOS.
+  En el menú lateral del sistema están separados en:
+    • "Pasivos Deuda" (deudas del causante)
+    • "Pasivos Gastos" (gastos funerarios, testamento, etc.)
+  Pero en el Reverso se agrupan todos bajo "Pasivos".
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SUBSECCIÓN 4: DESGRAVÁMENES                                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Columnas:
+  ┌──────────┬──────────────────────────────────────────┬──────────────────┐
+  │ Tipo     │ Descripción                              │ Monto Declarado  │
+  └──────────┴──────────────────────────────────────────┴──────────────────┘
+
+  Datos del ejemplo:
+  ┌──────────┬──────────────────────────────────────────────────────┬──────────────┐
+  │ Townhouse│ 100% de casa quinta tipo townhouse identificada con │ 3,700,000.00 │
+  │          │ el numero 04-04. Tipo de Bien Inmueble: Townhouse.  │              │
+  │          │ Linderos: norte con townhouse numero 04-03; sur con │              │
+  │          │ townhouse 04-05; este con zona de jardín...          │              │
+  │          │ Superficie Construida: 184 metros cuadrados.        │              │
+  └──────────┴──────────────────────────────────────────────────────┴──────────────┘
+                                                         Monto Total: 3,700,000.00
+
+  REGLA IMPORTANTE:
+    Cuando un Bien Inmueble tiene "Vivienda Principal = SÍ", su monto
+    y descripción se copian AUTOMÁTICAMENTE a la tabla de Desgravámenes.
+    Es decir, la vivienda principal constituye un desgravamen legal.
+
+  Cálculo:
+    Monto Total = Σ de Monto Declarado de cada desgravamen
+    → Este valor alimenta el Ítem 5 del Anverso (Desgravámenes)
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SUBSECCIÓN 5: EXENCIONES                                                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Columnas:
+  ┌──────────┬──────────────────────────────────────────┬──────────────────┐
+  │ Tipo     │ Descripción                              │ Monto Declarado  │
+  └──────────┴──────────────────────────────────────────┴──────────────────┘
+
+  Datos del ejemplo:
+  ┌──────────┬──────────────────────────────────────────┬──────────────────┐
+  │ tipo     │ de texto que esta en la descripcion      │           10.00  │
+  └──────────┴──────────────────────────────────────────┴──────────────────┘
+                                                         Monto Total: 10.00
+
+  Cálculo:
+    Monto Total = Σ de Monto Declarado de cada exención
+    → Este valor alimenta el Ítem 6 del Anverso (Exenciones)
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SUBSECCIÓN 6: EXONERACIONES                                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Columnas:
+  ┌──────────┬──────────────────────────────────────────┬──────────────────┐
+  │ Tipo     │ Descripción                              │ Monto Declarado  │
+  └──────────┴──────────────────────────────────────────┴──────────────────┘
+
+  Datos del ejemplo:
+  ┌──────────┬──────────────────────────────────────────┬──────────────────┐
+  │ tipo     │ de texto que esta en la descripcion      │           10.00  │
+  └──────────┴──────────────────────────────────────────┴──────────────────┘
+                                                         Monto Total: 10.00
+
+  Cálculo:
+    Monto Total = Σ de Monto Declarado de cada exoneración
+    → Este valor alimenta el Ítem 7 del Anverso (Exoneraciones)
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  SUBSECCIÓN 7: BIENES LITIGIOSOS                                           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  Columnas:
+  ┌──────────┬──────────────────────────────────────────┬──────────────────┐
+  │ Tipo     │ Descripción                              │ Monto Declarado  │
+  └──────────┴──────────────────────────────────────────┴──────────────────┘
+
+  Datos del ejemplo:
+  ┌──────────────────────────────────────────────────────┬──────────────────┐
+  │ (tabla vacía — ningún bien marcado como litigioso)   │                  │
+  └──────────────────────────────────────────────────────┴──────────────────┘
+                                                         Monto Total: 0.00
+
+  REGLA:
+    Los bienes marcados con "Bien Litigioso = SÍ" en las tablas de
+    Bienes Inmuebles o Bienes Muebles aparecen aquí automáticamente.
+
+  Cálculo:
+    Monto Total = Σ de Monto Declarado de bienes con Litigioso = SÍ
+    NOTA: Este monto NO se resta directamente del activo, pero se
+    identifica por separado. En el Anverso se indica que los bienes
+    litigiosos y vivienda principal no se muestran en la sección I.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  RESUMEN DE MONTOS TOTALES Y VINCULACIÓN CON EL ANVERSO                   ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  ┌────────────────────────────┬───────────────┬──────────────────────────┐
+  │ Subsección Reverso         │ Monto Total   │ Alimenta Ítem Anverso   │
+  ├────────────────────────────┼───────────────┼──────────────────────────┤
+  │ Bienes Inmuebles           │ 3,700,000.00  │ Ítem 1 (Total Inmuebles) │
+  │ Bienes Muebles             │       500.00  │ Ítem 2 (Total Muebles)   │
+  │ Pasivos                    │       320.00  │ Ítem 10 (Total Pasivo)   │
+  │ Desgravámenes              │ 3,700,000.00  │ Ítem 5 (Desgravámenes)   │
+  │ Exenciones                 │        10.00  │ Ítem 6 (Exenciones)      │
+  │ Exoneraciones              │        10.00  │ Ítem 7 (Exoneraciones)   │
+  │ Bienes Litigiosos          │         0.00  │ (no se resta, solo info) │
+  └────────────────────────────┴───────────────┴──────────────────────────┘
+
+  Verificación con los ítems del anverso:
+    Ítem 3  = 3,700,000 + 500        = 3,700,500.00 ✓
+    Ítem 4  = 3,700,500.00                           ✓
+    Ítem 8  = 3,700,000 + 10 + 10    = 3,700,020.00 ✓
+    Ítem 9  = 3,700,500 − 3,700,020  = 480.00       ✓
+    Ítem 11 = 480 − 320              = 160.00        ✓
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  OBSERVACIONES DEL REVERSO                                                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+  1. VIVIENDA PRINCIPAL → DESGRAVAMEN AUTOMÁTICO:
+     Cuando un inmueble se marca como "Vivienda Principal = SÍ", su
+     monto se replica automáticamente como un desgravamen. Esto explica
+     por qué Bienes Inmuebles y Desgravámenes tienen el mismo monto
+     (3,700,000.00) en este ejemplo.
+
+  2. BIEN LITIGIOSO → TABLA SEPARADA:
+     Los bienes marcados como litigiosos se excluyen de la sección I
+     del anverso y se muestran en la tabla de Bienes Litigiosos del
+     reverso. En el ejemplo no hay bienes litigiosos.
+
+  3. PASIVOS AGRUPADOS:
+     El menú lateral separa "Pasivos Deuda" y "Pasivos Gastos", pero
+     en el reverso se agrupan todos bajo una sola tabla "Pasivos".
+     Los tipos observados incluyen tanto deudas (tarjeta, hipoteca,
+     préstamos) como gastos (apertura de testamento).
+
+  4. ENCABEZADO REPETIDO:
+     El reverso repite las secciones A-D del anverso (contribuyente,
+     causante, dirección, representante) antes de los Anexos.
+
+  5. CÁLCULOS DEL REVERSO:
+     Los ÚNICOS cálculos en el reverso son las SUMATORIAS de cada
+     subsección (fila "Monto Total"). No hay fórmulas complejas.
+     Toda la lógica de impuesto está en el Anverso.
+
+  6. FORMATO DE MONTOS:
+     Todos los montos usan formato con separador de miles (punto)
+     y 2 decimales: ej. 3,700,000.00 o 3.700.000,00
+
+  7. INDICADORES VISUALES:
+     • Vivienda Principal: Botón circular verde (SÍ) / rojo (NO)
+     • Bien Litigioso: Botón circular verde (SÍ) / rojo (NO)
+     Estos botones NO son clicables en la vista de declaración
+     (son de solo lectura).
+
+================================================================================
+  FIN DEL DOCUMENTO — REVERSO
+  
+  Archivos de documentación completa:
+    1. calculos_seniat_sucesiones_ver_resumen.txt  — Lógica completa de cálculos y tarifas
+    2. calculos_seniat_anverso.txt     — Secciones A–I del Anverso
+    3. calculos_seniat_reverso.txt     — Sección J (Anexos) del Reverso
+================================================================================
