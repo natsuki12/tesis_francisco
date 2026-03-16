@@ -1,4 +1,20 @@
 <?php
+/**
+ * Declaración Reverso — Secciones A–D (header) + J-Anexos con datos dinámicos.
+ *
+ * Variables recibidas desde SucesionController::declaracionReverso():
+ *   $datos['nombre_sucesion']      — "SUCESION APELLIDOS, NOMBRES"
+ *   $datos['rif']                  — RIF sucesoral
+ *   $datos[A-D headers]            — Same as anverso
+ *   $datos['inmuebles']            — Array de bienes inmuebles items
+ *   $datos['muebles']              — Array de bienes muebles items (merged)
+ *   $datos['pasivos']              — Array de pasivos items (merged)
+ *   $datos['desgravamenes']        — Array de desgravámenes items
+ *   $datos['exenciones']           — Array de exenciones items
+ *   $datos['exoneraciones']        — Array de exoneraciones items
+ *   $datos['total_*']              — Totales formateados para cada sección
+ *   $datos['fmt']                  — Función formatDecimal($float)
+ */
 ob_start();
 $activeMenu = 'verDeclaracion';
 $activeItem = 'Ver Declaración';
@@ -6,7 +22,352 @@ $breadcrumbs = [
     ['label' => 'Inicio', 'url' => '/simulador/servicios_declaracion/dashboard'],
     ['label' => 'Ver Declaración'],
 ];
+
+// ── Safe extraction ──
+$d = $datos ?? [];
+$fmt = $d['fmt'] ?? function (float $v) {
+    return number_format($v, 2, ',', '.'); };
+
+$inmuebles = $d['inmuebles'] ?? [];
+$muebles = $d['muebles'] ?? [];
+$pasivos = $d['pasivos'] ?? [];
+$desgravamenes = $d['desgravamenes'] ?? [];
+$exenciones = $d['exenciones'] ?? [];
+$exoneraciones = $d['exoneraciones'] ?? [];
+
+/**
+ * Helper: parse decimal for display (Venezuelan format "3.700.000,00" → 3700000.00)
+ */
+$parseDec = function (string $val) {
+    $val = trim($val);
+    if ($val === '' || $val === '0')
+        return 0.0;
+    if (str_contains($val, ',')) {
+        $val = str_replace('.', '', $val);
+        $val = str_replace(',', '.', $val);
+    }
+    return (float) $val;
+};
+
+/**
+ * Helper: Build formatted "Descripción" for inmueble
+ * Formato SENIAT: porcentaje + descripción + linderos + superficies + dirección
+ */
+/**
+ * Helper: Format surface value — if > 0 appends "metros cuadrados", if 0 shows "no aplica"
+ */
+function formatSuperficie(string $val): string
+{
+    $val = trim($val);
+    if ($val === '' || $val === '0' || $val === '0,00') {
+        return 'no aplica';
+    }
+    return $val . ' metros cuadrados';
+}
+
+function buildDescripcionInmueble(array $inm): string
+{
+    $parts = [];
+
+    $porc = $inm['porcentaje'] ?? '';
+    if (!empty($porc) && $porc !== '0,00') {
+        $parts[] = $porc . '% de ' . ($inm['descripcion'] ?? '');
+    } else {
+        if (!empty($inm['descripcion'])) {
+            $parts[] = $inm['descripcion'];
+        }
+    }
+
+    if (!empty($inm['tipo_bien_nombres'])) {
+        $parts[] = 'Tipo de Bien Inmueble: ' . $inm['tipo_bien_nombres'];
+    }
+
+    if (!empty($inm['linderos'])) {
+        $parts[] = 'Linderos: ' . $inm['linderos'];
+    }
+
+    $superficies = [];
+    $superficies[] = 'Superficie Construida: ' . formatSuperficie($inm['superficie_construida'] ?? '');
+    $superficies[] = 'Superficie Sin Construir: ' . formatSuperficie($inm['superficie_no_construida'] ?? '');
+    $superficies[] = 'Área o Superficie: ' . formatSuperficie($inm['area_superficie'] ?? '');
+    $parts[] = implode(', ', $superficies);
+
+    if (!empty($inm['direccion'])) {
+        $parts[] = 'Dirección: ' . $inm['direccion'];
+    }
+
+    return implode('. ', array_filter($parts));
+}
+
+/**
+ * Helper: Build formatted "Registro" for inmueble
+ * Formato SENIAT: Oficina Subalterna + Nro Registro + Libro + Protocolo + Fecha + Trimestre
+ *                 + Asiento Registral + Matrícula + Libro de Folio Real
+ */
+function buildRegistroInmueble(array $inm): string
+{
+    $parts = [];
+
+    if (!empty($inm['oficina_registro'])) {
+        $parts[] = 'Oficina Subalterna/Juzgado/Notaría/Misión Vivienda: ' . $inm['oficina_registro'];
+    }
+    if (!empty($inm['nro_registro'])) {
+        $parts[] = 'Número de Registro: ' . $inm['nro_registro'];
+    }
+    if (!empty($inm['libro'])) {
+        $parts[] = 'Libro: ' . $inm['libro'];
+    }
+    if (!empty($inm['protocolo'])) {
+        $parts[] = 'Protocolo: ' . $inm['protocolo'];
+    }
+    if (!empty($inm['fecha_registro'])) {
+        $parts[] = 'Fecha: ' . $inm['fecha_registro'];
+    }
+    if (!empty($inm['trimestre'])) {
+        $parts[] = 'Trimestre: ' . $inm['trimestre'];
+    }
+    if (!empty($inm['asiento_registral'])) {
+        $parts[] = 'Asiento Registral: ' . $inm['asiento_registral'];
+    }
+    if (!empty($inm['matricula'])) {
+        $parts[] = 'Matrícula: ' . $inm['matricula'];
+    }
+    if (!empty($inm['folio_real_anio'])) {
+        $parts[] = 'Libro de Folio Real del Año: ' . $inm['folio_real_anio'];
+    }
+
+    return implode(', ', array_filter($parts));
+}
+
+/**
+ * Helper: Build formatted "Descripción" for bienes muebles.
+ * Replica el formato usado en cada tabla de guardado por sección.
+ *
+ * @param array $mue  Item de bienes muebles (con 'categoria' inyectado por BorradorService)
+ * @return string     Descripción formateada
+ */
+function buildDescripcionMueble(array $mue): string
+{
+    $pct  = $mue['porcentaje'] ?? '';
+    $desc = $mue['descripcion'] ?? '';
+    $cat  = $mue['categoria'] ?? '';
+
+    // Base: "X% de DESCRIPCION"
+    $base = '';
+    if (!empty($pct) && $pct !== '0,00') {
+        $base = $pct . '% de ' . $desc;
+    } else {
+        $base = $desc;
+    }
+
+    // Agregar campos específicos según categoría
+    $extra = '';
+    switch ($cat) {
+        case 'Banco':
+            $parts = [];
+            if (!empty($mue['banco_nombre'])) $parts[] = 'Banco: ' . $mue['banco_nombre'];
+            if (!empty($mue['numero_cuenta'])) $parts[] = 'Número de Cuenta: ' . $mue['numero_cuenta'];
+            $extra = implode(', ', $parts);
+            break;
+
+        case 'Seguro':
+            $parts = [];
+            if (!empty($mue['rif_empresa'])) $parts[] = 'RIF Aseguradora: ' . $mue['rif_empresa'] . ' ' . ($mue['razon_social'] ?? '');
+            if (!empty($mue['numero_prima'])) $parts[] = 'Número Prima: ' . $mue['numero_prima'];
+            $extra = implode(', ', $parts);
+            break;
+
+        case 'Transporte':
+            $parts = [];
+            if (!empty($mue['marca'])) $parts[] = 'Marca: ' . $mue['marca'];
+            if (!empty($mue['modelo'])) $parts[] = 'Modelo: ' . $mue['modelo'];
+            if (!empty($mue['anio'])) $parts[] = 'Año: ' . $mue['anio'];
+            if (!empty($mue['color'])) $parts[] = 'Color: ' . $mue['color'];
+            if (!empty($mue['placa'])) $parts[] = 'Placa: ' . $mue['placa'];
+            if (!empty($mue['serial_carroceria'])) $parts[] = 'Serial Carrocería: ' . $mue['serial_carroceria'];
+            if (!empty($mue['serial_motor'])) $parts[] = 'Serial Motor: ' . $mue['serial_motor'];
+            $extra = implode(', ', $parts);
+            break;
+
+        case 'Acciones':
+        case 'Prestaciones Sociales':
+        case 'Caja de Ahorro':
+            $parts = [];
+            if (!empty($mue['razon_social'])) $parts[] = 'Nombre de la Empresa: ' . $mue['razon_social'];
+            if (!empty($mue['rif_empresa'])) $parts[] = 'RIF Empresa: ' . $mue['rif_empresa'];
+            $extra = implode(', ', $parts);
+            break;
+
+        case 'Semovientes':
+            $parts = [];
+            if (!empty($mue['tipo_semoviente_nombre'])) $parts[] = 'Tipo: ' . $mue['tipo_semoviente_nombre'];
+            if (!empty($mue['cantidad'])) $parts[] = 'Cantidad de Semovientes: ' . $mue['cantidad'];
+            $extra = implode(', ', $parts);
+            break;
+
+        case 'Bonos':
+            $parts = [];
+            if (!empty($mue['tipo_bonos'])) $parts[] = 'Tipo de Bono: ' . $mue['tipo_bonos'];
+            if (!empty($mue['numero_bonos'])) $parts[] = 'Número de Bonos: ' . $mue['numero_bonos'];
+            if (!empty($mue['numero_serie'])) $parts[] = 'Número de Serie: ' . $mue['numero_serie'];
+            $extra = implode(', ', $parts);
+            break;
+
+        case 'Cuentas/Efectos':
+            $parts = [];
+            if (!empty($mue['nombre_apellido'])) $parts[] = 'Nombre del Deudor: ' . $mue['nombre_apellido'];
+            if (!empty($mue['rif_cedula'])) $parts[] = 'RIF Deudor: ' . $mue['rif_cedula'];
+            $extra = implode(', ', $parts);
+            break;
+
+        case 'Opciones de Compra':
+            if (!empty($mue['nombre_oferente'])) $extra = 'Oferente: ' . $mue['nombre_oferente'];
+            break;
+
+        // Plantaciones, Otros → solo porcentaje + descripcion
+        default:
+            break;
+    }
+
+    if (!empty($extra)) {
+        return $base . '. ' . $extra . '.';
+    }
+    return $base . '.';
+}
+
+/**
+ * Helper: Build formatted "Descripción" for pasivos.
+ * Replica el formato usado en cada tabla de guardado por sección.
+ *
+ * @param array $pas  Item de pasivos (con 'categoria' inyectado por BorradorService)
+ * @return string     Descripción formateada
+ */
+function buildDescripcionPasivo(array $pas): string
+{
+    $pct  = $pas['porcentaje'] ?? '';
+    $desc = $pas['descripcion'] ?? '';
+    $cat  = $pas['categoria'] ?? '';
+
+    // Base: "X% de DESCRIPCION"
+    $base = '';
+    if (!empty($pct) && $pct !== '0,00') {
+        $base = $pct . '% de ' . $desc;
+    } else {
+        $base = $desc;
+    }
+
+    $extra = '';
+    switch ($cat) {
+        case 'Tarjetas de Crédito':
+            $parts = [];
+            if (!empty($pas['nombre_banco'])) $parts[] = 'Banco: ' . $pas['nombre_banco'];
+            if (!empty($pas['numero_tdc'])) $parts[] = 'Número de Cuenta/Tarjeta: ' . $pas['numero_tdc'];
+            $extra = implode(', ', $parts);
+            break;
+
+        case 'Créditos Hipotecarios':
+        case 'Préstamos/Créditos':
+            if (!empty($pas['nombre_banco'])) $extra = 'Banco: ' . $pas['nombre_banco'];
+            break;
+
+        // Gastos, Otros → solo porcentaje + descripcion
+        default:
+            break;
+    }
+
+    if (!empty($extra)) {
+        return $base . '. ' . $extra . '.';
+    }
+    return $base . '.';
+}
+
+/**
+ * Helper: Build formatted "Descripción" for desgravámenes.
+ * Vivienda Principal: porcentaje + descripción + tipo de bien + linderos + superficies
+ * Seguro: porcentaje + descripción + RIF Aseguradora + Número Prima
+ *
+ * @param array $des  Item de desgravamen (inmueble o seguro con 'categoria')
+ * @return string     Descripción formateada
+ */
+function buildDescripcionDesgravamen(array $des): string
+{
+    $cat = $des['categoria'] ?? '';
+
+    if ($cat === 'Vivienda Principal') {
+        $pct  = $des['porcentaje'] ?? '';
+        $desc = $des['descripcion'] ?? '';
+        $tipo = $des['tipo_bien_nombres'] ?? '';
+
+        $base = '';
+        if (!empty($pct) && $pct !== '0,00') {
+            $base = $pct . '% de ' . $desc;
+        } else {
+            $base = $desc;
+        }
+
+        $parts = [];
+        if (!empty($tipo)) {
+            $parts[] = 'Tipo de Bien Inmueble: ' . $tipo;
+        }
+        if (!empty($des['linderos'])) {
+            $parts[] = 'Linderos: ' . $des['linderos'];
+        }
+        $parts[] = 'Superficie Construida: ' . formatSuperficie($des['superficie_construida'] ?? '');
+        $parts[] = 'Superficie Sin Construir: ' . formatSuperficie($des['superficie_no_construida'] ?? '');
+        $parts[] = 'Área o Superficie: ' . formatSuperficie($des['area_superficie'] ?? '');
+
+        if (!empty($parts)) {
+            return $base . '. ' . implode(', ', $parts) . '.';
+        }
+        return $base . '.';
+    }
+
+    if ($cat === 'Seguro') {
+        $pct  = $des['porcentaje'] ?? '';
+        $desc = $des['descripcion'] ?? '';
+
+        $base = '';
+        if (!empty($pct) && $pct !== '0,00') {
+            $base = $pct . '% de ' . $desc;
+        } else {
+            $base = $desc;
+        }
+
+        $parts = [];
+        if (!empty($des['rif_empresa'])) {
+            $parts[] = 'RIF Aseguradora: ' . $des['rif_empresa'] . ' ' . ($des['razon_social'] ?? '');
+        }
+        if (!empty($des['numero_prima'])) {
+            $parts[] = 'Número Prima: ' . $des['numero_prima'];
+        }
+
+        if (!empty($parts)) {
+            return $base . '. ' . implode(', ', $parts) . '.';
+        }
+        return $base . '.';
+    }
+
+    // Fallback
+    return $des['descripcion'] ?? '';
+}
 ?>
+
+<!-- Estilos para textareas auto-ajustables -->
+<style>
+.autosize-ta {
+    width: 100%;
+    min-height: 28px;
+    overflow: hidden;
+    resize: none;
+    border: 1px solid #dee2e6;
+    background: #fff;
+    padding: 4px 6px;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: 1.4;
+    box-sizing: border-box;
+}
+</style>
 
 <!-- Alerta tipo declaración -->
 <div class="row">
@@ -26,7 +387,8 @@ $breadcrumbs = [
                     <i class="bi bi-arrow-bar-left"></i> Anverso
                 </a>
                 &nbsp;
-                <button type="button" class="btn btn-sm btn-danger" id="btnDeclararReverso" onclick="window.modalManager.open('modal-declarar')">
+                <button type="button" class="btn btn-sm btn-danger" id="btnDeclararReverso"
+                    onclick="window.modalManager.open('modal-declarar')">
                     <i class="bi-check-circle"></i> Declarar
                 </button>
                 &nbsp;&nbsp;
@@ -51,8 +413,10 @@ $breadcrumbs = [
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td class="bordeIzq bordeAbajo bordeDer">SUCESION BAUZA MARIN RAMON ERNESTO</td>
-                                    <td class="bordeAbajo bordeDer text-end">J504705900</td>
+                                    <td class="bordeIzq bordeAbajo bordeDer">
+                                        <?= htmlspecialchars($d['nombre_sucesion'] ?? '') ?></td>
+                                    <td class="bordeAbajo bordeDer text-end"><?= htmlspecialchars($d['rif'] ?? '') ?>
+                                    </td>
                                 </tr>
                             </tbody>
 
@@ -65,8 +429,10 @@ $breadcrumbs = [
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td class="bordeIzq bordeAbajo bordeDer">14/03/2026</td>
-                                    <td class="bordeAbajo bordeDer text-end">17/01/2023</td>
+                                    <td class="bordeIzq bordeAbajo bordeDer">
+                                        <?= htmlspecialchars($d['fecha_declaracion'] ?? '') ?></td>
+                                    <td class="bordeAbajo bordeDer text-end">
+                                        <?= htmlspecialchars($d['fecha_vencimiento'] ?? '') ?></td>
                                 </tr>
                             </tbody>
 
@@ -79,8 +445,11 @@ $breadcrumbs = [
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td class="bordeIzq bordeAbajo bordeDer">BAUZA MARIN, RAMON ERNESTO</td>
-                                    <td class="bordeAbajo bordeDer text-end">J504705900 / 6145727</td>
+                                    <td class="bordeIzq bordeAbajo bordeDer">
+                                        <?= htmlspecialchars($d['nombre_causante'] ?? '') ?></td>
+                                    <td class="bordeAbajo bordeDer text-end">
+                                        <?= htmlspecialchars(($d['rif_causante'] ?? '') . ' / ' . ($d['cedula_causante'] ?? '')) ?>
+                                    </td>
                                 </tr>
                             </tbody>
 
@@ -93,10 +462,10 @@ $breadcrumbs = [
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td class="bordeIzq bordeAbajo bordeDer">CALLE OESTE CASA CONJUNTO RESIDENCIAL LAS
-                                        TUNAS NRO 04-04 NO APLICA URBANIZACION MANEIRO CIUDAD PAMPATAR PARROQUIA:
-                                        CAPITAL MANEIRO MUNICIPIO: MANEIRO ESTADO: NUEVA ESPARTA</td>
-                                    <td class="bordeAbajo bordeDer text-end">21/04/2022</td>
+                                    <td class="bordeIzq bordeAbajo bordeDer">
+                                        <?= htmlspecialchars($d['domicilio_fiscal'] ?? '') ?></td>
+                                    <td class="bordeAbajo bordeDer text-end">
+                                        <?= htmlspecialchars($d['fecha_fallecimiento'] ?? '') ?></td>
                                 </tr>
                             </tbody>
 
@@ -109,8 +478,8 @@ $breadcrumbs = [
                             </tbody>
                             <tbody>
                                 <tr>
-                                    <td>PEDRONI LEPERVANCHE, PAOLA MARIA</td>
-                                    <td class="text-end">V069727138</td>
+                                    <td><?= htmlspecialchars($d['representante_nombre'] ?? '') ?></td>
+                                    <td class="text-end"><?= htmlspecialchars($d['representante_rif'] ?? '') ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -119,14 +488,16 @@ $breadcrumbs = [
                         <table class="table table-bordered table-sm lenletratablaResumen">
                             <tbody>
                                 <tr>
-                                    <td colspan="10" class="table-light">J- ANEXOS</td>
+                                    <td colspan="10" class="table-light"><strong>J- ANEXOS</strong></td>
                                 </tr>
                             </tbody>
 
-                            <!-- ── Bienes Inmuebles ── -->
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- ── Bienes Inmuebles ───────────────── -->
+                            <!-- ══════════════════════════════════════ -->
                             <tbody>
                                 <tr>
-                                    <td colspan="10" class="table-light">Bienes Inmuebles</td>
+                                    <td colspan="10" class="table-light"><strong>Bienes Inmuebles</strong></td>
                                 </tr>
                             </tbody>
                             <tbody>
@@ -136,146 +507,222 @@ $breadcrumbs = [
                                             <table class="table table-bordered table-sm lenletratablaResumen">
                                                 <thead>
                                                     <tr>
-                                                        <td colspan="2" class="table-light">Tipo</td>
-                                                        <td colspan="2" class="table-light">Descripción&nbsp;</td>
-                                                        <td colspan="2" class="table-light">Registro&nbsp;</td>
-                                                        <td colspan="1" class="table-light">Vivienda Principal</td>
-                                                        <td colspan="1" class="table-light">Bien Litigioso</td>
-                                                        <td colspan="2" class="table-light">Monto Declarado</td>
+                                                        <td class="table-light">Tipo</td>
+                                                        <td class="table-light">Descripción</td>
+                                                        <td class="table-light">Registro</td>
+                                                        <td class="table-light text-center">Vivienda Principal</td>
+                                                        <td class="table-light text-center">Bien Litigioso</td>
+                                                        <td class="table-light text-end">Monto Declarado</td>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    <?php foreach ($inmuebles as $inm): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($inm['tipo_bien_nombres'] ?? '') ?>
+                                                            </td>
+                                                            <td>
+                                                                <div>
+                                                                    <textarea class="autosize-ta"
+                                                                        readonly><?= htmlspecialchars(buildDescripcionInmueble($inm)) ?></textarea>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div>
+                                                                    <textarea class="autosize-ta"
+                                                                        readonly><?= htmlspecialchars(buildRegistroInmueble($inm)) ?></textarea>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <?php if (($inm['vivienda_principal'] ?? 'false') === 'true'): ?>
+                                                                    <span
+                                                                        class="badge rounded-pill bg-success">&nbsp;SI&nbsp;</span>
+                                                                <?php else: ?>
+                                                                    <span
+                                                                        class="badge rounded-pill bg-danger">&nbsp;NO&nbsp;</span>
+                                                                <?php endif; ?>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <?php if (($inm['bien_litigioso'] ?? 'false') === 'true'): ?>
+                                                                    <span
+                                                                        class="badge rounded-pill bg-success">&nbsp;SI&nbsp;</span>
+                                                                <?php else: ?>
+                                                                    <span
+                                                                        class="badge rounded-pill bg-danger">&nbsp;NO&nbsp;</span>
+                                                                <?php endif; ?>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <?= htmlspecialchars($inm['valor_declarado'] ?? '0,00') ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                                <tfoot>
                                                     <tr>
-                                                        <td colspan="2">Townhouse</td>
-                                                        <td colspan="2">
-                                                            <div>
-                                                                <textarea class="lthgtextarea22"> 100% de casa quinta tipo townhouse identificada con el numero 04-04. Tipo de Bien Inmueble: Townhouse. Linderos: norte con townhouse numero 04-03; sur con twnhouse 04-05; este con zona de jardin de uso exclusivo y area comun del conjunto; oeste con avenida oeste de la urbanizacion , Superficie Construida: 184 metros cuadrados, Superficie Sin Construir: no aplica, Área o Superficie: no aplica. , Dirección: Cunjunto residencial "Las tunas", urbanizacion Maneiro, municipio Maneiro, Estado Nueva Esparta </textarea>
-                                                            </div>
+                                                        <td colspan="5" class="text-end"><strong>Monto Total</strong>
                                                         </td>
-                                                        <td colspan="2">
-                                                            <div>
-                                                                <textarea class="lthgtextarea22"> Oficina Subalterna/Juzgado/Notaría/Misión Vivienda: Oficina Subalterna de Registro Publico del Distrito Maneiro del Estado Nueva Esparta, Número de Registro: 33, Libro: tomo quinto, Protocolo: primero, Fecha: 11/11/1992, Trimestre: tercero, Asiento Registral: 33, Matrícula: no aplica, Libro de Folio Real del Año: 1992</textarea>
-                                                            </div>
+                                                        <td class="text-end">
+                                                            <strong><?= $d['total_inmuebles'] ?? '0,00' ?></strong></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- ── Bienes Muebles ─────────────────── -->
+                            <!-- ══════════════════════════════════════ -->
+                            <tbody>
+                                <tr>
+                                    <td colspan="10" class="table-light"><strong>Bienes Muebles</strong></td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                    <td colspan="10">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-sm lenletratablaResumen">
+                                                <thead>
+                                                    <tr>
+                                                        <td class="table-light">Categoría</td>
+                                                        <td class="table-light">Descripción</td>
+                                                        <td class="table-light text-center">Bien Litigioso</td>
+                                                        <td class="table-light text-end">Monto Declarado</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($muebles as $mue): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($mue['categoria'] ?? '') ?></td>
+                                                            <td>
+                                                                <div>
+                                                                    <textarea class="autosize-ta"
+                                                                        readonly><?= htmlspecialchars(buildDescripcionMueble($mue)) ?></textarea>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <?php if (($mue['bien_litigioso'] ?? 'false') === 'true'): ?>
+                                                                    <span
+                                                                        class="badge rounded-pill bg-success">&nbsp;SI&nbsp;</span>
+                                                                <?php else: ?>
+                                                                    <span
+                                                                        class="badge rounded-pill bg-danger">&nbsp;NO&nbsp;</span>
+                                                                <?php endif; ?>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <?= htmlspecialchars($mue['valor_declarado'] ?? '0,00') ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="3" class="text-end"><strong>Monto Total</strong>
                                                         </td>
-                                                        <td colspan="1" class="text-center">
-                                                            <span class="badge rounded-pill bg-success">&nbsp;SI&nbsp;</span>
+                                                        <td class="text-end">
+                                                            <strong><?= $d['total_muebles'] ?? '0,00' ?></strong></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- ── Pasivos ────────────────────────── -->
+                            <!-- ══════════════════════════════════════ -->
+                            <tbody>
+                                <tr>
+                                    <td colspan="10" class="table-light"><strong>Pasivos</strong></td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                    <td colspan="10">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-sm lenletratablaResumen">
+                                                <thead>
+                                                    <tr>
+                                                        <td class="table-light">Categoría</td>
+                                                        <td class="table-light">Descripción</td>
+                                                        <td class="table-light text-end">Monto Declarado</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($pasivos as $pas): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($pas['categoria'] ?? '') ?></td>
+                                                            <td>
+                                                                <div>
+                                                                    <textarea class="autosize-ta"
+                                                                        readonly><?= htmlspecialchars(buildDescripcionPasivo($pas)) ?></textarea>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <?= htmlspecialchars($pas['valor_declarado'] ?? '0,00') ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="2" class="text-end"><strong>Monto Total</strong>
                                                         </td>
-                                                        <td colspan="1" class="text-center">
-                                                            <span class="badge rounded-pill bg-danger">&nbsp;NO&nbsp;</span>
+                                                        <td class="text-end">
+                                                            <strong><?= $d['total_pasivos'] ?? '0,00' ?></strong></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- ── Desgravamenes ──────────────────── -->
+                            <!-- ══════════════════════════════════════ -->
+                            <tbody>
+                                <tr>
+                                    <td colspan="10" class="table-light"><strong>Desgravamenes</strong></td>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                <tr>
+                                    <td colspan="10">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-sm lenletratablaResumen">
+                                                <thead>
+                                                    <tr>
+                                                        <td class="table-light">Tipo</td>
+                                                        <td class="table-light">Descripción</td>
+                                                        <td class="table-light text-end">Monto Declarado</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php foreach ($desgravamenes as $des): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($des['categoria'] ?? '') ?></td>
+                                                            <td>
+                                                                <div>
+                                                                    <textarea class="autosize-ta"
+                                                                        readonly><?= htmlspecialchars(buildDescripcionDesgravamen($des)) ?></textarea>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <?= htmlspecialchars($des['valor_declarado'] ?? '0,00') ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="2" class="text-end"><strong>Monto Total</strong>
                                                         </td>
-                                                        <td colspan="2" class="text-end">3.700.000,00</td>
-                                                    </tr>
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td colspan="8" class="text-end">Monto Total</td>
-                                                        <td colspan="2" class="text-end">3.700.000,00</td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-
-                            <!-- ── Bienes Muebles ── -->
-                            <tbody>
-                                <tr>
-                                    <td colspan="10" class="table-light">Bienes Muebles</td>
-                                </tr>
-                            </tbody>
-                            <tbody>
-                                <tr>
-                                    <td colspan="10">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-sm lenletratablaResumen">
-                                                <thead>
-                                                    <tr>
-                                                        <td colspan="2" class="table-light">Tipo</td>
-                                                        <td colspan="5" class="table-light">Descripción&nbsp;</td>
-                                                        <td colspan="1" class="table-light">Bien Litigioso</td>
-                                                        <td colspan="2" class="table-light text-end">Monto Declarado</td>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td colspan="8" class="text-end">Monto Total</td>
-                                                        <td colspan="2" class="text-end">0,00</td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-
-                            <!-- ── Pasivos ── -->
-                            <tbody>
-                                <tr>
-                                    <td colspan="10" class="table-light">Pasivos</td>
-                                </tr>
-                            </tbody>
-                            <tbody>
-                                <tr>
-                                    <td colspan="10">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-sm lenletratablaResumen">
-                                                <thead>
-                                                    <tr>
-                                                        <td colspan="2" class="table-light">Tipo</td>
-                                                        <td colspan="6" class="table-light">Descripción&nbsp;</td>
-                                                        <td colspan="2" class="table-light">Monto Declarado</td>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td colspan="8" class="text-end">Monto Total</td>
-                                                        <td colspan="2" class="text-end">0,00</td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-
-                            <!-- ── Desgravamenes ── -->
-                            <tbody>
-                                <tr>
-                                    <td colspan="10" class="table-light">Desgravamenes</td>
-                                </tr>
-                            </tbody>
-                            <tbody>
-                                <tr>
-                                    <td colspan="10">
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-sm lenletratablaResumen">
-                                                <thead>
-                                                    <tr>
-                                                        <td colspan="2" class="table-light">Tipo</td>
-                                                        <td colspan="6" class="table-light">Descripción&nbsp;</td>
-                                                        <td colspan="2" class="table-light text-end">Monto Declarado</td>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td colspan="2" class="lth">Townhouse</td>
-                                                        <td colspan="6">
-                                                            <div>
-                                                                <textarea class="lthgtextarea23"> 100% de casa quinta tipo townhouse identificada con el numero 04-04. Tipo de Bien Inmueble: Townhouse. Linderos: norte con townhouse numero 04-03; sur con twnhouse 04-05; este con zona de jardin de uso exclusivo y area comun del conjunto; oeste con avenida oeste de la urbanizacion , Superficie Construida: 184 metros cuadrados, Superficie Sin Construir: no aplica, Área o Superficie: no aplica. </textarea>
-                                                            </div>
+                                                        <td class="text-end">
+                                                            <strong><?= $d['total_desgravamenes'] ?? '0,00' ?></strong>
                                                         </td>
-                                                        <td colspan="2" class="text-end">3.700.000,00</td>
-                                                    </tr>
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td colspan="8" class="text-end">Monto Total</td>
-                                                        <td colspan="2" class="text-end">3.700.000,00</td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
@@ -284,10 +731,12 @@ $breadcrumbs = [
                                 </tr>
                             </tbody>
 
-                            <!-- ── Exenciones ── -->
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- ── Exenciones ─────────────────────── -->
+                            <!-- ══════════════════════════════════════ -->
                             <tbody>
                                 <tr>
-                                    <td colspan="10" class="table-light">Exenciones</td>
+                                    <td colspan="10" class="table-light"><strong>Exenciones</strong></td>
                                 </tr>
                             </tbody>
                             <tbody>
@@ -297,17 +746,35 @@ $breadcrumbs = [
                                             <table class="table table-bordered table-sm lenletratablaResumen">
                                                 <thead>
                                                     <tr>
-                                                        <td colspan="2">Tipo</td>
-                                                        <td colspan="6">Descripción&nbsp;</td>
-                                                        <td colspan="2">Monto Declarado</td>
+                                                        <td class="table-light">Tipo</td>
+                                                        <td class="table-light">Descripción</td>
+                                                        <td class="table-light text-end">Monto Declarado</td>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    <?php foreach ($exenciones as $exc): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($exc['tipo'] ?? '') ?>
+                                                            </td>
+                                                            <td>
+                                                                <div>
+                                                                    <textarea class="autosize-ta"
+                                                                        readonly><?= htmlspecialchars($exc['descripcion'] ?? '') ?></textarea>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <?= htmlspecialchars($exc['valor_declarado'] ?? '0,00') ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="8" class="text-end">Monto Total</td>
-                                                        <td colspan="2" class="text-end">0,00</td>
+                                                        <td colspan="2" class="text-end"><strong>Monto Total</strong>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <strong><?= $d['total_exenciones'] ?? '0,00' ?></strong>
+                                                        </td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
@@ -316,10 +783,12 @@ $breadcrumbs = [
                                 </tr>
                             </tbody>
 
-                            <!-- ── Exoneraciones ── -->
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- ── Exoneraciones ──────────────────── -->
+                            <!-- ══════════════════════════════════════ -->
                             <tbody>
                                 <tr>
-                                    <td colspan="10" class="table-light">Exoneraciones</td>
+                                    <td colspan="10" class="table-light"><strong>Exoneraciones</strong></td>
                                 </tr>
                             </tbody>
                             <tbody>
@@ -329,17 +798,35 @@ $breadcrumbs = [
                                             <table class="table table-bordered table-sm lenletratablaResumen">
                                                 <thead>
                                                     <tr>
-                                                        <td colspan="2" class="table-light">Tipo</td>
-                                                        <td colspan="6" class="table-light">Descripción&nbsp;</td>
-                                                        <td colspan="2" class="table-light">Monto Declarado</td>
+                                                        <td class="table-light">Tipo</td>
+                                                        <td class="table-light">Descripción</td>
+                                                        <td class="table-light text-end">Monto Declarado</td>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    <?php foreach ($exoneraciones as $exo): ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($exo['tipo'] ?? '') ?>
+                                                            </td>
+                                                            <td>
+                                                                <div>
+                                                                    <textarea class="autosize-ta"
+                                                                        readonly><?= htmlspecialchars($exo['descripcion'] ?? '') ?></textarea>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-end">
+                                                                <?= htmlspecialchars($exo['valor_declarado'] ?? '0,00') ?>
+                                                            </td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="8" class="text-end">Monto Total</td>
-                                                        <td colspan="2" class="text-end">0,00</td>
+                                                        <td colspan="2" class="text-end"><strong>Monto Total</strong>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <strong><?= $d['total_exoneraciones'] ?? '0,00' ?></strong>
+                                                        </td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
@@ -348,10 +835,12 @@ $breadcrumbs = [
                                 </tr>
                             </tbody>
 
-                            <!-- ── Bienes Litigiosos ── -->
+                            <!-- ══════════════════════════════════════ -->
+                            <!-- ── Bienes Litigiosos ──────────────── -->
+                            <!-- ══════════════════════════════════════ -->
                             <tbody>
                                 <tr>
-                                    <td colspan="10" class="table-light">Bienes Litigiosos</td>
+                                    <td colspan="10" class="table-light"><strong>Bienes Litigiosos</strong></td>
                                 </tr>
                             </tbody>
                             <tbody>
@@ -361,17 +850,55 @@ $breadcrumbs = [
                                             <table class="table table-bordered table-sm lenletratablaResumen">
                                                 <thead>
                                                     <tr>
-                                                        <td colspan="2" class="table-light">Tipo</td>
-                                                        <td colspan="6" class="table-light">Descripción&nbsp;</td>
-                                                        <td colspan="2" class="table-light">Monto Declarado</td>
+                                                        <td class="table-light">Tipo</td>
+                                                        <td class="table-light">Descripción</td>
+                                                        <td class="table-light text-end">Monto Declarado</td>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    <?php
+                                                    // Filter bienes litigiosos from inmuebles + muebles
+                                                    $litigiosos = [];
+                                                    foreach ($inmuebles as $inm) {
+                                                        if (($inm['bien_litigioso'] ?? 'false') === 'true') {
+                                                            $litigiosos[] = [
+                                                                'tipo' => $inm['tipo_bien_nombres'] ?? 'Inmueble',
+                                                                'descripcion' => buildDescripcionInmueble($inm),
+                                                                'valor' => $inm['valor_declarado'] ?? '0,00',
+                                                            ];
+                                                        }
+                                                    }
+                                                    foreach ($muebles as $mue) {
+                                                        if (($mue['bien_litigioso'] ?? 'false') === 'true') {
+                                                            $litigiosos[] = [
+                                                                'tipo' => $mue['categoria'] ?? 'Mueble',
+                                                                'descripcion' => buildDescripcionMueble($mue),
+                                                                'valor' => $mue['valor_declarado'] ?? '0,00',
+                                                            ];
+                                                        }
+                                                    }
+                                                    $totalLitigiosos = 0.0;
+                                                    foreach ($litigiosos as $lit):
+                                                        $totalLitigiosos += $parseDec($lit['valor'] ?? '0,00');
+                                                        ?>
+                                                        <tr>
+                                                            <td><?= htmlspecialchars($lit['tipo']) ?></td>
+                                                            <td>
+                                                                <div>
+                                                                    <textarea class="autosize-ta"
+                                                                        readonly><?= htmlspecialchars($lit['descripcion']) ?></textarea>
+                                                                </div>
+                                                            </td>
+                                                            <td class="text-end"><?= htmlspecialchars($lit['valor']) ?></td>
+                                                        </tr>
+                                                    <?php endforeach; ?>
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="8" class="text-end">Monto Total</td>
-                                                        <td colspan="2" class="text-end">0,00</td>
+                                                        <td colspan="2" class="text-end"><strong>Monto Total</strong>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <strong><?= $fmt($totalLitigiosos) ?></strong></td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
@@ -397,10 +924,12 @@ $breadcrumbs = [
         </div>
         <div class="modal-base__body">
             <p style="color: var(--gray-600); font-size: var(--text-md); margin: 0 0 12px;">
-                Está a punto de <strong>enviar su declaración sucesoral</strong>. Esta acción es <strong>definitiva</strong> y no podrá ser revertida.
+                Está a punto de <strong>enviar su declaración sucesoral</strong>. Esta acción es
+                <strong>definitiva</strong> y no podrá ser revertida.
             </p>
             <p style="color: var(--gray-600); font-size: var(--text-md); margin: 0 0 8px;">Al confirmar:</p>
-            <ul style="color: var(--gray-600); font-size: var(--text-md); margin: 0 0 12px; padding-left: 20px; line-height: 1.8;">
+            <ul
+                style="color: var(--gray-600); font-size: var(--text-md); margin: 0 0 12px; padding-left: 20px; line-height: 1.8;">
                 <li>Se finalizará la simulación del proceso</li>
                 <li>No podrá modificar los datos ingresados después de declarar</li>
                 <li>Recibirá un correo electrónico con el resumen y los resultados obtenidos</li>
@@ -410,7 +939,8 @@ $breadcrumbs = [
             </p>
         </div>
         <div class="modal-base__footer">
-            <button class="modal-btn modal-btn-cancel" onclick="window.modalManager.close('modal-declarar')">Cancelar</button>
+            <button class="modal-btn modal-btn-cancel"
+                onclick="window.modalManager.close('modal-declarar')">Cancelar</button>
             <button class="modal-btn modal-btn-primary" id="btnConfirmarDeclaracion">Sí, Declarar</button>
         </div>
     </div>
@@ -418,5 +948,24 @@ $breadcrumbs = [
 
 <?php
 $content = ob_get_clean();
+$pdfUrl = base_url('/simulador/sucesion/declaracion_pdf');
+$content .= '
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Auto-resize all textareas to fit content
+    document.querySelectorAll(".autosize-ta").forEach(function(ta) {
+        ta.style.height = "auto";
+        ta.style.height = ta.scrollHeight + "px";
+    });
+
+    var btn = document.getElementById("btnConfirmarDeclaracion");
+    if (btn) {
+        btn.addEventListener("click", function() {
+            window.open("' . $pdfUrl . '", "_blank");
+            window.modalManager.close("modal-declarar");
+        });
+    }
+});
+</script>';
 include __DIR__ . '/../../../../layouts/sim_sucesiones_layout.php';
 ?>

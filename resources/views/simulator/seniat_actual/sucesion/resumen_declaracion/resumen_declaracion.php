@@ -15,6 +15,14 @@ $f = function ($key, $default = '0,00') use ($d) {
 $herederos     = $d['herederos'] ?? [];
 $totalHerederos = $d['total_herederos'] ?? 0;
 $ut             = $d['ut'] ?? '0,4000000000';
+
+/**
+ * Formatea un float a string con coma decimal y punto de miles.
+ * Ejemplo: 18641.67 → "18.641,67"
+ */
+$fmtBs = function ($v): string {
+    return number_format((float)$v, 2, ',', '.');
+};
 ?>
 
 <div class="shadow-lg p-3 mb-5 bg-body rounded lenletratablaResumen">
@@ -112,7 +120,7 @@ $ut             = $d['ut'] ?? '0,4000000000';
                 <tr>
                     <td colspan="3" class="text-center border-white"><strong>Determinación de Tributo</strong></td>
                 </tr>
-                <!-- Rows 12-14 -->
+                <!-- Rows 12-15 -->
                 <tr>
                     <td>12</td>
                     <td>Impuesto Determinado por Según Tarifa</td>
@@ -152,6 +160,8 @@ $ut             = $d['ut'] ?? '0,4000000000';
                                 <div class="text-info text-center">
                                     <h6>Si desea ajustar los cálculos de forma manual presione</h6>
                                     <a class="btn btn-sm btn-danger" href="<?= base_url('/simulador/sucesion/resumen_calculo_manual') ?>">Modificar Cálculo</a>
+                                    &nbsp;
+                                    <button type="button" id="btnRestaurar" class="btn btn-sm btn-danger">Restaurar Cálculo Automático</button>
                                 </div>
                             </div>
                         </div>
@@ -185,12 +195,12 @@ $ut             = $d['ut'] ?? '0,4000000000';
                                             <td style="text-align:center"><?= htmlspecialchars($h['parentesco']) ?></td>
                                             <td style="text-align:center"><?= htmlspecialchars($h['grado']) ?></td>
                                             <td style="text-align:center"><?= htmlspecialchars($h['premuerto']) ?></td>
-                                            <td><input readonly class="input-group text-end" value="0,00"></td>
-                                            <td><input readonly class="input-group text-end" value="0,00"></td>
-                                            <td><input readonly class="input-group text-end" value="0,00"></td>
-                                            <td><input readonly class="input-group text-end" value="0,00"></td>
-                                            <td><input class="input-group text-end" value="0,00"></td>
-                                            <td><input readonly class="input-group text-end" value="0,00"></td>
+                                            <td><input readonly class="input-group text-end" value="<?= $fmtBs($h['cuota_parte_ut'] ?? 0) ?>"></td>
+                                            <td><input readonly class="input-group text-end" value="<?= $fmtBs($h['porcentaje'] ?? 0) ?>"></td>
+                                            <td><input readonly class="input-group text-end" value="<?= $fmtBs($h['sustraendo_ut'] ?? 0) ?>"></td>
+                                            <td><input readonly class="input-group text-end" value="<?= $fmtBs($h['impuesto_determinado'] ?? 0) ?>"></td>
+                                            <td><input readonly class="input-group text-end" value="<?= $fmtBs($h['reduccion'] ?? 0) ?>"></td>
+                                            <td><input readonly class="input-group text-end" value="<?= $fmtBs($h['impuesto_a_pagar'] ?? 0) ?>"></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -266,6 +276,50 @@ $ut             = $d['ut'] ?? '0,4000000000';
 </div>
 
 <?php
+$intentoIdResumen = $d ? ($d['intento_id'] ?? null) : null;
+$borradorRawResumen = $d ? ($d['borrador_raw'] ?? []) : [];
 $content = ob_get_clean();
+$content .= '
+<script>
+(function() {
+    var BASE_URL   = "' . rtrim(base_url(), '/') . '";
+    var INTENTO_ID = ' . json_encode($intentoIdResumen) . ';
+    var BORRADOR   = ' . json_encode($borradorRawResumen, JSON_UNESCAPED_UNICODE) . ';
+    var btn = document.getElementById("btnRestaurar");
+    if (btn) {
+        btn.addEventListener("click", function() {
+            if (!INTENTO_ID) { alert("No hay intento activo"); return; }
+            if (!confirm("¿Desea restaurar el cálculo automático? Se eliminarán las modificaciones manuales.")) return;
+
+            btn.disabled = true;
+            btn.textContent = "Restaurando...";
+
+            // Eliminar calculo_manual del borrador
+            delete BORRADOR.calculo_manual;
+
+            fetch(BASE_URL + "/api/intentos/" + INTENTO_ID + "/guardar", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ borrador: BORRADOR })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.ok) {
+                    window.location.reload();
+                } else {
+                    alert("Error: " + (data.error || "Error desconocido"));
+                    btn.disabled = false;
+                    btn.textContent = "Restaurar Cálculo Automático";
+                }
+            })
+            .catch(function(err) {
+                alert("Error de conexión: " + err.message);
+                btn.disabled = false;
+                btn.textContent = "Restaurar Cálculo Automático";
+            });
+        });
+    }
+})();
+</script>';
 include __DIR__ . '/../../../../layouts/sim_sucesiones_layout.php';
 ?>

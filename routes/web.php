@@ -902,27 +902,39 @@ $router->get('/simulador/sucesion/resumen_declaracion', function () use ($requir
 });
 
 // ── Resumen Cálculo Manual ──
-$router->get('/simulador/sucesion/resumen_calculo_manual', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+$router->get('/simulador/sucesion/resumen_calculo_manual', function () use ($requireAuth, $requireSimSession, $requireSeniatLogin) {
     $requireAuth();
     $requireSimSession();
     $requireSeniatLogin();
-    return $app->view('simulator/seniat_actual/sucesion/resumen_declaracion/resumen_calculo_manual');
+    $ctrl = new \App\Modules\Simulator\Controllers\SucesionController();
+    return $ctrl->calculoManual();
 });
 
 // ── Ver Declaración (Anverso) ──
-$router->get('/simulador/sucesion/declaracion_anverso', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+$router->get('/simulador/sucesion/declaracion_anverso', function () use ($requireAuth, $requireSimSession, $requireSeniatLogin) {
     $requireAuth();
     $requireSimSession();
     $requireSeniatLogin();
-    return $app->view('simulator/seniat_actual/sucesion/resumen_declaracion/declaracion_anverso');
+    $ctrl = new \App\Modules\Simulator\Controllers\SucesionController();
+    return $ctrl->declaracionAnverso();
 });
 
 // ── Ver Declaración (Reverso) ──
-$router->get('/simulador/sucesion/declaracion_reverso', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
+$router->get('/simulador/sucesion/declaracion_reverso', function () use ($requireAuth, $requireSimSession, $requireSeniatLogin) {
     $requireAuth();
     $requireSimSession();
     $requireSeniatLogin();
-    return $app->view('simulator/seniat_actual/sucesion/resumen_declaracion/declaracion_reverso');
+    $ctrl = new \App\Modules\Simulator\Controllers\SucesionController();
+    return $ctrl->declaracionReverso();
+});
+
+// ── PDF Comparación (Declaración) ──
+$router->get('/simulador/sucesion/declaracion_pdf', function () use ($requireAuth, $requireSimSession, $requireSeniatLogin) {
+    $requireAuth();
+    $requireSimSession();
+    $requireSeniatLogin();
+    $ctrl = new \App\Modules\Simulator\Controllers\PdfReportController();
+    return $ctrl->generar();
 });
 
 $router->get('/simulador/sucesion/principal', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {

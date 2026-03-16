@@ -1,6 +1,6 @@
 127.0.0.1/information_schema/KEY_COLUMN_USAGE/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=spdss
 
-   Mostrando filas 0 - 126 (total de 127, La consulta tardó 0,0015 segundos.)
+   Mostrando filas 0 - 126 (total de 127, La consulta tardó 0,0013 segundos.)
 
 
 SELECT 

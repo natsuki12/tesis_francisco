@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang=es translate=no><!--
+<html lang=es translate=no class><!--
  Page saved with SingleFile 
- url: https://dgpatrimonios.seniat.gob.ve/sucesion/verdeclaracion 
- saved date: Sat Mar 14 2026 18:58:36 GMT-0400 (hora de Venezuela)
+ url: https://dgpatrimonios.seniat.gob.ve/sucesion/resumen/calculo/manual 
+ saved date: Mon Mar 16 2026 07:28:33 GMT-0400 (hora de Venezuela)
 -->
 <meta charset=utf-8>
 <title>iSeniatV2</title>
@@ -8610,32 +8610,6 @@
         box-shadow: 10px 4px 20px var(--accordion-color-ligth)
     }
 
-    .lth {
-        width: 2%
-    }
-
-    .lthgtextarea22 {
-        height: 150px;
-        display: block;
-        border: none
-    }
-
-    .lthgtextarea22 {
-        width: 380px
-    }
-
-    .lthgtextarea23 {
-        width: 750px;
-        display: block;
-        border: none
-    }
-
-    .lthgtextarea23 {
-        height: 150px;
-        text-align: justify;
-        justify-content: stretch
-    }
-
     /*!
  * Bootstrap  v5.3.8 (https://getbootstrap.com/)
  * Copyright 2011-2025 The Bootstrap Authors
@@ -8856,15 +8830,18 @@
         border-color: inherit
     }
 
+    label {
+        display: inline-block
+    }
+
     button:focus:not(:focus-visible) {
         outline: 0
     }
 
     button,
-    textarea {
+    input {
         margin: 0;
         font-family: inherit;
-        font-size: inherit;
         line-height: inherit
     }
 
@@ -8885,6 +8862,7 @@
     }
 
     [type=button],
+    [type=submit],
     button {
         -webkit-appearance: button
     }
@@ -8899,10 +8877,6 @@
     ::-moz-focus-inner {
         padding: 0;
         border-style: none
-    }
-
-    textarea {
-        resize: vertical
     }
 
     ::-webkit-datetime-edit-day-field,
@@ -9020,6 +8994,11 @@
             width: 16.66666667%
         }
 
+        .col-sm-6 {
+            flex: 0 0 auto;
+            width: 50%
+        }
+
         .col-sm-10 {
             flex: 0 0 auto;
             width: 83.33333333%
@@ -9097,12 +9076,27 @@
     }
 
     .table-light {
+        color: var(--bs-table-color);
         border-color: var(--bs-table-border-color)
     }
 
-    .table-responsive {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch
+    .form-control {
+        display: block;
+        width: 100%;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--bs-body-color);
+        appearance: none;
+        background-color: var(--bs-body-bg);
+        background-clip: padding-box;
+        border: var(--bs-border-width) solid var(--bs-border-color);
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+        .form-control {
+            transition: none
+        }
     }
 
     .form-control[type=file]:not(:disabled):not([readonly]) {
@@ -9188,6 +9182,13 @@
 
     .form-control-plaintext:focus {
         outline: 0
+    }
+
+    .form-control-sm {
+        min-height: calc(1.5em + .5rem + calc(var(--bs-border-width)*2));
+        padding: .25rem .5rem;
+        font-size: .875rem;
+        border-radius: var(--bs-border-radius-sm)
     }
 
     .form-control-sm::-webkit-file-upload-button {
@@ -9393,6 +9394,45 @@
 
     .form-range:disabled::-moz-range-thumb {
         background-color: var(--bs-secondary-color)
+    }
+
+    .form-floating {
+        position: relative
+    }
+
+    .form-floating>.form-control {
+        height: calc(3.5rem + calc(var(--bs-border-width)*2));
+        min-height: calc(3.5rem + calc(var(--bs-border-width)*2));
+        line-height: 1.25
+    }
+
+    .form-floating>label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        max-width: 100%;
+        height: 100%;
+        padding: 1rem .75rem;
+        overflow: hidden;
+        color: rgba(var(--bs-body-color-rgb), .65);
+        text-align: start;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        pointer-events: none;
+        border: var(--bs-border-width) solid #0000;
+        transform-origin: 0 0;
+        transition: opacity .1s ease-in-out, transform .1s ease-in-out
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+        .form-floating>label {
+            transition: none
+        }
+    }
+
+    .form-floating>.form-control {
+        padding: 1rem .75rem
     }
 
     .form-floating>.form-control-plaintext::placeholder,
@@ -9709,6 +9749,23 @@
         --bs-btn-disabled-border-color: #dc3545
     }
 
+    .btn-light {
+        --bs-btn-color: #000;
+        --bs-btn-bg: #f8f9fa;
+        --bs-btn-border-color: #f8f9fa;
+        --bs-btn-hover-color: #000;
+        --bs-btn-hover-bg: #d3d4d5;
+        --bs-btn-hover-border-color: #c6c7c8;
+        --bs-btn-focus-shadow-rgb: 211, 212, 213;
+        --bs-btn-active-color: #000;
+        --bs-btn-active-bg: #c6c7c8;
+        --bs-btn-active-border-color: #babbbc;
+        --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+        --bs-btn-disabled-color: #000;
+        --bs-btn-disabled-bg: #f8f9fa;
+        --bs-btn-disabled-border-color: #f8f9fa
+    }
+
     .btn-link:focus-visible {
         color: var(--bs-btn-color)
     }
@@ -9955,6 +10012,57 @@
         box-shadow: 0 0 0 var(--bs-navbar-toggler-focus-width)
     }
 
+    .card {
+        --bs-card-spacer-y: 1rem;
+        --bs-card-spacer-x: 1rem;
+        --bs-card-title-spacer-y: 0.5rem;
+        --bs-card-title-color: ;
+        --bs-card-subtitle-color: ;
+        --bs-card-border-width: var(--bs-border-width);
+        --bs-card-border-color: var(--bs-border-color-translucent);
+        --bs-card-border-radius: var(--bs-border-radius);
+        --bs-card-box-shadow: ;
+        --bs-card-inner-border-radius: calc(var(--bs-border-radius) - (var(--bs-border-width)));
+        --bs-card-cap-padding-y: 0.5rem;
+        --bs-card-cap-padding-x: 1rem;
+        --bs-card-cap-bg: rgba(var(--bs-body-color-rgb), 0.03);
+        --bs-card-cap-color: ;
+        --bs-card-height: ;
+        --bs-card-color: ;
+        --bs-card-bg: var(--bs-body-bg);
+        --bs-card-img-overlay-padding: 1rem;
+        --bs-card-group-margin: 0.75rem;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        height: var(--bs-card-height);
+        color: var(--bs-body-color);
+        word-wrap: break-word;
+        background-color: var(--bs-card-bg);
+        background-clip: initial;
+        border: var(--bs-card-border-width) solid var(--bs-card-border-color);
+        border-radius: var(--bs-card-border-radius)
+    }
+
+    .card-body {
+        flex: 1 1 auto;
+        padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
+        color: var(--bs-card-color)
+    }
+
+    .card-header {
+        padding: var(--bs-card-cap-padding-y) var(--bs-card-cap-padding-x);
+        margin-bottom: 0;
+        color: var(--bs-card-cap-color);
+        background-color: var(--bs-card-cap-bg);
+        border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color)
+    }
+
+    .card-header:first-child {
+        border-radius: var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius)0 0
+    }
+
     .accordion {
         --bs-accordion-color: var(--bs-body-color);
         --bs-accordion-bg: var(--bs-body-bg);
@@ -10068,6 +10176,11 @@
         border-bottom-left-radius: var(--bs-accordion-border-radius)
     }
 
+    .accordion-item:last-of-type>.accordion-header .accordion-button.collapsed {
+        border-bottom-right-radius: var(--bs-accordion-inner-border-radius);
+        border-bottom-left-radius: var(--bs-accordion-inner-border-radius)
+    }
+
     .accordion-item:last-of-type>.accordion-collapse {
         border-bottom-right-radius: var(--bs-accordion-border-radius);
         border-bottom-left-radius: var(--bs-accordion-border-radius)
@@ -10145,50 +10258,6 @@
         background-color: var(--bs-pagination-focus-bg);
         outline: 0;
         box-shadow: var(--bs-pagination-focus-box-shadow)
-    }
-
-    .badge {
-        --bs-badge-padding-x: 0.65em;
-        --bs-badge-padding-y: 0.35em;
-        --bs-badge-font-size: 0.75em;
-        --bs-badge-font-weight: 700;
-        --bs-badge-color: #fff;
-        --bs-badge-border-radius: var(--bs-border-radius);
-        display: inline-block;
-        padding: var(--bs-badge-padding-y) var(--bs-badge-padding-x);
-        font-size: var(--bs-badge-font-size);
-        font-weight: var(--bs-badge-font-weight);
-        line-height: 1;
-        color: var(--bs-badge-color);
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: initial
-    }
-
-    .alert {
-        --bs-alert-bg: #0000;
-        --bs-alert-padding-x: 1rem;
-        --bs-alert-padding-y: 1rem;
-        --bs-alert-margin-bottom: 1rem;
-        --bs-alert-color: inherit;
-        --bs-alert-border-color: #0000;
-        --bs-alert-border: var(--bs-border-width) solid var(--bs-alert-border-color);
-        --bs-alert-border-radius: var(--bs-border-radius);
-        --bs-alert-link-color: inherit;
-        position: relative;
-        padding: var(--bs-alert-padding-y) var(--bs-alert-padding-x);
-        margin-bottom: var(--bs-alert-margin-bottom);
-        color: var(--bs-alert-color);
-        background-color: var(--bs-alert-bg);
-        border: var(--bs-alert-border);
-        border-radius: var(--bs-alert-border-radius)
-    }
-
-    .alert-info {
-        --bs-alert-color: var(--bs-info-text-emphasis);
-        --bs-alert-bg: var(--bs-info-bg-subtle);
-        --bs-alert-border-color: var(--bs-info-border-subtle);
-        --bs-alert-link-color: var(--bs-info-text-emphasis)
     }
 
     @keyframes progress-bar-stripes {
@@ -10627,8 +10696,9 @@
         padding: 1rem !important
     }
 
-    .fw-bold {
-        font-weight: 700 !important
+    .py-3 {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important
     }
 
     .text-end {
@@ -10695,16 +10765,6 @@
         --bs-link-underline-opacity: 1
     }
 
-    .bg-success {
-        --bs-bg-opacity: 1;
-        background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity)) !important
-    }
-
-    .bg-danger {
-        --bs-bg-opacity: 1;
-        background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important
-    }
-
     .bg-light {
         --bs-bg-opacity: 1;
         background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important
@@ -10717,10 +10777,6 @@
 
     .rounded {
         border-radius: var(--bs-border-radius) !important
-    }
-
-    .rounded-pill {
-        border-radius: var(--bs-border-radius-pill) !important
     }
 
     @media (min-width:576px) {
@@ -11154,26 +11210,26 @@
     }
 </style>
 <style>
-    .sombra[_ngcontent-sdd-c55]:hover {
-        box-shadow: 10px 4px 20px var(--accordion-color-ligth)
-    }
-</style>
-<style>
-    .bg-light[_ngcontent-sdd-c62] {
+    .bg-light[_ngcontent-xwn-c57] {
         background-color: #d7d7d7
     }
 
-    .nav-link[_ngcontent-sdd-c62] {
+    .nav-link[_ngcontent-xwn-c57] {
         outline: hidden
     }
 
-    #divHijo[_ngcontent-sdd-c62] {
+    #divHijo[_ngcontent-xwn-c57] {
         margin: 0 auto
     }
 </style>
 <style>
-    #accordionFlushExample[_ngcontent-sdd-c61] {
+    #accordionFlushExample[_ngcontent-xwn-c56] {
         font-size: small
+    }
+</style>
+<style>
+    .sombra[_ngcontent-xwn-c78]:hover {
+        box-shadow: 10px 4px 20px var(--accordion-color-ligth)
     }
 </style>
 <meta name=referrer content=no-referrer>
@@ -11184,692 +11240,516 @@
         display: none !important
     }
 </style>
-<link rel=canonical href=https://dgpatrimonios.seniat.gob.ve/sucesion/verdeclaracion>
+<link rel=canonical href=https://dgpatrimonios.seniat.gob.ve/sucesion/resumen/calculo/manual>
 <meta http-equiv=content-security-policy
     content="default-src 'none'; font-src 'self' data:; img-src 'self' data:; style-src 'unsafe-inline'; media-src 'self' data:; script-src 'unsafe-inline' data:; object-src 'self' data:; frame-src 'self' data:;">
 </head>
 
 <body>
-    <app-root _nghost-sdd-c36 ng-version=12.2.17 data-sf-nesting-track-id=1.1><router-outlet
-            _ngcontent-sdd-c36></router-outlet><app-inicio _nghost-sdd-c62 data-sf-nesting-track-id=1.1.2>
-            <div _ngcontent-sdd-c62 class=container data-sf-nesting-track-id=1.1.2.1>
-                <div _ngcontent-sdd-c62 class="row align-items-center"><app-headersuc _ngcontent-sdd-c62 style=padding:0
-                        _nghost-sdd-c59><img _ngcontent-sdd-c59 id=banner
+    <app-root _nghost-xwn-c36 ng-version=12.2.17><router-outlet _ngcontent-xwn-c36></router-outlet><app-inicio
+            _nghost-xwn-c57>
+            <div _ngcontent-xwn-c57 class=container>
+                <div _ngcontent-xwn-c57 class="row align-items-center"><app-headersuc _ngcontent-xwn-c57 style=padding:0
+                        _nghost-xwn-c54><img _ngcontent-xwn-c54 id=banner
                             src="data:image/png;base64,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+dM/66r2z5oz5447l+y7317PrV73wH2PT57SNXde/8EHL960ceS+B+8/7PBDH7j3ntHR8b332W23XXe/6oqbN23edNDi2W94/Wm3337PvXevnDw0w6bDU6b33nX3w+9999t/cdFld9zxwH77LhobG5k3b/7tt90xY+asQxcvvvPO2499yfGrVz1lHR56aPXpp516xRVXn3TKIQvmT31m+dZLfn1l0TJHHX3U3fdd39PT88gDT8yeuXPRpqeXP3T2W0+59/7Vv/7NlWeeffr1t/522RNP7rf3fue8+42f+OSXPvSP7773nqXX3HD7IYcfsv/iRd86/4cDfVNOOenAow9bdMFFl/3m4jvPessZmzat2rBmw/wFO53y2sM1pc98+oIzTn1VY936H1/4g9NeeXKpUotiVHT9+q2TJtWuv+qPr33Nmc88/aQY6uqpXX3tHdNmTB+cPPTko48NZaXxln/oieeOOOqAt7/1lRf8+Jd77jH1kMWLP/uZn1R7S0rFkYcddcvNd27YLN/6txu7Bl01LWWqu++5aPbM0le/etHkqUNzZs+54Ce/mDJl6oIF8401M2fOGhneNnvOzO9973sf/tAHL7zgskMWH5T7+n33Pr5mzeZTTzv2oaX3Xn3Vnz557qfm77Tg3/7tp+97/6tLpdIXPvezo486bMmSGz7wwff98Q+3X3vtDfvud0izkd988y1nnfWWBx54aGCgu9EYHx8b23//fdioqqxbv2Ldpi3jDdlzzwOKnI5/2T5PL7v3nz/1b+9//0fvuP3Gt7/lxAcfXNZdm3rySfNdwhOK0QlMYAITmMCLXhSC4g6lFUGcwrCxEiPgFSKSW2tVQMhJkWV9AN1215Nf+sIP7rnnKTYl327Omzf4zne+/c2vOwlAu5k7GGVyaXb3PctvvPkuZorRT5866UPve1tUmEBEBEmAUtSopplwQm0BBSRUMj13PfDkF752oUkHCMno5tV7LZr8lc++d0p/BuDyq+7603U3DU6eUx/fus9eu7/2taemBvVW2zFDWRXGkEgUFUOJAat1GSe/vfKWC39yOWLFoavVGttnr50+88/vKiXabBVGiU3W8d0jQlClF6NT+18rCI2qIgRuJUn3ug3tH/z4F6s3rk9KmUsSVV694rljjjx41bNPZ6g1x1vcZUbHG6XS4J9uPm+nnSc/8/SzM6bMczYMDlY+8e43X/Tb6x596nEyrVWrN/b0TD7rjWf/5uJLuNk677wPbdo8/OnzPl9He+acBXvtefCNV99SbGvtNHfa5q3r3/QPr+KUvv+DHxe5TJ28W7XStWz50739PYVsPerwlyy56Z5tw1v7+gZGxrZOmtR/5DEvvfbGa/Ntzf322OfGR27cZc9dVj2z6s2vfdsPv//r3pL74qffsmrNts9/56L6+Ibps3qjlNZvqI9v2/S+d5x9xNF7iYdonUkNc/CeKYEa3U7gRFBU+ht3Uh07EGHNNFhl5hTKNgLEgRQkpIo0K+2928L5A84r8qikqUOlTYWmeepHHGJXd6kRpG1EmQmGGJ4RxGQhA2AUcNG7PFFhlZIMcMzaSTtWsi9/52fdk2uvP3YxAEo8m9wGUhSUtGMzSqxYSkjBJtUYNdGRvP6N71yTZHOCjBn2hcRSZrLMNsZz0hJTdaxdvvm2m+bP6KlRb8Jpx0tTbRSOgYwLlESwa0scE+qaNG3nS696qH/wp1/+9JtSmzA1TQwlsuyVVCwR+6w1Vj9k790+/ZGPOUyySVOpriYoKSTrqk569tl11153a0MZiJAtKXc737dxwzML5/cunD1NosAmhUZQIpQ2PL77vZ8peg2ZGKHRd5VzQ915M4UWYGUuXXf90oULJ3eVy7FwpEkr6pL77n9y2aapU2a3QzBGyOQjm8eOXHzEW99wTN8gPApjYqvFGrOnntq0ctVzq1Y8s3D+1IrBuM/JRh8sONs+08ptQrBSwfY5QP1rvN1fJZ3lL3/cERH/BwUpBXSY5L9p6akiWu0OObg0ptw01hVF1+hoad264uTZ88rV6b/8xT177nEkQ9/97s9/6tyPzZy+/9e/ctk73/ey15xxwM9/edcNNz2zdZTf/b43f/q88177+tMauXz3u3+sZDPe+Z6TW7514QU3VMu7bN0mn/zkh9K09rnPffuuu6/58pc/fccdS6+8+p4rr7zhwYe2LT5kX+/jb397b1fXvCgJ25QIRW7Xri62bGjffP0P5yyMnzvvIyFPD1183M03LBVaZkr24SefPPzI0yb37rr8gd+zGcqbXfffuX7d8uLnF986afLgoYe95Jmnn7nmijvOfsupivxHP/zt0YctGms0z3nXmU89vvkPlz289/4z9zto7660/PSTz9135eNdzVuOP/mwl5/8ytS4i3929fBIaXR089y5cxctWjQ8OuWLX7lyrL71+Jce5fMycju9f8qpxx9x0XB95tzpvm1uvOEnaJUffXDk0t/eWaueds01P9933z3f+pZDPvGJi/946W3dPZXzPv36M1/zgSMOP+b3v//BK05/yeJD992wvnHNNXfvttuuK5aPn3DCax96cOkvfn7VCccfv9PcSevWrl/x7KPPPLX1nrufW7Jk5RVX3n38yw7atjk2hvunD81eWX1868ZRE5IrfnPPVb97+NRTD913//kH7PvSL33+2+//wIl9vTjogEWPPvrMUUcdtPq5DT/+yeUjo7TqufGRMZ42deq2rfUVz45OmjLkfaO3u3vGtJnr14wcud9hRx357v6u2pxdK+Nbx0c3ttauHHtuZXzswS2PL73riMM+PjQlQ2xP7EQmMIEJTGACLxr+vJ02O3rkRlWUArECRUQ0zoSopGRMkiTVsTZ+8KNf/+sPfj02EmBNuWze8upXfPgDr+zt7YdvF6FtqRyDzU3hrP3ejy9vNMpsWjYp3vCGl+w6r9xuigUxqhFGvCHXjrZFeSwpFwo22UNrNrzv3G9uHHOlxOWjW+dM7fraZ9++18KZQeOW4falVz8x3o7Vvnq9NfKhD31han+l1Wo5CqRETCGyaiKCxKUSC0O5S7puWfroeV/43uiIH+ibOrZtZMEuA//y9fdPHSq18zqzJUk1WkJgKkSI6H+FqUyoQMWlynD1sdErfn/fqjUjg1P61297ziRdo5tG237KssefGJrUu/LZZx3XrLPf+Nbrzj77rUtunVQUebmybmxk44H77/7Rd+POex+85k8P1Mf9K8887lWvOe4HP7vsJxf+KkPrwOOPnT1z4CeX3FXun1QqbYsX3bVol92n9c047zu/KZrDux91YK5jP7jk6qOOeeXll9zearb7hvrWrL4NZvz6+9dt2dAYHakP9PWvXfXMLnvvfs+K9nU3XI+t4yeeEG595MHmZXfYyLmf/OOLf+sQdt1nYO7Cg372uzv23XvB4yueffTuh1Htw+hzrzrxmJT2alOnVBOBEtMLNvayPd75bxX5drhv9a7pE6/qyugtGJEIMSNmo5TneX+3eccbT3v5UXO9gjojmopIUIaN2zsmthGzyIUSrAJBqRUsezcOQES06ORrEBPDxBhb0FBypWaj+Y2v/HCPuVP3mDdHgChEFIk601EtUCEUQRBpwxBp1hht3HX7zeRgrAtBY1Hss99BNpPrrrmjUsrYaN9Q349/dNFpJ7y0Z2pvMV6AFGrA3lBgMcxKTEGEmEVExfcP1H7280v32m3gjWecRFwGcdTAxGpaYrwqj45sOXSPqbt/9FX/keu9a9mq3199RUMaagxIGdwstg5vXHboQTt//Qvv2nXhPF/kBCIRsDjHjWFz881LxbLjKtQ22mN77jepq7zTn658tNaDoK1qT+mCC//w8lfst/eC2UG8s9RshWWPryklFUEUIwqvZnRc1w/N9Mceu8u/u5ZHHLxzAaiCBM2i4SiSCGAgUBKQdBxEhQMQzd9G5tH/5W//gVrEf7lpRJ14jhiisfYlxxxy/vkX9W+YYpJWUWzZsHEtJ6NDU2n6tK7cb56/cxJjniWljWtHLv/jrRvWDPf3zHz4gYduv/leB2eA0IpTJg/Onj736iuvO+SwRSlnK5etY0P33vkIc61dD71dk+6985EnHlm2YKdddtlpD6vJLTc+NDgwqb9n4OYbbpo3v2/JbXcODRxdylKJrRDHTzvtoGtu/C1BksRYC+JW0R73bS9tPP7Q8icefuaZJ1ct2m3R1L7Zv/rpn6b0z3vgjof22XffkeGR4ZGRBXMX3XnL0ko5mTVlPgD2pSv/sLSclboqKcVs67pWe4ZcfeUdg0OTliy5c6cFMx9c+rhl7uuZ9OCDd5dLSebksUfua46Pv+ZVx/zy4kuHt2zu7U6OPuKwK6+6cpeFCywnVhMwA9Gwv/P263q6sscffXbt2ud2nj/ryivu2Lh+/YIFi5566okbrr25Vu2aOWPKwQcecs+dT3WV+JeX3desmy0b2489/EBqB1c8s3n2jEUrn92aN+8F6TXXXjN79s7/9oOf7bLzbjFOufeOe3fdZb/MaaMx6gP1DwytWvX0kiX3zZwxdMUfrlu06+yDDpj0zZCfetpxMcA6dtYY9tCGyyRNW9CRIpfBoQUPPbC+KAaeeWpjlPYRh+0natasWX3PvUuHJoXly1dvGqa+3r7eflfNSr/79ZLJk3s2bFux9KHlR/btNrEVmcAEJjCBCbzI9CAASbf3wsmD6xCFGqZK9F1KArCgUSoTUF761Iovf+XCG66/q95ol0qlw4/Y493nvOaog/cBkPtGEQIbI9TWpLBceuyZlU8++oz3krDbad7U15z5ioYfNzaoQpUhGdiQJCaywEejSalrSyP/9Ce+tuzJZ0tZz9j41il9yTfOP/eQQ/fJC0kTc8uS+2697YYp/VO2bmi87nVn7LPfroAnzlkNNInRWMshKDEHtAWSZF3LVm/4wPu+umrl5sH+weFty+fPn/uVf/n4zjtNa/oGg6CsAFFUxEgBsPhvSjv4Tzm/T37yk/+lAtJYEd5iGc1W/uRTz8yaOW33PWeBi8Gh3lpPdaC/bBK/134z3v/+s44//uB165c//fRj/T29c+ZMS9MwY046ddIk36jet/TpVavWHbDv7jOmThnZ1tq4Zst9S+/aacG0WYMzRraNHHzQ3g8tfajaa2bNmLTHLjulTn27vtNOtTk79S1d+vSKFVvLRr9//rnb1m8woXnEQbv3VGTRwmmt4S07z56y925zpg1UMyeH7De/Pbpp+mDXnBlTZ06d1tNfWbTrwlqpXB8fmzmrd+rUrExh8aFH3n3/oxRb82ZMnTt/RlctHehPJg3Udtttl3I1E/HGsKp2Mp9fINsjkILVmuSq6273RXHsMYeVS05iUBUiemFUN4EAIdXI7I1RZKmxt9y9/MGHVmi0Foah6vPuWnb6qYdPn1QzBAY6x+hEYICBCO/jnXc8/OSTm6MSyCrZdkBvT/mlR+07feqU5SvWXn/T/e0AEIGIlAEEajOp+/+w997xllRV2v+z1t5VdcLNuXPuhiY1oUmSkygKZsAcRtQRUBkVMSBmx4hxMAwCiglBVBAEFESRnKGbhk50TrdvPKGq9l7r90ede/s2tCO872DP/N76fvjA4YSqfXadc+5+9gpPUNyyefuSJUtfedoJW7Zvv+qaW0zUDAJgk3o8b+6UE44+oKUcOB+bgGqOv/XdXzz+xDY2JpVY0rRkgo9+/KyebnP1L25ob+9W6z25wf7tM6fP3HP+HMPEAZExA0PVG2++Y/PWOGBLUGUHdkKBgJg0tIXbb7t57/0Pnjq9+8qfXTdSSYQD5wPxpqut46UnHjmpp+yrnr3xvup8hW1I4G9edu0nLrxk3cYRpogYSj6pJyPD2157xrE/+u5FM/o6vXMkgUpqM9dApku+fesDjzzlrPfqNTaFKD73vJfvNe+gn19xU7nNglPmwvBwfcrUtn32mR8aK04KBVsula78yW9toVVM6OGVpamt66GHlv32+vvu+duT99771OBAYshXKlWx0hQWLME5hdQDA9FEFQQL9iCABKRK2ii1fYF205QIEBIyPDKaXH31dbNnzTjumEOcd6xEWeopKYhU2bBVD2Ocl+TOvy6bNq332OMOKZWEg5HOjuZXvPyEqVM7wPWTX3z4XgvnAelJL148NLxy+Yqn9ttv3qGHLoyieNPWTW9928t7eztHK8MHHjj/jDOO27R56fEnHnjG6afMnNnV1xc99tjjra12v/1mnHzyYY88eu8++8w48uh9583rPuPME9ZvXHrscfu+/swTg6jW3ML9/etnz53d0d5qrdtj4ZQzXn9Ca1th7tzZbFxvT2tLixmprJ89u2+/RXusWf/YjNmlxYfOPed9rxuurvXY+t5zz+iZFHT2GBsNH3P8vm940wmPPn5fqSU699xXhhHiuLZ8+dLTXnX0kcfsBRoWTafP7N60efUZZ7x830XT4niLsZXZsztf+Zrj5y/sfskphxx48MzWNtlr78mvOf2oGTPb+qaU5i3oXv7Ug/stmnXEEfuZoDJpaqG7p3TcsYtnzGzfsHH5Rz92VmcXjj9+/9RtX7p01T77Tj/xpMXNLbJy1ap3v/u1vX3Fk1588Oz57a3tLbV4+CWnHH7gwXOK5TQIRxbs1Xv2+147Wt2wuX/J4UfuNWde12vPOD6VrYsPnv+KVx89fVZz76RSVKoVm/3+B8142cuOXrHqqQMP3vMtb3+5YOPsOZONCZtaaNF+c1Q1TWMb6KzZk4ql6MQTj2huCeJ08MUvPox5ZI+FU1526jH921Z3dRdfcsohxZI4Sbp7g3e+9+UdnTaJq+/619eWWka9q02e0nrqKw496eT9grDa09NhDOeLkZycnJyc3acHDWBACsoaRyqQOXgZIHNfMjAoFkIguOxnt33wwxffc8/DceL3Xjj//A+/46MfefcesybH6WBcrzAZpggcOGJP0sKF737vZ3fd+SRzaGzlExees+eek6F1IGEFaaAIAQYL4DwQlUqjNXfeBy/+05/uj6KyS0Z6O+03Lv7Y8UcfVK8n1ph6oj+6/Ne3/eXu5paWcqHp05/+wIKZbXU3zCoWBfUByEBZOGFDiUpToWnV2vXvee8XHrp/fW9P9+D29XPmTvr+9z63/97TE1dT8QQitQQoCbEo+4kK4p8dqa3Vas/jqmlIrKlsCoyxtqlaNdYUTYAt/fV6mtZraVNTWKkOzp41ucTsgS3ba2vXrp8+baZ36fbt/Z3dpZamjhXL+p3G7R1NfT0l77Bi+SbDZJvC3sldvuJckja3BCOV0e0jQ81NzdN6OlZt3LR9a3XRvrMGh2srVmxrbu5oa0FPdzA8ZNIUjMRYKhSDDRu3Nje3NDeVXOrXb+ifPr11aLhaLhYLtrh9a11btKm1tG3jMJMtNZko8MMbtndNmbymvzq4rX96X3tvT8uaNVsqcdLa0treVmJSLzVrDamoYswBczyFT8C+EBXO/tAXKyOj//65j3Z1lFxSE3FEpDBoGGSMCUKIsBPy0KAclj/77V//5+XXwbGhgFjV+0JT8ZQXH7b/nn01qaWkxmtE5Ag1n05pbjpi8eKO7paPXPjNX1/3aEIEQ8IYqdXmTW/5xqfeceiB+//h5vvOv+h7m0bisBCEUegqCQQOdWMNU6uIiysb3/H2M09+8RGvPf3dhXIvKFSEo8NbT3nxAZ//xFlTe0pxMkKMRFuPPuGsrYOhteypNjq05YTDF11++aevue66f/vAt4pNM5wRssw+6W4u/Oaqr03qLNVqSaEQrF637d3v+/xjKwcKYVE9TCCxH00SBGGRJQhtlNY2zZjR9+WvXvShD31qzbp+cEnIVIaH9503+d8/d/bifafJsEJII2+Kxgku/va13/yPq6ouaO5ogzoWGRrsD0JzztlnfPhfT7VAJd4UuTaVEFzngOqkQVA67viPrdvar6UagetbdfGB0674yXl//evGt73535v6DAWiEqYxOpuTa3/51dmTOuNKEkY8PJpecOElv7j2T1TqjFqLbEWV4WV4S4V9aNlFoZZbk+bWYGZf60nHHb9wz4VHHrYHgDiugSrqDVNhvIYQ5EUNYI2+UGXBLEyAY0eh3bBp9Mwz3338cUd+5pPn1JOaEaYsvZa8EosaAwvPagYVSWR6iEAWoqi7mjVRyAygnvpCYJI4ITZBsCMf1fvUmEDhCaYe15mDMDAqQtz4tRLRzJied9zjmY2oIxgi/4xYeuq8c4kqlYoFQNNUgsCkqWNWEQqMVUi1Wi83lQRQhSF4AU/Q1k5gGQC8wHDWfVVqybbAtFiTmVQ6722aCBlHJGFQANQ5snbHVqRiR1PXOJUoYKfCRD5NgyD0mhBBJCVYw9EzfgK9eGZDIOectTZN0yAIktQH1hBhtJZEURiMvePESWgZQCowrCJkxx/ywqSWjQdEnEKgPjARgcdC5Gk9rYgvlAphrTZobeC9Fgol59V7ikIrUAIJMuNV4wEDqEKkJkqBLQiE4QQszrJF7PuLpmM8yOx8zaXy3Cw3c3JycnJyXqD4IBMIcBjz1mJlYhJxqdSjcmSpAOChx9Zf8h8//dU1N46MDs6c0XfqaS9557+cMX9WF4CkNsQM8cociLAnUsNEFNrg1Fe//967l7W3tS9Y2PbjK75hozo5zxqwgtSqWiUSisG1YthRTXHeh772y6tubG5pr1Yrs2Y2ffmL5x992P712ihgCsXiQ4+tO+9DX1iybOXIyLb3nf2uj374XwqhE6lLnISmVRwhUKfOc2LCoECFtZtHzzn743+46YFJk+dv2frkoYfMv/jiC/eeNz2VqjgPMYpGCEfYARAWEma1uyVC+PxSRpVYVIjbSbxP46aiZWNcQtN6CqBsNZYAvXDOVzUNwq624qSOOaqeKJzSMylzfthv37KgALBqKsYv2q8VSIBOn6pp9xBoGjd1NU/qagM570Zn9zbPntTm03pXU7lr/zI8YCRNqx0tAURhsrVhMHdGDygVEbLBngv6fFot93ZABF4mTQ584BI/MntKEyTrNGpbp051Lpk9pRBMmQFxSGszZ5SBnkSQxo6goQ2ddyZb7+7U8mPMHOI5ftRBSrCqxkPgAViKLepKTKRe2ASlgVF877I/+No2h8DbEOIJBOOTZPtes3qv/M892ntaXKhpkHoBsxKI4Iyo9QSAWFXUwDDbej01cPvsvefGDU8PjQyJEGnAQcevfvunx5atbO5oTxJhMGDGitZEAacacPCTK64brSgMwTAjSJN0wR6TCsC8eXP22GPGkieGih3NXpW5uG5D7a93LT3lxAOAAESqFFCQ9c9k5pGRoQULZzOZZU88wbbFS8Bhx/Knt1/0mUuGKykbS+pBQqgzxaAaEEsAERMW7ZbB2sc+8Z1f/+avpaZpHa2lan24EHE8ONRTbvvwBW9+6xkvir13vmIlJDALC7EXocBeec31/dUhb0BgFThJ582Z2x62T53iDzhgj4eferjY2qwQU+T1mwZuu23plNccZgNx9bS1tfT5z57dN7X7ip//Yd2mp8NCqaWphTjo6OoWIWHx4gfNwNaheM2ajTff8v2ujq5TTj7sAx946+xp5WqSGCZVT42+yZmFYjhmrqm7+5eWoKJw1hoRm6bKhpyDYc+cqJd6EglcYKkexyreoFCrKFsYY5yLmeBcSkRQ452YQOLYe++jqOCd95IwqyrYMImoqogyM7x6L8YYEWFYYqSpszbIPCUNs5c4Sb2IZ8NJSiIiSgDqCTGzsZTEKRN5UQ+IijVGVEQ9swE0UWQZ9ql4wybVBNA09erhZAQUW2phtuKVrMbpVhWypiNJUq91JgtYY7ieOGYy1sBr7EGkAhBpmtS9OCIiJvHOEQHKTN47QIkYAJHLxLD3nghxHAMcxx6kAZNLag5sTaAqXiSWzGiUElFmjaGqno0ByDlNRdiAWKDwXl1SZ7bGapomhq1qROyS1BsOvBNjOE6qUAJRPQERE0hUiAw0EfWWrYiIgokT55VSzwOMZiNNiauz5SQRFQOqghyjCJUxx8ucnJycnJzdsUxhURVq9E1goqzvPglJoVQwFFWT9LIrrvrGN3715GNLps6Y/IbXvOoNbz7t4MV7Az511cCWwmLrjsM579IYojYsLl05OjjqTOScG3jTm98cBOITWC2oFJQgnBJ5UQVJMWwbqMj7/+3r111/S7mpODy04ZCDF3/1yx/ca97kOBkU9ZaLANatW7ds2QqiYldn83HH79VUROzgU0RB2SWOmBTOUcw2KFDh8afWnXvulx9+cHVvT+/GjUtPe+WxF3/lgr7Ocj0ZITXqmRBSozeEAl5hVIOd20n8DxaEHnVrmJQIRhF4Z9mENgSAan2kWGBCEWB13pSMYQgE8ESZi5pLfRpwC8CMQuJT56UUFgFIMsKhmICBAoxSJlUSQAMTNXyyzLhfFqVAEARNAHw8Qj7hqAwAZBUJGzv2/BIAsMmCzwa2YAqJS513qaQRF4KakUKIzOKNLUKrilo9yewURQXeG2KoUha2hp8Y63jO6YAEeFWvWlAXZi9TKSiCzLmcLSeaUBA2tZXC1j7PJmbDYgyZROKqRq1dXRSyR8N5ABpAAQTkC5AO9s3Z1oJSTBKoErMR50qF8NOfPPtTn/r3DRsrUbkYFcuVSvXOex5oKjczMyQzM1BWInIKBUXMpat+dUvdwYQs6lyadLb3TJ42B8DiBXseddQxd9/702JHs7CKD2wxuPTynx931H7NJSOZWCaBGvEKeAalteQj57/rd7+77pdX3dzRNolsIQxb7rnvwdaWZhUGKYtYZu+LhiNgxBW1gO6HHn/8vI9/7Z771rV3TI4i7/ygJR3ZOrDvvJ5PXXTW4YfvLeq9H7XeGikYBDDqQQ4omfCqq/4wWB8MgpK6gIlaW6Np06YB2H9B10knL/rz3X+Lyp1qa0r1ppbmyy+/7uST953cXlRJk/pIW0vLhR9+44knLb7tL3ffdeeyRx5eEtcSCQp1xymsLUYmjMKoWOgMm5soqcsPLr91xboN3/nq+ydN6vA+NpnRCphUSDOfFNn93fyVACg8mdR7rwqQ80JEIpJCVeEJjtR7l3mvFFSZmMWROBCHogBlbVSt5dB7URVmOOdVDFEgolk/XFViJqiKb3zoxVP25YJX5kCV1bNS1kE3EJ8CJG78J4hElMiLWEIgUleKVUHMTHBemYigKmnjnenYWSQlYtJWqPUeRJZInWMiBiJxolxnMi4FYIhCVYYGXsBKEPYJxjxmGv9WVaIw+w+Nbft4ATQzlCBVlcaDpOOepcqAg6kqmEiJyEuiQObMiqyZLEFUAKiKeAspZpsy6kUlc2ONmKAiPhVGQVJLRGRSEZAyoTG3Y544moU6iax4YQQEeFEoGBaAR0osRptUAidgDuGsFyaCakBkRSyBlPKmMjk5OTk5u2/bGqmoM2iCsqgQvHAtCsOAiwBu+dM9X/7aj266/oam7vbT33H6ee8+8+CD9hh7rfGWNm0bGhqsVEdq5F2pFMycPrXcVII4sNx//4NDQ6NBYNs6Sgcfsr9ly2qyPhxgr6bmRYtRE1O0dOmyj3zisltvv79YUPHxmWe+9N8+cNacqZ2VWsWSYTLZ+v/pp9du6d/S1DrjmGMO3HvhXAAQsEDgOfAgpOqbCi2AueHWuz/72e8+/sh6w12pq5/3gdee/8F3t5QLI/UhAxgUjBpSVhLhdGweGBIBDnD4n99lNESgDiBRMLR4/fX3fuu7vwyK9LZ3vez0l73o2lvvvfLy3w9ur5588jFr1q5avWrU2HB4oD8ARodGjz1h8Zv/5aj3v+8T1ZHuE04+8KPnveQv9z7y7W/8GGnlq1++6Ie//e3f7lkWhR3Dg0OMenV44LRTXnT8icecccYH2rr6iq3Fnu4W0SQZrb/kxBevWb9++coVAaff/vrHgrD4zYsve/Ce9bPnTTvkmL3//Kd7Nm6oeRmp1wYMBaMDo6946VE93c23/fXRajX+ztc/0tZeMjYVirlkPOiya/72kx/9tL3UUojsh/7tHQftO7NeT9BY+DWWhcykE2OD2Q1lPCcdn/kQsnBVolEFW7Q5Ezt2qkQgElgTOScD/duDeCARScChhoFSanw9HRpGypXUAuzZeKPjDnWcgofAFQBClpSMZtFm45HUk/qhi/f67EUf/Nezv6hiha0NgtC2iAMRgzyQAIAYzRwkKbr9jiVbBmupdxGJQggIwuiXv/rzbX/8m7jK1gHq6ZqsSiqqBLK0fOXTS55YcchBMwiB04oNEiEoKRsDEwwNDk+ZVP78Re96aumTS55Y19Q+nZTL5RbvhRWEABKQqDGF2FugswD62e/u+PgXvrl1W6VnyjznKdWUKanVBo875oBvfOH9PX3NdT+kKkwCFLw3SimHChEOgj/f9/T6jVWnSWibKA3hPRv/u9///p57bmLizYPDnT1t1hQFceJcIWhZvWbTo0tWtB22kODDQpig5pw5bNGCwxYtGHmHPL18jXP+4YeX3XPvw5sGBlavq2ze5rgQpcWhJBQbNE8qdT38+LJLf3bdZz78thEfEIRhstANSAgJGg6X/wMs3kgycUgwY61xs1xWA0DJN/Y7NMtzjsGOyIy9sCE6QDwWFs/2sQjMUEPUKH0mEtVdnXf8a6AEDsdO7Xf+gmRfNIxvkoEYGhEoy7qlMQW46y+YZgWTDkgBVbXEKeAzr1si0UY/awE5gEFpVuLZuDo7XSKmZ3x5dw6gZTuYu+oDpABDihN/JhopBc9qNkuZoqV4bAACKLEFJEs5bjzNKECKGETQwoROsxMPr9nUjStTEKAJKCVOAagaUEy2ohpCIzIVQLLaZFA6wUonJycnJydnN2xdi4usKYgXj7oNGCQl2wrgkcdXfPObP/vJldeWm8vvPOe9rzvz1MWHLEir1b/e9eSSJ1Y+vXrtxi2bV29YV0/88HASx6reF23Q3hwc9aJ9/vVdr5s8pW/dho0jlZpL/WGHvKgpaoZjY8g5x5YE9ZSHW4I+wPzu+gcv+sTXV61daziKivK+c9927nvfZIDRahyQVVFrrZJWk3Tj5k2FqDgyPLr4oEP7OrrTVAgi1qkhUU9kS0FbAlz5s5s+++mv9fePgmxbu3zywve8+fUvBtxoPBiwsVxM6gTmrHZFxxZLpNRoA7GbVo7Ps8uo1I1RJ3UYG4VRqa317geXVwZXTd5r6umnHn3P40t/9aubkIRnve9df33wzhtvX1outR1y8AwLE2pL2Ny7cXD0+j/91fCCu5beMfuAJou+2+9cPdC/9KIvVJct3fLnmx9paW8/4MBFoU3ZxXBJb1f5lBcfPnlK34oNIzf+/vbtAwOy+akXH3XYypWbb77l/nLR1RMhEz3y4JO3/vGprQO1yfOn3PPQk4/fuWLOfrP323vuyGCl3NTW3TNj+cqHb73lwdQZn8Aye8CnKRXNyic3fP7zl2xcszlEODrYf9iRLzpov1nGeOdBxMRWRDVbcTUWYTJhZfjcr5gCJEQNIQ0IGYFVsAUTIGmlqVh42WtP2GtmOXYiRq0zkZiYtI54cnN5Unu7OAQgA+OVNNOimgLj7XozHQJqVKMyKSWVkZOO2ve8c974+a//gMptDGspdKoCInhCnZAAQSYMmgJzySU/HxqJw0JBkAAUhaET/9iTq5NKlcSVym3tbV1DrsqWFR4QkeAHP/z5gQdcwIZh2PlECGAjCni1gpGtA91z+77wmfe/95wL123eVm7pBEOVDFlVo4aEEicjhVKYgL709au/9Z1rtVBo6Wit+TSwRnwaWHnr20797EfeloWHA9PE2ZI9IBQBmDiOPXHJBD/8wdXb++NiuSTesYYMJeufWLH6/oeG2XC5udDa2lePYxEphE3iLDH/8NKrFh348faoXE9kYCSe2lXMLmpziffedyaARQfMecvbXgqgf1i/+MWf/+7Gm7f7oahU4lh8msT1eOOGDQCMIbgsBm6yJPgxDWb/R/zYZopIg4kiBeBG8IvG/nfcY3Pc3AI0tuuBnXWRyTKNoRN7YT376zDBO5GyD2o89vxsPyUL87mJvy+AAB5gfa459IqGFPeAhwYQBidAClhgXEqNt3qiZxxW8Y8U3z/6TZzwg2AA2dWwaRf3ZGPmBMrQYGxsjbffyD1uHFZAyY7Lt9O1GL/tsdN0K1QBAwRANhvhjkusDLByAmTpzTk5OTk5ObtHEAYcpAk0qIWRCakI4OkNQz/60TVX/uTakdHk2BNefPgRh8yd1/3wI4/+6NIrHnpw+dYtFWuC2mi9GtdTSWBFhUxUBBgOmlaWLHnssMMXTZ7SJ4CoC2ywYN7eIRcgXuCJFBQUw3IRhac3br74G1f87tq7N64bDor+mCP3ec/Zr3/xMfuncEmaGDLZ300RBAVTT1ytXhVFVChOmzQVQOpiJmHDMIi4A8D9j67/xre+f/PNfxkeGm1qCk84/vAPvf+sRfvN9JokSc2C1KvAg4w2+tL7xgqhEUMQ3X2lRs9vzcrsmT2TeqSJ1A45Yv5557/9c1/+wgMPPXHd/Wu2D9XQZI8+9OSDD5h14/VBc0fY1lHsnWGtt2ZS7yFH7Otla3dfe6FcHhje+rkvf/eAhSfMnbv3mnBIGF3F5umdLc1twZxJJZak3N23eMH0+ZM6vv+185zHBZ+83I6OdprCx7/5mbPPesnTq6/oaWlvbU4DpaJKd3M0tau7q6W5KaSutubW3p5J3Z2TuztcuSUZ8See9CJ3U39bZ5d3lo1YFvjAsFHRZU+uevqpNW9861vbm1suu+yKH//y5uNetHDfhdMlTkRkLGuMJ7iEy4R9evk7S71nrwUFUJYAMAqLACQhaaDKBBjWJK00dYRvfeNLD9tv0q6PkUjWQFSJRJmUstowaLjDkm7HeBggVpa4CpTf8daXrly36ge/uK6jeRqESLNsOk9cY0oJFrAG5uElW59eM6AKMuJVDLOLXSreGV9obg4liH1cqQ/ZYuigoJQE3oVPLNm8YePwzKldjFAlJHYCqCcDjtiyd4AetmjeR857+0c+dUUtGQ1LBgKIVagL6jFGwuKkNOGvf/uyr37xqrbWvYOSq/pKEIqixiKlcskleuHnvu/SxKvAGKgCSmJqw+nig2a9/OXHt7eUn1qzftXKjZKYoFgAhNlB06HKIBtbbOtikFepVkaITUBl4wpe1Fh56LE16zZVemZ2bx0aefs7PtXSViy3ladN79xjz8l7zN6zGASiHIZBKkIGFbdVeDTkQGpivWGEBVvo7uoFoL5qyEMjEAMCzRIj/0eUZlFDmCkQjH0UJ8YtFeoBP+FOhoaNjHa1Y2pBG0J3h3T0QDqmYejvKrWJtwhAI4iHRg52pk/chO9RJqhSwIKee40uQ+2YH4yBGiAGp/AFgMaiduOtZKgRGv37g9aJUlb/61NP3CQikPs7gnAXP6WkEZAoqkABWhjTfg6UtVwLJszJBIm+C5H5jGEACIAAmv0ls2Pq3UAJiACFmrHR5gWEOTk5OTm7cZlCXlIbGERhSObpzYO/vuYPP7nyuuXLNxaLrZ29HRzg1j//8eJvPVobrRWCIgXFJPVxbai5UJg1tbOzo7VQNt29vT2TJ7e1tKxcs/ZXv/zZwYsP23uvvQEohK1orO3tnWHI1qSqiQmaAWwdSn99zXU/+vEvH7hvqUtp9rxZ733XG9591isKgYl9msSVYhh5GGImdV4cCQXWBoViHMddPS1tza0ArFVjyHALgDUbRn/6y+uvuOy6VaueUuMXH7TPWe941ZtOfxmANHbixJgAqk49sTchnEuy/nxZzs6YKEzp+QWcdp8gFCmLJ2VSSVOqthaKh7xoTut/tA5vHvnx967q3742jN273vSSGe0BDfmQIklo9ZI6UtcU1ZPRelOpiLrtnTy1r7f3saX3D66/pSVqKnJzmEbODNXsCGnLklXbJB1oL1UP8fMB3Pvgqved97V7H1194KI9PvzRt7/quD0BVJJq3bsWQltHc2sIE5CHpCLVJAHDhMHA0OCSZUspRm0kSUwiRUpM6tQ1tTNzEHIAYN3T6//je5fZ1mYuodwTSUkfWLLsyRWr9104g4isNWna6J3ovTBnuWvPbiez47aqPmMhPHHlaFUCFU8egFVv1HPmUChqORSnW7dsh06q1ROymsUJXGAS4sinVkWDojPqSZQbAUIhR+o4q9JiUiXOlvtKUAIosKquFgXl8z/83mWbBv/yxwf6WvtEGWrBNaWksTRUBfgHl1yzefNg0BI6cQgodWnRRL1T+2o8aqRo4ygMpX/b5uG4aguR985QGNq2wW31737nsq984YMsAbRFUVEFGSMw3mtgBNBabeR1rzzxyfV68Xcuo9SGQZHEiiYpYgoKhns2r6k+dv+SgtHmolbjJAiLzg8rObAZGY2vuvKhOI5Ts12VmUNRD3YkUukf3bJ1/xcdfVhXS/kHP7p0/boNxUKHqIiSakKsM2bOFRGhgGFJeXh4c6W6LuB2TYvEMVlU6/jWdy//3hfPefTRBx68f61Q0ZkQ4WNBaZg0irgU2QIUCWpOYi9NUdQbqLCDJi2b168/+OB5bzvjlMTFlh0hVQACJQtANQBAOyVGvhDbaoqxfM3/8mlZPNkCNCHQhLGy2PEcTtqxRdX4zFLDcnPHJ98AttHbkp4R3PsHYyU1QBGUAA4SAeFYZNFPGBIDAorHhsTPdcOFHCgG1yAhYMB1UB1kgWhs/B5wyBx+NNz5S/rMlE6l59geVp5xm/Q56ivNzJYac6hj12IsQqgojKnu7Mi8I1TbuEATg7fSkHzP2nUdu5XJSwUcdGxfIMuhzQVhTk5OTs7ug8mERQX8wPb6Fb++/cqf/n7JshUwpq2nnQ2GawO33r68Xk2ayx3N5dZSoTRpeuuc+ZPmzZw0c2rHrKl9M6dM7e3tDZsa/cD7Rwf2mW8OOvDgGdM6AOy9z0Ib2tpI5Q833vCyl82NWpoA99RTD9x624pf/OKOO+56JI7rM+YsfM3pR7/lDcfvM38ugGpShdeICuoCqIr3YEeszvtiUJgzZzbBjg5Xb77ppmOOmBFGJS+jS5Y+fv0Nd19zzZ33PbScTbhgwQFnvvHYM04/YVZvO+Br8QjHBYsCyHuNjaXUpcqJBoAaVWY1NL76gANY/1cIwoRjImIxUcCJg9r0wIVTz3ztSy7/yQ0PPbgkTf1ei/bdY78eAB4J+bRggoMPPpyJvE+2DScD1dQre7/1g+85+447Zv3k8p+Vuin1Kgz1JfbNpVAPOWCBNSI+Ts2Ma2956oP/9omN6/sXzFrwlje9atGCSfc9vqqruZjGCpfEcek3v3t06tTSyrVpVSv1eHRy+0yOH0hGtk7f7/Ajjzh8e/+AeHn0oe0bVxmL0Pn429+/o6lcrlbT+fOndnREdz24bmpv743X3AAyXaX2SOIrr7z6kP3nTp48KU4zGzcCC5vxVTUh6xkKzTS9al0Qg1UAcKguJTZQAYR2LKwBMsJac4miXAJIUvZx4ouWgqzDJ8QpvBK8ipUauOjIkqRFFSIiGKNAEpBPVWxARfFp6KvETSNcABC4lNQlFKozZCJI4uFjKnstaK3SVS5ffOE579n6mYceW1tqmuTFGl8oWIldRf0o2WDDoHvwqdVVj5ILDbNJ4sGB/iOOPvSbXzo3SYcU1jnTVG66495HPvmF72zaOtBU6ksT5zgW4++456mKRwonVHdxISpYS6n3w14KqSOAHQqxlw+dfVL/5qeu/e0fJTV1KRRKRUmqqSNPvgIrpVlxYcWoHRIVUgNnmEsiJKqmSaOiCajTWisOELEW8AlcakudHJW3VJL7HxkYTIbbSk2qRe9TiQcPWDT7h9/+RLXmWZIgKlpr77v/8U9/6ZKVa7aVy+rVBybQOHrwnqefWF353Fd/7kylWA6aiyWlVo9WglWh2IuoJypaUwqsBVIdqY6O9KcuPv64Az704bfMnztppFYpBs3OOSiP5VI6ykROFod5AfDsAPWwoQYBwL7OKgSoRo5T1pSzJGUlUspMEcekoD5zL6OR10oNSZPdbrhuaiNgteN1AiQgGks7fF5Z0wA8lIEAJMhK43YxJJ0gDp97kNBDLaQMEnACKYKiRryRxrdpeCzg+Q+E0HPuu8nP2hh67gOGcgISSDOUQcmEVN4CNUKyukPPP1O+0s4lmrqLU5Cf8Oh4UWiyI2l2h2LMycnJycn57xR6z9o2bXTlICLvvbVh1qY7qbtV2/pvuuWeX/3q+sceWWFtS7GtM058f/9oXB9uKQfz50yZMql93qyZBy1evNeee/R0NXf3NIcTtIt6JHUFkYcvRoXzz/uQwtWSOODo5OP2vfLAKb+9Zt1vb7nz6TNHFiyYu37DiqeeeHL5w08hKC8+aM8TTzrola99xUF7TQEwmtaMeIVwwD51Is5aEFg0EvEigYcefdSeRx0z89Zbll5xVeXR5RunT5uz8qnlK1c/tHLJw00dkw47eN+Xn3rCK1710nnTOwCM1NIw8GxFoLEoGCZrO5d6a5g0hBDIqGjjjz+pqOzGzhPPTxASgZkkFTBZcL1W7etsfcmJR1555W8HBzZuHxg599zz582cCiCNB328uTJU/flPvwNCPanPmzvnmCOPtjw6sG3Z5G7/iX87c9kj9z780AM2jES8pLGPB0f6t//6lz9UdaOV2t577bNovwPWrFk5c9qMpLbxa1/+wmc+NVSpj+6z957nvv/9oU3+/Oe/nvf+s9mYMAza25ve9paXHHHo7G9+bU1zobL00b88ueSuNE3rcf2B+/eeOXNmwCPVZPCrX/2yqIr4qVOmHnb4od4P9bT0nfmut82c2nPtdTdd8+vf33rbI/ff/9JpU6eoimH23hGyGs9nFUopAajWRuK4ooosF5jI6ni8YUJOqTbaDLIxFoCmI5puTxKrQURArVbtam1TV1PAGiKFcw7GMsGqVzGN5bpLJO733rCUVFJX24w08D4FwF7UDVcrabHZixifjqZxCBVAiZyPR+ZMafnsRee+5V0f7B94mk0RlDoXp9XNjK1NTdHXLr7sqRX3B2HJJTUASTrSUTJHHjyvt7MMFMcXvq88afGNf1zw4x9fXVBVZceA81s2JT+45JpXv+roNNmufsglpD7VdJikOYukBoZcWo248OlPvGf9mhV33fskcVIbTaypSWVEk8nWjqZuKEm3OJeoNMq9pBHZQEI+y4BNU2UwA94Jw6tsTZNtHe2lH/znTx9/7P5iwabxBtWSihSj6osO2bO3owQAiIEA4JeeuP+tf933/ocujQqzvPfOUWjt4JatV1x21StOPXn2nMeWPbGyf6A/jiVJiShIXWqzaJ/3RAgtscXk3p79jt/v4MPmnXrKSztabOKcISRJwjyhQOsF39ohJQHUcgAh9VIdHYrjCu0QVF4ps6efqCWeneH892r/Jr4F2Vnw6IRXPa+3OVH78c4RLdq1Un1+x89ibnZMCJlGEulORx63jnkhwmLPfzayyoFGqaSfIIbH54f+kcB+LiL8GR/IidPOz/lQOTk5OTk5/9d/KYmISFVFPBEFgRnc3v+ut376z7fdb6KwqdzCVutupLev85gj9t17j1mzZ09atP8eC+b07bQzKs4n4hyYSQVgUVEiYTHEoRKSRANrXVILS4XPf/y8tuDK22+//4H77r7zr7dz4Bcu2OM957zzkIP2Pu7YQ6ZNKwNIfD3xLkSkzhqTqhdG5MWxkk9hrXECholjmT9tzpc++4kvFX9098OP3HTz9Qbl1nLrzFntr/7I+YsPWnTE4QdNmtQEIK4NA0GBiq4ubCzIkCUAaerDgNlYYlIPEQoCI/Be1FpyPmVSEIk856KZ/96r8zyN6dUYK47YuyBUr+rJVuu0duPG2NXrqey15+ymMEDqN6xdP5DWE0dhQM6lxIjCQnO5pb9/izXc09Pb29m+uX9w3do1xthZM+ds2T48PDpEUGYSVRVXKkZhUBoeGiYERIA6Yk2d2MAuWjh363Bl/foN3iVbtgx1drW1tzfPmj5taKS+ceNm52KFiijAqq6pXDQ2qFZrKgJI1qxCVUVJJG1va5s/YwqAzUMjq1atNoS+zr6uznaFAkIEIhUVnrDnQZrJQUOhvf3OB5h0/333jaJAksRaAyiy5vK0o15LiMg7S0omTIW39vf3Dw4LG1UBREUDDif1dbY2leFiwypEAgbEqsADZB2Czf3bhkZGU5ATNVaRunIYTentKpRKw8O1TVs31L1XDtjCe9ccFmZM6g3YQx2IYEteae2WLVv7h4PQMAQOLNraXJ48bfLqVWuG69UwjBJRqBj1RVuY0tdTCKKA2IkqeWE1QbRx67YtW7eAjLWBOGb1xGLIzpw+Zf3mjYNpjVWtRCximXq6e9tay4S6l5SITVTYun1405YBUYGoJYhosVDq6OoaGBoYGRmxxsiz9FS2W8Ka9WvcEaEVcU1N4dRpM1evWVerbmdbEs/WmiRxNgxmTO4q2Cg0KcP57LfCFjcNDmzashlcJCaoGBj2iWW7z8J5o85v2zIwODzM7LcOVB96aGUUWlVxzkVh4NJ0//3mtraUCqXWGdN6IkLNCTRmFSfOcqBCpMGYVAPgX1BlqCRE6lJjbVSpxLfe+uepM6YsWrTQO0+UZqmqBEtiCSTk80V/Tk5OTk5Ozj+LXUQIx3UEEYiMiBpr1Mt11y257PKfbdu2ecaM6Xvvs/DAA/bcY6/uyZMnR42IlXdp3RDDi/eqhogCo6EXMEHVCyrMTIy4LoaK1lrvAY6ZnSK0UZjUsXHzuv6hUWKJQtvS2jG1t6tx6JozNhWV1MfwTYEJvVaIHHyZ2XrvbWAEiQiYrTKl6opR4ByeXLGylgwxCqWwpbWlpW9Sc3bANE6YWJwYY5PYARpFNlWvhgCvUKhXVWZWtYTQudQyMzPUOV83hgAjunv6UDw/QUhMLkkLtsyi4usgcqxhqTS+8k3gfFJjp1GpZZdL2UZzCZ/ESVoulhuvcrXQFp/7MKpJvRQWnnFn7FNVLdjn3TRvtF5lY4tBOB6qqFZjQI1lEW+ZnHNZMeHExomsNgWVixZAre6YFARJnTFZE87xThoEQBjGSwByzKJaKBSePQwvkqRJoKTiPJSM8c6FxpKoCMEEQXFX4dy0GjsKCkV+lvqI66OZ5ZyOGbpFUXkXk1kdKZWad/WlTX3dqw+FYAKtJxUl31xu3+UcxkktCp95BdUjib1ozQaUesdMhaj52TIpTdIg/D/LXpM0rgRR+dmt8z2QVmuhUVXvRdiYVFyx2LbrwdcrYRQSPacxOCCOU3AcsHrnmKwKESzEAtwQhC+sBiNVZ61NnRIFhk0YAsBINQ3YK3mCAERiSS2DPaWam4/n5OTk5OTk7D5BmMUGx1QhW2u9E2NsENK67Zu3bNg0Y+b0zqbxRWacpiNBEAHh4MBIkmhXRzcbJM4J0lqtAmjqkjCMCmHETMywplBPh0k1DIIk9bVq6utRZ3trylUbMDVabWvqqvVaTZ23lovFErEBG/haPYmCIAINqtZ8XIrKrb7mTNHEyVZrrQgxB9uHRtKU29o6S+EzF+Qjw9tSV7OWisWmIGirVupEag2zUdH68OiIKDFTZ1tvikSE4rpPEohIwGSMNazWKkO9EMj+bxCECoBYLGVtzUk9e6+a9e1jo955CwkoEM8pYK1NU2cMg0RVFRpYm3lkk7KIGGsAEhlz4WAlgpc6MykRaahCqsrGincKby2JOPHMJlAVw8Y5Z0yjbaB4r1DDRlWJGVAVBYGIVYWZvfdQGGNU1YsE1oqKiBhjXOoMs7JRhahYYw0jrteDIMCOhjE7WjuwkHJmQq4KsAoRKXYogYmCUAmklCUfssk8ttWLI6JMaooXZiOiKjDGenVkFEpWA/UqXjgi70UNhDwMqdcQTOJJ4CnyFDKJIQ9JslkVT2DjnNog8OJVYRnqnTKEQQRKicGG2YkDARZefMM0UcQggPeGC94zsZLxoNT7VCFsmGAlc3djMtbU47o1BIAYCvapMRR4kcBkxuVKUJD34pmhCpABYBXELCpjSYjPdrJrTPWELotMaqkxs0TsVNPsU+mhTJH3ZCwrqXcuMKF6JREOOPUCdkKSGbx47wumoKkYNk5TYhKoZlcJjY9KVqeFLHCvymAQJXDEAAlBxKWGDcAixAiyri1KWdHaC9uuw3tvrQUZ7zyxZSYvCTXaeIKgUCKNSJlBuSDMycnJycnJ2b2CsCEEs0WvKBFba55etfbH1/x2yvSprS3ltJasXrXulJNfLJL++bbbP/C+ty9dtuaG398chqY6Wh0crZ9++mvbO6Z97WvfnD2vp62jLCJNTeWpk+Z8//s/7Orq/vAH3tbV2bF28/Y77/hLU1NLdTTZvrV++5/un79fV29f67w99lyzZu1gf72zowUqhu1hh+y7fPm6Cz/+1Qs+ft6pLz8cwDe+8/OuvsLLTz2paEpPPbnx81/40iGHHnTOe94AyA1/uuPS/7z0tNNe6hJdv3m4s6vtzFedfOWVvz5o8YH7Llx49dW3D46sZps4l1hTPOrwl8yZ35MqN0e4/pY//u5Xf953wT5kvMAqBa9+3ck/+9mv60ltytRuVTFGZk2bcsjBi0Tq0AQUqQa7RRA+zy6j6o2xoimRJbCIU7C14pEAAoUhhgSpZ2sCo+pTCUygKipk2CrUp6pqiJiIiVUbZT7Exqt4hooXwwaqIiCWzCNbvDNMXiACAhsOVJnB3iuzVQUTi3hjAiLyzgMEIRATKRREjd6bpLCBdc4RODBWvKiStaGIGBMABFUmMJH4FEJBEHjvM8H5zKkgyhJZIWBmwHsvNrAiuy7+UQhZYjZJEgfGEFPDUs+rApJ5a7MBqScFkScQKPVq2BpLiasbo2BPqiQqqtCQESKbSaiIGCgJGzB5JqVUQEHglJxQaAM4z56INJEqwRqOxJGSZWJREecIRAwVhRqigDhMxZN1CiL1gBIZhlFRVRgySiJePZw1VslDQd4QDIOIKAyCJBUismxSl5qGDoZhSKrGWiXxXkDEzCoi2ebJDu2NCUVQ+iyZDYBUDYE8NMtJB4gNiXdklFlFVGGYrJfM24XBTuEZZEHkyaiFB9vQiygJM3nviIQZXpwhBhgEBnvVrP2mYXgvbAAYBkFJlQ0ZHW88u1PLxxcqZTTb0VBxzKTqRAD1zDw2dTRmRkJ5H8mcnJycnJyc3Y6qNuIx3jFbETXG1OvVLVtqU2d2RlHL6OCWlSu3GFMa3L558+bBkVG58qe/mTFz6pvf9EonuPm22x9c+vCcWVi5eu2e++zZ0tIl4js7mm0EDsKF+yw869xPXPiRD+y519xVqwYPPXTaySfsr6pX/OTq17/rpScetXhbLb7z7geLQWdre693KUiaWtq3DS6bNnfubX+7Z+nqJ88/5639Q0NVX1FTrCT49Be/csyxRz/4wMO//N1tr3v5Mauf3rJ67ZbDDj+8VoF5eM1tt19/8olHr9u4fpHf75L/vHrVqvXnfehtHZ1l75Of//zqj33qomuvuqSeOsCuXLtW2b3+jS8vt4Ti6V3v/XhnX9fSJ5+aNm1yW0erKsLATp46lZnFh6o0Zha1G3ieTWUMeXUwgBKByRgAXj0oK9gDIVAKyXCqSnBkyGc9c8iINlomEBGA7H8bb5pIVUBGVEAmW9YSZZ5zjZOJgiiCqmZ92EEK0FjdpagSmYaLPE/Ub4TsOETZQ86NiUxVEBMhqzbE+BJeFVAmGtvMMLrLyBVB1WfjhHoQ2LL3nv5eKShBIOLVBpGKigfDjB+YOSs9zJrNeoBUmUBq2It6UbahaqqZ8hAxxCrGa0BqhJ1SzEwqlOU9+uxpRr2mCmZLTtIAzByIpmwYQl6FTOCyqUFmTkgKARGBvYKUyYiaBEoqxJp1VeVG0xcF4Ikom4RGKFRCgNmIqjgvbAHAqWOLRrawwAsMWy8qDDKcxWNBIGZVlWd5KDTs0zHW5ZUaVYVZHAxgJWp8QqAEhYEiBZOqqMKrgUJJQaxKIFIFI/BjFz1RJWIQvIKMUahAyGR9YwUgp0LMviFOmYnJk0IJFtm5G0OUCT1L9AUVhGNfmmxfIrtN6gXME1z+sk0Gzv8I5eTk5OTk5OxesiImAMZkYaHM1M20N3dO7p7S3dVaDkqr+latW7O6s6OlVCjUY1cZHZ7U1xVZEwHz58x76JEHXTLQ0WYndfdMnTS5Vks7O8txOtDZVn7r6S8pFcwX//27r3jZizta2gyYmQAqt1AUsbUmsFwuNXW2dfZ19wkc4MIo8lJ76SlHveYVx7z/gs9+6ZuXDwz0T568Z8T0ha98LzBhb3f3/LnzfvjdK088+uDernZLZtlTTy5ftuX6ax9451knz5zcrVKPQlOpDDY1cUdbc3MABIVyqVSrjgAIyAM2oqijM2rrblSKNbWjUh8olKmjq6W3b7KKN0xtbW1JCqMBUyTqlNLdYkX4/AThmOmZgFJFoDpuMM2N1bkWoKzkx2zKFOAJcor//pGzh8zOJ9spIjR2IyDE/8cC+h+17iE8sz0j/k4nRj+mWHTHWIl2+WZJIQQhYqiKEojAOnHy1QFK5BUQAoOskoAEygQCqQpgxnwvAIWS0YabmZKJoSxktZGhKgAUnjK/OIDZKqxXgATZv+EVNOaFmb2kEdpSkjGJ7tFQ56wgSOZGsJObQuOdN9Q+AV5VAQH7Robx2CmgFgTASjZ1JIodTVjHbj/zuo41laHGPI75mI8PfmwYsmMwWQkfQcHKBA0AJShDSRoKTk0jQVU5e5WMiTodbwo7/olRSGYXTo3I2zM+EArojo/BP/cHdkdKBmWtcLmxCTI+Dzk5OTk5OTk5u5ssvkJknPPGWIWyMQb1/g1PUVqqx0lzkzeBa2oKrYm7O4tnvubVf/3rXT/bPlCr1let3Hb8CUfP6OlLRwfWrnjIVTc6F/hae1BqKgURgNeddtI+c+d8/KOfKRbNUYd/JFv+FCMt2SIBLWEhQrh57dqCiz0SZpra3RRBN65d2VR66Q+/8fnv/fDqX97+t8MPOuSPN9yXVOpf/NTHw4I55vCDZnRPufhLV+y995yZfZNfeuyxOBY0Unzq8SfxqmN72rpDNu9955nf/e6Pf3fVjYWi1GMZ3Fb54NnnuBShj2DRGXT8admW/7zi6nIxUG7uaJ9+4vFHrly5cuPGLU8+sdQahTpKq/vtt5ekmuXJ7TbF/rxqCBtOa1QDSBt1UwZIgZQagc4AYOUY8NQoqNvh4LdryUuZHmDsyJodTz5W2sUKmJXSXTYv+m+YDmUaO6f+t+nzTGix7lCjBsBYXl924kxe+mdp4HHJtGNMmcJWojER6oAkk4tZxR4aQlyziFp2LmpILs0c6nSsZ+eYqp2g8cgBLJQ53BOpRSNnkhuqb4cHWlaepmO98gnjFmq0s6xSM/Ymxusqn2EOvqvPxY7ZMNiFwplofqATNL/DjmBm412TEggkBGTWfBAmZPWAz7wKf38zQc2Ycd/YSRsVgx47Kchnv8F/xi/tzhsZOlZcaQDK/w7l5OTk5OTk/FP4u11G0cgdDbLGIi6RJ1euGRgcMUa9uva2prnz5g4NbY9r9c72zqbm5sHtA1s2bQ9D09xS6OvrSWJZu3aDQ7VYjOpxMjzs2tq6VLWjo81539vRBPiBwc3tbX3eI5Zk3bp1LaXOKIq8oDJa3bZ1MyNRn7ChaVOnGGtSz6WWDi8SBuETy5Y3N5e896Ep9va2O3HFQmDZrFixvlQopH5g8tQ2l9hCoW39un4lpGndBtzX1+1SWrZ05eDAYBTYvfdd2NwaVasVUoS2WB+O1w1u7o+3D/cPR1F5//0OYvKDA8PbB7bHtSpISHxnZ+eMqdOTxBOYWEDuf0GE0HgLqNjxpXrmYW0YnpQBI1mUgmJQCgnGgkJ4dmyQxovCGgJGQOmYUho3EBu3V56gWNQo8Qs0WRN10cT1/LhI3OkzTf/1oTChCi4LaY0/5gDVRqOUTLJkRmo0pnKyEKIoVMmjkSULVoMxQaPkQF45ZQlNWhJWYRGMlZEpk7IRkGbjECUV8qyGJVIS3anajUntREmjcMqe1FgXSRahJAAC8oAfuyhjErGhNs2YJgx2xNkaQcUxo7gJupd2OG7T3xPnOwRrI6max2KzY/bcuzDEI0gEgBrz5gElMGftdEAACbznzNAD4USBJzsajQpPFFrjIr2RHb2z1NdxhUzKUNOQ+uReoJ2eHeHSie967Ao2YpWUgjwgBJOHCXNycnJycnJ2I1lHGSLy3gGiABMPD2//4eW/2bhpwFhyLk1cOjgwHBVLBPapL0ZBsUDdXU1veOOrj54/u+7qhagwZ+7Mx55ce/sf71/25KrVT2/ZsHkwDIORkarC9fW2HnzgXnNnTzvgQF44e1LJFLduH/rUJ38wMFBj1iOPOuz8f3vDjmWeT5SMYbNk2YYvf+X769av7+jsausKPv2Z83955c2/vfZGY30Q8Otff8qZrznVAwadI/Wh5kLTaGX7d753xV33LmttLVfqI1/8949u3rz5J5fekCQuDHDY4Uvf++5XInTOQzUpdxdndc38wadvWvLIoywU2J/5JJk7d9qXvnS+HYsKeUnSpAojRBbKu2sT3z7fCzpWpLRjQUxQasSOJvZXpEZ6of4Xi34dW95mS+qG7KEdPTl0oqYau8G02+ZL/09f8gw9LDtFz8bVdWNiGwIyizNl3VzHWmvqhJmRxj9K0IB0rMNkljioDGXSMdlAyI4DECkr7eySpwydMEJigEmV1JAykY7FNlUhEzqV6M4BuomW5WNJpDr+prJUVR3fNJqgvf+eyzk/S5zzjlOTjI35GS8nHdd4NBZ8V0NK0KzgEAArlJ45jB1nnFDeunNKcGPO9VnfiInu6rsr4k87f1l0V8nPOTk5OTk5OTn/9DUKUWYFZozxXlU0KoWV0ZG/3PHI8lWbSsWgUIja2jvZhIPDjgyL94P9W9K4MjS88aprbrj6qh8c96JFG0fky1/+j2uvvWXzhsE0dcbambMmlUolEamMxn985NEbfnNXua08aXrHm9/w6vPPPXPztqE77lu+vb9aCqm9vacSA5oSiaowsRdpKpqRSvLokqeXLF0eBIU5c9sGB0ZOOPGEb33r0oGBkTRNNm/bvs8+i/dYMGm47kJbFphvXnL1V7/5k3J52kD/yvef984ZM6bfeeeDt93xSLWasE3be5sAK75mKAqjIPF6/se+981v/7xU4vbm5oGBgXIhuPveh4qFps9+7r1xnChia6DwlljUMYciu+cCPT9B6E0MABqOrTg9yDWieDReVqckERBNbA757CXyzuE1It25E8z4jbHFve704As1W88rTfQ5pATu0Co7H9k8Y0p2Vs2kENmRlmmgJnuCb6RAytj9ln2kUBfUshfzjin3IO/pGaNhJTiTjp1mfHiqnD7jmUYMoONPHnvJs3Imd6gmv+sJQPqsHQHeeUL+XvWdPGuudz4I/Z2XN0KvNOFc6kgnHtAoMj3pWXZ9xl3Du3yHO1J6AWQFtC/or6ruat+B0p0+RI0cXcrLCHNycnJycnL+iexyZZWFF0hBqmA24sHM7W1tLU3V5pKfPXvKy089hVgAHxXCrds3//66W1cvH+2aMbMQhJp6Vf3M57/3g8t+01IqdvX0TZ3UdNEn/mXhglktxTKRjlYq1/7mnm9d8ovBarJle+3CT14ybVZfbyeauzsqPmw2aC6EQVKnwMRQqBirhlMgMFEadUTFlnK50NRZbrIp5sxuuvgr7zv3vK+Ib1u7Mr34Kz/54Q8+FHE1si1/unvpd35wR1vXzPpo8prTDrvow29sLXLRS1tHF2wlCJJyoUiwYRqExQJgPv8fV//w0p/29bbA1L79/YtGBtMvfelbW7dtuezn107bo/edb3pl3cdOmBCxD4yyQBSyW0JezzdCSM9Sd7Sr5+Rr0H8O+vevwn/jwZ/j/f/1Z+b/VgT908/4/7NPSE5OTk5OTk7O/yjIa81EqRhetmLNU1+7NI3VGKuExMWAUVfu6pxxwQVnHX/M/MH61kfueaSFyq0RmkojH3j/20885hAgzoqDmlq73/2el1eTgY9f+JXJ0/ejluJdN9932OIFTVIu+SSgOkkchgwm5hAqIhogAGDrzWHaysrKpMYKBMCJJx372tOXXf6ja22h5da/3nHpFbPe/ubXbNi66eKvfWf7wMbW5qijPbrggg+2trd7BzUs6hRO1MOGACgowJjf/+Ge7/7HFcVSG3NhwYJ9NA32mNXR0zmtf0scBvyNr18+d9bcE45YVHE1JnFwbKhhgv2/QRDm5OTk5OTk5OTk5OT8Y8k34cZ4pZiAxroPouDSkApmxqyeQw9eHARW4QhqQl66ZPn9dz+2fsuKj3z0wtHqWa849fD2rhbvVxE11WL3t7seP/6EE9qL0fiZ1q7vv/fepS1t3R5uaPuGWfNmtba3Oqp7rrtAwpYmF4WiTsDiObCNQjVvXapVMtZ5IxSQGoVapved8y+PPLziwYfXDY/Ufvijm4477rTrb7rr97//y+Qp+wyPbPjMlz92wP7zUhkShDDwWmeTgl3WEiaIgqWPrbrgY58dGq11NrUPbRu8/757X/3KP/nUNbd1Wo6i1raRIfP5z1w6+TsXLZzbMZxUA0NCMrGDRS4Ic3JycnJycnJycnL+fyMIx5ng2KyAkHqk9bQ6UhkdGgKJaEokxqqrj6qkCjz24KO/veaGl5181Ic/+PZNWz+19LGny+WOH11+4+NPbDz22IM7WpsN09OrV//hD3c++eQaEwUbtjx1wBH7vuY1x65YsbyWjsRSIQ0eW7H2Df9yPhsSH4CUfFwZGTrt1JMX7LO/KThF6n0s4kiJQHG93tNRuOCC97/xzeeBog2bR/7l7E+S1Lu7Jm/ZuPaNbzrl9NccA6TeO+LAeyH1Pk2IxDsHYNPmofM/+tnVa7aVO6cHQbzowKnWRipgS6qAhEuXrDBUXPLIys986iuXXvrZwAbqRUVJhNnsluSuXBDm5OTk5OTk5OTk5LzQ7GjooKpKSOJ+77bFdbt2+cDKx9Z6FxAZYhVJrA1aWjtU4v32WfTOd5xeLtgjFy+49Eef+flPb/nLbUvXrB34218e/9PNdwApwQG2XGzundw9bXrvsScd8MY3nja9tfX+ex+JRyqapnWVex94vFodUTAkYBZDvrb1yZ4pUxfue4TEUh3ZXCgWk7rlzK9bVZw/fPG0j370LR++4POJlO+86+lyVKiNDB92yP4f+/BZLaGp1xybEknRJyaupEnN+zSOTHFouPaZz379Dzff0do9d/uW2jkfO+N9//oyMSWXOiVPrCTR5z/7rat+ejNzeuPvb/joBcWvfPGCWMAI2EK8+4ee6S+IcH+ePoQ5OTk5OTk5OTk5OTm7ZBc+hKpKRMzsvQfY2sC5tFoZvfkv9w+OjAYWRkBgL8qkJlBBWqu63u6pM2bMnNw3ubcnjNMhOC0UWwHaum104+ahTZs2bdq0BSreJYHVvkld06dPnzp1SqkYAHAJnl6x7p77Ho0THzYFiXgTsHceKfs0iSIzOjq8YMH8hQv2vuvOBzcNrLEFai6WTzjmqPbWZtUU5NiYwST+9e+ur9ettSUSTSvDxxx51J4LpsS1KpEHCVP5yZUbH3xsdRzXFNWFC+ZMnzbp19f8pr1tct1R2NTx0pMO7iwjbZir1wWpQaF/IL3x+juIUBkZKZftyS85tL2tx6UgVtV0t/TCyAVhTk5OTk5OTk5OTs5/oyB8hm8cABCR956IjTGZ7AnD55SrmErskopVJsBGZXDwd58qPkk1DK04YU5hon9w5DgNoh1HU8AnqNfqpWLAIXtUDcq7etWgQr1HodBOvMN/LEWq4kMuYEwTpx714SSIyAQkGFJ1UFOMOic2j/G+miZQH5DVF85JIReEOTk5OTk5OTk5OTn/NEE4ronGtJYqjdlBiygRmFkgqsoQVkADAAoFqee4GDb9+S8P/eiHPx7YPvCGN7/y9Ne93KexV0nTwm233fOrX//OWGabvulNrzvikP1rqWOxN9981x9uvGW0WhPQe97zikMO2s/FXiV43wUXViqeTNjX3fPGV79sn0Wza/FooVDisaH6GPA+Mbxu/eDPfvabzZu3JpWBvRbO/Nd/fQOYEUSPPPr0T664emB7f7lQev3pJx5+5CLvhYPotlsf/d1vf5+kDiSnveLoY449LDC0acvgJd+9cvmKp8ttzelw8p53vP2QI/eIYweqG4u45qwtEVnnhFnYiPgUYKYQJKK7pz98XkOYk5OTk5OTk5OTk/NCykRmEQGUiJnHrbczH3IhpYYgJFURZhBxnPKmrfWbbvxL4oLZc/dYuPd0Y8g5vurXt/7yl3+aPmPq8lX3t3V1HnnIgWEQrl1b/fZ3f3XTDX8Im4tJfeiw4/Y9aPFBasIVKzZcf8PdcT0IotaOlo2nHHOyiBYKTQ8vXXbFL35aHUzbCl3vetNrZ8+fVgxw7Q03fPlb/+m91LZtfsmJR7737LcbWGZc/7tbvv3ty1716tOuuvba1FUOPfRQE4AJ3/rOz3/7mz+0NheZpbe39bhjj2Vg6+b6jy693vt48qQpjzz84KkvOxG0h5ADjCZqg1ZVVTg2yiwiKsrGGi+JehhjdXdowlwQ5uTk5OTk5OTk5OS8gKgqM6uqqicCYEQU7BUAnBAYDlCQZwNnkkRNocnOmjflnbPeVquN/u3uB2fO7Oxsb4KRN7/+hMl90cDAwJveeOzxxx/pvBim0FQOO3RaS8vRhWIHOJgzY0qajERUnNrT8umPf2DpE0/VkmT6pCl7z29j30+cdrTHBy2an46UW21He2sBfsQHhXIPn/TqI9LEtYL2nbcgCODqVUjx9NedypEZHBo457y3vfa0Iziq1lIXccvCRTOC0nHFYlCOgrl7TnKUiJpps6Z885JP//GWW9ThtFcdMW+vuU5jsUPQ0HkbKSmIyCvUiQMMUUHEEysR6W6KEOYpozk5OTk5OTk5OTk5/z3iYqIMfIYgRCN3FACpjj9B0PBkVwUyl0KnFAXlYEL+aZIm3jsoF4uFieer1epEZCwHdqfawlq9woIgLLA1O+51PvE10dgEUWCasvskSV1S94EpRqWJR4irVWIScBhFPOFt1eNhhfVqmwrhxOdX61WAiUxxQl2iKGrxCDMILMKGrPdC7AkEAhGpsIgnBhPngjAnJycnJycnJycn5/9NDak7bmtmviDZvY2HlUCZwb3STnKz4XpPBNXGU8aeDB2ze1eACKIAmMAACKLZHZkyE2VkYhWiAEOUANDY6cY0LgEMKD2zAQyNjVZ14rAAAqsSoESqUCLozockot2kBHNBmJOTk5OTk5OTk5OT8/82nE9BTk5OTk5OTk5OTk7O/6OCcKwDbE5OTk5OTk5OTk5OTs7/QxDR/zcASxC0Ze3d8r4AAAAASUVORK5CYII="
                             width=100%></app-headersuc></div>
-                <div _ngcontent-sdd-c62 class="row align-items-center" style=color:#fff;background-color:#d7d7d7>
-                    <div _ngcontent-sdd-c62 class="bg-light clearfix">
-                        <div _ngcontent-sdd-c62 class=float-start><span _ngcontent-sdd-c62 style=color:black>RAMON
+                <div _ngcontent-xwn-c57 class="row align-items-center" style=color:#fff;background-color:#d7d7d7>
+                    <div _ngcontent-xwn-c57 class="bg-light clearfix">
+                        <div _ngcontent-xwn-c57 class=float-start><span _ngcontent-xwn-c57 style=color:black>RAMON
                                 ERNESTO BAUZA MARIN</span></div>
-                        <div _ngcontent-sdd-c62 class=float-end><a _ngcontent-sdd-c62 data-bs-toggle=dropdown
+                        <div _ngcontent-xwn-c57 class=float-end><a _ngcontent-xwn-c57 data-bs-toggle=dropdown
                                 href=https://dgpatrimonios.seniat.gob.ve/# role=button aria-expanded=false
-                                class="nav-link dropdown-toggle link-secondary"><i _ngcontent-sdd-c62
+                                class="nav-link dropdown-toggle link-secondary"><i _ngcontent-xwn-c57
                                     class="bi bi-list"></i></a>
-                            <ul _ngcontent-sdd-c62 class="dropdown-menu sf-hidden"></ul>
+                            <ul _ngcontent-xwn-c57 class="dropdown-menu sf-hidden"></ul>
                         </div>
                     </div>
                 </div>
-                <div _ngcontent-sdd-c62 class="row bg-color">
-                    <div _ngcontent-sdd-c62 class=col-sm-12 style=text-align:center;color:white><span _ngcontent-sdd-c62
+                <div _ngcontent-xwn-c57 class="row bg-color">
+                    <div _ngcontent-xwn-c57 class=col-sm-12 style=text-align:center;color:white><span _ngcontent-xwn-c57
                             style=width:100vh>Autoliquidación de Impuesto sobre Sucesiones</span></div>
                 </div>
-                <div _ngcontent-sdd-c62 class=row data-sf-nesting-track-id=1.1.2.1.4>
-                    <div _ngcontent-sdd-c62 class="col-sm-2 px-sm-2" style=background-color:#c1bdbb><app-menusuc
-                            _ngcontent-sdd-c62 _nghost-sdd-c61>
-                            <div _ngcontent-sdd-c61 id=wrapper class=d-flex>
-                                <div _ngcontent-sdd-c61 id=sidebar-wrapper class="bg-light border-right show">
-                                    <div _ngcontent-sdd-c61 class=sidebar-heading>
-                                        <div _ngcontent-sdd-c61 style=text-align:center><span _ngcontent-sdd-c61
-                                                style=font-size:1em;align-items:center><a _ngcontent-sdd-c61
+                <div _ngcontent-xwn-c57 class=row>
+                    <div _ngcontent-xwn-c57 class="col-sm-2 px-sm-2" style=background-color:#c1bdbb><app-menusuc
+                            _ngcontent-xwn-c57 _nghost-xwn-c56>
+                            <div _ngcontent-xwn-c56 id=wrapper class=d-flex>
+                                <div _ngcontent-xwn-c56 id=sidebar-wrapper class="bg-light border-right show">
+                                    <div _ngcontent-xwn-c56 class=sidebar-heading>
+                                        <div _ngcontent-xwn-c56 style=text-align:center><span _ngcontent-xwn-c56
+                                                style=font-size:1em;align-items:center><a _ngcontent-xwn-c56
                                                     ngbtooltip="Regresar Inicio" style=cursor:pointer><i
-                                                        _ngcontent-sdd-c61 class="bi bi-arrow-left"></i>&nbsp;
+                                                        _ngcontent-xwn-c56 class="bi bi-arrow-left"></i>&nbsp;
                                                     Inicio</a></span></div>
                                     </div>
-                                    <div _ngcontent-sdd-c61>
-                                        <div _ngcontent-sdd-c61 id=accordionFlushExample
+                                    <div _ngcontent-xwn-c56>
+                                        <div _ngcontent-xwn-c56 id=accordionFlushExample
                                             class="accordion accordion-flush">
-                                            <div _ngcontent-sdd-c61 class="accordion-item lenletratablaResumen">
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingTipoHerencia
-                                                    class=accordion-header><button _ngcontent-sdd-c61 type=button
+                                            <div _ngcontent-xwn-c56 class="accordion-item lenletratablaResumen">
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingTipoHerencia
+                                                    class=accordion-header><button _ngcontent-xwn-c56 type=button
                                                         data-bs-toggle=collapse
                                                         data-bs-target=#flush-collapseTipoHerencia aria-expanded=false
                                                         aria-controls=flush-collapseTipoHerencia
                                                         class="accordion-button collapsed"> Herencia </button></h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapseTipoHerencia
+                                                <div _ngcontent-xwn-c56 id=flush-collapseTipoHerencia
                                                     aria-labelledby=flush-headingTipoHerencia
                                                     data-bs-parent=#accordionFlushExample
                                                     class="accordion-collapse collapse sf-hidden"></div>
                                             </div>
-                                            <div _ngcontent-sdd-c61 class=accordion-item>
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingProrrogas class=accordion-header>
-                                                    <button _ngcontent-sdd-c61 type=button data-bs-toggle=collapse
+                                            <div _ngcontent-xwn-c56 class=accordion-item>
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingProrrogas class=accordion-header>
+                                                    <button _ngcontent-xwn-c56 type=button data-bs-toggle=collapse
                                                         data-bs-target=#flush-collapseProrrogas aria-expanded=false
                                                         aria-controls=flush-collapseProrrogas
                                                         class="accordion-button collapsed"> Prórrogas </button></h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapseProrrogas
+                                                <div _ngcontent-xwn-c56 id=flush-collapseProrrogas
                                                     aria-labelledby=flush-headingProrrogas
                                                     data-bs-parent=#accordionFlushExample
                                                     class="accordion-collapse collapse sf-hidden"></div>
                                             </div>
-                                            <div _ngcontent-sdd-c61 class=accordion-item>
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingOne class=accordion-header>
-                                                    <button _ngcontent-sdd-c61 type=button data-bs-toggle=collapse
+                                            <div _ngcontent-xwn-c56 class=accordion-item>
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingOne class=accordion-header>
+                                                    <button _ngcontent-xwn-c56 type=button data-bs-toggle=collapse
                                                         data-bs-target=#flush-collapseOne aria-expanded=false
                                                         aria-controls=flush-collapseOne
                                                         class="accordion-button collapsed"> Identificación Herederos
                                                     </button></h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapseOne
+                                                <div _ngcontent-xwn-c56 id=flush-collapseOne
                                                     aria-labelledby=flush-headingOne
                                                     data-bs-parent=#accordionFlushExample
                                                     class="accordion-collapse collapse sf-hidden"></div>
                                             </div>
-                                            <div _ngcontent-sdd-c61 class=accordion-item>
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingInmuebles class=accordion-header>
-                                                    <button _ngcontent-sdd-c61 type=button data-bs-toggle=collapse
+                                            <div _ngcontent-xwn-c56 class=accordion-item>
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingInmuebles class=accordion-header>
+                                                    <button _ngcontent-xwn-c56 type=button data-bs-toggle=collapse
                                                         data-bs-target=#flush-collapseInmuebles aria-expanded=false
                                                         aria-controls=flush-collapseInmuebles
                                                         class="accordion-button collapsed"> Bienes Inmuebles </button>
                                                 </h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapseInmuebles
+                                                <div _ngcontent-xwn-c56 id=flush-collapseInmuebles
                                                     aria-labelledby=flush-headingInmuebles
                                                     data-bs-parent=#accordionFlushExample
                                                     class="accordion-collapse collapse sf-hidden"></div>
                                             </div>
-                                            <div _ngcontent-sdd-c61 class=accordion-item>
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingTwo class=accordion-header>
-                                                    <button _ngcontent-sdd-c61 type=button data-bs-toggle=collapse
+                                            <div _ngcontent-xwn-c56 class=accordion-item>
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingTwo class=accordion-header>
+                                                    <button _ngcontent-xwn-c56 type=button data-bs-toggle=collapse
                                                         data-bs-target=#flush-collapseTwo aria-expanded=false
                                                         aria-controls=flush-collapseTwo
                                                         class="accordion-button collapsed"> Bienes Muebles </button>
                                                 </h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapseTwo
+                                                <div _ngcontent-xwn-c56 id=flush-collapseTwo
                                                     aria-labelledby=flush-headingTwo
                                                     data-bs-parent=#accordionFlushExample
                                                     class="accordion-collapse collapse sf-hidden"></div>
                                             </div>
-                                            <div _ngcontent-sdd-c61 class=accordion-item>
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingFor class=accordion-header>
-                                                    <button _ngcontent-sdd-c61 type=button data-bs-toggle=collapse
+                                            <div _ngcontent-xwn-c56 class=accordion-item>
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingFor class=accordion-header>
+                                                    <button _ngcontent-xwn-c56 type=button data-bs-toggle=collapse
                                                         data-bs-target=#flush-collapseFor aria-expanded=false
                                                         aria-controls=flush-collapseFor
                                                         class="accordion-button collapsed"> Pasivos Deuda </button></h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapseFor
+                                                <div _ngcontent-xwn-c56 id=flush-collapseFor
                                                     aria-labelledby=flush-headingFor
                                                     data-bs-parent=#accordionFlushExample
                                                     class="accordion-collapse collapse sf-hidden"></div>
                                             </div>
-                                            <div _ngcontent-sdd-c61 class=accordion-item>
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingPasivosGastos
-                                                    class=accordion-header><button _ngcontent-sdd-c61 type=button
+                                            <div _ngcontent-xwn-c56 class=accordion-item>
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingPasivosGastos
+                                                    class=accordion-header><button _ngcontent-xwn-c56 type=button
                                                         data-bs-toggle=collapse
                                                         data-bs-target=#flush-collapsePasivosGastos aria-expanded=false
                                                         aria-controls=flush-collapsePasivosGastos
                                                         class="accordion-button collapsed"> Pasivos Gastos </button>
                                                 </h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapsePasivosGastos
+                                                <div _ngcontent-xwn-c56 id=flush-collapsePasivosGastos
                                                     aria-labelledby=flush-headingPasivosGastos
                                                     data-bs-parent=#accordionFlushExample
                                                     class="accordion-collapse collapse sf-hidden"></div>
                                             </div>
-                                            <div _ngcontent-sdd-c61 class=accordion-item>
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingDesgravamenes
-                                                    class=accordion-header><button _ngcontent-sdd-c61 type=button
+                                            <div _ngcontent-xwn-c56 class=accordion-item>
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingDesgravamenes
+                                                    class=accordion-header><button _ngcontent-xwn-c56 type=button
                                                         data-bs-toggle=collapse
                                                         data-bs-target=#flush-collapseDesgravamenes aria-expanded=false
                                                         aria-controls=flush-collapseDesgravamenes
                                                         class="accordion-button collapsed"> Desgravámenes </button></h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapseDesgravamenes
+                                                <div _ngcontent-xwn-c56 id=flush-collapseDesgravamenes
                                                     aria-labelledby=flush-headingDesgravamenes
                                                     data-bs-parent=#accordionFlushExample
                                                     class="accordion-collapse collapse sf-hidden"></div>
                                             </div>
-                                            <div _ngcontent-sdd-c61 class=accordion-item>
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingExenciones
-                                                    class=accordion-header><button _ngcontent-sdd-c61 type=button
+                                            <div _ngcontent-xwn-c56 class=accordion-item>
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingExenciones
+                                                    class=accordion-header><button _ngcontent-xwn-c56 type=button
                                                         data-bs-toggle=collapse data-bs-target=#flush-collapseExenciones
                                                         aria-expanded=false aria-controls=flush-collapseExenciones
                                                         class="accordion-button collapsed"> Exenciones </button></h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapseExenciones
+                                                <div _ngcontent-xwn-c56 id=flush-collapseExenciones
                                                     aria-labelledby=flush-headingExenciones
                                                     data-bs-parent=#accordionFlushExample
                                                     class="accordion-collapse collapse sf-hidden"></div>
                                             </div>
-                                            <div _ngcontent-sdd-c61 class=accordion-item>
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingExoneraciones
-                                                    class=accordion-header><button _ngcontent-sdd-c61 type=button
+                                            <div _ngcontent-xwn-c56 class=accordion-item>
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingExoneraciones
+                                                    class=accordion-header><button _ngcontent-xwn-c56 type=button
                                                         data-bs-toggle=collapse
                                                         data-bs-target=#flush-collapseExoneraciones aria-expanded=false
                                                         aria-controls=flush-collapseExoneraciones
                                                         class="accordion-button collapsed"> Exoneraciones </button></h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapseExoneraciones
+                                                <div _ngcontent-xwn-c56 id=flush-collapseExoneraciones
                                                     aria-labelledby=flush-headingExoneraciones
                                                     data-bs-parent=#accordionFlushExample
                                                     class="accordion-collapse collapse sf-hidden"></div>
                                             </div>
-                                            <div _ngcontent-sdd-c61 class=accordion-item>
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingBienesLitigiosos
-                                                    class=accordion-header><button _ngcontent-sdd-c61 type=button
+                                            <div _ngcontent-xwn-c56 class=accordion-item>
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingBienesLitigiosos
+                                                    class=accordion-header><button _ngcontent-xwn-c56 type=button
                                                         data-bs-toggle=collapse
                                                         data-bs-target=#flush-collapseBienesLitigiosos
                                                         aria-expanded=false aria-controls=flush-collapseBienesLitigiosos
                                                         class="accordion-button collapsed"> Bienes Litigiosos </button>
                                                 </h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapseBienesLitigiosos
+                                                <div _ngcontent-xwn-c56 id=flush-collapseBienesLitigiosos
                                                     aria-labelledby=flush-headingBienesLitigiosos
                                                     data-bs-parent=#accordionFlushExample
                                                     class="accordion-collapse collapse sf-hidden"></div>
                                             </div>
-                                            <div _ngcontent-sdd-c61 class=accordion-item>
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingResumenDeclaracion
-                                                    class=accordion-header><button _ngcontent-sdd-c61 type=button
+                                            <div _ngcontent-xwn-c56 class=accordion-item>
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingResumenDeclaracion
+                                                    class=accordion-header><button _ngcontent-xwn-c56 type=button
                                                         data-bs-toggle=collapse
                                                         data-bs-target=#flush-collapseResumenDeclaracion
-                                                        aria-expanded=false
+                                                        aria-expanded=true
                                                         aria-controls=flush-collapseResumenDeclaracion
-                                                        class="accordion-button collapsed"> Resumen Declaración
-                                                    </button></h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapseResumenDeclaracion
+                                                        class=accordion-button> Resumen Declaración </button></h2>
+                                                <div _ngcontent-xwn-c56 id=flush-collapseResumenDeclaracion
                                                     aria-labelledby=flush-headingResumenDeclaracion
                                                     data-bs-parent=#accordionFlushExample
-                                                    class="accordion-collapse collapse sf-hidden"></div>
-                                            </div>
-                                            <div _ngcontent-sdd-c61 class=accordion-item>
-                                                <h2 _ngcontent-sdd-c61 id=flush-headingVerDeclaracion
-                                                    class=accordion-header><button _ngcontent-sdd-c61 type=button
-                                                        data-bs-toggle=collapse
-                                                        data-bs-target=#flush-collapseVerDeclaracion aria-expanded=true
-                                                        aria-controls=flush-collapseVerDeclaracion
-                                                        class=accordion-button> Ver Declaración </button></h2>
-                                                <div _ngcontent-sdd-c61 id=flush-collapseVerDeclaracion
-                                                    aria-labelledby=flush-headingVerDeclaracion
-                                                    data-bs-parent=#accordionFlushExample
                                                     class="accordion-collapse collapse show">
-                                                    <ul _ngcontent-sdd-c61 class=list-group>
-                                                        <li _ngcontent-sdd-c61 class=list-group-item><a
-                                                                _ngcontent-sdd-c61 class=link-secondary
-                                                                style=cursor:pointer>Ver Declaración</a>
+                                                    <ul _ngcontent-xwn-c56 class=list-group>
+                                                        <li _ngcontent-xwn-c56 class=list-group-item><a
+                                                                _ngcontent-xwn-c56 class=link-secondary
+                                                                style=cursor:pointer>Resumen Declaración</a>
                                                     </ul>
                                                 </div>
+                                            </div>
+                                            <div _ngcontent-xwn-c56 class=accordion-item>
+                                                <h2 _ngcontent-xwn-c56 id=flush-headingVerDeclaracion
+                                                    class=accordion-header><button _ngcontent-xwn-c56 type=button
+                                                        data-bs-toggle=collapse
+                                                        data-bs-target=#flush-collapseVerDeclaracion aria-expanded=false
+                                                        aria-controls=flush-collapseVerDeclaracion
+                                                        class="accordion-button collapsed"> Ver Declaración </button>
+                                                </h2>
+                                                <div _ngcontent-xwn-c56 id=flush-collapseVerDeclaracion
+                                                    aria-labelledby=flush-headingVerDeclaracion
+                                                    data-bs-parent=#accordionFlushExample
+                                                    class="accordion-collapse collapse sf-hidden"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </app-menusuc></div>
-                    <div _ngcontent-sdd-c62 id=divHijo class=col-sm-10 data-sf-nesting-track-id=1.1.2.1.4.2>
-                        <app-contentsuc _ngcontent-sdd-c62 _nghost-sdd-c60 data-sf-nesting-track-id=1.1.2.1.4.2.1>
-                            <div _ngcontent-sdd-c60 class=row data-sf-nesting-track-id=1.1.2.1.4.2.1.1>
-                                <div _ngcontent-sdd-c60 class=col-sm-12 data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1>
-                                    <router-outlet _ngcontent-sdd-c60></router-outlet><app-informacion _nghost-sdd-c73
-                                        data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2>
-                                        <div _ngcontent-sdd-c73 class=lenletrabreadcrumb><app-tipodeclaracion
-                                                _ngcontent-sdd-c73 _nghost-sdd-c65>
-                                                <div _ngcontent-sdd-c65 class=row>
-                                                    <div _ngcontent-sdd-c65 class=col-sm-12>
-                                                        <div _ngcontent-sdd-c65 role=alert
-                                                            class="row alert alert-sm alert-info">
-                                                            <div _ngcontent-sdd-c65 class="text-center fw-bold"> SU
-                                                                DECLARACIÓN ES TIPO SUSTITUTIVA</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </app-tipodeclaracion>
-                                            <nav _ngcontent-sdd-c73 aria-label=breadcrumb>
-                                                <ol _ngcontent-sdd-c73 class=breadcrumb>
-                                                    <li _ngcontent-sdd-c73 class=breadcrumb-item><a _ngcontent-sdd-c73
+                    <div _ngcontent-xwn-c57 id=divHijo class=col-sm-10><app-contentsuc _ngcontent-xwn-c57
+                            _nghost-xwn-c55>
+                            <div _ngcontent-xwn-c55 class=row>
+                                <div _ngcontent-xwn-c55 class=col-sm-12><router-outlet
+                                        _ngcontent-xwn-c55></router-outlet><app-calculo _nghost-xwn-c63>
+                                        <div _ngcontent-xwn-c63 class=lenletrabreadcrumb>
+                                            <nav _ngcontent-xwn-c63 aria-label=breadcrumb>
+                                                <ol _ngcontent-xwn-c63 class=breadcrumb>
+                                                    <li _ngcontent-xwn-c63 class=breadcrumb-item><a _ngcontent-xwn-c63
                                                             href=https://dgpatrimonios.seniat.gob.ve/sucesion/principal>Inicio</a>
-                                                    <li _ngcontent-sdd-c73 aria-current=page
-                                                        class="breadcrumb-item active"><strong _ngcontent-sdd-c73>Ver
-                                                            Declaración</strong>
+                                                    <li _ngcontent-xwn-c63 aria-current=page
+                                                        class="breadcrumb-item active"><strong
+                                                            _ngcontent-xwn-c63>Resumen Declaración</strong>
                                                 </ol>
                                             </nav>
                                         </div>
-                                        <div _ngcontent-sdd-c73
-                                            class="shadow-lg p-3 mb-5 bg-body rounded lenletratablaResumen"
-                                            data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2.2>
-                                            <div _ngcontent-sdd-c73 data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2.2.1>
-                                                <div _ngcontent-sdd-c73 class=row
-                                                    data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2.2.1.1>
-                                                    <div _ngcontent-sdd-c73 class=col-sm-12 style=text-align:center>
-                                                        <button _ngcontent-sdd-c73 placement=top ngbtooltip=Anverso
-                                                            type=button class="btn btn-sm btn-danger"><i
-                                                                _ngcontent-sdd-c73 class="bi bi-arrow-bar-left"></i>
-                                                            Anverso</button> &nbsp; <button _ngcontent-sdd-c73
-                                                            placement=top ngbtooltip=Declarar type=button
-                                                            class="btn btn-sm btn-danger"><i _ngcontent-sdd-c73
-                                                                class=bi-check-circle></i> Declarar</button> &nbsp;
-                                                        &nbsp; <button _ngcontent-sdd-c73 placement=top
-                                                            ngbtooltip=Reverso type=button class="btn btn-sm btn-danger"
-                                                            disabled> Reverso <i _ngcontent-sdd-c73
-                                                                class="bi bi-arrow-bar-right"></i></button></div>
-                                                    <div _ngcontent-sdd-c73 style=height:30px></div>
-                                                    <div _ngcontent-sdd-c73 class=row
-                                                        data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2.2.1.1.3>
-                                                        <div _ngcontent-sdd-c73 class=col-sm-12
-                                                            data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2.2.1.1.3.1>
-                                                            <div _ngcontent-sdd-c73
-                                                                data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2.2.1.1.3.1.1>
-                                                                <table _ngcontent-sdd-c73
-                                                                    class="table table-bordered table-sm lenletratablaResumen"
-                                                                    data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2.2.1.1.3.1.1.1>
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <th _ngcontent-sdd-c73 class=table-light>A -
-                                                                                DATOS DEL CONTRIBUYENTE
-                                                                            <th _ngcontent-sdd-c73 class=table-light>Nº
-                                                                                RIF
-                                                                    <tbody>
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <th _ngcontent-sdd-c73 class=table-light>
-                                                                                FECHA DE DECLARACIÓN
-                                                                            <th _ngcontent-sdd-c73 class=table-light>
-                                                                                FECHA DE VENCIMIENTO
-                                                                    <tbody>
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <th _ngcontent-sdd-c73 class=table-light>B -
-                                                                                DATOS DEL CAUSANTE O DONANTE
-                                                                            <th _ngcontent-sdd-c73 class=table-light>RIF
-                                                                                Ó CEDULA DE IDENTIDAD
-                                                                    <tbody>
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <th _ngcontent-sdd-c73 class=table-light>C -
-                                                                                DIRECCIÓN DEL CAUSANTE O DONANTE
-                                                                            <th _ngcontent-sdd-c73 class=table-light>
-                                                                                FECHA DE FALLECIMIENTO
-                                                                    <tbody>
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <th _ngcontent-sdd-c73 class=table-light>D -
-                                                                                DATOS DEL REPRESENTANTE LEGAL O
-                                                                                RESPONSABLE
-                                                                            <th _ngcontent-sdd-c73
-                                                                                class="bordeAbajo bordeDer">N°- RIF
-                                                                    <tbody></tbody>
-                                                                    <tr _ngcontent-sdd-c73
-                                                                        data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2.2.1.1.3.1.1.1.2>
-                                                                        <td _ngcontent-sdd-c73
-                                                                            class="bordeIzq bordeAbajo bordeDer">
-                                                                            SUCESION BAUZA MARIN RAMON ERNESTO
-                                                                        <td _ngcontent-sdd-c73
-                                                                            class="bordeAbajo bordeDer text-end">
-                                                                            J504705900
-                                                                    <tr _ngcontent-sdd-c73
-                                                                        data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2.2.1.1.3.1.1.1.4>
-                                                                        <td _ngcontent-sdd-c73
-                                                                            class="bordeIzq bordeAbajo bordeDer">
-                                                                            14/03/2026
-                                                                        <td _ngcontent-sdd-c73
-                                                                            class="bordeAbajo bordeDer text-end">
-                                                                            17/01/2023
-                                                                    <tr _ngcontent-sdd-c73
-                                                                        data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2.2.1.1.3.1.1.1.6>
-                                                                        <td _ngcontent-sdd-c73
-                                                                            class="bordeIzq bordeAbajo bordeDer"> BAUZA
-                                                                            MARIN, RAMON ERNESTO
-                                                                        <td _ngcontent-sdd-c73
-                                                                            class="bordeAbajo bordeDer text-end">
-                                                                            J504705900 / 6145727
-                                                                    <tr _ngcontent-sdd-c73
-                                                                        data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2.2.1.1.3.1.1.1.8>
-                                                                        <td _ngcontent-sdd-c73
-                                                                            class="bordeIzq bordeAbajo bordeDer">CALLE
-                                                                            OESTE CASA CONJUNTO RESIDENCIAL LAS TUNAS
-                                                                            NRO 04-04 NO APLICA URBANIZACION MANEIRO
-                                                                            CIUDAD PAMPATAR PARROQUIA: CAPITAL MANEIRO
-                                                                            MUNICIPIO: MANEIRO ESTADO: NUEVA ESPARTA
-                                                                        <td _ngcontent-sdd-c73
-                                                                            class="bordeAbajo bordeDer text-end">
-                                                                            21/04/2022
-                                                                    <tr _ngcontent-sdd-c73
-                                                                        data-sf-nesting-track-id=1.1.2.1.4.2.1.1.1.2.2.1.1.3.1.1.1.10>
-                                                                        <td _ngcontent-sdd-c73>PEDRONI LEPERVANCHE,
-                                                                            PAOLA MARIA
-                                                                        <td _ngcontent-sdd-c73 class=text-end>V069727138
-                                                                </table>
-                                                                <table _ngcontent-sdd-c73
-                                                                    class="table table-bordered table-sm lenletratablaResumen">
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10
-                                                                                class=table-light>J- ANEXOS
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10
-                                                                                class=table-light>Bienes Inmuebles
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10>
-                                                                                <div _ngcontent-sdd-c73
-                                                                                    class=table-responsive>
-                                                                                    <table _ngcontent-sdd-c73
-                                                                                        class="table table-bordered table-sm lenletratablaResumen">
-                                                                                        <thead _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=table-light>
-                                                                                                    Tipo
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=table-light>
-                                                                                                    Descripción&nbsp;
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=table-light>
-                                                                                                    Registro&nbsp;
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=1
-                                                                                                    class=table-light>
-                                                                                                    Vivienda Principal
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=1
-                                                                                                    class=table-light>
-                                                                                                    Bien Litigioso
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=table-light>
-                                                                                                    Monto Declarado
-                                                                                        <tbody _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2>Townhouse
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2>
-                                                                                                    <div
-                                                                                                        _ngcontent-sdd-c73>
-                                                                                                        <textarea
-                                                                                                            _ngcontent-sdd-c73
-                                                                                                            class=lthgtextarea22> 100% de casa quinta tipo townhouse identificada con el numero 04-04. Tipo de Bien Inmueble: Townhouse. Linderos: norte con townhouse numero 04-03; sur con twnhouse 04-05; este con zona de jardin de uso exclusivo y area comun del conjunto; oeste con avenida oeste de la urbanizacion , Superficie Construida: 184 metros cuadrados, Superficie Sin Construir: no aplica, Área o Superficie: no aplica. , Dirección: Cunjunto residencial "Las tunas", urbanizacion Maneiro, municipio Maneiro, Estado Nueva Esparta </textarea>
-                                                                                                    </div>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2>
-                                                                                                    <div
-                                                                                                        _ngcontent-sdd-c73>
-                                                                                                        <textarea
-                                                                                                            _ngcontent-sdd-c73
-                                                                                                            class=lthgtextarea22> Oficina Subalterna/Juzgado/Notaría/Misión Vivienda: Oficina Subalterna de Registro Publico del Distrito Maneiro del Estado Nueva Esparta, Número de Registro: 33, Libro: tomo quinto, Protocolo: primero, Fecha: 11/11/1992, Trimestre: tercero, Asiento Registral: 33, Matrícula: no aplica, Libro de Folio Real del Año: 1992</textarea>
-                                                                                                    </div>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=1
-                                                                                                    class=text-center>
-                                                                                                    <span
-                                                                                                        _ngcontent-sdd-c73
-                                                                                                        class="badge rounded-pill bg-success">&nbsp;SI&nbsp;</span>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=1
-                                                                                                    class=text-center>
-                                                                                                    <span
-                                                                                                        _ngcontent-sdd-c73
-                                                                                                        class="badge rounded-pill bg-danger">&nbsp;NO&nbsp;</span>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=text-end>
-                                                                                                    3.700.000,00
-                                                                                        <tfoot _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=8
-                                                                                                    class=text-end>
-                                                                                                    Monto Total
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=text-end>
-                                                                                                    3.700.000,00
-                                                                                    </table>
-                                                                                </div>
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10
-                                                                                class=table-light>Bienes Muebles
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10>
-                                                                                <div _ngcontent-sdd-c73
-                                                                                    class=table-responsive>
-                                                                                    <table _ngcontent-sdd-c73
-                                                                                        class="table table-bordered table-sm lenletratablaResumen">
-                                                                                        <thead _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=table-light>
-                                                                                                    Tipo
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=5
-                                                                                                    class=table-light>
-                                                                                                    Descripción&nbsp;
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=1
-                                                                                                    class=table-light>
-                                                                                                    Bien Litigioso
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class="table-light text-end">
-                                                                                                    Monto Declarado
-                                                                                        <tbody _ngcontent-sdd-c73>
-                                                                                        <tfoot _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=8
-                                                                                                    class=text-end>
-                                                                                                    Monto Total
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=text-end> 0,00
-                                                                                    </table>
-                                                                                </div>
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10
-                                                                                class=table-light>Pasivos
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10>
-                                                                                <div _ngcontent-sdd-c73
-                                                                                    class=table-responsive>
-                                                                                    <table _ngcontent-sdd-c73
-                                                                                        class="table table-bordered table-sm lenletratablaResumen">
-                                                                                        <thead _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=table-light>
-                                                                                                    Tipo
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=6
-                                                                                                    class=table-light>
-                                                                                                    Descripción&nbsp;
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=table-light>
-                                                                                                    Monto Declarado
-                                                                                        <tbody _ngcontent-sdd-c73>
-                                                                                        <tfoot _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=8
-                                                                                                    class=text-end>
-                                                                                                    Monto Total
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=text-end> 0,00
-                                                                                    </table>
-                                                                                </div>
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10
-                                                                                class=table-light>Desgravamenes
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10>
-                                                                                <div _ngcontent-sdd-c73
-                                                                                    class=table-responsive>
-                                                                                    <table _ngcontent-sdd-c73
-                                                                                        class="table table-bordered table-sm lenletratablaResumen">
-                                                                                        <thead _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=table-light>
-                                                                                                    Tipo
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=6
-                                                                                                    class=table-light>
-                                                                                                    Descripción&nbsp;
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class="table-light text-end">
-                                                                                                    Monto Declarado
-                                                                                        <tbody _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2 class=lth>
-                                                                                                    Townhouse
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=6>
-                                                                                                    <div
-                                                                                                        _ngcontent-sdd-c73>
-                                                                                                        <textarea
-                                                                                                            _ngcontent-sdd-c73
-                                                                                                            class=lthgtextarea23> 100% de casa quinta tipo townhouse identificada con el numero 04-04. Tipo de Bien Inmueble: Townhouse. Linderos: norte con townhouse numero 04-03; sur con twnhouse 04-05; este con zona de jardin de uso exclusivo y area comun del conjunto; oeste con avenida oeste de la urbanizacion , Superficie Construida: 184 metros cuadrados, Superficie Sin Construir: no aplica, Área o Superficie: no aplica. </textarea>
-                                                                                                    </div>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=text-end>
-                                                                                                    3.700.000,00
-                                                                                        <tfoot _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=8
-                                                                                                    class=text-end>
-                                                                                                    Monto Total
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=text-end>
-                                                                                                    3.700.000,00
-                                                                                    </table>
-                                                                                </div>
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10
-                                                                                class=table-light>Exenciones
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10>
-                                                                                <div _ngcontent-sdd-c73
-                                                                                    class=table-responsive>
-                                                                                    <table _ngcontent-sdd-c73
-                                                                                        class="table table-bordered table-sm lenletratablaResumen">
-                                                                                        <thead _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2>Tipo
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=6>
-                                                                                                    Descripción&nbsp;
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2>Monto
-                                                                                                    Declarado
-                                                                                        <tbody _ngcontent-sdd-c73>
-                                                                                        <tfoot _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=8
-                                                                                                    class=text-end>
-                                                                                                    Monto Total
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=text-end> 0,00
-                                                                                    </table>
-                                                                                </div>
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10
-                                                                                class=table-light>Exoneraciones
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10>
-                                                                                <div _ngcontent-sdd-c73
-                                                                                    class=table-responsive>
-                                                                                    <table _ngcontent-sdd-c73
-                                                                                        class="table table-bordered table-sm lenletratablaResumen">
-                                                                                        <thead _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=table-light>
-                                                                                                    Tipo
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=6
-                                                                                                    class=table-light>
-                                                                                                    Descripción&nbsp;
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=table-light>
-                                                                                                    Monto Declarado
-                                                                                        <tbody _ngcontent-sdd-c73>
-                                                                                        <tfoot _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=8
-                                                                                                    class=text-end>
-                                                                                                    Monto Total
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=text-end> 0,00
-                                                                                    </table>
-                                                                                </div>
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10
-                                                                                class=table-light>Bienes Litigiosos
-                                                                    <tbody _ngcontent-sdd-c73>
-                                                                        <tr _ngcontent-sdd-c73>
-                                                                            <td _ngcontent-sdd-c73 colspan=10>
-                                                                                <div _ngcontent-sdd-c73
-                                                                                    class=table-responsive>
-                                                                                    <table _ngcontent-sdd-c73
-                                                                                        class="table table-bordered table-sm lenletratablaResumen">
-                                                                                        <thead _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=table-light>
-                                                                                                    Tipo
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=6
-                                                                                                    class=table-light>
-                                                                                                    Descripción&nbsp;
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=table-light>
-                                                                                                    Monto Declarado
-                                                                                        <tbody _ngcontent-sdd-c73>
-                                                                                        <tfoot _ngcontent-sdd-c73>
-                                                                                            <tr _ngcontent-sdd-c73>
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=8
-                                                                                                    class=text-end>
-                                                                                                    Monto Total
-                                                                                                <td _ngcontent-sdd-c73
-                                                                                                    colspan=2
-                                                                                                    class=text-end> 0,00
-                                                                                    </table>
-                                                                                </div>
-                                                                </table>
+                                        <div _ngcontent-xwn-c63 class="shadow-lg p-3 mb-5 bg-body rounded">
+                                            <div _ngcontent-xwn-c63 class=card>
+                                                <div _ngcontent-xwn-c63 class=card-header>
+                                                    <div _ngcontent-xwn-c63 class="bg-light clearfix">
+                                                        <div _ngcontent-xwn-c63 class=float-start><span
+                                                                _ngcontent-xwn-c63><strong _ngcontent-xwn-c63>Cálculo
+                                                                    Manual Cuota Parte Hereditaria</strong></span></div>
+                                                        <div _ngcontent-xwn-c63 class=float-end><a _ngcontent-xwn-c63
+                                                                placement=top ngbtooltip=Regresar
+                                                                class="btn btn-light"><i _ngcontent-xwn-c63
+                                                                    class="bi bi-arrow-clockwise"></i></a></div>
+                                                    </div>
+                                                </div>
+                                                <div _ngcontent-xwn-c63 class=card-body>
+                                                    <div _ngcontent-xwn-c63>
+                                                        <form _ngcontent-xwn-c63 novalidate
+                                                            class="ng-untouched ng-pristine ng-valid">
+                                                            <div _ngcontent-xwn-c63 class="row py-3">
+                                                                <div _ngcontent-xwn-c63 class=col-sm-6>
+                                                                    <div _ngcontent-xwn-c63 class=form-group>
+                                                                        <div _ngcontent-xwn-c63 class=form-floating>
+                                                                            <input _ngcontent-xwn-c63 id=ut
+                                                                                placeholder=# type=text readonly
+                                                                                class="form-control form-control-sm"
+                                                                                value=0,4000000000><label
+                                                                                _ngcontent-xwn-c63 for=ut>Unidad
+                                                                                Tributaria Aplicada para cálculo</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div _ngcontent-xwn-c63 class=col-sm-6>
+                                                                    <div _ngcontent-xwn-c63 class=form-group>
+                                                                        <div _ngcontent-xwn-c63 class=form-floating>
+                                                                            <input _ngcontent-xwn-c63 id=ip type=text
+                                                                                placeholder=# currencymask readonly
+                                                                                class="form-control form-control-sm"
+                                                                                style=text-align:right
+                                                                                value=" 11333,18"><label
+                                                                                _ngcontent-xwn-c63 for=ip>Total Impuesto
+                                                                                a Pagar</label></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <table _ngcontent-xwn-c63 colspan=11
+                                                                class="table table-bordered table-sm lenletratablaResumen">
+                                                                <thead _ngcontent-xwn-c63 class=table-light>
+                                                                    <tr _ngcontent-xwn-c63>
+                                                                        <th _ngcontent-xwn-c63>Apellido(s) y Nombre(s)
+                                                                        <th _ngcontent-xwn-c63>C.I./Pasaporte
+                                                                        <th _ngcontent-xwn-c63>Parentesco
+                                                                        <th _ngcontent-xwn-c63>Grado
+                                                                        <th _ngcontent-xwn-c63>Premuerto
+                                                                        <th _ngcontent-xwn-c63>Cuota Parte
+                                                                            Hereditaria(UT)
+                                                                        <th _ngcontent-xwn-c63>Reducción (Bs.)
+                                                                <tbody _ngcontent-xwn-c63 formarrayname=items
+                                                                    class="ng-untouched ng-pristine ng-valid">
+                                                                    <tr _ngcontent-xwn-c63
+                                                                        class="ng-untouched ng-pristine ng-valid">
+                                                                        <td _ngcontent-xwn-c63
+                                                                            style=text-align:left!important>BAUZA
+                                                                            PEDRONI RAMON ERNESTO
+                                                                        <td _ngcontent-xwn-c63 style=text-align:center>
+                                                                            V213264954
+                                                                        <td _ngcontent-xwn-c63 style=text-align:center>
+                                                                            OTRO PARIENTE
+                                                                        <td _ngcontent-xwn-c63 style=text-align:center>4
+                                                                        <td _ngcontent-xwn-c63 style=text-align:center>
+                                                                            NO
+                                                                        <td _ngcontent-xwn-c63><input _ngcontent-xwn-c63
+                                                                                formcontrolname=valor currencymask
+                                                                                class="form-group form-control form-control-sm text-end ng-untouched ng-pristine ng-valid"
+                                                                                id=itemv-0 style=text-align:right
+                                                                                value=18.641,67>
+                                                                        <td _ngcontent-xwn-c63><input _ngcontent-xwn-c63
+                                                                                formcontrolname=deducion currencymask
+                                                                                class="form-group form-control form-control-sm text-end ng-untouched ng-pristine ng-valid"
+                                                                                id=itemd-0 style=text-align:right
+                                                                                value=0,00>
+                                                                    <tr _ngcontent-xwn-c63
+                                                                        class="ng-untouched ng-pristine ng-valid">
+                                                                        <td _ngcontent-xwn-c63
+                                                                            style=text-align:left!important>BAUZA
+                                                                            PEDRONI ANDRES ALEJANDRO
+                                                                        <td _ngcontent-xwn-c63 style=text-align:center>
+                                                                            V213264962
+                                                                        <td _ngcontent-xwn-c63 style=text-align:center>
+                                                                            TIA/TIO
+                                                                        <td _ngcontent-xwn-c63 style=text-align:center>3
+                                                                        <td _ngcontent-xwn-c63 style=text-align:center>
+                                                                            NO
+                                                                        <td _ngcontent-xwn-c63><input _ngcontent-xwn-c63
+                                                                                formcontrolname=valor currencymask
+                                                                                class="form-group form-control form-control-sm text-end ng-untouched ng-pristine ng-valid"
+                                                                                id=itemv-1 style=text-align:right
+                                                                                value=18.641,67>
+                                                                        <td _ngcontent-xwn-c63><input _ngcontent-xwn-c63
+                                                                                formcontrolname=deducion currencymask
+                                                                                class="form-group form-control form-control-sm text-end ng-untouched ng-pristine ng-valid"
+                                                                                id=itemd-1 style=text-align:right
+                                                                                value=0,00>
+                                                                    <tr _ngcontent-xwn-c63
+                                                                        class="ng-untouched ng-pristine ng-valid">
+                                                                        <td _ngcontent-xwn-c63
+                                                                            style=text-align:left!important>PEDRONI
+                                                                            LEPERVANCHE PAOLA MARIA
+                                                                        <td _ngcontent-xwn-c63 style=text-align:center>
+                                                                            V069727138
+                                                                        <td _ngcontent-xwn-c63 style=text-align:center>
+                                                                            OTRO
+                                                                        <td _ngcontent-xwn-c63 style=text-align:center>4
+                                                                        <td _ngcontent-xwn-c63 style=text-align:center>
+                                                                            NO
+                                                                        <td _ngcontent-xwn-c63><input _ngcontent-xwn-c63
+                                                                                formcontrolname=valor currencymask
+                                                                                class="form-group form-control form-control-sm text-end ng-untouched ng-pristine ng-valid"
+                                                                                id=itemv-2 style=text-align:right
+                                                                                value=18.641,67>
+                                                                        <td _ngcontent-xwn-c63><input _ngcontent-xwn-c63
+                                                                                formcontrolname=deducion currencymask
+                                                                                class="form-group form-control form-control-sm text-end ng-untouched ng-pristine ng-valid"
+                                                                                id=itemd-2 style=text-align:right
+                                                                                value=0,00>
+                                                                <tfoot _ngcontent-xwn-c63>
+                                                                    <tr _ngcontent-xwn-c63>
+                                                                        <td _ngcontent-xwn-c63 colspan=7
+                                                                            class=text-center><button _ngcontent-xwn-c63
+                                                                                type=submit
+                                                                                class="btn btn-sm btn-danger">Calcular</button>
+                                                            </table>
+                                                        </form>
+                                                        <div _ngcontent-xwn-c63>
+                                                            <div _ngcontent-xwn-c63 class=row>
+                                                                <div _ngcontent-xwn-c63 class=col-sm-12>
+                                                                    <table _ngcontent-xwn-c63
+                                                                        class="table table-bordered table-sm lenletratablaResumen">
+                                                                        <thead _ngcontent-xwn-c63 class=table-light>
+                                                                            <tr _ngcontent-xwn-c63>
+                                                                                <th _ngcontent-xwn-c63>Apellido(s) y
+                                                                                    Nombre(s)
+                                                                                <th _ngcontent-xwn-c63>C.I./Pasaporte
+                                                                                <th _ngcontent-xwn-c63>Parentesco
+                                                                                <th _ngcontent-xwn-c63>Grado
+                                                                                <th _ngcontent-xwn-c63>Premuerto
+                                                                                <th _ngcontent-xwn-c63>Cuota Parte
+                                                                                    Hereditaria(UT)
+                                                                                <th _ngcontent-xwn-c63>Porcentaje o
+                                                                                    Tarifa (%)
+                                                                                <th _ngcontent-xwn-c63>Sustraendo (UT)
+                                                                                <th _ngcontent-xwn-c63>Impuesto
+                                                                                    Determinado (Bs.)
+                                                                                <th _ngcontent-xwn-c63>Reduccion (Bs.)
+                                                                                <th _ngcontent-xwn-c63>Impuesto a Pagar
+                                                                                    (Impuesto Determinado - Reduccion)
+                                                                        <tbody _ngcontent-xwn-c63>
+                                                                            <tr _ngcontent-xwn-c63>
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:left!important>
+                                                                                    BAUZA PEDRONI RAMON ERNESTO
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:center>V213264954
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:center>OTRO
+                                                                                    PARIENTE
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:center>4
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:center>NO
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=18.641,67>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=55,00>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=498,25>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=3.901,87>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=0,00>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=3.901,87>
+                                                                            <tr _ngcontent-xwn-c63>
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:left!important>
+                                                                                    BAUZA PEDRONI ANDRES ALEJANDRO
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:center>V213264962
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:center>TIA/TIO
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:center>3
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:center>NO
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=18.641,67>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=50,00>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=497,23>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=3.529,44>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=0,00>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=3.529,44>
+                                                                            <tr _ngcontent-xwn-c63>
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:left!important>
+                                                                                    PEDRONI LEPERVANCHE PAOLA MARIA
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:center>V069727138
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:center>OTRO
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:center>4
+                                                                                <td _ngcontent-xwn-c63
+                                                                                    style=text-align:center>NO
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=18.641,67>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=55,00>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=498,25>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=3.901,87>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=0,00>
+                                                                                <td _ngcontent-xwn-c63><input
+                                                                                        _ngcontent-xwn-c63 readonly
+                                                                                        class="form-group form-control form-control-sm text-end"
+                                                                                        value=3.901,87>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <div _ngcontent-xwn-c63 class=row>
+                                                                <div _ngcontent-xwn-c63 class="col-sm-12 text-center"><a
+                                                                        _ngcontent-xwn-c63
+                                                                        class="btn btn-sm btn-danger">Aceptar</a>&nbsp;
+                                                                    <a _ngcontent-xwn-c63
+                                                                        class="btn btn-sm btn-danger">Cancelar</a></div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </app-informacion></div>
+                                    </app-calculo></div>
                             </div>
                         </app-contentsuc></div>
                 </div>
             </div>
         </app-inicio></app-root>
-    <script>(function Wi(n, e, t = !1) { const a = {}; n.currentScript && n.currentScript.remove(), function n(t) { const o = t.getAttribute(e); o && (a[o] = t); Array.from(t.children).forEach(n) }(n.body), Object.keys(a).forEach(n => { const e = a[n], t = n.split("."); if (t.length > 1) { const n = t.slice(0, -1).join("."), o = a[n]; o && e.parentElement !== o && o.appendChild(e) } }), t || n.querySelectorAll("[" + e + "]").forEach(n => n.removeAttribute(e)) })(document, "data-sf-nesting-track-id");</script>

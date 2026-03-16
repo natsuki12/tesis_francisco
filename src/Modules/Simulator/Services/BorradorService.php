@@ -395,6 +395,120 @@ class BorradorService
         return $total;
     }
 
+    // ─── Raw item accessors (for Ver Declaración Reverso) ───
+
+    /**
+     * Returns raw bienes inmuebles items from borrador_json.
+     * @return array<int, array>
+     */
+    public function getBienesInmueblesItems(): array
+    {
+        return $this->borrador['bienes_inmuebles'] ?? [];
+    }
+
+    /**
+     * Returns all bienes muebles merged from all sub-categories.
+     * Each item keeps its original structure + 'categoria' key.
+     * @return array<int, array>
+     */
+    public function getBienesMueblesItems(): array
+    {
+        $categorias = [
+            'bienes_muebles_banco'                  => 'Banco',
+            'bienes_muebles_seguro'                 => 'Seguro',
+            'bienes_muebles_transporte'             => 'Transporte',
+            'bienes_muebles_acciones'               => 'Acciones',
+            'bienes_muebles_bonos'                  => 'Bonos',
+            'bienes_muebles_caja_ahorro'            => 'Caja de Ahorro',
+            'bienes_muebles_cuentas_efectos'        => 'Cuentas/Efectos',
+            'bienes_muebles_opciones_compra'        => 'Opciones de Compra',
+            'bienes_muebles_plantaciones'           => 'Plantaciones',
+            'bienes_muebles_prestaciones_sociales'  => 'Prestaciones Sociales',
+            'bienes_muebles_semovientes'            => 'Semovientes',
+            'bienes_muebles_otros'                  => 'Otros',
+        ];
+        $items = [];
+        foreach ($categorias as $key => $label) {
+            foreach (($this->borrador[$key] ?? []) as $item) {
+                $item['categoria'] = $label;
+                $items[] = $item;
+            }
+        }
+        return $items;
+    }
+
+    /**
+     * Returns all pasivos merged from all sub-categories.
+     * @return array<int, array>
+     */
+    public function getPasivosItems(): array
+    {
+        $categorias = [
+            'pasivos_deuda_ch'    => 'Créditos Hipotecarios',
+            'pasivos_deuda_pce'   => 'Préstamos/Créditos',
+            'pasivos_deuda_tdc'   => 'Tarjetas de Crédito',
+            'pasivos_deuda_otros' => 'Otros',
+            'pasivos_gastos'      => 'Gastos',
+        ];
+        $items = [];
+        foreach ($categorias as $key => $label) {
+            foreach (($this->borrador[$key] ?? []) as $item) {
+                $item['categoria'] = $label;
+                $items[] = $item;
+            }
+        }
+        return $items;
+    }
+
+    /**
+     * Returns desgravámenes items (vivienda principal + seguros desgravables).
+     * @return array<int, array>
+     */
+    public function getDesgravamenesItems(): array
+    {
+        $items = [];
+        foreach (($this->borrador['bienes_inmuebles'] ?? []) as $inm) {
+            if (($inm['vivienda_principal'] ?? 'false') === 'true') {
+                $inm['categoria'] = 'Vivienda Principal';
+                $items[] = $inm;
+            }
+        }
+        foreach (($this->borrador['bienes_muebles_seguro'] ?? []) as $seg) {
+            $tipo = $seg['tipo_bien'] ?? '';
+            if ($tipo === '08' || $tipo === '09') {
+                $seg['categoria'] = 'Seguro';
+                $items[] = $seg;
+            }
+        }
+        return $items;
+    }
+
+    /**
+     * Returns exenciones items.
+     * @return array<int, array>
+     */
+    public function getExencionesItems(): array
+    {
+        return $this->borrador['exenciones'] ?? [];
+    }
+
+    /**
+     * Returns exoneraciones items.
+     * @return array<int, array>
+     */
+    public function getExoneracionesItems(): array
+    {
+        return $this->borrador['exoneraciones'] ?? [];
+    }
+
+    /**
+     * Returns the current date formatted as DD/MM/YYYY (for "Fecha de Declaración").
+     */
+    public function getFechaDeclaracion(): string
+    {
+        return date('d/m/Y');
+    }
+
     /**
      * Herederos with full detail for resumen table.
      * Returns: [ [nombre, cedula, parentesco, grado, premuerto], ... ]
@@ -409,11 +523,12 @@ class BorradorService
                 $tipoCed = $h['tipo_cedula'] ?? 'V';
                 $cedula  = $h['cedula'] ?? '';
                 $herederos[] = [
-                    'nombre'     => strtoupper(trim(($h['apellidos'] ?? '') . ' ' . ($h['nombres'] ?? ''))),
-                    'cedula'     => $tipoCed . $cedula,
-                    'parentesco' => strtoupper($h['parentescoText'] ?? $h['parentesco_text'] ?? 'HEREDERO'),
-                    'grado'      => $h['grado'] ?? '1',
-                    'premuerto'  => in_array(strtolower($h['premuerto'] ?? ''), ['true', 'si', '1'], true) ? 'SI' : 'NO',
+                    'nombre'        => strtoupper(trim(($h['apellidos'] ?? '') . ' ' . ($h['nombres'] ?? ''))),
+                    'cedula'        => $tipoCed . $cedula,
+                    'parentesco'    => strtoupper($h['parentescoText'] ?? $h['parentesco_text'] ?? 'HEREDERO'),
+                    'parentesco_id' => (int) ($h['parentesco_id'] ?? 0),
+                    'grado'         => $h['grado'] ?? '1',
+                    'premuerto'     => in_array(strtolower($h['premuerto'] ?? ''), ['true', 'si', '1'], true) ? 'SI' : 'NO',
                 ];
             }
             return $herederos;
@@ -423,11 +538,12 @@ class BorradorService
         foreach ($this->getRelaciones() as $rel) {
             if (isset($rel['parentescoText']) && strtoupper($rel['parentescoText']) !== 'REPRESENTANTE DE LA SUCESION') {
                 $herederos[] = [
-                    'nombre'     => strtoupper(trim(($rel['apellido'] ?? '') . ' ' . ($rel['nombre'] ?? ''))),
-                    'cedula'     => $rel['idDocumento'] ?? (($rel['tipodocumento'] ?? '') . ($rel['cedula'] ?? '')),
-                    'parentesco' => strtoupper($rel['parentescoText'] ?? 'HEREDERO'),
-                    'grado'      => $rel['grado'] ?? '1',
-                    'premuerto'  => in_array(strtolower($rel['premuerto'] ?? ''), ['true', 'si', '1'], true) ? 'SI' : 'NO',
+                    'nombre'        => strtoupper(trim(($rel['apellido'] ?? '') . ' ' . ($rel['nombre'] ?? ''))),
+                    'cedula'        => $rel['idDocumento'] ?? (($rel['tipodocumento'] ?? '') . ($rel['cedula'] ?? '')),
+                    'parentesco'    => strtoupper($rel['parentescoText'] ?? 'HEREDERO'),
+                    'parentesco_id' => (int) ($rel['parentesco_id'] ?? 0),
+                    'grado'         => $rel['grado'] ?? '1',
+                    'premuerto'     => in_array(strtolower($rel['premuerto'] ?? ''), ['true', 'si', '1'], true) ? 'SI' : 'NO',
                 ];
             }
         }
