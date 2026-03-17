@@ -5,10 +5,10 @@
  * Variables available:
  *   $datos              — array with caso metadata
  *   $secciones          — array of sections with grupos/campos comparisons
- *   $resumenSecciones   — array of per-section score summaries
+ *   $resumenSecciones   — array of per-section unit score summaries
  *   $autoItems          — array of autoliquidación comparison rows
  *   $herederosCalc      — array of per-heredero tax calculation
- *   $score              — array{correctos, total, porcentaje}
+ *   $score              — array{correctas, con_errores, omitidas, de_mas, total_esperado, porcentaje}
  *   $patrimonioNeto     — float: correct patrimonio neto value
  */
 
@@ -68,6 +68,15 @@ $scoreColor = $score['porcentaje'] >= 70 ? '#38a169' : ($score['porcentaje'] >= 
         color: #666;
         margin-bottom: 6px;
     }
+    .score-detalle {
+        font-size: 9pt;
+        color: #4a5568;
+        margin-top: 6px;
+    }
+    .score-detalle span {
+        display: inline-block;
+        margin: 0 6px;
+    }
     .barra-contenedor {
         background-color: #e9ecef;
         height: 10px;
@@ -92,27 +101,24 @@ $scoreColor = $score['porcentaje'] >= 70 ? '#38a169' : ($score['porcentaje'] >= 
     .tabla-resumen th {
         background-color: #1a365d;
         color: #ffffff;
-        padding: 5px 8px;
+        padding: 5px 6px;
         font-weight: bold;
-        font-size: 8pt;
+        font-size: 7.5pt;
         text-transform: uppercase;
     }
     .tabla-resumen td {
-        padding: 4px 8px;
+        padding: 4px 6px;
         border-bottom: 1px solid #e2e8f0;
     }
-    .barra-mini-contenedor {
-        background-color: #e2e8f0;
-        height: 8px;
-        border-radius: 4px;
+    .tabla-resumen .col-num {
+        text-align: center;
+        width: 11%;
     }
-    .barra-mini-relleno {
-        height: 8px;
-        border-radius: 4px;
+    .tabla-resumen .fila-total td {
+        font-weight: bold;
+        border-top: 2px solid #1a365d;
+        background-color: #f7fafc;
     }
-    .barra-verde   { background-color: #38a169; }
-    .barra-amarilla { background-color: #d69e2e; }
-    .barra-roja    { background-color: #e53e3e; }
 
     /* ============================================ */
     /* SECCIONES DE DETALLE                         */
@@ -132,7 +138,7 @@ $scoreColor = $score['porcentaje'] >= 70 ? '#38a169' : ($score['porcentaje'] >= 
     }
     .seccion-conteo {
         float: right;
-        font-size: 9pt;
+        font-size: 8pt;
         font-weight: normal;
     }
 
@@ -278,10 +284,16 @@ $scoreColor = $score['porcentaje'] >= 70 ? '#38a169' : ($score['porcentaje'] >= 
 
 <!-- ═══ SCORE GLOBAL ═══ -->
 <div class="score-global">
-    <div class="score-numero"><?= $score['correctos'] ?> / <?= $score['total'] ?></div>
-    <div class="score-label">Campos correctos (<?= $score['porcentaje'] ?>%)</div>
+    <div class="score-numero"><?= $score['correctas'] ?> de <?= $score['total_esperado'] ?></div>
+    <div class="score-label">correctos (<?= $score['porcentaje'] ?>%)</div>
     <div class="barra-contenedor">
         <div class="barra-relleno" style="width: <?= min($score['porcentaje'], 100) ?>%;"></div>
+    </div>
+    <div class="score-detalle">
+        <span style="color:#38a169;">✓ <?= $score['correctas'] ?> correctos</span>
+        <span style="color:#e53e3e;">✗ <?= $score['con_errores'] ?> con errores</span>
+        <span style="color:#dd6b20;">○ <?= $score['omitidas'] ?> omitidos</span>
+        <span style="color:#d69e2e;">△ <?= $score['de_mas'] ?> de más</span>
     </div>
 </div>
 
@@ -290,27 +302,32 @@ $scoreColor = $score['porcentaje'] >= 70 ? '#38a169' : ($score['porcentaje'] >= 
     <thead>
         <tr>
             <th style="text-align: left;">Sección</th>
-            <th style="text-align: center;">Correctos</th>
-            <th style="text-align: center;">Total</th>
-            <th style="text-align: center;">%</th>
-            <th style="text-align: left; width: 35%;">Progreso</th>
+            <th class="col-num" style="color:#c6f6d5;">✓</th>
+            <th class="col-num" style="color:#fed7d7;">✗</th>
+            <th class="col-num" style="color:#feebc8;">○</th>
+            <th class="col-num" style="color:#fefcbf;">△</th>
+            <th class="col-num">Evaluados</th>
         </tr>
     </thead>
     <tbody>
         <?php foreach ($resumenSecciones as $sec): ?>
-        <?php $pct = $sec['total'] > 0 ? round($sec['correctos'] / $sec['total'] * 100) : 0; ?>
         <tr>
             <td><?= htmlspecialchars($sec['nombre']) ?></td>
-            <td style="text-align: center;"><?= $sec['correctos'] ?></td>
-            <td style="text-align: center;"><?= $sec['total'] ?></td>
-            <td style="text-align: center;"><?= $pct ?>%</td>
-            <td>
-                <div class="barra-mini-contenedor">
-                    <div class="barra-mini-relleno <?php if ($pct >= 70): ?>barra-verde<?php elseif ($pct >= 40): ?>barra-amarilla<?php else: ?>barra-roja<?php endif; ?>" style="width: <?= $pct ?>%;"></div>
-                </div>
-            </td>
+            <td class="col-num"><?= $sec['correctas'] ?></td>
+            <td class="col-num"><?= $sec['con_errores'] ?></td>
+            <td class="col-num"><?= $sec['omitidas'] ?></td>
+            <td class="col-num"><?= $sec['de_mas'] ?></td>
+            <td class="col-num"><?= $sec['total_esperado'] ?></td>
         </tr>
         <?php endforeach; ?>
+        <tr class="fila-total">
+            <td>TOTAL</td>
+            <td class="col-num"><?= $score['correctas'] ?></td>
+            <td class="col-num"><?= $score['con_errores'] ?></td>
+            <td class="col-num"><?= $score['omitidas'] ?></td>
+            <td class="col-num"><?= $score['de_mas'] ?></td>
+            <td class="col-num"><?= $score['total_esperado'] ?></td>
+        </tr>
     </tbody>
 </table>
 
@@ -318,25 +335,44 @@ $scoreColor = $score['porcentaje'] >= 70 ? '#38a169' : ($score['porcentaje'] >= 
 
 <!-- ═══ SECCIONES DETALLADAS ═══ -->
 <?php
-// Helper to count section score
-function contarSeccion(array $grupos): array {
-    $ok = 0; $t = 0;
+/**
+ * Clasifica los grupos de una sección como unidades.
+ * Retorna [correctas, con_errores, omitidas, de_mas]
+ */
+function contarUnidadesSeccion(array $grupos): array {
+    $u = ['correctas' => 0, 'con_errores' => 0, 'omitidas' => 0, 'de_mas' => 0];
     foreach ($grupos as $g) {
-        foreach ($g['campos'] as $c) { $t++; if ($c['correcto']) $ok++; }
+        if ($g['label'] === 'Cantidad') continue;
+        $label = $g['label'];
+        if (str_starts_with($label, 'Omitido:')) {
+            $u['omitidas']++;
+        } elseif (str_starts_with($label, 'De más:')) {
+            $u['de_mas']++;
+        } else {
+            $todosOk = true;
+            foreach ($g['campos'] as $c) {
+                if (!$c['correcto']) { $todosOk = false; break; }
+            }
+            if ($todosOk) { $u['correctas']++; } else { $u['con_errores']++; }
+        }
     }
-    return [$ok, $t];
+    return $u;
 }
 ?>
 
 <?php foreach ($secciones as $seccion): ?>
-<?php [$secOk, $secTotal] = contarSeccion($seccion['grupos']); ?>
+<?php
+    $gruposSeccion = $seccion['grupos'] ?? [];
+    if (!is_array($gruposSeccion)) { $gruposSeccion = []; }
+    $u = contarUnidadesSeccion($gruposSeccion);
+?>
 <div class="seccion">
     <div class="seccion-header">
         <span class="seccion-titulo"><?= htmlspecialchars($seccion['titulo']) ?></span>
-        <span class="seccion-conteo"><?= $secOk ?> / <?= $secTotal ?> correctos</span>
+        <span class="seccion-conteo">✓ <?= $u['correctas'] ?>  ✗ <?= $u['con_errores'] ?>  ○ <?= $u['omitidas'] ?>  △ <?= $u['de_mas'] ?></span>
     </div>
 
-    <?php foreach ($seccion['grupos'] as $grupo): ?>
+    <?php foreach ($gruposSeccion as $grupo): ?>
         <div class="item-header"><?= htmlspecialchars($grupo['label']) ?></div>
         <table class="tabla-campos">
             <thead>
@@ -376,11 +412,12 @@ function contarSeccion(array $grupos): array {
 <?php
 $autoOk = 0; $autoTotal = count($autoItems);
 foreach ($autoItems as $item) { if ($item['correcto']) $autoOk++; }
+$autoErr = $autoTotal - $autoOk;
 ?>
 <div class="seccion">
     <div class="seccion-header">
         <span class="seccion-titulo">Autoliquidación del Impuesto</span>
-        <span class="seccion-conteo"><?= $autoOk ?> / <?= $autoTotal ?> correctos</span>
+        <span class="seccion-conteo">✓ <?= $autoOk ?>  ✗ <?= $autoErr ?></span>
     </div>
 
     <table class="tabla-campos">
@@ -421,15 +458,18 @@ foreach ($autoItems as $item) { if ($item['correcto']) $autoOk++; }
 <!-- ═══ CÁLCULO POR HEREDERO ═══ -->
 <?php if (!empty($herederosCalc)): ?>
 <?php
-$hcOk = 0; $hcTotal = 0;
+$hcOkUnits = 0;
 foreach ($herederosCalc as $h) {
-    foreach ($h['campos'] as $c) { $hcTotal++; if ($c['correcto']) $hcOk++; }
+    $allOk = true;
+    foreach ($h['campos'] as $c) { if (!$c['correcto']) { $allOk = false; break; } }
+    if ($allOk) $hcOkUnits++;
 }
+$hcErrUnits = count($herederosCalc) - $hcOkUnits;
 ?>
 <div class="seccion">
     <div class="seccion-header">
         <span class="seccion-titulo">Determinación del Impuesto por Heredero</span>
-        <span class="seccion-conteo"><?= $hcOk ?> / <?= $hcTotal ?> correctos</span>
+        <span class="seccion-conteo">✓ <?= $hcOkUnits ?>  ✗ <?= $hcErrUnits ?></span>
     </div>
 
     <?php foreach ($herederosCalc as $h): ?>
