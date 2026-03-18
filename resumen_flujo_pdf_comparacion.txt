@@ -1,0 +1,352 @@
+================================================================================
+  RESUMEN COMPLETO DEL FLUJO DEL PDF DE COMPARACIÓN DE DECLARACIÓN SUCESORAL
+  Sistema de Práctica de Declaración Sucesoral SENIAT (SPDSS)
+  Generado: 2026-03-17
+================================================================================
+
+========================================
+1. PUNTO DE ENTRADA (RUTA)
+========================================
+
+Ruta:    GET /simulador/sucesion/declaracion_pdf
+Archivo: routes/web.php (línea 931-938)
+Middlewares: requireAuth → requireSimSession → requireSeniatLogin
+
+El estudiante debe tener sesión activa, sesión de simulador activa y
+estar logueado en el portal SENIAT simulado.
+
+========================================
+2. CONTROLADOR
+========================================
+
+Archivo: src/Modules/Simulator/Controllers/PdfReportController.php
+
+Método:  generar()
+
+Flujo:
+  1. Obtiene el estudiante_id desde la sesión (user_id → StudentAssignmentModel)
+  2. Obtiene el intento activo (sim_asignacion_id → StudentAttemptModel)
+  3. Instancia DeclaracionComparador y llama comparar(intentoId, estudianteId)
+  4. Extrae del resultado: datos_caso, secciones, resumen_secciones,
+     autoliquidacion, herederos_calculo, score
+  5. Renderiza pdf_comparacion.php como HTML (ob_start/ob_get_clean)
+  6. Genera PDF con mPDF (Letter, UTF-8, dejavusans) y lo streaming inline
+
+========================================
+3. SERVICIO PRINCIPAL: DeclaracionComparador
+========================================
+
+Archivo: src/Modules/Simulator/Services/DeclaracionComparador.php
+
+Método público: comparar(intentoId, estudianteId) → array
+
+FUENTES DE DATOS:
+  - Borrador del estudiante: campo borrador_json del intento (JSON con toda
+    la declaración que el estudiante ha llenado en el simulador)
+  - Datos correctos: tablas de la DB del caso de estudio asignado
+
+SERVICIOS AUXILIARES:
+  - BorradorService: parsea el borrador_json, extrae totales, herederos, etc.
+  - TributoCalculator: calcula impuesto por heredero (tarifa Art. 7, Art. 9)
+  - UnidadTributariaService: obtiene el valor de la UT por fecha
+
+========================================
+4. SECCIONES COMPARADAS (en orden)
+========================================
+
+El método comparar() construye un array $secciones donde cada sección tiene:
+  { titulo: string, grupos: array }
+
+Cada grupo tiene:
+  { label: string, campos: array }
+
+Cada campo tiene:
+  { campo: string, borrador: string, esperado: string, correcto: bool, tipo?: string }
+
+Los tipos especiales de campo son: 'omitido', 'sobrante' (de más).
+
+SECCIONES:
+──────────────────────────────────────────
+4.1  HEREDEROS REGULARES
+     Método: compararHerederosRegulares()
+     Matching: por documento (cédula/RIF/pasaporte)
+     Campos por heredero: Nombre, Documento, Parentesco, Premuerto,
+                          Fecha Nacimiento, Fecha Fallecimiento (si premuerto)
+     Grupo especial: "Cantidad" (resumen, no cuenta como unidad)
+
+4.2  HEREDEROS DEL PREMUERTO
+     Método: compararHerederosDelPremuerto()
+     Matching: por documento
+     Campos: Nombre, Documento, Parentesco, Fecha Nacimiento, Representa a
+
+4.3  PRÓRROGAS
+     Método: compararProrrogas()
+     Matching: score-based (nro_resolucion +2, fecha_solicitud +1 — 2 pasadas)
+     Campos: Fecha Solicitud, Nro. Resolución, Fecha Resolución,
+             Plazo Otorgado (Días), Fecha Vencimiento
+
+4.4  TIPO DE HERENCIA
+     Método: compararTipoHerencia()
+     Matching: por tipo_herencia_id (intersección/diferencia de IDs)
+     Campos: Tipo, Subtipo Testamento, Fecha Testamento,
+             Fecha Conclusión Inventario
+
+4.5  BIENES INMUEBLES
+     Método: compararBienesInmuebles()
+     Matching: score-based (descripcion +2, valor +1 — 2 pasadas)
+     Campos: Valor Declarado, Porcentaje, Descripción, Vivienda Principal,
+             Bien Litigioso + datos tribunal si es litigioso,
+             Oficina Registro, Nro Registro, Libro, Protocolo, Trimestre,
+             Fecha Registro, Superficie Construida/No Construida, Valor Original
+
+4.6  BIENES MUEBLES (12 sub-secciones independientes)
+     Método: compararBienesMuebles()
+     Categorías: Banco, Seguro, Transporte, Opciones de Compra,
+                 Cuentas y Efectos, Semovientes, Bonos, Acciones,
+                 Prestaciones Sociales, Caja de Ahorro, Plantaciones, Otros
+     Matching: score-based (tipo_bien +3, descripcion +2, valor +1)
+     Campos: Tipo de Bien (si aplica), Valor Declarado, Porcentaje, Descripción,
+             Bien Litigioso + datos tribunal
+     Cada categoría genera su propia sección: "Bienes Muebles — [Categoría]"
+
+4.7  PASIVOS DEUDA (4 sub-secciones independientes)
+     Método: compararPasivosDeuda()
+     Sub-tipos: TDC, Crédito Hipotecario, Préstamos Cuentas y Efectos, Otros
+     Matching: score-based genérico (descripcion +2, valor +1)
+     Campos: Valor Declarado, Porcentaje, Descripción
+     Cada sub-tipo genera su propia sección: "Pasivos Deuda — [Tipo]"
+
+4.8  PASIVOS GASTOS
+     Método: compararPasivosGastos()
+     Matching: score-based genérico
+     Campos: Valor Declarado, Porcentaje, Descripción
+
+4.9  EXENCIONES
+     Método: compararExclusion() — lógica propia (NO usa compararItemsGenerico)
+     Tabla DB: sim_caso_exenciones
+     Matching: score-based (tipo +3, descripcion +2, valor +1)
+     Campos: Tipo, Descripción, Valor Declarado (sin porcentaje)
+
+4.10 EXONERACIONES
+     Método: compararExclusion() — misma lógica que exenciones
+     Tabla DB: sim_caso_exoneraciones
+     Matching: score-based (tipo +3, descripcion +2, valor +1)
+     Campos: Tipo, Descripción, Valor Declarado (sin porcentaje)
+
+──────────────────────────────────────────
+
+========================================
+5. AUTOLIQUIDACIÓN (14 líneas)
+========================================
+
+Método: compararAutoliquidacion()
+No forma parte de $secciones — es un array independiente de 14 items.
+
+Líneas comparadas:
+  1.  Total Bienes Inmuebles
+  2.  Total Bienes Muebles
+  3.  Patrimonio Hereditario Bruto (1+2)
+  4.  Activo Hereditario Bruto
+  5.  Desgravámenes
+  6.  Exenciones
+  7.  Exoneraciones
+  8.  Total Exclusiones (5+6+7)
+  9.  Activo Hereditario Neto (4-8)
+  10. Total Pasivo
+  11. Patrimonio Neto Hereditario (9-10)
+  12. Impuesto Determinado según Tarifa (vía TributoCalculator)
+  13. Reducciones (vía TributoCalculator)
+  14. Total Impuesto a Pagar (vía TributoCalculator)
+
+Fuentes:
+  - Borrador: BorradorService calcula totales desde el JSON
+  - DB: sumFromTable() y calcDesgravamenesDb() sobre las tablas del caso
+
+========================================
+6. CÁLCULO POR HEREDERO
+========================================
+
+Método: compararCalculoHerederos()
+No forma parte de $secciones — es un array independiente.
+
+Por cada heredero del borrador:
+  Campos: Cuota Parte (UT), Porcentaje (%), Sustraendo (UT),
+          Impuesto Determinado (Bs), Reducción (Bs), Impuesto a Pagar (Bs)
+
+  Notas diagnósticas contextuales (array 'notas' por heredero):
+    - Escenario B: PN ≤ 0 + parentesco incorrecto
+      → "El parentesco declarado (X) no coincide con el correcto (Y).
+         Además, el PN correcto es ≤ 0, no hay impuesto independientemente."
+    - Escenario D: PN > 0 + parentesco incorrecto
+      → "El parentesco declarado (X) no coincide con el correcto (Y).
+         Esto afecta el grupo de tarifa, porcentaje, sustraendo e impuesto."
+    - Escenario E: PN > 0, parentesco OK, cuota parte incorrecta
+      → "La Cuota Parte difiere porque el PN declarado (X Bs) no coincide
+         con el correcto (Y Bs), o la cantidad de herederos difiere."
+    - Escenario F: Heredero exento Art. 9 pero estudiante calculó impuesto
+      → "Este heredero está exento según Art. 9 (Cuota ≤ 75 UT + G1).
+         Impuesto correcto: 0,00 Bs."
+
+Cálculo vía TributoCalculator:
+  1. Cuota parte = patrimonio_neto / total_herederos (en UT)
+  2. Lookup de grupo tarifario: parentesco_id → grupo (1-4)
+  3. Lookup de tramo: sim_cat_tarifas_sucesion por grupo + cuota
+  4. Art. 9: si grupo 1 y cuota ≤ 75 UT → impuesto = 0
+  5. Fórmula: impuesto_ut = (cuota_ut × % / 100) − sustraendo_ut
+  6. Impuesto Bs = impuesto_ut × valor_ut
+
+========================================
+7. SCORE GLOBAL
+========================================
+
+Calculado en comparar() después de construir todas las secciones.
+
+Criterio por sección:
+  - Cada "grupo" = 1 unidad evaluada (excepto label "Cantidad")
+  - Si label empieza con "Omitido:" → omitida
+  - Si label empieza con "De más:" → de_mas
+  - Si todos los campos son correcto=true → correcta
+  - Si al menos un campo es correcto=false → con_errores
+
+Resultado: { correctas, con_errores, omitidas, de_mas, total_esperado, porcentaje }
+  donde total_esperado = correctas + con_errores + omitidas
+  y porcentaje = (correctas / total_esperado) × 100
+
+Autoliquidación: cada línea = 1 unidad (correcto o con_errores)
+Herederos Calculo: cada heredero = 1 unidad (todos campos OK o no)
+
+========================================
+8. TEMPLATE PDF
+========================================
+
+Archivo: resources/views/simulator/pdf/pdf_comparacion.php
+
+Variables recibidas:
+  $datos, $secciones, $resumenSecciones, $autoItems,
+  $herederosCalc, $score, $patrimonioNeto
+
+ESTRUCTURA DEL PDF:
+──────────────────────────────────────────
+PÁGINA 1:
+  ┌─ Encabezado (título + subtítulo SPDSS)
+  ├─ Metadata (caso, RIF, causante, fecha fallecimiento, fecha reporte, UT)
+  ├─ Score Global (barra de progreso + conteo: X de Y correctos (Z%))
+  │   Detalle: ✓ correctos, ✗ con errores, ○ omitidos, △ de más
+  └─ Tabla Resumen por Sección
+      Columnas: Sección | ✓ | ✗ | ○ | △ | Evaluados
+      Fila final: TOTAL
+
+PÁGINA 2+:
+  ┌─ Secciones Detalladas (foreach $secciones)
+  │   ├─ Header azul con título + conteo ✓/✗/○/△
+  │   └─ Por cada grupo:
+  │       ├─ Item header (nombre del ítem)
+  │       └─ Tabla de campos:
+  │           Columnas: Icono | Campo | Su Valor | Valor Correcto | Resultado
+  │           Filas coloreadas según tipo:
+  │             verde  (fila-ok)      = correcto
+  │             rojo   (fila-fail)    = incorrecto
+  │             naranja(fila-omitido) = omitido
+  │             amarillo(fila-sobrante)= de más
+  │
+  ├─ Autoliquidación del Impuesto
+  │   Header + tabla con las 14 líneas
+  │   Nota informativa si PN ≤ 0
+  │
+  └─ Determinación del Impuesto por Heredero
+      Por cada heredero:
+        ├─ Item header: "Nombre — Cédula (Parentesco)"
+        ├─ Tabla: Cuota Parte, %, Sustraendo, Impuesto Det., Reducción, Imp. a Pagar
+        └─ Notas diagnósticas (si hay errores):
+            Cajas amarillas con ℹ explicando la causa raíz del error
+
+PIE: "Generado por SPDSS — DD/MM/YYYY HH:MM:SS"
+──────────────────────────────────────────
+
+========================================
+9. ESTILOS CSS EN EL PDF
+========================================
+
+Clases principales:
+  .score-global      — Caja central con score, barra y detalle
+  .tabla-resumen     — Tabla resumen por sección (header azul oscuro)
+  .seccion-header    — Header azul oscuro de cada sección detallada
+  .item-header       — Sub-header gris con borde azul izquierdo
+  .tabla-campos      — Tabla de comparación campo a campo
+  .fila-ok           — Fondo verde claro
+  .fila-fail         — Fondo rojo claro
+  .fila-omitido      — Fondo naranja claro
+  .fila-sobrante     — Fondo amarillo claro
+  .badge-*           — Badges de resultado (Correcto/Incorrecto/Omitido/De Más)
+  .nota-informativa  — Caja azul para notas informativas (ej. PN ≤ 0)
+  .nota-heredero     — Caja amarilla para notas diagnósticas por heredero
+  .sobrante-nota     — Caja amarilla para notas de sobrantes
+  .pie-reporte       — Texto gris centrado al final
+
+========================================
+10. ALGORITMO DE MATCHING (2 PASADAS)
+========================================
+
+Usado en: Inmuebles, Muebles, Pasivos Deuda/Gastos, Prórrogas,
+          Exenciones, Exoneraciones
+
+PASADA 1 — Score-based:
+  Para cada ítem del borrador, calcular un score contra cada ítem DB:
+    Criterios (varían por sección):
+      tipo_bien coincide    +3
+      tipo coincide         +3
+      nro_resolucion        +2
+      descripcion coincide  +2
+      fecha_solicitud       +1
+      valor_declarado       +1
+  Emparejar con el mejor score > 0 (greedy, primer match gana)
+
+PASADA 2 — Ordinal fallback:
+  Los ítems sin match de ambos lados se emparejan por orden posicional
+
+SOBRANTES: ítems del borrador que no se pudieron emparejar (de más)
+FALTANTES: ítems de la DB que no se emparejaron (omitidos)
+
+========================================
+11. ARCHIVOS INVOLUCRADOS
+========================================
+
+RUTA:
+  routes/web.php (línea 931-938)
+
+CONTROLADOR:
+  src/Modules/Simulator/Controllers/PdfReportController.php
+
+SERVICIOS:
+  src/Modules/Simulator/Services/DeclaracionComparador.php  (principal)
+  src/Modules/Simulator/Services/BorradorService.php         (parsea borrador_json)
+  src/Modules/Simulator/Services/TributoCalculator.php       (cálculo impuesto)
+
+TEMPLATE:
+  resources/views/simulator/pdf/pdf_comparacion.php
+
+MODELOS AUXILIARES:
+  src/Modules/Student/Models/StudentAssignmentModel.php
+  src/Modules/Student/Models/StudentAttemptModel.php
+
+TABLAS DB CONSULTADAS:
+  sim_intentos (borrador_json, caso_id)
+  sim_caso_participantes (herederos del caso)
+  sim_personas (datos personales)
+  sim_cat_parentescos (catálogo parentescos + grupo_tarifa_id)
+  sim_actas_defunciones (fecha fallecimiento de premuertos)
+  sim_caso_tipoherencia_rel + sim_cat_tipoherencias
+  sim_caso_bienes_inmuebles
+  sim_caso_bienes_muebles + cat_categorias + cat_tipos
+  sim_caso_bienes_litigiosos
+  sim_caso_pasivos_deuda + sim_cat_tipos_pasivo_deuda
+  sim_caso_pasivos_gastos + sim_cat_tipos_pasivo_gasto
+  sim_caso_exenciones
+  sim_caso_exoneraciones
+  sim_caso_prorrogas
+  sim_cat_tarifas_sucesion (tramos tarifarios)
+  sim_cat_unidad_tributaria (valor UT por fecha)
+
+================================================================================
+  FIN DEL RESUMEN
+================================================================================

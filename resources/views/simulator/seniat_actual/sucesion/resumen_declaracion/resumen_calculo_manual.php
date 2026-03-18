@@ -229,8 +229,7 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
 
 <!-- ═══ Script: Recalcular + Guardar ═══ -->
 <script>
-(function() {
-    'use strict';
+document.addEventListener('DOMContentLoaded', function() {
 
     var BASE_URL   = '<?= rtrim(base_url(), "/") ?>';
     var INTENTO_ID = <?= json_encode($datos ? ($datos['intento_id'] ?? null) : null) ?>;
@@ -268,20 +267,8 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
         return tramos.length ? tramos[tramos.length - 1] : null;
     }
 
-    // Parse "1.234,56" → 1234.56
-    function parseDecimal(str) {
-        if (!str) return 0;
-        str = String(str).trim();
-        str = str.replace(/\./g, '').replace(',', '.');
-        return parseFloat(str) || 0;
-    }
+    // parseDecimal() and fmtBs() are provided globally by number_utils.js
 
-    // Format float → "1.234,56"
-    function fmtBs(v) {
-        var parts = v.toFixed(2).split('.');
-        var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        return intPart + ',' + parts[1];
-    }
 
     // Helper: mostrar toast SPDSS (solo para errores del sistema, no validaciones SENIAT)
     function showToast(type, msg) {
@@ -321,7 +308,7 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
             }
 
             // Límite 3 fijo: parte proporcional del impuesto automático
-            var maxLimite3 = Math.floor(IMPUESTO_AUTO / HEREDEROS.length);
+            var maxLimite3 = truncDecimal(IMPUESTO_AUTO / HEREDEROS.length, 2);
 
             for (var i = 0; i < HEREDEROS.length; i++) {
                 var h = HEREDEROS[i];
@@ -347,7 +334,7 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
 
                 // Límite 1: reducción no puede igualar ni superar el impuesto determinado
                 if (reduccion >= impuestoDeterminado && impuestoDeterminado > 0) {
-                    alert('El monto de Reducción no puede ser mayor al impuesto determinado');
+                    showModalInfo('El monto de Reducción no puede ser mayor al impuesto determinado', 'danger');
                     hayError = true; break;
                 }
 
@@ -356,7 +343,7 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
 
                 // Aplicar el más restrictivo entre Límite 2 y Límite 3
                 if (reduccion > Math.min(maxLimite2, maxLimite3) + 0.001) {
-                    alert('Diferencia en el monto a pagar de la declaración');
+                    showModalInfo('El monto de Reducción no puede ser mayor al impuesto determinado', 'danger');
                     hayError = true; break;
                 }
 
@@ -382,10 +369,11 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
             }
 
             // ── Validación de Cuota: suma determinados >= impuesto automático ──
-            if (totalDeterminado < IMPUESTO_AUTO - 0.001) {
+            // Tolerancia de 0.02 Bs para diferencias de redondeo entre PHP y JS
+            if (totalDeterminado < IMPUESTO_AUTO - 0.02) {
                 document.getElementById('ip').value = fmtBs(totalImpuesto);
                 divResultados.style.display = 'none';
-                alert('Diferencia en el monto a pagar de la declaración');
+                showModalInfo('Diferencia en el monto a pagar de la declaración', 'danger');
                 return;
             }
 
@@ -406,7 +394,7 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
     if (btnAceptar) {
         btnAceptar.addEventListener('click', function(e) {
             e.preventDefault();
-            if (!INTENTO_ID) { alert('No hay intento activo'); return; }
+            if (!INTENTO_ID) { showModalInfo('No hay intento activo', 'danger'); return; }
 
             btnAceptar.disabled = true;
             btnAceptar.textContent = 'Guardando...';
@@ -452,7 +440,7 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
             }
         });
     }
-})();
+});
 </script>
 
 <?php

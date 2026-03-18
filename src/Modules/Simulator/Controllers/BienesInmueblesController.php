@@ -4,10 +4,11 @@ declare(strict_types=1);
 namespace App\Modules\Simulator\Controllers;
 
 use App\Modules\Simulator\Models\BienesInmueblesModel;
+use App\Modules\Professor\Models\Crear_Caso\CatalogModel;
 
 /**
- * API controller for Bienes Inmuebles CRUD.
- * All methods receive the intento ID and operate on borrador_json.bienes_inmuebles[].
+ * Controller for Bienes Inmuebles view and CRUD API.
+ * Handles loading the view with borrador data and API operations.
  */
 class BienesInmueblesController
 {
@@ -16,6 +17,27 @@ class BienesInmueblesController
     public function __construct()
     {
         $this->model = new BienesInmueblesModel();
+    }
+
+    /**
+     * Load the Bienes Inmuebles view with data from the active intento.
+     */
+    public function index(object $app): string
+    {
+        $intento = $this->model->getIntentoActivo();
+
+        $tiposBienInmueble = [];
+        try {
+            $catalog = new CatalogModel();
+            $tiposBienInmueble = $catalog->getTiposBienInmueble();
+        } catch (\Throwable $e) {
+            error_log('[BienesInmueblesController::index] Error cargando catálogos: ' . $e->getMessage());
+        }
+
+        return $app->view('simulator/seniat_actual/sucesion/bienes_inmuebles/bienes_inmuebles', [
+            'tiposBienInmueble' => $tiposBienInmueble,
+            'intento' => $intento,
+        ]);
     }
 
     /**

@@ -73,7 +73,7 @@ ob_start();
                             <div _ngcontent-sdd-c96 class="form-floating sm-4">
                                 <input _ngcontent-sdd-c96 id=sporcentaje placeholder=# type=text
                                     formcontrolname=porcentaje currencymask maxlength=6 required
-                                    class="form-control form-control-sm text-end"
+                                    class="decimal-input form-control form-control-sm text-end"
                                     style=text-align:right value=0,01>
                                 <label _ngcontent-sdd-c96 for=sporcentaje>Porcentaje %</label>
                             </div>
@@ -99,7 +99,7 @@ ob_start();
                             <div _ngcontent-sdd-c96 class="form-floating sm-4">
                                 <input _ngcontent-sdd-c96 id=ssc placeholder=# type=text
                                     formcontrolname=valorDeclarado currencymask required
-                                    class="form-control form-control-sm text-end"
+                                    class="decimal-input form-control form-control-sm text-end"
                                     style=text-align:right value=0,00>
                                 <label _ngcontent-sdd-c96 for=ssc>Valor Declarado (Bs.)</label>
                             </div>
@@ -131,10 +131,7 @@ ob_start();
 </div>
 
 <script>
-    const INTENTO_ID = <?= json_encode($intentoId) ?>;
-    const BASE = <?= json_encode(rtrim(($_ENV['APP_BASE'] ?? getenv('APP_BASE')) ?: '', '/')) ?>;
-    let cajaAhorroItems = <?= json_encode($cajaAhorroGuardadas, JSON_UNESCAPED_UNICODE) ?>;
-    let editIndex = null;
+    var cajaAhorroItems = <?= json_encode($cajaAhorroGuardadas, JSON_UNESCAPED_UNICODE) ?>;
 
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('form');
@@ -203,56 +200,13 @@ ob_start();
         // ═══ Toggle Datos del Tribunal (global) ═══
         initTribunalToggle();
 
-        // ═══ RIF lookup — auto-fill Razón Social ═══
-        (function () {
-            const rifInput = document.getElementById('rifEmpresa');
-            const razonInput = document.getElementById('razonSocial');
-            let debounceTimer = null;
-
-            rifInput.addEventListener('input', function () {
-                try {
-                    clearTimeout(debounceTimer);
-                    const rif = rifInput.value.trim().toUpperCase();
-                    rifInput.value = rif;
-
-                    razonInput.value = '';
-
-                    if (!/^[JGVEP]\d{9}$/i.test(rif)) return;
-
-                    debounceTimer = setTimeout(function () {
-                        try {
-                            fetch(BASE + '/api/buscar-rif', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ rif: rif })
-                            })
-                                .then(function (r) { return r.json(); })
-                                .then(function (data) {
-                                    try {
-                                        if (data.ok && data.found) {
-                                            razonInput.value = data.razon_social || '';
-                                        } else {
-                                            razonInput.value = '';
-                                        }
-                                        validateForm();
-                                    } catch (err) {
-                                        console.error('[RIF lookup response]', err);
-                                        razonInput.value = '';
-                                    }
-                                })
-                                .catch(function (err) {
-                                    console.error('[RIF lookup fetch]', err);
-                                    razonInput.value = '';
-                                });
-                        } catch (err) {
-                            console.error('[RIF lookup debounce]', err);
-                        }
-                    }, 300);
-                } catch (err) {
-                    console.error('[RIF lookup input]', err);
-                }
-            });
-        })();
+        // ═══ RIF lookup — auto-fill Razón Social (global) ═══
+        initRifLookup({
+            rifInputId:   'rifEmpresa',
+            razonInputId: 'razonSocial',
+            baseUrl:      BASE,
+            onResult:     validateForm
+        });
 
         // ═══ Render table ═══
         function renderTable() {
@@ -322,20 +276,10 @@ ob_start();
             document.getElementById('sporcentaje').value = '0,01';
             document.getElementById('sc').value = '';
             document.getElementById('ssc').value = '0,00';
-            editIndex = null;
-            btn.textContent = 'Guardar ';
-            const icon = document.createElement('i');
-            icon.className = 'bi-save';
-            btn.appendChild(icon);
-            btn.disabled = true;
         }
 
         // ═══ Fill form for editing ═══
-        window.editarCajaAhorro = function (idx) {
-            const item = cajaAhorroItems[idx];
-            if (!item) return;
-            editIndex = idx;
-
+        function fillForm(item) {
             document.getElementById('rifEmpresa').value = item.rif_empresa || '';
             document.getElementById('razonSocial').value = item.razon_social || '';
             document.getElementById('bl').value = item.bien_litigioso || 'false';
@@ -343,71 +287,21 @@ ob_start();
             document.getElementById('sporcentaje').value = item.porcentaje || '0,01';
             document.getElementById('sc').value = item.descripcion || '';
             document.getElementById('ssc').value = item.valor_declarado || '0,00';
+        }
 
-            btn.textContent = 'Actualizar ';
-            const icon = document.createElement('i');
-            icon.className = 'bi-save';
-            btn.appendChild(icon);
-
-            validateForm();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        // ═══ Delete ═══
-        window.eliminarCajaAhorro = function (idx) {
-            if (!confirm('¿Está seguro de eliminar este registro?')) return;
-            if (!INTENTO_ID) { alert('No hay intento activo'); return; }
-
-            fetch(BASE + '/api/caja-ahorro/' + INTENTO_ID + '/eliminar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ index: idx })
-            })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.ok) {
-                        cajaAhorroItems.splice(idx, 1);
-                        renderTable();
-                    } else {
-                        alert(data.error || 'Error al eliminar');
-                    }
-                })
-                .catch(() => alert('Error de conexión'));
-        };
-
-        // ═══ Submit (add/edit) ═══
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (!INTENTO_ID) { alert('No hay intento activo'); return; }
-
-            const formData = getFormData();
-            const isEdit = editIndex !== null;
-            const url = isEdit
-                ? BASE + '/api/caja-ahorro/' + INTENTO_ID + '/editar'
-                : BASE + '/api/caja-ahorro/' + INTENTO_ID + '/agregar';
-
-            if (isEdit) formData.index = editIndex;
-
-            fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.ok) {
-                        if (isEdit) {
-                            cajaAhorroItems[editIndex] = formData;
-                        } else {
-                            cajaAhorroItems.push(formData);
-                        }
-                        renderTable();
-                        resetForm();
-                    } else {
-                        alert(data.error || 'Error al guardar');
-                    }
-                })
-                .catch(() => alert('Error de conexión'));
+        // ═══ CRUD Manager (global) ═══
+        initCrudManager({
+            intentoId:    INTENTO_ID,
+            baseUrl:      BASE,
+            apiSlug:      'caja-ahorro',
+            items:        cajaAhorroItems,
+            getFormData:  getFormData,
+            resetForm:    resetForm,
+            renderTable:  renderTable,
+            fillForm:     fillForm,
+            validateForm: validateForm,
+            editName:     'editarCajaAhorro',
+            deleteName:   'eliminarCajaAhorro'
         });
 
         // Initial render

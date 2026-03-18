@@ -1,0 +1,253 @@
+================================================================================
+  REPORTE PDF DE COMPARACIÓN DE DECLARACIÓN SUCESORAL
+  Explicación General del Funcionamiento
+================================================================================
+
+
+¿QUÉ ES ESTE PDF?
+──────────────────────────────────────────
+
+Es un reporte automático que genera el sistema cuando un estudiante desea
+verificar su trabajo en el simulador de declaraciones sucesorales del SENIAT.
+El documento compara, campo por campo, todo lo que el estudiante ingresó en
+su declaración contra los valores correctos del caso de estudio asignado
+por el profesor.
+
+El resultado es un PDF que el estudiante puede descargar o ver en el
+navegador, y que le muestra exactamente dónde acertó, dónde se equivocó,
+qué le faltó por declarar y qué declaró de más.
+
+
+¿QUIÉN PUEDE GENERARLO?
+──────────────────────────────────────────
+
+Solo un estudiante que tenga:
+  - Una sesión activa en la plataforma
+  - Una asignación vigente con un caso de estudio
+  - Un intento en curso con datos ya ingresados en el simulador
+
+
+¿QUÉ CONTIENE EL PDF?
+──────────────────────────────────────────
+
+El reporte está organizado en varias páginas:
+
+
+PRIMERA PÁGINA — RESUMEN GENERAL
+
+  Encabezado:
+    Datos del caso (nombre, RIF de la sucesión, causante, fecha de
+    fallecimiento, unidad tributaria aplicable y fecha del reporte).
+
+  Puntuación global:
+    Un indicador que muestra cuántos ítems evaluados fueron correctos
+    en total. Por ejemplo: "3 de 61 correctos (4,9%)". Incluye una
+    barra visual de progreso y un desglose en cuatro categorías:
+      - Correctos: ítems donde todos los datos coinciden
+      - Con errores: ítems donde al menos un dato no coincide
+      - Omitidos: ítems que el caso requiere pero el estudiante no declaró
+      - De más: ítems que el estudiante declaró pero que no existen en el caso
+
+  Tabla resumen por sección:
+    Muestra cada sección de la declaración con su conteo de correctos,
+    errores, omitidos y de más, para que el estudiante identifique
+    rápidamente en qué áreas tiene más problemas.
+
+
+PÁGINAS SIGUIENTES — DETALLE POR SECCIÓN
+
+  El reporte detalla cada sección de la declaración:
+
+  1. HEREDEROS
+     Compara cada heredero que el estudiante declaró contra los del caso.
+     Los empareja por número de cédula. Verifica: nombre, documento,
+     parentesco, si es premuerto, fecha de nacimiento y fecha de
+     fallecimiento (si aplica).
+
+  2. HEREDEROS DEL PREMUERTO
+     Si el caso incluye herederos que heredan por representación (porque
+     un heredero directo falleció antes que el causante), se comparan
+     aquí de forma separada.
+
+  3. PRÓRROGAS
+     Compara las solicitudes de prórroga declaradas: fecha de solicitud,
+     número de resolución, fecha de resolución, plazo otorgado y fecha
+     de vencimiento. El sistema empareja automáticamente las prórrogas
+     por número de resolución y fecha.
+
+  4. TIPO DE HERENCIA
+     Verifica que el estudiante haya seleccionado los tipos de herencia
+     correctos (testamento, ab-intestato, pura y simple, etc.) y, si
+     corresponde, los detalles adicionales como subtipo de testamento
+     o fecha de conclusión de inventario.
+
+  5. BIENES INMUEBLES
+     Compara cada bien inmueble declarado. Verifica: valor declarado,
+     porcentaje, descripción, si es vivienda principal, datos del registro
+     (oficina, número, libro, protocolo, trimestre, fecha), superficies,
+     valor original, y si es un bien litigioso con sus datos de tribunal.
+
+  6. BIENES MUEBLES (una sub-sección por cada categoría)
+     Cada categoría de bien mueble se presenta por separado:
+       - Banco (cuentas bancarias)
+       - Seguro (pólizas de seguro)
+       - Transporte (vehículos)
+       - Opciones de Compra
+       - Cuentas y Efectos por Cobrar
+       - Semovientes (animales)
+       - Bonos
+       - Acciones
+       - Prestaciones Sociales
+       - Caja de Ahorro
+       - Plantaciones
+       - Otros
+     Para cada ítem compara: tipo de bien, valor declarado, porcentaje,
+     descripción, y datos de litigio si aplica.
+
+  7. PASIVOS — DEUDA (una sub-sección por cada tipo)
+     Cada tipo de deuda se presenta por separado:
+       - Tarjetas de Crédito
+       - Crédito Hipotecario
+       - Préstamos, Cuentas y Efectos por Pagar
+       - Otros
+     Compara: valor declarado, porcentaje y descripción.
+
+  8. PASIVOS — GASTOS
+     Gastos funerarios y otros gastos del proceso sucesoral.
+     Compara: valor declarado, porcentaje y descripción.
+
+  9. EXENCIONES
+     Bienes o conceptos que la ley excluye del pago de impuesto.
+     Compara: tipo de exención, descripción y valor declarado.
+     (Las exenciones no tienen porcentaje.)
+
+  10. EXONERACIONES
+      Beneficios fiscales otorgados por el Estado.
+      Compara: tipo de exoneración, descripción y valor declarado.
+      (Las exoneraciones tampoco tienen porcentaje.)
+
+
+SECCIÓN DE AUTOLIQUIDACIÓN (14 LÍNEAS)
+
+  Compara las 14 líneas del resumen de autoliquidación:
+    1. Total Bienes Inmuebles
+    2. Total Bienes Muebles
+    3. Patrimonio Hereditario Bruto (1+2)
+    4. Activo Hereditario Bruto
+    5. Desgravámenes
+    6. Exenciones
+    7. Exoneraciones
+    8. Total Exclusiones (5+6+7)
+    9. Activo Hereditario Neto (4-8)
+    10. Total Pasivo
+    11. Patrimonio Neto Hereditario (9-10)
+    12. Impuesto Determinado según Tarifa
+    13. Reducciones
+    14. Total Impuesto a Pagar
+
+  Si el Patrimonio Neto resulta ser cero o negativo, se muestra una
+  nota informativa indicando que no hay impuesto a determinar.
+
+
+SECCIÓN DE DETERMINACIÓN DEL IMPUESTO POR HEREDERO
+
+  Por cada heredero se muestra una tabla con:
+    - Cuota Parte (en Unidades Tributarias)
+    - Porcentaje aplicable
+    - Sustraendo (en Unidades Tributarias)
+    - Impuesto Determinado (en bolívares)
+    - Reducción (en bolívares)
+    - Impuesto a Pagar (en bolívares)
+
+  Si el estudiante utilizó la pantalla de "Cálculo Manual" para ingresar
+  sus propias cuotas parte y reducciones, el reporte refleja exactamente
+  esos valores como "Su Valor", no los recalcula automáticamente. Esto
+  permite evaluar si el estudiante entendió cómo calcular la cuota parte
+  y aplicar la tarifa correctamente.
+
+  NOTAS DIAGNÓSTICAS:
+  Debajo de cada heredero, si hay errores, el sistema muestra notas
+  explicativas que ayudan al estudiante a entender la causa raíz del
+  problema. Los escenarios cubiertos son:
+
+    • Si el parentesco está incorrecto y no hay patrimonio positivo:
+      Le indica que el parentesco no coincide, pero que de todas formas
+      no hay impuesto porque el patrimonio neto es cero o negativo.
+
+    • Si el parentesco está incorrecto y sí hay patrimonio positivo:
+      Explica que el parentesco equivocado afecta en cascada el grupo
+      de tarifa, lo que cambia el porcentaje, el sustraendo y todo el
+      cálculo del impuesto.
+
+    • Si la cuota parte no coincide (con parentesco correcto):
+      Indica que la diferencia viene del patrimonio neto declarado o
+      de la cantidad de herederos, mostrando ambos valores para que
+      el estudiante compare.
+
+    • Si el heredero debería estar exento pero se le calculó impuesto:
+      Explica que según el Artículo 9 de la Ley, ese heredero califica
+      para la exención (cuota parte menor o igual a 75 UT y parentesco
+      de primer grado), por lo que su impuesto correcto es cero.
+
+
+¿CÓMO FUNCIONA EL EMPAREJAMIENTO?
+──────────────────────────────────────────
+
+Para secciones donde hay múltiples ítems (bienes, pasivos, exenciones,
+prórrogas, etc.), el sistema necesita determinar cuál ítem del estudiante
+corresponde a cuál ítem del caso. Lo hace en dos pasos:
+
+  Primer paso — Por similitud:
+    Compara todos los ítems del estudiante contra todos los del caso y
+    le asigna un puntaje a cada posible pareja. Gana más puntos si
+    coincide el tipo de bien, la descripción o el valor. Se emparejan
+    los que tengan mayor puntaje.
+
+  Segundo paso — Por orden:
+    Los ítems que no logran emparejarse por similitud se emparejan en
+    el orden en que fueron ingresados (el primero con el primero, el
+    segundo con el segundo, etc.).
+
+  Después de estos dos pasos:
+    - Los ítems del estudiante que quedan sin pareja se marcan como
+      "De más" (el estudiante los declaró pero no existen en el caso).
+    - Los ítems del caso que quedan sin pareja se marcan como "Omitidos"
+      (el caso los requiere pero el estudiante no los declaró).
+
+
+¿CÓMO SE CALCULA LA PUNTUACIÓN?
+──────────────────────────────────────────
+
+Cada ítem emparejado se evalúa campo por campo. Si todos los campos
+de un ítem coinciden, se cuenta como "correcto". Si al menos un campo
+no coincide, se cuenta como "con errores". Los ítems omitidos y de más
+también se cuentan.
+
+La puntuación final es:
+  Correctos / (Correctos + Con Errores + Omitidos) × 100
+
+Los ítems "de más" no afectan el denominador porque no son parte
+de lo que el caso espera, pero sí se informan para que el estudiante
+sepa que declaró cosas innecesarias.
+
+
+PRESENTACIÓN VISUAL
+──────────────────────────────────────────
+
+El PDF usa colores para facilitar la lectura:
+  - Verde: campo correcto
+  - Rojo: campo incorrecto
+  - Naranja: ítem omitido (faltante)
+  - Amarillo: ítem de más (sobrante)
+  - Cajas azules: notas informativas generales
+  - Cajas amarillas: notas diagnósticas con la causa del error
+
+Cada sección tiene un encabezado azul oscuro con el nombre y el conteo
+rápido de correctos y errores. Cada ítem tiene un sub-encabezado gris
+con el nombre o descripción del bien/heredero/pasivo.
+
+Al final del documento se muestra la fecha y hora de generación.
+
+================================================================================
+  FIN DEL RESUMEN
+================================================================================

@@ -107,6 +107,9 @@ $cssHtml .= '<style>
 /* Alert component (for declaración tipo) */
 .seniat-wrapper .alert{--bs-alert-bg:transparent;--bs-alert-padding-x:1rem;--bs-alert-padding-y:1rem;--bs-alert-margin-bottom:1rem;--bs-alert-color:inherit;--bs-alert-border-color:transparent;--bs-alert-border:1px solid var(--bs-alert-border-color);--bs-alert-border-radius:.375rem;position:relative;padding:var(--bs-alert-padding-y) var(--bs-alert-padding-x);margin-bottom:var(--bs-alert-margin-bottom);color:var(--bs-alert-color);background-color:var(--bs-alert-bg);border:var(--bs-alert-border);border-radius:var(--bs-alert-border-radius)}
 .seniat-wrapper .alert-info{--bs-alert-color:#055160;--bs-alert-bg:#cff4fc;--bs-alert-border-color:#b6effb}
+.seniat-wrapper .alert-success{--bs-alert-color:#0f5132;--bs-alert-bg:#d1e7dd;--bs-alert-border-color:#badbcc}
+.seniat-wrapper .alert-danger{--bs-alert-color:#842029;--bs-alert-bg:#f8d7da;--bs-alert-border-color:#f5c2c7}
+.seniat-wrapper .alert-warning{--bs-alert-color:#664d03;--bs-alert-bg:#fff3cd;--bs-alert-border-color:#ffecb5}
 
 /* fw-bold */
 .seniat-wrapper .fw-bold{font-weight:700!important}
@@ -218,6 +221,17 @@ foreach ($pageJs as $js) {
 // ─── Save page content before buffering ────────────────────────────
 $pageContent = $content ?? '';
 $blueNavText = $blueNavText ?? 'Autoliquidación de Impuesto sobre Sucesiones';
+
+// ─── SPA AJAX: return only page content as JSON ────────────────────
+if (!empty($_SERVER['HTTP_X_SPA_REQUEST'])) {
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'html'       => $pageContent,
+        'activeMenu' => $activeMenu ?? '',
+        'activeItem' => $activeItem ?? '',
+    ], JSON_UNESCAPED_UNICODE);
+    return;
+}
 
 // ─── Buffer the entire SENIAT content inside seniat-wrapper ────────
 ob_start();
@@ -407,7 +421,7 @@ ob_start();
                                             </nav>
                                         </div>
 
-                                        <?= $pageContent ?>
+                                        <div id="spaContentArea"><?= $pageContent ?></div>
 
                                     </app-bancos></div>
                             </div>
@@ -420,27 +434,44 @@ ob_start();
     <script>document.addEventListener("click", function (e) { var w = document.getElementById("hamburgerWrap"); if (w && !w.contains(e.target)) { document.getElementById("hamburgerMenu").classList.remove("show") } })</script>
 
     <script>
-        // Flatpickr — init all [ngbdatepicker] inputs (replaces Angular ngb-datepicker)
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('input[ngbdatepicker]').forEach(function (input) {
-                var fp = flatpickr(input, {
-                    locale: 'es',
-                    dateFormat: 'd/m/Y',
-                    allowInput: true,
-                    disableMobile: true
+        // Flatpickr — re-callable init with guard to prevent double-init
+        function initFlatpickrs() {
+            try {
+                document.querySelectorAll('input[ngbdatepicker]:not([data-fp-init])').forEach(function (input) {
+                    input.setAttribute('data-fp-init', '1');
+                    var fp = flatpickr(input, {
+                        locale: 'es',
+                        dateFormat: 'd/m/Y',
+                        allowInput: true,
+                        disableMobile: true
+                    });
+                    // Calendar icon click opens the picker
+                    var icon = input.parentElement.querySelector('.bi-calendar3');
+                    if (icon) {
+                        icon.style.cursor = 'pointer';
+                        icon.addEventListener('click', function () { fp.open(); });
+                    }
                 });
-                // Calendar icon click opens the picker
-                var icon = input.parentElement.querySelector('.bi-calendar3');
-                if (icon) {
-                    icon.style.cursor = 'pointer';
-                    icon.addEventListener('click', function () { fp.open(); });
-                }
-            });
-        });
+            } catch (err) {
+                console.error('[initFlatpickrs]', err);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', initFlatpickrs);
     </script>
 
+    <script>
+        var INTENTO_ID = <?= json_encode($intento['id'] ?? 0) ?>;
+        var BASE = <?= json_encode(rtrim(($_ENV['APP_BASE'] ?? getenv('APP_BASE')) ?: '', '/')) ?>;
+    </script>
+    <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/number_utils.js') ?>"></script>
     <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/datos_tribunal.js') ?>"></script>
     <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/decimal_input.js') ?>"></script>
+    <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/modal_info.js') ?>"></script>
+    <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/rif_lookup.js') ?>"></script>
+    <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/crud_manager.js') ?>"></script>
+    <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/spa_loader.js') ?>"></script>
+
+    <?php include __DIR__ . '/../simulator/seniat_actual/sucesion/_modal_info.php'; ?>
 
 </div><!-- /.seniat-wrapper -->
 

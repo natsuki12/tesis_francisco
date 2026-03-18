@@ -94,6 +94,8 @@ class SucesionController
             ]);
         }
 
+        if ($this->redirectIfHerederosIncompletos($intento)) return;
+
         $borrador = new BorradorService($intento);
 
         // ── Filas 1-2: Bienes ──
@@ -231,6 +233,8 @@ class SucesionController
                 ]);
             }
 
+            if ($this->redirectIfHerederosIncompletos($intento)) return;
+
             $borrador = new BorradorService($intento);
 
             // ── Mismos cálculos que resumen() ──
@@ -358,6 +362,8 @@ class SucesionController
                     'datos' => null,
                 ]);
             }
+
+            if ($this->redirectIfHerederosIncompletos($intento)) return;
 
             $borrador = new BorradorService($intento);
 
@@ -511,6 +517,8 @@ class SucesionController
                 ]);
             }
 
+            if ($this->redirectIfHerederosIncompletos($intento)) return;
+
             $borrador = new BorradorService($intento);
             $rep = $borrador->getRepresentanteLegal();
 
@@ -561,6 +569,32 @@ class SucesionController
     }
 
     // ─── Helpers ───
+
+    /**
+     * Checks if any heredero has parentesco_id = 0 (undefined).
+     * If so, redirects to herederos page with datos_incompletos flag.
+     * Returns true if redirect was issued, false otherwise.
+     */
+    private function redirectIfHerederosIncompletos(array $intento): bool
+    {
+        try {
+            $borrador = new BorradorService($intento);
+            $herederos = $borrador->getHerederosDetalle();
+
+            foreach ($herederos as $h) {
+                $pid = (int) ($h['parentesco_id'] ?? 0);
+                // 0 = not set, 19 = "Sin Definir" in sim_cat_parentescos
+                if ($pid === 0 || $pid === 19) {
+                    $url = base_url('/simulador/sucesion/herederos?datos_incompletos=1');
+                    header('Location: ' . $url);
+                    exit;
+                }
+            }
+        } catch (\Throwable $e) {
+            error_log('[SucesionController::redirectIfHerederosIncompletos] ' . $e->getMessage());
+        }
+        return false;
+    }
 
     /**
      * Loads the active intento for the current student + assignment.

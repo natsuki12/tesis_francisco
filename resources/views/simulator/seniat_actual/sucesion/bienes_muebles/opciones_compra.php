@@ -59,7 +59,7 @@ $opcionesGuardadas = $borradorData['bienes_muebles_opciones_compra'] ?? [];
                         <div _ngcontent-pgi-c80 class=form-group>
                             <div _ngcontent-pgi-c80 class="form-floating sm-4"><input _ngcontent-pgi-c80 id=sporcentaje
                                     placeholder=# type=text formcontrolname=porcentaje currencymask maxlength=6 required
-                                    class="form-control form-control-sm text-end ng-untouched ng-pristine ng-valid"
+                                    class="decimal-input form-control form-control-sm text-end ng-untouched ng-pristine ng-valid"
                                     style=text-align:right value=0,01><label _ngcontent-pgi-c80
                                     for=ssc>Porcentaje %</label></div>
                         </div>
@@ -79,7 +79,7 @@ $opcionesGuardadas = $borradorData['bienes_muebles_opciones_compra'] ?? [];
                         <div _ngcontent-pgi-c80 class=form-group>
                             <div _ngcontent-pgi-c80 class=form-floating><input _ngcontent-pgi-c80 id=ssc
                                     placeholder=# type=text formcontrolname=valorDeclarado currencymask required
-                                    class="form-control form-control-sm text-end ng-untouched ng-pristine ng-invalid"
+                                    class="decimal-input form-control form-control-sm text-end ng-untouched ng-pristine ng-invalid"
                                     style=text-align:right value=0,00><label _ngcontent-pgi-c80 for=ssc>Valor Declarado
                                     (Bs.)</label></div>
                         </div>
@@ -108,10 +108,7 @@ $opcionesGuardadas = $borradorData['bienes_muebles_opciones_compra'] ?? [];
 </div>
 
 <script>
-const INTENTO_ID = <?= json_encode($intentoId) ?>;
-const BASE = <?= json_encode(rtrim(($_ENV['APP_BASE'] ?? getenv('APP_BASE')) ?: '', '/')) ?>;
-let opciones = <?= json_encode($opcionesGuardadas, JSON_UNESCAPED_UNICODE) ?>;
-let editIndex = null;
+var opciones = <?= json_encode($opcionesGuardadas, JSON_UNESCAPED_UNICODE) ?>;
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
@@ -227,21 +224,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('sporcentaje').value = '0,01';
         document.getElementById('sc').value = '';
         document.getElementById('ssc').value = '0,00';
-        editIndex = null;
-        btn.textContent = 'Guardar ';
-        const icon = document.createElement('i');
-        icon.className = 'bi-save';
-        btn.appendChild(icon);
-        btn.disabled = true;
     }
 
     // ═══ Fill form for editing ═══
-    window.editarOpcion = function(idx) {
-        const item = opciones[idx];
-        if (!item) return;
-        editIndex = idx;
-
-        // Select tipo bien
+    function fillForm(item) {
         const tipoBienSel = form.querySelector('[formcontrolname=codTipoBien]');
         for (let i = 0; i < tipoBienSel.options.length; i++) {
             if (tipoBienSel.options[i].value === item.tipo_bien) {
@@ -256,71 +242,21 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('sporcentaje').value = item.porcentaje || '0,01';
         document.getElementById('sc').value = item.descripcion || '';
         document.getElementById('ssc').value = item.valor_declarado || '0,00';
+    }
 
-        btn.textContent = 'Actualizar ';
-        const icon = document.createElement('i');
-        icon.className = 'bi-save';
-        btn.appendChild(icon);
-
-        validateForm();
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    };
-
-    // ═══ Delete ═══
-    window.eliminarOpcion = function(idx) {
-        if (!confirm('¿Está seguro de eliminar este registro?')) return;
-        if (!INTENTO_ID) { alert('No hay intento activo'); return; }
-
-        fetch(BASE + '/api/opciones-compra/' + INTENTO_ID + '/eliminar', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({index: idx})
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.ok) {
-                opciones.splice(idx, 1);
-                renderTable();
-            } else {
-                alert(data.error || 'Error al eliminar');
-            }
-        })
-        .catch(() => alert('Error de conexión'));
-    };
-
-    // ═══ Submit (add/edit) ═══
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        if (!INTENTO_ID) { alert('No hay intento activo'); return; }
-
-        const formData = getFormData();
-        const isEdit = editIndex !== null;
-        const url = isEdit
-            ? BASE + '/api/opciones-compra/' + INTENTO_ID + '/editar'
-            : BASE + '/api/opciones-compra/' + INTENTO_ID + '/agregar';
-
-        if (isEdit) formData.index = editIndex;
-
-        fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(formData)
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.ok) {
-                if (isEdit) {
-                    opciones[editIndex] = formData;
-                } else {
-                    opciones.push(formData);
-                }
-                renderTable();
-                resetForm();
-            } else {
-                alert(data.error || 'Error al guardar');
-            }
-        })
-        .catch(() => alert('Error de conexión'));
+    // ═══ CRUD Manager (global) ═══
+    initCrudManager({
+        intentoId:    INTENTO_ID,
+        baseUrl:      BASE,
+        apiSlug:      'opciones-compra',
+        items:        opciones,
+        getFormData:  getFormData,
+        resetForm:    resetForm,
+        renderTable:  renderTable,
+        fillForm:     fillForm,
+        validateForm: validateForm,
+        editName:     'editarOpcion',
+        deleteName:   'eliminarOpcion'
     });
 
     // Initial render

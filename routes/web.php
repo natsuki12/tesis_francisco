@@ -650,52 +650,14 @@ $router->get('/simulador/sucesion/herederos', function () use ($app, $requireAut
     $requireAuth();
     $requireSimSession();
     $requireSeniatLogin();
-
-    $intentoActivo = null;
-    $catalogoParentescos = [];
-    try {
-        $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
-        $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
-        $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
-
-        if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
-            $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
-        }
-
-        $catalog = new \App\Modules\Professor\Models\Crear_Caso\CatalogModel();
-        $rows = $catalog->getParentescos();
-        foreach ($rows as $row) {
-            $catalogoParentescos[(int) $row['parentesco_id']] = $row['nombre'];
-        }
-    } catch (\Throwable $e) {
-        error_log('[HEREDEROS] Error cargando datos: ' . $e->getMessage());
-    }
-
-    return $app->view('simulator/seniat_actual/sucesion/identificacion_herederos/herederos', [
-        'intento' => $intentoActivo,
-        'catalogoParentescos' => $catalogoParentescos,
-    ]);
+    return (new \App\Modules\Simulator\Controllers\HerederosController())->index($app);
 });
 
 $router->get('/simulador/sucesion/herencia', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
     $requireAuth();
     $requireSimSession();
     $requireSeniatLogin();
-
-    $intentoActivo = null;
-    try {
-        $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
-        $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
-        $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
-
-        if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
-            $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
-        }
-    } catch (\Throwable $e) {
-        error_log('[TIPO_HERENCIA] Error cargando intento: ' . $e->getMessage());
-    }
-
-    return $app->view('simulator/seniat_actual/sucesion/herencia/tipo_herencia', ['intento' => $intentoActivo]);
+    return (new \App\Modules\Simulator\Controllers\HerenciaController())->index($app);
 });
 
 // ── Herederos Premuerto ──
@@ -712,41 +674,11 @@ $router->get('/simulador/sucesion/bienes_inmuebles', function () use ($app, $req
     $requireAuth();
     $requireSimSession();
     $requireSeniatLogin();
-
-    $catalog = new \App\Modules\Professor\Models\Crear_Caso\CatalogModel();
-    $tiposBienInmueble = $catalog->getTiposBienInmueble();
-
-    $intentoActivo = null;
-    try {
-        $assignModel = new \App\Modules\Student\Models\StudentAssignmentModel();
-        $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
-        $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
-        if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
-            $intentoActivo = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
-        }
-    } catch (\Throwable $e) {
-        error_log('[BIENES_INMUEBLES] Error cargando intento: ' . $e->getMessage());
-    }
-
-    return $app->view('simulator/seniat_actual/sucesion/bienes_inmuebles/bienes_inmuebles', [
-        'tiposBienInmueble' => $tiposBienInmueble,
-        'intento' => $intentoActivo,
-    ]);
+    return (new \App\Modules\Simulator\Controllers\BienesInmueblesController())->index($app);
 });
 
 // ── Bienes Muebles ──
-$router->get('/simulador/sucesion/bienes_muebles/seguro', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
-    $requireAuth();
-    $requireSimSession();
-    $requireSeniatLogin();
-    return $app->view('simulator/seniat_actual/sucesion/bienes_muebles/seguro');
-});
-$router->get('/simulador/sucesion/bienes_muebles/transporte', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
-    $requireAuth();
-    $requireSimSession();
-    $requireSeniatLogin();
-    return $app->view('simulator/seniat_actual/sucesion/bienes_muebles/transporte');
-});
+// NOTA: seguro y transporte ya están definidos arriba con sus controladores (SeguroController, TransporteController)
 $router->get('/simulador/sucesion/bienes_muebles/opciones_compra', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
     $requireAuth();
     $requireSimSession();
@@ -855,11 +787,7 @@ $router->get('/simulador/sucesion/desgravamenes', function () use ($app, $requir
     $requireAuth();
     $requireSimSession();
     $requireSeniatLogin();
-    $model = new \App\Modules\Simulator\Models\PasivosGastosModel();
-    $intento = $model->getIntentoActivo();
-    return $app->view('simulator/seniat_actual/sucesion/desgravamanes/desgravamenes', [
-        'intento' => $intento,
-    ]);
+    return (new \App\Modules\Simulator\Controllers\DesgravamenesController())->index($app);
 });
 
 // ── Exenciones ──
@@ -885,11 +813,7 @@ $router->get('/simulador/sucesion/bienes_litigiosos', function () use ($app, $re
     $requireAuth();
     $requireSimSession();
     $requireSeniatLogin();
-    $model = new \App\Modules\Simulator\Models\PasivosGastosModel();
-    $intento = $model->getIntentoActivo();
-    return $app->view('simulator/seniat_actual/sucesion/bienes_litigiosos/bienes_litigiosos', [
-        'intento' => $intento,
-    ]);
+    return (new \App\Modules\Simulator\Controllers\BienesLitigiososController())->index($app);
 });
 
 // ── Resumen Declaración ──
@@ -933,6 +857,29 @@ $router->get('/simulador/sucesion/declaracion_pdf', function () use ($requireAut
     $requireAuth();
     $requireSimSession();
     $requireSeniatLogin();
+
+    // Validate herederos have parentesco defined
+    try {
+        $assignModel  = new \App\Modules\Student\Models\StudentAssignmentModel();
+        $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+        $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+        if ($estudianteId && !empty($_SESSION['sim_asignacion_id'])) {
+            $intento = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+            if ($intento) {
+                $borrador = new \App\Modules\Simulator\Services\BorradorService($intento);
+                foreach ($borrador->getHerederosDetalle() as $h) {
+                    $pid = (int) ($h['parentesco_id'] ?? 0);
+                    if ($pid === 0 || $pid === 19) {
+                        header('Location: ' . base_url('/simulador/sucesion/herederos?datos_incompletos=1'));
+                        exit;
+                    }
+                }
+            }
+        }
+    } catch (\Throwable $e) {
+        error_log('[PDF] herederos check: ' . $e->getMessage());
+    }
+
     $ctrl = new \App\Modules\Simulator\Controllers\PdfReportController();
     return $ctrl->generar();
 });

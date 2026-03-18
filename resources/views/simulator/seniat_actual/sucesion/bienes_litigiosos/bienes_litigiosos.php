@@ -121,7 +121,7 @@ ob_start();
 </div>
 
 <script>
-    const litigiososData = <?= json_encode($litigiosos, JSON_UNESCAPED_UNICODE) ?>;
+    var litigiososData = <?= json_encode($litigiosos, JSON_UNESCAPED_UNICODE) ?>;
 
     document.addEventListener('DOMContentLoaded', function () {
         const tbody = document.getElementById('tbodyLitigiosos');

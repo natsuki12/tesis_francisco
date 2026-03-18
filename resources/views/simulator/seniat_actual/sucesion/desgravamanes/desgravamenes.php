@@ -85,6 +85,9 @@ foreach ($seguros as $seg) {
 // 3. Prestaciones Sociales (todas, informativo)
 $prestaciones = $borrador['bienes_muebles_prestaciones_sociales'] ?? [];
 foreach ($prestaciones as $prest) {
+    // Si posee cuenta bancaria, no aparece en desgravámenes
+    if (($prest['posee_banco'] ?? 'false') === 'true') continue;
+
     $pct = $prest['porcentaje'] ?? '0,01';
     $desc = $prest['descripcion'] ?? '';
     $rif = $prest['rif_empresa'] ?? '';

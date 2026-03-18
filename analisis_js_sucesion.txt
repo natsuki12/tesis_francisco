@@ -1,0 +1,797 @@
+================================================================================
+  ANÁLISIS PROFUNDO DE JAVASCRIPT — DIRECTORIO SUCESIÓN
+  Proyecto: tesis_francisco
+  Fecha: 2026-03-18
+  Ruta: resources/views/simulator/seniat_actual/sucesion/
+================================================================================
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  1. RESUMEN EJECUTIVO                                                       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Total de archivos PHP analizados: ~30 archivos
+JavaScript inline: 100% — TODO el JS está embebido dentro de <script> en PHP
+Archivos JS externos (globales): 3 archivos
+Patrón dominante: CRUD con Fetch API + renderizado de tabla dinámico
+
+CATEGORÍAS IDENTIFICADAS:
+  A) Páginas CRUD estándar (Bienes Muebles + Pasivos)      — ~20 páginas
+  B) Páginas con lógica especial (Herencia, Herederos)     — 5 páginas
+  C) Páginas de solo lectura (Resumen, Declaración)        — 4 páginas
+  D) Página autónoma (sucesion_principal.php)               — 1 página
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  2. ARCHIVOS JS EXTERNOS (GLOBALES)                                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Ubicación: public/assets/js/simulator/seniat_actual/sucesion/
+Incluidos en: sim_sucesiones_layout.php (layout global de sucesión)
+
+─────────────────────────────────────────────────────────────────────────────
+2.1  datos_tribunal.js
+─────────────────────────────────────────────────────────────────────────────
+PROPÓSITO: Manejo global de la sección "Datos del Tribunal" para bienes
+           litigiosos.
+
+FUNCIONES EXPUESTAS (globales):
+  • initTribunalToggle()
+      - Escucha cambios en el <select id="bl"> (Bien Litigioso Si/No)
+      - Muestra/oculta el div #tribunalFields
+      - Invocada manualmente desde cada página que incluye _datos_tribunal.php
+
+  • getTribunalData()     → Retorna objeto con campos del tribunal
+  • setTribunalData(item) → Rellena los campos del tribunal desde un objeto
+  • resetTribunal()       → Limpia los campos del tribunal
+
+CAMPOS QUE MANEJA:
+  - litigioNroExpediente
+  - litigioTribunalCausa
+  - litigioPartesJuicio
+  - litigioEstadoJuicio
+
+USADO POR: banco.php, seguro.php, transporte.php, acciones.php,
+           semovientes.php, bonos.php, cuentas_efectos.php,
+           prestaciones_sociales.php, caja_ahorro.php, opciones_compra.php,
+           plantaciones.php, otros_bienes.php
+
+─────────────────────────────────────────────────────────────────────────────
+2.2  decimal_input.js
+─────────────────────────────────────────────────────────────────────────────
+PROPÓSITO: Formateo de inputs con atributo "currencymask" para números
+           decimales en formato venezolano (punto = miles, coma = decimales).
+
+FUNCIONALIDAD:
+  • Intercepta eventos 'input' en todos los <input currencymask>
+  • Formatea valor mientras se escribe: "1234,56" → "1.234,56"
+  • Preserva posición del cursor
+  • Previene entrada de caracteres no numéricos (excepto coma)
+
+USADO POR: Todas las páginas con campos de valor monetario (Valor Declarado,
+           Porcentaje, etc.)
+
+─────────────────────────────────────────────────────────────────────────────
+2.3  modal_info.js
+─────────────────────────────────────────────────────────────────────────────
+PROPÓSITO: Modal global para mostrar mensajes de éxito/error/warning/info
+           con estilos Bootstrap y animaciones.
+
+FUNCIONES EXPUESTAS:
+  • showModalInfo(message, type)
+      - type: 'success' | 'danger' | 'warning' | 'info'
+      - Muestra el modal #modalInfoGlobal con el icono y color apropiado
+      - Auto-cierra después de timeout configurable
+
+  • hideModalInfo()
+      - Cierra el modal
+
+HTML ASOCIADO: _modal_info.php (partial incluido en el layout)
+
+NOTA: Actualmente NO se usa extensamente en las páginas de sucesión.
+      La mayoría usa alert() nativo para errores.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  3. PATRÓN CRUD ESTÁNDAR (Categoría A)                                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Este patrón se repite en ~20 páginas con variaciones menores.
+
+─────────────────────────────────────────────────────────────────────────────
+3.1  ESTRUCTURA JS COMÚN
+─────────────────────────────────────────────────────────────────────────────
+
+CONSTANTES PHP INYECTADAS (al inicio del <script>):
+  const INTENTO_ID = <?= json_encode($intentoId) ?>;
+  const BASE = <?= json_encode(rtrim(APP_BASE)) ?>;
+  let items = <?= json_encode($itemsGuardados, JSON_UNESCAPED_UNICODE) ?>;
+  let editIndex = null;
+
+WRAPPING:
+  document.addEventListener('DOMContentLoaded', function() { ... });
+
+FUNCIONES INTERNAS (dentro del DOMContentLoaded):
+
+  1. validateForm()
+     - Recorre todos los campos required del formulario
+     - Habilita/deshabilita el botón submit
+     - VARIACIONES por página:
+       * Algunas validan formato RIF (/^[JGVEP]\d{9}$/i)
+       * Algunas validan campos de tribunal si Bien Litigioso = "Si"
+       * bienes_inmuebles valida que al menos un checkbox esté marcado
+
+  2. renderTable()
+     - Limpia el tbody
+     - Itera sobre el array 'items' local
+     - Crea <tr> dinámicamente con createElement/innerHTML
+     - Calcula totalDeclarado sumando valor_declarado parseado
+     - Agrega fila de total al final
+     - Muestra/oculta el contenedor de tabla según items.length
+
+  3. getFormData()
+     - Lee todos los <input>, <select>, <textarea> del formulario
+     - Retorna un objeto plano con los valores
+     - Si hay datos de tribunal: Object.assign(data, getTribunalData())
+
+  4. resetForm()
+     - Limpia todos los campos del formulario a valores por defecto
+     - editIndex = null
+     - Restaura texto del botón a "Guardar"
+     - Si hay tribunal: resetTribunal()
+
+FUNCIONES GLOBALES (window.xxx):
+
+  5. window.editarXxx(idx)
+     - Lee el item del array por índice
+     - Rellena el formulario con los datos del item
+     - editIndex = idx
+     - Cambia texto del botón a "Actualizar"
+     - Si hay tribunal: setTribunalData(item)
+     - Scroll suave al top
+
+  6. window.eliminarXxx(idx)
+     - confirm() de confirmación
+     - fetch POST a: BASE + '/api/{seccion}/{INTENTO_ID}/eliminar'
+     - Body: { index: idx }
+     - Si ok: items.splice(idx, 1) + renderTable()
+     - Si error: alert()
+
+EVENT LISTENER SUBMIT:
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = getFormData();
+    const isEdit = editIndex !== null;
+    const url = isEdit
+      ? BASE + '/api/{seccion}/{INTENTO_ID}/editar'
+      : BASE + '/api/{seccion}/{INTENTO_ID}/agregar';
+    if (isEdit) formData.index = editIndex;
+    fetch(url, { method: 'POST', headers: {...}, body: JSON.stringify(formData) })
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok) {
+          if (isEdit) items[editIndex] = formData;
+          else items.push(formData);
+          renderTable();
+          resetForm();
+        } else alert(data.error);
+      })
+      .catch(() => alert('Error de conexión'));
+  });
+
+INICIALIZACIÓN:
+  initTribunalToggle();  // si usa tribunal
+  renderTable();
+  validateForm();
+
+
+─────────────────────────────────────────────────────────────────────────────
+3.2  PÁGINAS CRUD ESTÁNDAR — BIENES MUEBLES
+─────────────────────────────────────────────────────────────────────────────
+
+Todas en: sucesion/bienes_muebles/
+
+┌─────────────────────────────┬───────────────────────────────────────────────┐
+│ Archivo                     │ Variaciones del patrón estándar              │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ banco.php                   │ Patrón CRUD puro + tribunal.                │
+│                             │ Campos: tipo_bien, bien_litigioso,          │
+│                             │ descripcion, valor_declarado                 │
+│                             │ API: /api/bancos/{id}/agregar|editar|eliminar│
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ seguro.php                  │ CRUD + tribunal + RIF lookup.               │
+│                             │ Campos adicionales: rif_empresa,            │
+│                             │ razon_social (auto-fill), numero_prima       │
+│                             │ RIF: debounce 300ms→ POST /api/buscar-rif   │
+│                             │ API: /api/seguros/{id}/...                   │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ transporte.php              │ CRUD + tribunal. Sin RIF lookup.            │
+│                             │ Campos adicionales: marca, modelo, anio,    │
+│                             │ color, placa, serial_carroceria, serial_motor│
+│                             │ API: /api/transporte/{id}/...               │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ acciones.php                │ CRUD + tribunal + RIF lookup.               │
+│                             │ Campos: tipo_bien, rif_empresa,             │
+│                             │ razon_social, bien_litigioso, porcentaje,   │
+│                             │ descripcion, valor_declarado                 │
+│                             │ API: /api/acciones/{id}/...                  │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ semovientes.php             │ CRUD + tribunal.                            │
+│                             │ Campos adicionales: tipo_semoviente,        │
+│                             │ cantidad                                     │
+│                             │ API: /api/semovientes/{id}/...              │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ bonos.php                   │ CRUD + tribunal.                            │
+│                             │ Campos adicionales: tipo_bonos,             │
+│                             │ numero_bonos, numero_serie                   │
+│                             │ API: /api/bonos/{id}/...                     │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ cuentas_efectos.php         │ CRUD + tribunal.                            │
+│                             │ Campos: nombre_apellido, rif_cedula         │
+│                             │ (deudor), porcentaje, descripcion,          │
+│                             │ valor_declarado                              │
+│                             │ API: /api/cuentas-efectos/{id}/...          │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ prestaciones_sociales.php   │ CRUD + tribunal + RIF lookup.               │
+│                             │ Campos: rif_empresa, razon_social,          │
+│                             │ porcentaje, descripcion, valor_declarado     │
+│                             │ API: /api/prestaciones-sociales/{id}/...    │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ caja_ahorro.php             │ CRUD + tribunal + RIF lookup.               │
+│                             │ Campos: rif_empresa, razon_social,          │
+│                             │ porcentaje, descripcion, valor_declarado     │
+│                             │ API: /api/caja-ahorro/{id}/...              │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ opciones_compra.php         │ CRUD + tribunal.                            │
+│                             │ Campos adicionales: nombre_oferente          │
+│                             │ API: /api/opciones-compra/{id}/...          │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ plantaciones.php            │ CRUD + tribunal.                            │
+│                             │ Campos: porcentaje, descripcion,            │
+│                             │ valor_declarado                              │
+│                             │ API: /api/plantaciones/{id}/...             │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ otros_bienes.php            │ CRUD + tribunal.                            │
+│                             │ Campos: porcentaje, descripcion,            │
+│                             │ valor_declarado                              │
+│                             │ API: /api/otros-bienes/{id}/...             │
+└─────────────────────────────┴───────────────────────────────────────────────┘
+
+
+─────────────────────────────────────────────────────────────────────────────
+3.3  PÁGINAS CRUD ESTÁNDAR — PASIVOS/GASTOS
+─────────────────────────────────────────────────────────────────────────────
+
+Todas en: sucesion/pasivos_gastos/
+
+┌─────────────────────────────┬───────────────────────────────────────────────┐
+│ Archivo                     │ Variaciones                                  │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ gastos.php                  │ CRUD sin tribunal.                           │
+│                             │ Campos: tipo_pasivo (fijo=Gastos),           │
+│                             │ tipo_gasto (select), porcentaje,             │
+│                             │ descripcion, valor_declarado                 │
+│                             │ Helper: getSelectText() para nombre legible  │
+│                             │ API: /api/pasivos_gastos/{id}/...           │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ tarjetas_credito.php        │ CRUD sin tribunal.                           │
+│                             │ Campos: nombre_banco, numero_tdc,           │
+│                             │ porcentaje, descripcion, valor_declarado     │
+│                             │ API: /api/pasivos_tdc/{id}/...              │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ creditos_hipotecarios.php   │ CRUD sin tribunal.                           │
+│                             │ Campos: nombre_banco, porcentaje,           │
+│                             │ descripcion, valor_declarado                 │
+│                             │ API: /api/pasivos_creditos_hip/{id}/...     │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ prestamos_creditos.php      │ CRUD sin tribunal.                           │
+│                             │ Campos: nombre_banco, porcentaje,           │
+│                             │ descripcion, valor_declarado                 │
+│                             │ API: /api/pasivos_prestamos/{id}/...        │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ otros_pasivos.php           │ CRUD sin tribunal.                           │
+│                             │ Campos: porcentaje, descripcion,            │
+│                             │ valor_declarado                              │
+│                             │ API: /api/pasivos_otros/{id}/...            │
+└─────────────────────────────┴───────────────────────────────────────────────┘
+
+
+─────────────────────────────────────────────────────────────────────────────
+3.4  PÁGINAS CRUD ESTÁNDAR — EXCENCIONES Y EXONERACIONES
+─────────────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────┬───────────────────────────────────────────────┐
+│ excenciones/exenciones.php  │ CRUD sin tribunal. Muy simple.               │
+│                             │ Campos: tipo, descripcion, valor_declarado   │
+│                             │ API: /api/exenciones/{id}/...               │
+├─────────────────────────────┼───────────────────────────────────────────────┤
+│ exoneraciones/              │ CRUD sin tribunal. Idéntico a exenciones.    │
+│ exoneraciones.php           │ Campos: tipo, descripcion, valor_declarado   │
+│                             │ API: /api/exoneraciones/{id}/...            │
+└─────────────────────────────┴───────────────────────────────────────────────┘
+
+
+─────────────────────────────────────────────────────────────────────────────
+3.5  PÁGINA CRUD — PRÓRROGAS
+─────────────────────────────────────────────────────────────────────────────
+
+Archivo: sucesion/prorrogas/prorrogas.php
+
+CRUD sin tribunal. Usa campos de fecha con date picker (click→showPicker).
+Campos: fecha_solicitud, nro_resolucion, fecha_resolucion,
+        plazo_dias, fecha_vencimiento
+API: /api/prorrogas/{id}/agregar|editar|eliminar
+
+PARTICULARIDAD: Usa detecta clicks en iconos de calendario y dispara
+                el nativeInput.showPicker() del input[type=date].
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  4. PÁGINAS CON LÓGICA ESPECIAL (Categoría B)                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+─────────────────────────────────────────────────────────────────────────────
+4.1  bienes_inmuebles/bienes_inmuebles.php
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLEJIDAD: Alta
+WRAPPING: DOMContentLoaded
+LÍNEAS DE JS: ~280
+
+VARIABLES PHP INYECTADAS:
+  • INTENTO_ID, BASE
+  • inmuebles (array de inmuebles guardados)
+  • editIndex
+
+DIFERENCIAS CON PATRÓN ESTÁNDAR:
+  1. CHECKBOXES PARA TIPO DE BIEN: En lugar de un <select>, usa múltiples
+     checkboxes renderizados desde PHP ($tiposBienInmueble).
+     - getFormData() recolecta IDs y nombres de checkboxes marcados
+     - resetForm() desmarca todos los checkboxes
+
+  2. VIVIENDA PRINCIPAL:
+     - El <select id="vp"> está inicialmente disabled
+     - toggleViviendaPrincipal() lo habilita SOLO si algún checkbox marcado
+       tiene nombre = 'casa'|'apartamento'|'townhouse'|'quinta'
+     - Lógica adicional: si ya existe un inmueble con vivienda_principal=true
+       (y no es el que se edita), mantiene disabled
+
+  3. MUCHOS CAMPOS: descripcion, linderos, superficie_construida,
+     superficie_no_construida, area_superficie, direccion,
+     oficina_registro, nro_registro, libro, protocolo, fecha_registro,
+     trimestre, asiento_registral, matricula, folio_real_anio,
+     valor_original, valor_declarado
+
+  4. NO USA TRIBUNAL: No tiene _datos_tribunal.php
+
+  5. $extraCss: Incluye CSS propio (/bienes_inmuebles.css)
+
+FUNCIONES:
+  • toggleViviendaPrincipal() — lógica única
+  • validateForm() — valida checkboxes + required + porcentaje >= 0.01
+  • renderTable() — tabla con ~10 columnas incluyendo textareas readonly
+  • getFormData() — recolecta ~20 campos
+  • resetForm() — reset de todos los campos
+  • window.editarInmueble(idx) — rellena todos los campos + checkboxes
+  • window.eliminarInmueble(idx) — fetch delete standard
+
+API: /api/bienes-inmuebles/{id}/agregar|editar|eliminar
+
+
+─────────────────────────────────────────────────────────────────────────────
+4.2  identificacion_herederos/herederos.php
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLEJIDAD: Alta
+WRAPPING: (function() { 'use strict'; ... })()  — IIFE
+LÍNEAS DE JS: ~250
+
+VARIABLES PHP INYECTADAS:
+  • BASE_URL (rtrim(base_url()))
+  • INTENTO_ID
+  • BORRADOR_RAW (json del borrador completo)
+  • ITEMS_GUARDADOS (relaciones[])
+  • PARENTESCOS (catálogo id→nombre)
+
+DIFERENCIAS CON PATRÓN ESTÁNDAR:
+  1. NO ES CRUD CLÁSICO: Los herederos se pre-cargan desde el caso
+     (no se agregan/eliminan, solo se EDITAN).
+
+  2. MODAL DE EDICIÓN: Usa un <dialog> custom (no Bootstrap modal)
+     con window.modalManager.open/close para editar heredero.
+
+  3. CAMPOS DEL MODAL:
+     - Fecha de Nacimiento (con input type=text + click→showPicker)
+     - Fecha de Fallecimiento (solo para premuertos)
+     - Parentesco (select dinámico llenado desde PARENTESCOS)
+
+  4. RENDERIZA TABLA DE SOLO LECTURA: renderTable() muestra la tabla de
+     herederos con sus datos pero solo el botón "Editar" (no "Eliminar").
+
+  5. GUARDADO: En lugar del patrón /api/xxx/agregar, usa la API de borrador:
+     - fetch POST a /api/intentos/{id}/guardar
+     - Body: { borrador: BORRADOR_RAW }  (el borrador completo con
+       las relaciones modificadas)
+
+  6. FORMATO DE FECHAS: Convierte YYYY-MM-DD ↔ DD/MM/YYYY
+
+FUNCIONES:
+  • renderTable() — tabla de herederos (nombre, cédula, parentesco,
+    fecha_nacimiento, fecha_fallecimiento, premuerto)
+  • abrirModal(idx) — rellena el modal con datos del heredero
+  • cerrarModal() — cierra el dialog
+  • guardarCambios() — actualiza BORRADOR_RAW.relaciones[idx] y POST
+
+
+─────────────────────────────────────────────────────────────────────────────
+4.3  identificacion_herederos/herederos_premuerto.php
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLEJIDAD: Alta
+WRAPPING: (function() { 'use strict'; ... })()  — IIFE
+LÍNEAS DE JS: ~250
+
+VARIABLES PHP INYECTADAS:
+  • BASE_URL
+  • INTENTO_ID
+  • PREMUERTOS (array de herederos con premuerto="Si")
+  • PARENTESCOS (catálogo)
+  • herederosPremuertos (sub-herederos guardados)
+
+DIFERENCIAS CON PATRÓN ESTÁNDAR:
+  1. DOS NIVELES DE DATOS:
+     - Nivel 1: Tabla de premuertos (solo lectura, con icono lupa)
+     - Nivel 2: Al hacer click en lupa, muestra detalle con sub-herederos
+
+  2. DOS MODALES (Bootstrap Modal, no <dialog>):
+     - #modalAgregarHeredero: formulario para agregar sub-heredero
+     - #modalEditarHeredero: formulario para editar sub-heredero
+
+  3. ESTADO: selectedPadreId almacena la cédula del premuerto activo
+
+  4. CRUD COMPLETO pero sobre herederosPremuertos[]:
+     - Agregar: POST /api/herederos-premuertos/{id}/agregar
+     - Editar: POST /api/herederos-premuertos/{id}/editar
+     - Eliminar: POST /api/herederos-premuertos/{id}/eliminar
+
+FUNCIONES:
+  • renderPremuertos() — tabla nivel 1 con iconos lupa
+  • renderSubHerederos() — tabla nivel 2 filtrada por selectedPadreId
+  • checkAddFields() — validación del modal agregar
+  • checkEditFields() — validación del modal editar
+  • abrirEditModal(globalIdx) — rellena modal editar
+  • eliminarHeredero(globalIdx) — fetch delete
+  • formAgregar submit listener
+  • formEditar submit listener
+
+PARTICULARIDAD: Usa bootstrap.Modal.getInstance() y new bootstrap.Modal()
+                para abrir/cerrar los modales.
+
+
+─────────────────────────────────────────────────────────────────────────────
+4.4  herencia/tipo_herencia.php
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLEJIDAD: Alta
+WRAPPING: (function() { 'use strict'; ... })()  — IIFE
+LÍNEAS DE JS: ~280
+
+VARIABLES PHP INYECTADAS:
+  • BASE_URL
+  • INTENTO_ID
+  • BORRADOR (borrador_json completo)
+  • ITEMS_GUARDADOS (herencia_tipos[])
+
+DIFERENCIAS CON PATRÓN ESTÁNDAR:
+  1. CHECKBOXES PARA TIPOS: Usa checkboxes para seleccionar tipos de
+     herencia (Intestada, Testamentaria, Mixta, Legado, etc.).
+
+  2. CAMPOS CONDICIONALES:
+     - Si "Testamentaria" está marcada: muestra select "Tipo Testamento"
+       + campo "Fecha Testamento"
+     - Si "Legado" está marcada: muestra campo "Conclusión inventario"
+
+  3. GUARDADO ESPECIAL:
+     - NO usa API CRUD individual
+     - Guarda TODO el array de tipos al borrador completo:
+       BORRADOR.herencia_tipos = [...items]
+     - POST a /api/intentos/{INTENTO_ID}/guardar
+     - Body: { borrador: BORRADOR }
+
+  4. EDICIÓN INLINE: Al editar un item, modifica directamente los
+     checkboxes y campos, y usa un flag editIndex para saber si es
+     edición o nuevo.
+
+FUNCIONES:
+  • renderTable() — muestra tabla de tipos de herencia agregados
+  • getFormData() — recolecta checkboxes + campos condicionales
+  • resetForm() — desmarca checkboxes + oculta condicionales
+  • validateForm() — al menos un checkbox marcado + campos requeridos
+  • window.editarTipo(idx)
+  • window.eliminarTipo(idx) — splice + re-guardar borrador
+  • form submit → guardar borrador completo
+
+
+─────────────────────────────────────────────────────────────────────────────
+4.5  resumen_declaracion/resumen_calculo_manual.php
+─────────────────────────────────────────────────────────────────────────────
+
+COMPLEJIDAD: Muy Alta
+WRAPPING: (function() { 'use strict'; ... })()  — IIFE
+LÍNEAS DE JS: ~230
+
+VARIABLES PHP INYECTADAS:
+  • BASE_URL
+  • INTENTO_ID
+  • UT_FLOAT (valor de unidad tributaria como float)
+  • HEREDEROS (array de herederos con datos calculados)
+  • TARIFAS (tramos de tarifa por grupo)
+  • PARENTESCO_CAT (catálogo parentesco → grupo_tarifa_id)
+  • BORRADOR (borrador completo)
+  • IMPUESTO_AUTO (impuesto calculado automáticamente)
+
+FUNCIONALIDAD ÚNICA — MOTOR DE CÁLCULO DE IMPUESTOS:
+  1. Agrupa tarifas por grupo_tarifa_id
+  2. Para cada heredero:
+     a. Lee cuota_parte_ut y reducción del input manual
+     b. Determina grupo tarifa según parentesco
+     c. Busca tramo aplicable (buscarTramo)
+     d. Calcula impuesto determinado:
+        - Si 1er grado y cuota ≤ 75 UT → 0
+        - Sino: (cuota * porcentaje / 100 - sustraendo) * UT
+     e. Valida reducción con 3 límites:
+        - Límite 1: reducción < impuesto determinado
+        - Límite 2: reducción ≤ impuesto/2 (truncado)
+        - Límite 3: reducción ≤ impuesto_auto/total_herederos
+     f. Calcula impuesto_a_pagar = max(0, determinado - reducción)
+
+  3. Valida que suma de determinados ≥ IMPUESTO_AUTO
+
+  4. Si todo OK: muestra tabla de resultados
+  5. Botón "Aceptar" guarda overrides al borrador:
+     BORRADOR.calculo_manual = { herederos: [...overrides] }
+     POST /api/intentos/{id}/guardar
+
+FUNCIONES AUXILIARES:
+  • parseDecimal(str) — "1.234,56" → 1234.56
+  • fmtBs(v) — float → "1.234,56"
+  • getGrupoId(parentescoId) — obtiene grupo_tarifa_id
+  • buscarTramo(grupoId, cuotaUT) — busca tramo de tarifa aplicable
+  • truncDecimal(v, decimals) — trunca sin redondear
+  • showToast(type, msg) — toast custom para errores del sistema
+
+BOTONES:
+  • btnCalcular → ejecuta todo el motor de cálculo
+  • btnAceptar → guarda al borrador completo
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  5. PÁGINAS DE SOLO LECTURA (Categoría C)                                    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+─────────────────────────────────────────────────────────────────────────────
+5.1  resumen_declaracion/resumen_declaracion.php
+─────────────────────────────────────────────────────────────────────────────
+
+JS MÍNIMO (~40 líneas). IIFE.
+
+VARIABLES: BASE_URL, INTENTO_ID, BORRADOR
+
+FUNCIONALIDAD:
+  • UN SOLO BOTÓN: #btnRestaurar (Restaurar Cálculo Automático)
+  • Al click:
+    - confirm() de confirmación
+    - delete BORRADOR.calculo_manual
+    - POST a /api/intentos/{id}/guardar con borrador limpio
+    - window.location.reload() si ok
+
+TODO EL CONTENIDO ES PHP server-side rendering (tablas con datos calculados).
+
+
+─────────────────────────────────────────────────────────────────────────────
+5.2  resumen_declaracion/declaracion_anverso.php
+─────────────────────────────────────────────────────────────────────────────
+
+JS MÍNIMO (~10 líneas). DOMContentLoaded.
+
+FUNCIONALIDAD:
+  • UN SOLO BOTÓN: #btnConfirmarDeclaracion (dentro de modal <dialog>)
+  • Al click: window.open(pdfUrl, '_blank') + cerrar modal
+
+MODAL: Usa <dialog> con window.modalManager. Confirmación de declaración.
+
+
+─────────────────────────────────────────────────────────────────────────────
+5.3  resumen_declaracion/declaracion_reverso.php
+─────────────────────────────────────────────────────────────────────────────
+
+JS MÍNIMO (~15 líneas). DOMContentLoaded.
+
+FUNCIONALIDAD:
+  • Auto-resize de textareas: document.querySelectorAll(".autosize-ta")
+    → ajusta height al scrollHeight
+  • Botón declarar: idéntico al anverso (window.open PDF + cerrar modal)
+
+TODO EL CONTENIDO es PHP server-side (tablas de anexos: inmuebles, muebles,
+pasivos, desgravámenes, exenciones, exoneraciones, bienes litigiosos).
+
+FUNCIONES PHP HELPER (NO JS, pero relevantes para la vista):
+  • buildDescripcionInmueble($inm) — formato de descripción inmueble
+  • buildRegistroInmueble($inm) — formato de datos de registro
+  • buildDescripcionMueble($mue) — formato por categoría de mueble
+  • buildDescripcionPasivo($pas) — formato por categoría de pasivo
+  • buildDescripcionDesgravamen($des) — formato para desgravámenes
+  • formatSuperficie($val) — formateo de superficie
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  6. PÁGINA AUTÓNOMA (Categoría D)                                            ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+─────────────────────────────────────────────────────────────────────────────
+6.1  sucesion_principal.php
+─────────────────────────────────────────────────────────────────────────────
+
+LAYOUT: logged_layout.php (NO sim_sucesiones_layout.php)
+NO tiene sidebar.
+
+JS: 1 línea — cierra el menú hamburguesa al hacer click fuera:
+  document.addEventListener("click", function(e) {
+    var w = document.getElementById("hamburgerWrap");
+    if (w && !w.contains(e.target))
+      document.getElementById("hamburgerMenu").classList.remove("show");
+  });
+
+MODAL INLINE: #avisoModal — modal simple con display:flex/none
+  - Sin librería, solo estilos inline
+  - Botón "Aceptar" → redirige a /simulador/sucesion/herencia
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  7. RESUMEN DE DEPENDENCIAS JS                                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+7.1  APIs UTILIZADAS (Browser Nativas):
+  • fetch() — todas las páginas CRUD
+  • document.addEventListener('DOMContentLoaded', ...)
+  • document.getElementById / querySelector / querySelectorAll
+  • createElement, appendChild, innerHTML
+  • window.location.href / window.location.reload()
+  • window.open() — solo en declaracion_anverso/reverso
+  • window.scrollTo({ behavior: 'smooth' })
+  • alert(), confirm() — para mensajes al usuario
+  • console.error() — para errores en desarrollo
+  • setTimeout — debounce en RIF lookup
+  • input.showPicker() — datepickers nativos
+  • element.classList.toggle/add/remove — hamburger menu
+  • toLocaleString('es-VE', ...) — formato de números
+
+7.2  Librerías Externas:
+  • Bootstrap 5 — clases CSS (form-control, card, table, btn, etc.)
+  • Bootstrap Icons — iconos (bi-save, bi-pencil-fill, bi-trash-fill, etc.)
+  • Bootstrap JS (bootstrap.Modal) — SOLO en herederos_premuerto.php
+  • window.modalManager — sistema custom de <dialog> (layout global)
+
+7.3  Sistema de Módulos:
+  • NO hay import/export — todo es globals o IIFEs
+  • NO hay módulos ES6, CommonJS, ni AMD
+  • Las funciones "globales" se exponen vía window.xxx
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  8. HALLAZGOS PARA REFACTORIZACIÓN SPA                                       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+8.1  CÓDIGO REPETIDO IDENTIFICADO:
+
+  a) validateForm() → ~20 implementaciones casi idénticas
+  b) renderTable() → ~20 implementaciones con misma estructura
+  c) getFormData() → ~20 implementaciones
+  d) resetForm() → ~20 implementaciones
+  e) editarXxx / eliminarXxx → mismo patrón en todas
+  f) Submit handler con fetch → mismo patrón
+  g) parseDecimal / formatear números → duplicado en varias páginas
+  h) RIF lookup con debounce → duplicado en 4 páginas
+
+8.2  CONSTANTES PHP INYECTADAS EN TODA PÁGINA:
+  • INTENTO_ID — necesario para toda operación API
+  • BASE / BASE_URL — prefijo de URL
+  • items/datos iniciales — array con datos guardados
+
+  → Para SPA: estas constantes deberían inyectarse UNA VEZ
+    en el layout o en un endpoint de configuración.
+
+8.3  POTENCIAL DE EXTRACCIÓN:
+
+  ALTO (código casi idéntico):
+  • Funciones CRUD genéricas: validateForm, renderTable, getFormData,
+    resetForm, editarXxx, eliminarXxx, submit handler
+  • RIF lookup module (4 páginas)
+  • parseDecimal / formatBs utilities
+
+  MEDIO (requiere parametrización):
+  • Template de columnas de tabla (cada página tiene columnas diferentes)
+  • Campos del formulario (diferentes por página)
+
+  BAJO (lógica única por página):
+  • Motor de cálculo de impuestos (resumen_calculo_manual)
+  • Lógica de vivienda principal (bienes_inmuebles)
+  • Lógica de premuertos (herederos_premuerto)
+  • Lógica de checkboxes de tipo herencia (tipo_herencia)
+
+8.4  ESTADO ACTUAL DEL MODAL:
+  • Herederos: usa <dialog> con window.modalManager (sistema custom)
+  • Herederos Premuerto: usa Bootstrap Modal (bootstrap.Modal)
+  • Declaración: usa <dialog> con window.modalManager
+  • Sucesión Principal: usa div con display:none/flex inline
+  → INCONSISTENCIA: 3 sistemas de modal diferentes
+
+8.5  $extraJs / $extraCss:
+  • $extraCss se usa en: bienes_inmuebles.php, herederos_premuerto.php
+  • $extraJs NO se usa en ninguna página de sucesión
+  • Todo el JS es inline
+
+8.6  WRAPPING PATTERNS:
+  • DOMContentLoaded → ~20 páginas CRUD estándar
+  • IIFE → herederos, herederos_premuerto, tipo_herencia,
+           resumen_calculo_manual, resumen_declaracion
+  • Ninguno → sucesion_principal.php (1 línea)
+
+  Los IIFEs se usan en páginas más complejas para evitar colisión
+  de variables globales.
+
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  9. INVENTARIO COMPLETO DE ARCHIVOS Y SU JS                                  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──┬─────────────────────────────────────────────────┬───────┬─────────────────┐
+│# │ Archivo                                         │JS lín.│ Categoría       │
+├──┼─────────────────────────────────────────────────┼───────┼─────────────────┤
+│01│ bienes_muebles/banco.php                        │ ~180  │ CRUD+Tribunal   │
+│02│ bienes_muebles/seguro.php                       │ ~220  │ CRUD+Trib+RIF   │
+│03│ bienes_muebles/transporte.php                   │ ~200  │ CRUD+Tribunal   │
+│04│ bienes_muebles/acciones.php                     │ ~210  │ CRUD+Trib+RIF   │
+│05│ bienes_muebles/semovientes.php                  │ ~180  │ CRUD+Tribunal   │
+│06│ bienes_muebles/bonos.php                        │ ~190  │ CRUD+Tribunal   │
+│07│ bienes_muebles/cuentas_efectos.php              │ ~180  │ CRUD+Tribunal   │
+│08│ bienes_muebles/prestaciones_sociales.php        │ ~210  │ CRUD+Trib+RIF   │
+│09│ bienes_muebles/caja_ahorro.php                  │ ~210  │ CRUD+Trib+RIF   │
+│10│ bienes_muebles/opciones_compra.php              │ ~180  │ CRUD+Tribunal   │
+│11│ bienes_muebles/plantaciones.php                 │ ~170  │ CRUD+Tribunal   │
+│12│ bienes_muebles/otros_bienes.php                 │ ~170  │ CRUD+Tribunal   │
+│13│ bienes_muebles/_datos_tribunal.php              │  0    │ PHP partial     │
+│14│ bienes_inmuebles/bienes_inmuebles.php           │ ~280  │ CRUD Especial   │
+│15│ herencia/tipo_herencia.php                      │ ~280  │ Borrador API    │
+│16│ identificacion_herederos/herederos.php          │ ~250  │ Modal+Borrador  │
+│17│ identificacion_herederos/herederos_premuerto.php│ ~250  │ Dual Modal CRUD │
+│18│ prorrogas/prorrogas.php                         │ ~170  │ CRUD+DatePicker │
+│19│ pasivos_gastos/gastos.php                       │ ~190  │ CRUD Simple     │
+│20│ pasivos_gastos/tarjetas_credito.php             │ ~190  │ CRUD Simple     │
+│21│ pasivos_gastos/creditos_hipotecarios.php        │ ~180  │ CRUD Simple     │
+│22│ pasivos_gastos/prestamos_creditos.php           │ ~180  │ CRUD Simple     │
+│23│ pasivos_gastos/otros_pasivos.php                │ ~170  │ CRUD Simple     │
+│24│ excenciones/exenciones.php                      │ ~175  │ CRUD Simple     │
+│25│ exoneraciones/exoneraciones.php                 │ ~175  │ CRUD Simple     │
+│26│ resumen_declaracion/resumen_declaracion.php     │  40   │ Solo Lectura    │
+│27│ resumen_declaracion/resumen_calculo_manual.php  │ ~230  │ Motor Cálculo   │
+│28│ resumen_declaracion/declaracion_anverso.php     │  10   │ Solo Lectura    │
+│29│ resumen_declaracion/declaracion_reverso.php     │  15   │ Solo Lectura    │
+│30│ sucesion_principal.php                          │   1   │ Standalone      │
+└──┴─────────────────────────────────────────────────┴───────┴─────────────────┘
+
+TOTAL APROXIMADO DE LÍNEAS JS INLINE: ~5,000 líneas
+
+ARCHIVOS JS EXTERNOS:
+  • datos_tribunal.js      (~80 líneas)
+  • decimal_input.js       (~60 líneas)
+  • modal_info.js          (~96 líneas)
+
+TOTAL JS EXTERNO: ~236 líneas
+
+GRAN TOTAL: ~5,236 líneas de JavaScript
+
+
+================================================================================
+  FIN DEL ANÁLISIS
+================================================================================

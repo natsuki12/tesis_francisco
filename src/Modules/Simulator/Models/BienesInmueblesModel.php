@@ -46,6 +46,24 @@ class BienesInmueblesModel
     }
 
     /**
+     * Get the active intento for the current session.
+     */
+    public function getIntentoActivo(): ?array
+    {
+        try {
+            $estudianteId = $this->assignModel->getEstudianteId((int) $_SESSION['user_id']);
+            if (!$estudianteId || empty($_SESSION['sim_asignacion_id'])) {
+                return null;
+            }
+
+            return $this->attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+        } catch (\Throwable $e) {
+            error_log('[BienesInmueblesModel::getIntentoActivo] ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Save the full borrador JSON back to the intento.
      * @throws \Throwable on DB errors (caught by controller)
      */

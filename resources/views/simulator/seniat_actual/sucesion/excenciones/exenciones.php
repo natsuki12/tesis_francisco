@@ -58,7 +58,7 @@ ob_start();
                             <div _ngcontent-sdd-c77 class=form-floating>
                                 <input _ngcontent-sdd-c77 id=exValorDeclarado placeholder=# type=text
                                     formcontrolname=valorDeclarado currencymask required
-                                    class="form-control form-control-sm text-end" style=text-align:right value="0,00">
+                                    class="decimal-input form-control form-control-sm text-end" style=text-align:right value="0,00">
                                 <label _ngcontent-sdd-c77 for=exValorDeclarado>Valor Declarado (Bs.)</label>
                             </div>
                         </div>
@@ -90,10 +90,7 @@ ob_start();
 </div>
 
 <script>
-    const INTENTO_ID = <?= json_encode($intentoId) ?>;
-    const BASE = <?= json_encode(rtrim(($_ENV['APP_BASE'] ?? getenv('APP_BASE')) ?: '', '/')) ?>;
-    let exencionesItems = <?= json_encode($exencionesGuardadas, JSON_UNESCAPED_UNICODE) ?>;
-    let editIndex = null;
+    var exencionesItems = <?= json_encode($exencionesGuardadas, JSON_UNESCAPED_UNICODE) ?>;
 
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('form');
@@ -175,88 +172,28 @@ ob_start();
             document.getElementById('exTipo').value = '';
             document.getElementById('exDescripcion').value = '';
             document.getElementById('exValorDeclarado').value = '0,00';
-            editIndex = null;
-            btn.textContent = 'Guardar ';
-            var icon = document.createElement('i');
-            icon.className = 'bi-save';
-            btn.appendChild(icon);
-            btn.disabled = true;
         }
 
         // ═══ Fill form for editing ═══
-        window.editarExencion = function (idx) {
-            var item = exencionesItems[idx];
-            if (!item) return;
-            editIndex = idx;
-
+        function fillForm(item) {
             document.getElementById('exTipo').value = item.tipo || '';
             document.getElementById('exDescripcion').value = item.descripcion || '';
             document.getElementById('exValorDeclarado').value = item.valor_declarado || '0,00';
+        }
 
-            btn.textContent = 'Actualizar ';
-            var icon = document.createElement('i');
-            icon.className = 'bi-save';
-            btn.appendChild(icon);
-
-            validateForm();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        // ═══ Delete ═══
-        window.eliminarExencion = function (idx) {
-            if (!confirm('¿Está seguro de eliminar este registro?')) return;
-            if (!INTENTO_ID) { alert('No hay intento activo'); return; }
-
-            fetch(BASE + '/api/exenciones/' + INTENTO_ID + '/eliminar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ index: idx })
-            })
-                .then(function (r) { return r.json(); })
-                .then(function (data) {
-                    if (data.ok) {
-                        exencionesItems.splice(idx, 1);
-                        renderTable();
-                    } else {
-                        alert(data.error || 'Error al eliminar');
-                    }
-                })
-                .catch(function () { alert('Error de conexión'); });
-        };
-
-        // ═══ Submit (add/edit) ═══
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (!INTENTO_ID) { alert('No hay intento activo'); return; }
-
-            var formData = getFormData();
-            var isEdit = editIndex !== null;
-            var url = isEdit
-                ? BASE + '/api/exenciones/' + INTENTO_ID + '/editar'
-                : BASE + '/api/exenciones/' + INTENTO_ID + '/agregar';
-
-            if (isEdit) formData.index = editIndex;
-
-            fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            })
-                .then(function (r) { return r.json(); })
-                .then(function (data) {
-                    if (data.ok) {
-                        if (isEdit) {
-                            exencionesItems[editIndex] = formData;
-                        } else {
-                            exencionesItems.push(formData);
-                        }
-                        renderTable();
-                        resetForm();
-                    } else {
-                        alert(data.error || 'Error al guardar');
-                    }
-                })
-                .catch(function () { alert('Error de conexión'); });
+        // ═══ CRUD Manager (global) ═══
+        initCrudManager({
+            intentoId:    INTENTO_ID,
+            baseUrl:      BASE,
+            apiSlug:      'exenciones',
+            items:        exencionesItems,
+            getFormData:  getFormData,
+            resetForm:    resetForm,
+            renderTable:  renderTable,
+            fillForm:     fillForm,
+            validateForm: validateForm,
+            editName:     'editarExencion',
+            deleteName:   'eliminarExencion'
         });
 
         // Initial render

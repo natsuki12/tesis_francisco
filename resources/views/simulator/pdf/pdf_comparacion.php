@@ -245,6 +245,16 @@ $scoreColor = $score['porcentaje'] >= 70 ? '#38a169' : ($score['porcentaje'] >= 
         margin-top: 6px;
     }
 
+    .nota-heredero {
+        background-color: #fffff0;
+        border: 1px solid #ecc94b;
+        border-left: 3px solid #d69e2e;
+        padding: 5px 10px;
+        font-size: 8pt;
+        color: #744210;
+        margin: 2px 0 4px 0;
+    }
+
     .pie-reporte {
         text-align: center;
         font-size: 7pt;
@@ -502,6 +512,13 @@ $hcErrUnits = count($herederosCalc) - $hcOkUnits;
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php if (!empty($h['notas'])): ?>
+        <?php foreach ($h['notas'] as $nota): ?>
+        <div class="nota-heredero">
+            <strong>ℹ</strong> <?= htmlspecialchars($nota) ?>
+        </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
     <?php endforeach; ?>
 </div>
 <?php endif; ?>

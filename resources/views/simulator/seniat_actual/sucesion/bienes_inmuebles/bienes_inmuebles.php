@@ -58,7 +58,7 @@ $inmueblesGuardados = $borradorData['bienes_inmuebles'] ?? [];
                     <div _ngcontent-pgi-c71 class=col-sm-4>
                         <div _ngcontent-pgi-c71 class=form-group>
                             <div _ngcontent-pgi-c71 class=form-floating>
-                                <input _ngcontent-pgi-c71 id=des placeholder=# type=text formcontrolname=porcentaje currencymask maxlength=6 required class="form-control form-control-sm ng-untouched ng-pristine ng-valid" style=text-align:right value=0,01>
+                                <input _ngcontent-pgi-c71 id=des placeholder=# type=text formcontrolname=porcentaje currencymask maxlength=6 required class="decimal-input form-control form-control-sm ng-untouched ng-pristine ng-valid" style=text-align:right value=0,01>
                                 <label _ngcontent-pgi-c71 for=des>Porcentaje %</label>
                             </div>
                         </div>
@@ -233,7 +233,7 @@ $inmueblesGuardados = $borradorData['bienes_inmuebles'] ?? [];
                     <div _ngcontent-pgi-c71 class=col-sm-6>
                         <div _ngcontent-pgi-c71 class=form-group>
                             <div _ngcontent-pgi-c71 class=form-floating>
-                                <input _ngcontent-pgi-c71 id=vor placeholder=# type=text formcontrolname=valorOriginalBienASBs currencymask class="form-control form-control-sm text-end ng-untouched ng-pristine ng-invalid" style=text-align:right value=0,00>
+                                <input _ngcontent-pgi-c71 id=vor placeholder=# type=text formcontrolname=valorOriginalBienASBs currencymask class="decimal-input form-control form-control-sm text-end ng-untouched ng-pristine ng-invalid" style=text-align:right value=0,00>
                                 <label _ngcontent-pgi-c71 for=vor>Valor Original (Bs.)</label>
                             </div>
                         </div>
@@ -241,7 +241,7 @@ $inmueblesGuardados = $borradorData['bienes_inmuebles'] ?? [];
                     <div _ngcontent-pgi-c71 class=col-sm-6>
                         <div _ngcontent-pgi-c71 class=form-group>
                             <div _ngcontent-pgi-c71 class="form-floating sm-4">
-                                <input _ngcontent-pgi-c71 id=vdec placeholder=# type=text formcontrolname=valorDeclaradoASBs currencymask required class="form-control form-control-sm text-end ng-untouched ng-pristine ng-invalid" style=text-align:right value=0,00>
+                                <input _ngcontent-pgi-c71 id=vdec placeholder=# type=text formcontrolname=valorDeclaradoASBs currencymask required class="decimal-input form-control form-control-sm text-end ng-untouched ng-pristine ng-invalid" style=text-align:right value=0,00>
                                 <label _ngcontent-pgi-c71 for=vdec>Valor Declarado (Bs.)</label>
                             </div>
                         </div>
@@ -277,10 +277,8 @@ $inmueblesGuardados = $borradorData['bienes_inmuebles'] ?? [];
 </div>
 
 <script>
-const INTENTO_ID = <?= json_encode($intentoId) ?>;
-const BASE = <?= json_encode(rtrim(($_ENV['APP_BASE'] ?? getenv('APP_BASE')) ?: '', '/')) ?>;
-let inmuebles = <?= json_encode($inmueblesGuardados, JSON_UNESCAPED_UNICODE) ?>;
-let editIndex = null;
+var inmuebles = <?= json_encode($inmueblesGuardados, JSON_UNESCAPED_UNICODE) ?>;
+var editIndex = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formInmueble');

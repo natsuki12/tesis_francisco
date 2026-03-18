@@ -95,7 +95,7 @@ ob_start();
                             <div _ngcontent-sdd-c80 class="form-floating sm-4">
                                 <input _ngcontent-sdd-c80 id=sporcentaje placeholder=# type=text
                                     formcontrolname=porcentaje currencymask maxlength=6 required
-                                    class="form-control form-control-sm text-end"
+                                    class="decimal-input form-control form-control-sm text-end"
                                     style=text-align:right value=0,01>
                                 <label _ngcontent-sdd-c80 for=ssc>Porcentaje %</label>
                             </div>
@@ -117,7 +117,7 @@ ob_start();
                             <div _ngcontent-sdd-c80 class=form-floating>
                                 <input _ngcontent-sdd-c80 id=ssc placeholder=# type=text
                                     formcontrolname=valorDeclarado currencymask required
-                                    class="form-control form-control-sm text-end"
+                                    class="decimal-input form-control form-control-sm text-end"
                                     style=text-align:right value=0,00>
                                 <label _ngcontent-sdd-c80 for=ssc>Valor Declarado (Bs.)</label>
                             </div>
@@ -150,10 +150,7 @@ ob_start();
 </div>
 
 <script>
-    const INTENTO_ID = <?= json_encode($intentoId) ?>;
-    const BASE = <?= json_encode(rtrim(($_ENV['APP_BASE'] ?? getenv('APP_BASE')) ?: '', '/')) ?>;
-    let tdcItems = <?= json_encode($tdcGuardados, JSON_UNESCAPED_UNICODE) ?>;
-    let editIndex = null;
+    var tdcItems = <?= json_encode($tdcGuardados, JSON_UNESCAPED_UNICODE) ?>;
 
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('form');
@@ -256,20 +253,10 @@ ob_start();
             document.getElementById('sporcentaje').value = '0,01';
             document.getElementById('sc').value = '';
             document.getElementById('ssc').value = '0,00';
-            editIndex = null;
-            btn.textContent = 'Guardar ';
-            const icon = document.createElement('i');
-            icon.className = 'bi-save';
-            btn.appendChild(icon);
-            btn.disabled = true;
         }
 
         // ═══ Fill form for editing ═══
-        window.editarTdc = function (idx) {
-            const item = tdcItems[idx];
-            if (!item) return;
-            editIndex = idx;
-
+        function fillForm(item) {
             document.getElementById('codTipoPasivo').value = item.cod_tipo_pasivo || '1';
             document.getElementById('codTipoDeuda').value = item.cod_tipo_deuda || '1';
             document.getElementById('vp').value = item.cod_banco || '';
@@ -277,71 +264,21 @@ ob_start();
             document.getElementById('sporcentaje').value = item.porcentaje || '0,01';
             document.getElementById('sc').value = item.descripcion || '';
             document.getElementById('ssc').value = item.valor_declarado || '0,00';
+        }
 
-            btn.textContent = 'Actualizar ';
-            const icon = document.createElement('i');
-            icon.className = 'bi-save';
-            btn.appendChild(icon);
-
-            validateForm();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        // ═══ Delete ═══
-        window.eliminarTdc = function (idx) {
-            if (!confirm('¿Está seguro de eliminar este registro?')) return;
-            if (!INTENTO_ID) { alert('No hay intento activo'); return; }
-
-            fetch(BASE + '/api/tarjetas_credito/' + INTENTO_ID + '/eliminar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ index: idx })
-            })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.ok) {
-                        tdcItems.splice(idx, 1);
-                        renderTable();
-                    } else {
-                        alert(data.error || 'Error al eliminar');
-                    }
-                })
-                .catch(() => alert('Error de conexión'));
-        };
-
-        // ═══ Submit (add/edit) ═══
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            if (!INTENTO_ID) { alert('No hay intento activo'); return; }
-
-            const formData = getFormData();
-            const isEdit = editIndex !== null;
-            const url = isEdit
-                ? BASE + '/api/tarjetas_credito/' + INTENTO_ID + '/editar'
-                : BASE + '/api/tarjetas_credito/' + INTENTO_ID + '/agregar';
-
-            if (isEdit) formData.index = editIndex;
-
-            fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.ok) {
-                        if (isEdit) {
-                            tdcItems[editIndex] = formData;
-                        } else {
-                            tdcItems.push(formData);
-                        }
-                        renderTable();
-                        resetForm();
-                    } else {
-                        alert(data.error || 'Error al guardar');
-                    }
-                })
-                .catch(() => alert('Error de conexión'));
+        // ═══ CRUD Manager (global) ═══
+        initCrudManager({
+            intentoId:    INTENTO_ID,
+            baseUrl:      BASE,
+            apiSlug:      'tarjetas_credito',
+            items:        tdcItems,
+            getFormData:  getFormData,
+            resetForm:    resetForm,
+            renderTable:  renderTable,
+            fillForm:     fillForm,
+            validateForm: validateForm,
+            editName:     'editarTdc',
+            deleteName:   'eliminarTdc'
         });
 
         // Initial render

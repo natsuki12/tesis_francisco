@@ -414,7 +414,7 @@ ob_start();
                     alert('Debe ingresar la Fecha de Nacimiento.');
                     return;
                 }
-                if (parentescoId === '19' || !parentescoId) {
+                if (!parentescoId) {
                     alert('Debe seleccionar un Parentesco.');
                     return;
                 }
@@ -534,6 +534,16 @@ ob_start();
         renderTabla();
     })();
 </script>
+
+<?php if (!empty($_GET['datos_incompletos'])): ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof showModalInfo === 'function') {
+        showModalInfo('Debe actualizar los datos de Fecha de Nacimiento y Parentesco de los herederos.', 'danger', true);
+    }
+});
+</script>
+<?php endif; ?>
 
 <?php
 $content = ob_get_clean();
