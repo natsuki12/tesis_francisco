@@ -440,6 +440,7 @@ ob_start();
     </script>
 
     <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/datos_tribunal.js') ?>"></script>
+    <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/decimal_input.js') ?>"></script>
 
 </div><!-- /.seniat-wrapper -->
 

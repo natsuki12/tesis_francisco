@@ -109,14 +109,14 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
                                 </td>
                                 <td>
                                     <input type="text"
-                                           class="form-group form-control form-control-sm text-end"
+                                           class="decimal-input form-group form-control form-control-sm text-end"
                                            id="itemv-<?= $i ?>"
                                            style="text-align:right"
                                            value="<?= $fmt((float)($h['cuota_parte_ut'] ?? 0)) ?>">
                                 </td>
                                 <td>
                                     <input type="text"
-                                           class="form-group form-control form-control-sm text-end"
+                                           class="decimal-input form-group form-control form-control-sm text-end"
                                            id="itemd-<?= $i ?>"
                                            style="text-align:right"
                                            value="<?= $fmt((float)($h['reduccion'] ?? 0)) ?>">
@@ -239,6 +239,7 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
     var TARIFAS    = <?= json_encode($datos ? ($datos['tarifas'] ?? []) : [], JSON_UNESCAPED_UNICODE) ?>;
     var PARENTESCO_CAT = <?= json_encode($datos ? ($datos['parentesco_cat'] ?? []) : [], JSON_UNESCAPED_UNICODE) ?>;
     var BORRADOR   = <?= json_encode($datos ? ($datos['borrador_raw'] ?? []) : [], JSON_UNESCAPED_UNICODE) ?>;
+    var IMPUESTO_AUTO = parseDecimal('<?= htmlspecialchars($totalImp) ?>');
 
     // Agrupar tarifas por grupo_tarifa_id
     var tarifasPorGrupo = {};
@@ -282,14 +283,48 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
         return intPart + ',' + parts[1];
     }
 
+    // Helper: mostrar toast SPDSS (solo para errores del sistema, no validaciones SENIAT)
+    function showToast(type, msg) {
+        var container = document.getElementById('cc-toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'cc-toast-container';
+            document.body.appendChild(container);
+        }
+        var icons = {
+            error: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+            warning: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+        };
+        var toast = document.createElement('div');
+        toast.className = 'cc-toast cc-toast--' + type;
+        toast.innerHTML = '<span class="cc-toast__icon">' + (icons[type] || icons.error) + '</span>'
+            + '<span class="cc-toast__msg">' + msg + '</span>'
+            + '<button class="cc-toast__close" onclick="this.parentElement.classList.add(\'cc-toast--exit\');var t=this.parentElement;setTimeout(function(){t.remove()},300)">✕</button>';
+        container.appendChild(toast);
+        setTimeout(function(){ toast.classList.add('cc-toast--exit'); setTimeout(function(){ toast.remove(); },300); }, 5000);
+    }
+
     var btnCalcular   = document.getElementById('btnCalcular');
     var divResultados = document.getElementById('divResultados');
 
     if (btnCalcular) {
         btnCalcular.addEventListener('click', function() {
-            var totalImpuesto = 0;
+            try {
+            var totalImpuesto     = 0;
+            var totalDeterminado  = 0;
+            var hayError          = false;
 
-            HEREDEROS.forEach(function(h, i) {
+            // Helper: truncar a N decimales hacia abajo (sin redondear)
+            function truncDecimal(v, decimals) {
+                var factor = Math.pow(10, decimals);
+                return Math.floor(v * factor) / factor;
+            }
+
+            // Límite 3 fijo: parte proporcional del impuesto automático
+            var maxLimite3 = Math.floor(IMPUESTO_AUTO / HEREDEROS.length);
+
+            for (var i = 0; i < HEREDEROS.length; i++) {
+                var h = HEREDEROS[i];
                 var cuotaUT   = parseDecimal(document.getElementById('itemv-' + i).value);
                 var reduccion = parseDecimal(document.getElementById('itemd-' + i).value);
 
@@ -308,8 +343,26 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
                     impuestoDeterminado = Math.round(impuestoUT * UT_FLOAT * 100) / 100;
                 }
 
+                // ── Validación de Reducción (3 límites) ──
+
+                // Límite 1: reducción no puede igualar ni superar el impuesto determinado
+                if (reduccion >= impuestoDeterminado && impuestoDeterminado > 0) {
+                    alert('El monto de Reducción no puede ser mayor al impuesto determinado');
+                    hayError = true; break;
+                }
+
+                // Límite 2: reducción no puede superar la mitad del impuesto (truncado a 2 dec)
+                var maxLimite2 = truncDecimal(impuestoDeterminado / 2, 2);
+
+                // Aplicar el más restrictivo entre Límite 2 y Límite 3
+                if (reduccion > Math.min(maxLimite2, maxLimite3) + 0.001) {
+                    alert('Diferencia en el monto a pagar de la declaración');
+                    hayError = true; break;
+                }
+
                 var impuestoAPagar = Math.max(0, Math.round((impuestoDeterminado - reduccion) * 100) / 100);
-                totalImpuesto += impuestoAPagar;
+                totalDeterminado += impuestoDeterminado;
+                totalImpuesto    += impuestoAPagar;
 
                 // Actualizar Tabla 2 (resultados)
                 var row = document.getElementById('result-row-' + i);
@@ -321,18 +374,34 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
                     row.querySelector('.res-reduccion').value   = fmtBs(reduccion);
                     row.querySelector('.res-pagar').value       = fmtBs(impuestoAPagar);
                 }
-            });
+            }
 
-            // Actualizar Total Impuesto header
+            if (hayError) {
+                divResultados.style.display = 'none';
+                return;
+            }
+
+            // ── Validación de Cuota: suma determinados >= impuesto automático ──
+            if (totalDeterminado < IMPUESTO_AUTO - 0.001) {
+                document.getElementById('ip').value = fmtBs(totalImpuesto);
+                divResultados.style.display = 'none';
+                alert('Diferencia en el monto a pagar de la declaración');
+                return;
+            }
+
+            // Todo OK → mostrar resultados
             document.getElementById('ip').value = fmtBs(totalImpuesto);
-
-            // Mostrar tabla resultados
             divResultados.style.display = 'block';
             divResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            } catch (e) {
+                console.error('[Cálculo Manual] Error:', e);
+                divResultados.style.display = 'none';
+                showToast('error', 'Error inesperado al calcular. Verifique los datos ingresados.');
+            }
         });
     }
 
-    // ── Aceptar: guardar overrides en borrador via API ──
     var btnAceptar = document.getElementById('btnAceptar');
     if (btnAceptar) {
         btnAceptar.addEventListener('click', function(e) {
@@ -342,38 +411,45 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
             btnAceptar.disabled = true;
             btnAceptar.textContent = 'Guardando...';
 
-            // Construir overrides
-            var overrides = [];
-            HEREDEROS.forEach(function(h, i) {
-                overrides.push({
-                    cuota_parte_ut: parseDecimal(document.getElementById('itemv-' + i).value),
-                    reduccion_bs:   parseDecimal(document.getElementById('itemd-' + i).value)
+            try {
+                // Construir overrides
+                var overrides = [];
+                HEREDEROS.forEach(function(h, i) {
+                    overrides.push({
+                        cuota_parte_ut: parseDecimal(document.getElementById('itemv-' + i).value),
+                        reduccion_bs:   parseDecimal(document.getElementById('itemd-' + i).value)
+                    });
                 });
-            });
 
-            // Agregar overrides al borrador completo y guardar
-            BORRADOR.calculo_manual = { herederos: overrides };
+                // Agregar overrides al borrador completo y guardar
+                BORRADOR.calculo_manual = { herederos: overrides };
 
-            fetch(BASE_URL + '/api/intentos/' + INTENTO_ID + '/guardar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ borrador: BORRADOR })
-            })
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                if (data.ok) {
-                    window.location.href = BASE_URL + '/simulador/sucesion/resumen_declaracion';
-                } else {
-                    alert('Error al guardar: ' + (data.error || 'Error desconocido'));
+                fetch(BASE_URL + '/api/intentos/' + INTENTO_ID + '/guardar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ borrador: BORRADOR })
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.ok) {
+                        window.location.href = BASE_URL + '/simulador/sucesion/resumen_declaracion';
+                    } else {
+                        showToast('error', 'Error al guardar: ' + (data.error || 'Error desconocido'));
+                        btnAceptar.disabled = false;
+                        btnAceptar.textContent = 'Aceptar';
+                    }
+                })
+                .catch(function(err) {
+                    showToast('error', 'Error de conexión: ' + err.message);
                     btnAceptar.disabled = false;
                     btnAceptar.textContent = 'Aceptar';
-                }
-            })
-            .catch(function(err) {
-                alert('Error de conexión: ' + err.message);
+                });
+            } catch (e) {
+                console.error('[Cálculo Manual] Error al guardar:', e);
+                showToast('error', 'Error inesperado al guardar. Intente de nuevo.');
                 btnAceptar.disabled = false;
                 btnAceptar.textContent = 'Aceptar';
-            });
+            }
         });
     }
 })();

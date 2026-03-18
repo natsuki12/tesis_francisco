@@ -1437,7 +1437,14 @@ class DeclaracionComparador
         $herederosDb = $this->getHerederosDbForCalc($casoId);
         $numHDb      = count($herederosDb);
 
-        $tributoB  = TributoCalculator::calcular($pNB, $numHB, $ut, $herederosB, $this->db);
+        // Borrador: usar overrides manuales si el estudiante los ingresó
+        $calculoManual = $bs->getBorrador()['calculo_manual'] ?? null;
+        if ($calculoManual && !empty($calculoManual['herederos'])) {
+            $tributoB = TributoCalculator::calcularConOverrides($ut, $herederosB, $calculoManual['herederos'], $this->db);
+        } else {
+            $tributoB = TributoCalculator::calcular($pNB, $numHB, $ut, $herederosB, $this->db);
+        }
+        // DB: siempre cálculo automático (ground truth)
         $tributoDb = TributoCalculator::calcular($pNDb, $numHDb, $ut, $herederosDb, $this->db);
 
         return [
@@ -1489,11 +1496,19 @@ class DeclaracionComparador
         $numHDb      = count($herederosDb);
 
         // Calcular usando TributoCalculator (respeta grupos, Art. 9, etc.)
-        $tributoB  = TributoCalculator::calcular($pNB, $numHB, $ut, $herederosB, $this->db);
+        // Borrador: usar overrides manuales si el estudiante los ingresó
+        $calculoManual = $bs->getBorrador()['calculo_manual'] ?? null;
+        if ($calculoManual && !empty($calculoManual['herederos'])) {
+            $tributoB = TributoCalculator::calcularConOverrides($ut, $herederosB, $calculoManual['herederos'], $this->db);
+        } else {
+            $tributoB = TributoCalculator::calcular($pNB, $numHB, $ut, $herederosB, $this->db);
+        }
+        // DB: siempre cálculo automático (ground truth)
         $tributoDb = TributoCalculator::calcular($pNDb, $numHDb, $ut, $herederosDb, $this->db);
 
-        // Cargar catálogo parentescos para display
+        // Cargar catálogos para display y notas
         $parentescoCat = $this->getParentescoCatalog();
+        $gruposTarifa  = $this->getGruposTarifa();
 
         $result = [];
         foreach ($herederosB as $i => $h) {
@@ -1515,11 +1530,54 @@ class DeclaracionComparador
             $campos[] = $this->cmpDec('Impuesto a Pagar (Bs)', $calcB['impuesto_a_pagar'] ?? 0, $calcDb['impuesto_a_pagar'] ?? 0);
 
             $pid = (int) ($h['parentesco_id'] ?? 0);
-            $parNombre = $parentescoCat[$pid] ?? '';
+            $parNombreB = $parentescoCat[$pid] ?? 'Desconocido';
+
+            // ── Notas diagnósticas por escenario ──
+            $notas = [];
+            $parIdB  = $pid;
+            $parIdDb = (int) ($herederosDb[$i]['parentesco_id'] ?? 0);
+            $parNombreDb = $parentescoCat[$parIdDb] ?? 'Desconocido';
+            $parentescoOk = ($parIdB === $parIdDb);
+
+            $grupoDb = $gruposTarifa[$parIdDb] ?? 4;
+
+            $cuotaB  = (float) ($calcB['cuota_parte_ut'] ?? 0);
+            $cuotaDb = (float) ($calcDb['cuota_parte_ut'] ?? 0);
+            $cuotaOk = abs($cuotaB - $cuotaDb) < 0.01;
+
+            $exentoDb = ($grupoDb === 1 && $cuotaDb <= 75.0);
+            $impB     = (float) ($calcB['impuesto_a_pagar'] ?? 0);
+
+            // Escenario B: PN ≤ 0 + parentesco incorrecto
+            if ($pNDb <= 0 && !$parentescoOk) {
+                $notas[] = "El parentesco declarado ({$parNombreB}) no coincide con el correcto ({$parNombreDb}). "
+                         . "Además, el Patrimonio Neto Hereditario correcto es ≤ 0, "
+                         . "por lo que no hay impuesto a determinar independientemente del parentesco.";
+            }
+            // Escenario D: PN > 0 + parentesco incorrecto
+            elseif ($pNDb > 0 && !$parentescoOk) {
+                $notas[] = "El parentesco declarado ({$parNombreB}) no coincide con el correcto ({$parNombreDb}). "
+                         . "Esto afecta el grupo de tarifa aplicable y por tanto el porcentaje, sustraendo e impuesto calculado.";
+            }
+
+            // Escenario E: PN > 0 + parentesco OK + cuota incorrecta
+            if ($pNDb > 0 && $parentescoOk && !$cuotaOk) {
+                $notas[] = "La Cuota Parte difiere porque el Patrimonio Neto Hereditario declarado "
+                         . "({$this->fmtBs($pNB)} Bs) no coincide con el correcto ({$this->fmtBs($pNDb)} Bs), "
+                         . "o porque la cantidad de herederos declarada ({$numHB}) no coincide con la correcta ({$numHDb}).";
+            }
+
+            // Escenario F: Heredero exento Art. 9 pero estudiante calculó impuesto
+            if ($exentoDb && $impB > 0.01) {
+                $notas[] = "Este heredero está exento según el Art. 9 de la Ley "
+                         . "(Cuota Parte ≤ 75 UT y parentesco de primer grado). "
+                         . "Impuesto correcto: 0,00 Bs.";
+            }
 
             $result[] = [
                 'nombre' => $h['nombre'] ?? '', 'cedula' => $h['cedula'] ?? '',
-                'parentesco' => $parNombre, 'campos' => $campos,
+                'parentesco' => $parNombreB, 'campos' => $campos,
+                'notas' => $notas,
             ];
         }
 
@@ -1541,6 +1599,22 @@ class DeclaracionComparador
         $stmt->bindValue(':id', $casoId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Load parentesco_id → grupo_tarifa_id mapping from sim_cat_parentescos.
+     * @return array<int, int>
+     */
+    private function getGruposTarifa(): array
+    {
+        $stmt = $this->db->query('SELECT id, grupo_tarifa_id FROM sim_cat_parentescos WHERE activo = 1');
+        $map = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $map[(int) $row['id']] = $row['grupo_tarifa_id'] !== null
+                ? (int) $row['grupo_tarifa_id']
+                : 4;
+        }
+        return $map;
     }
 
     /**
