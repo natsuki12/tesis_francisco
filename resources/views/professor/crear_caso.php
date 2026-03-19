@@ -11,6 +11,8 @@ $extraJs = '
 <script>
   window.BASE_URL = "' . base_url() . '";
 </script>
+<script src="' . asset('js/global/number_utils.js') . '"></script>
+<script src="' . asset('js/global/decimal_input.js') . '"></script>
 <script type="module" src="' . asset('js/professor/crear_caso/main.js') . '"></script>
 ';
 
@@ -903,6 +905,24 @@ ob_start();
       <span>Exenciones / Exoneraciones</span>
       <span class="cc-tab__count" id="countExenciones">0</span>
     </button>
+    <button class="cc-tab" data-tab="desgravamenes">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+      <span>Desgravámenes</span>
+      <span class="cc-tab__count" id="countDesgravamenes">0</span>
+    </button>
+    <button class="cc-tab" data-tab="litigiosos">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round">
+        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+        <path d="M2 17l10 5 10-5" />
+        <path d="M2 12l10 5 10-5" />
+      </svg>
+      <span>Bienes Litigiosos</span>
+      <span class="cc-tab__count" id="countLitigiosos">0</span>
+    </button>
   </div>
 
   <!-- TAB: Inmuebles -->
@@ -1110,6 +1130,62 @@ ob_start();
     </div>
   </div>
 
+  <!-- TAB: Desgravámenes -->
+  <div class="cc-tab-panel" id="panel-desgravamenes" style="display:none;">
+    <div class="cc-card">
+      <div class="cc-card__header">
+        <div>
+          <h3>Desgravámenes</h3>
+          <p>Deducciones permitidas por Ley que se aplican al patrimonio</p>
+        </div>
+      </div>
+      <div class="cc-card__body">
+        <div class="cc-empty" id="desgravamenesEmpty">
+          <div class="cc-empty__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          </div>
+          <p>No hay desgravámenes registrados</p>
+          <small style="color: var(--cc-text-muted); display:block; margin-top:0.25rem;">Los desgravámenes aparecerán aquí automáticamente cuando el estudiante los registre en la simulación.</small>
+        </div>
+        <div id="desgravamenesList" style="display:none;">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: Bienes Litigiosos (solo lectura) -->
+  <div class="cc-tab-panel" id="panel-litigiosos" style="display:none;">
+    <div class="cc-card">
+      <div class="cc-card__header">
+        <div>
+          <h3>Bienes Litigiosos</h3>
+          <p>Vista consolidada de bienes marcados como litigiosos y sus datos de tribunal</p>
+        </div>
+      </div>
+      <div class="cc-card__body">
+        <div class="cc-empty" id="litigiososEmpty">
+          <div class="cc-empty__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <p>No hay bienes litigiosos registrados</p>
+          <small style="color: var(--cc-text-muted); display:block; margin-top:0.25rem;">Los bienes litigiosos aparecerán aquí automáticamente cuando marque un bien inmueble o mueble como litigioso.</small>
+        </div>
+        <div id="litigiososList" style="display:none;">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- =============================================================== -->
@@ -1117,7 +1193,7 @@ ob_start();
 <!-- =============================================================== -->
 <div class="cc-step" id="step-3" style="display:none;">
 
-  <!-- Resumen del Caso -->
+  <!-- ═══ Sección 1: Información Básica ═══ -->
   <div class="cc-card">
     <div class="cc-card__header">
       <div>
@@ -1125,30 +1201,253 @@ ob_start();
         <p>Verificación final antes de publicar</p>
       </div>
     </div>
-    <div class="cc-card__body">
-      <div class="cc-grid cc-grid--2">
-        <div class="cc-summary-list">
-          <div class="cc-summary-row"><span>Título</span><strong id="sumTitulo">Sin título</strong></div>
-          <div class="cc-summary-row"><span>Causante</span><strong id="sumCausante">Sin definir</strong></div>
-          <div class="cc-summary-row"><span>Herederos</span><strong id="sumHerederos">0</strong></div>
-          <div class="cc-summary-row"><span>Tipo de Herencia</span><span id="sumHerencia">Sin definir</span></div>
-          <div class="cc-summary-row"><span>Unidad Tributaria</span><strong id="sumUT">Sin definir</strong></div>
-        </div>
+    <div class="cc-card__body" style="padding:0;">
+      <div class="cc-info-row"><div class="cc-info-row__left"><span class="cc-info-row__icon" style="background:var(--blue-50);">📋</span><span class="cc-info-row__label">Título</span></div><span class="cc-info-row__value" id="sumTitulo">Sin título</span></div>
+      <div class="cc-info-row"><div class="cc-info-row__left"><span class="cc-info-row__icon" style="background:var(--gray-100);">👤</span><span class="cc-info-row__label">Causante</span></div><span class="cc-info-row__value" id="sumCausante">Sin definir</span></div>
+      <div class="cc-info-row"><div class="cc-info-row__left"><span class="cc-info-row__icon" style="background:rgba(236,253,245,0.6);">📜</span><span class="cc-info-row__label">Herencia / Sucesión</span></div><span class="cc-info-row__value" id="sumHerencia">Sin definir</span></div>
+      <div class="cc-info-row"><div class="cc-info-row__left"><span class="cc-info-row__icon" style="background:rgba(254,243,199,0.6);">⚖️</span><span class="cc-info-row__label">Estado Civil / Fallecimiento</span></div><span class="cc-info-row__value" id="sumEstadoCivil">Sin definir</span></div>
+      <div class="cc-info-row"><div class="cc-info-row__left"><span class="cc-info-row__icon" style="background:rgba(255,247,237,0.6);">💰</span><span class="cc-info-row__label">Unidad Tributaria</span></div><span class="cc-info-row__value" id="sumUT">Sin definir</span></div>
+      <div class="cc-info-row"><div class="cc-info-row__left"><span class="cc-info-row__icon" style="background:rgba(239,246,255,0.6);">👥</span><span class="cc-info-row__label">Total de Herederos</span></div><span class="cc-info-row__value" id="sumHerederos">0</span></div>
+      <div class="cc-info-row" style="border-bottom:none;"><div class="cc-info-row__left"><span class="cc-info-row__icon" style="background:rgba(237,233,254,0.6);">📄</span><span class="cc-info-row__label">Representante / Prórrogas</span></div><span class="cc-info-row__value" id="sumRepresentante">Sin representante</span></div>
+    </div>
+  </div>
+
+  <!-- ═══ Sección 2: Resumen Patrimonio / Tributo (14 filas numeradas) ═══ -->
+  <div class="cc-card cc-mt-6">
+    <div class="cc-card__header">
+      <div>
+        <h3>Resumen Patrimonial y Tributo</h3>
+        <p>Cálculo automático basado en los datos del caso</p>
+      </div>
+    </div>
+    <div class="cc-card__body" style="padding:0;overflow-x:auto;">
+      <table class="cc-resumen-table">
+        <thead>
+          <tr><th style="width:32px;">#</th><th>Concepto</th><th>Gravamen</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Total Bienes Inmuebles</td><td id="resInmuebles">0,00</td></tr>
+          <tr><td>2</td><td>Total Bienes Muebles</td><td id="resMuebles">0,00</td></tr>
+          <tr class="cc-resumen-highlight"><td>3</td><td>Patrimonio Hereditario Bruto (1 + 2)</td><td id="resBruto">0,00</td></tr>
+          <tr class="cc-resumen-highlight"><td>4</td><td>Activo Hereditario Bruto (Patrimonio Hereditario Bruto)</td><td id="resActivoBruto">0,00</td></tr>
+          <tr><td>5</td><td>Desgravámenes</td><td id="resDesgravamenes">0,00</td></tr>
+          <tr><td>6</td><td>Exenciones</td><td id="resExenciones">0,00</td></tr>
+          <tr><td>7</td><td>Exoneraciones</td><td id="resExoneraciones">0,00</td></tr>
+          <tr class="cc-resumen-highlight"><td>8</td><td>Total de Exclusiones (Desgravámenes + Exenciones + Exoneraciones)</td><td id="resTotalExclusiones">0,00</td></tr>
+          <tr class="cc-resumen-separator"><td colspan="3">Patrimonio Neto Hereditario</td></tr>
+          <tr><td>9</td><td>Activo Hereditario Neto (Activo Hereditario Bruto − Total de Exclusiones)</td><td id="resActivoNeto">0,00</td></tr>
+          <tr><td>10</td><td>Total Pasivo</td><td id="resPasivos">0,00</td></tr>
+          <tr class="cc-resumen-highlight--neto"><td>11</td><td>Patrimonio Neto Hereditario o Líquido Hereditario Gravable (Activo Neto − Total Pasivo)</td><td id="resPatrimonioNeto">0,00</td></tr>
+          <tr class="cc-resumen-separator"><td colspan="3">Determinación de Tributo</td></tr>
+          <tr><td>12</td><td>Impuesto Determinado según Tarifa</td><td id="resImpuestoTarifa">0,00</td></tr>
+          <tr><td>13</td><td>Reducciones</td><td id="resReducciones">0,00</td></tr>
+          <tr class="cc-resumen-highlight--total"><td>14</td><td>Total Impuesto a Pagar</td><td id="resTotalImpuesto">0,00</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ Sección 3: Cuota Parte Hereditaria ═══ -->
+  <div class="cc-card cc-mt-6">
+    <div class="cc-card__header">
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
         <div>
-          <div class="cc-patrimonio-box">
-            <p class="cc-patrimonio-title">Resumen Patrimonial</p>
-            <div class="cc-patrimonio-row"><span>Bienes Inmuebles</span><strong id="sumInmuebles">Bs. 0,00</strong>
-            </div>
-            <div class="cc-patrimonio-row"><span>Bienes Muebles</span><strong id="sumMuebles">Bs. 0,00</strong></div>
-            <div class="cc-patrimonio-row cc-patrimonio-row--border"><span class="cc-fw600">Total Activos</span><strong
-                class="cc-text-blue" id="sumActivos">Bs. 0,00</strong></div>
-            <div class="cc-patrimonio-row"><span>Total Pasivos</span><strong class="cc-text-red" id="sumPasivos">- Bs.
-                0,00</strong></div>
-            <div class="cc-patrimonio-row cc-patrimonio-row--border"><span class="cc-fw700">Patrimonio
-                Neto</span><strong class="cc-text-green" id="sumNeto">Bs. 0,00</strong></div>
+          <h3>Cuota Parte Hereditaria</h3>
+          <p>Patrimonio Hereditario / Total de Herederos — Impuesto Determinado = (Cuota Parte × Porcentaje) − Sustraendo</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button type="button" class="cc-btn cc-btn--outline" id="btnAbrirCalculoManual" title="Abrir Cálculo Manual">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 8h2v2H8zM14 8h2v2h-2zM8 14h8v2H8z"/></svg>
+            Cálculo Manual
+          </button>
+          <button type="button" class="cc-btn cc-btn--outline" id="btnRestablecerCalculo" title="Restablecer Cálculo Automático" disabled>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            Restablecer Cálculo Automático
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="cc-card__body" style="padding:0;overflow-x:auto;">
+      <table class="cc-herederos-table">
+        <thead>
+          <tr>
+            <th>Apellido(s) y Nombre(s)</th>
+            <th class="text-center">C.I./Pasaporte</th>
+            <th class="text-center">Parentesco</th>
+            <th class="text-center">Grado</th>
+            <th class="text-center">Premuerto</th>
+            <th class="text-end">Cuota Parte (UT)</th>
+            <th class="text-end">Porcentaje (%)</th>
+            <th class="text-end">Sustraendo (UT)</th>
+            <th class="text-end">Impuesto Det. (Bs.)</th>
+            <th class="text-end">Reducción (Bs.)</th>
+            <th class="text-end">Impuesto a Pagar</th>
+          </tr>
+        </thead>
+        <tbody id="resHerederosBody">
+          <tr><td colspan="11" style="text-align:center;color:var(--gray-400);padding:24px;">No hay herederos registrados</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ Modal: Cálculo Manual Cuota Parte Hereditaria ═══ -->
+  <div id="modalCalculoManual" style="display:none;">
+    <div class="cc-cm-modal">
+      <div class="cc-modal__header">
+        <h3>Cálculo Manual — Cuota Parte Hereditaria</h3>
+        <button type="button" class="cc-modal__close" onclick="document.getElementById('modalCalculoManual').style.display='none'">✕</button>
+      </div>
+      <div class="cc-modal__body">
+        <!-- Floating inputs: UT + Total Impuesto -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+          <div class="cc-floating-field">
+            <input type="text" id="cmUT" readonly placeholder=" ">
+            <label>Unidad Tributaria Aplicada</label>
+          </div>
+          <div class="cc-floating-field">
+            <input type="text" id="cmTotalImpuesto" readonly placeholder=" " style="text-align:right;">
+            <label>Total Impuesto a Pagar</label>
+          </div>
+        </div>
+
+        <!-- Tabla 1: Entrada (7 columnas, cuota + reducción editables) -->
+        <div class="cc-card" style="margin-bottom:20px;">
+          <div class="cc-card__header" style="padding:10px 16px;">
+            <h3 style="font-size:13px;">Tabla de Entrada</h3>
+          </div>
+          <div class="cc-card__body" style="padding:0;overflow-x:auto;">
+            <table class="cc-herederos-table" id="cmTablaEntrada">
+              <thead>
+                <tr>
+                  <th>Apellido(s) y Nombre(s)</th>
+                  <th class="text-center">C.I./Pasaporte</th>
+                  <th class="text-center">Parentesco</th>
+                  <th class="text-center">Grado</th>
+                  <th class="text-center">Premuerto</th>
+                  <th class="text-end">Cuota Parte (UT)</th>
+                  <th class="text-end">Reducción (Bs.)</th>
+                </tr>
+              </thead>
+              <tbody id="cmEntradaBody">
+                <tr><td colspan="7" style="text-align:center;color:var(--gray-400);padding:20px;">Sin herederos</td></tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="7" style="text-align:center;padding:12px;">
+                    <button type="button" class="cc-btn cc-btn--primary" id="btnCMCalcular" disabled>Calcular</button>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tabla 2: Resultados (11 columnas, oculta hasta Calcular) -->
+        <div class="cc-card" id="cmResultadosCard" style="display:none;">
+          <div class="cc-card__header" style="padding:10px 16px;">
+            <h3 style="font-size:13px;">Resultado del Cálculo</h3>
+          </div>
+          <div class="cc-card__body" style="padding:0;overflow-x:auto;">
+            <table class="cc-herederos-table" id="cmTablaResultado">
+              <thead>
+                <tr>
+                  <th>Apellido(s) y Nombre(s)</th>
+                  <th class="text-center">C.I./Pasaporte</th>
+                  <th class="text-center">Parentesco</th>
+                  <th class="text-center">Grado</th>
+                  <th class="text-center">Premuerto</th>
+                  <th class="text-end">Cuota Parte (UT)</th>
+                  <th class="text-end">Porcentaje (%)</th>
+                  <th class="text-end">Sustraendo (UT)</th>
+                  <th class="text-end">Impuesto Det. (Bs.)</th>
+                  <th class="text-end">Reducción (Bs.)</th>
+                  <th class="text-end">Impuesto a Pagar</th>
+                </tr>
+              </thead>
+              <tbody id="cmResultadoBody">
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+      <div class="cc-modal__footer">
+        <button type="button" class="cc-btn cc-btn--outline" onclick="document.getElementById('modalCalculoManual').style.display='none'">Cancelar</button>
+        <button type="button" class="cc-btn cc-btn--primary" id="btnCMAceptar" disabled>Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Sección 4: Tarifa de Referencia (collapsible) ═══ -->
+  <div class="cc-card cc-mt-6 cc-card--tarifa is-collapsed">
+    <div class="cc-card__header" onclick="this.closest('.cc-card--tarifa').classList.toggle('is-collapsed')">
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+        <div>
+          <h3>Tarifa de Referencia</h3>
+          <p>Tabla de porcentajes y sustraendos según grado de parentesco</p>
+        </div>
+        <svg class="cc-card__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="cc-card__body" style="padding:0;overflow-x:auto;">
+      <table class="cc-tarifa-table">
+        <thead>
+          <tr>
+            <th>Indicación del Parentesco</th>
+            <th></th>
+            <th>Hasta 15 UT</th>
+            <th>15,01–50 UT</th>
+            <th>50,01–100 UT</th>
+            <th>100,01–250 UT</th>
+            <th>250,01–500 UT</th>
+            <th>500,01–1000 UT</th>
+            <th>1000,01–4000 UT</th>
+            <th>A partir de 4000,01 UT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 1° Grado -->
+          <tr class="cc-tarifa-grado-1">
+            <td rowspan="2">1° Ascendientes, Descendientes, Cónyuges e Hijos Adoptivos</td>
+            <td>Porcentaje</td>
+            <td>1%</td><td>2,5%</td><td>5%</td><td>7,50%</td><td>10%</td><td>15%</td><td>20%</td><td>25%</td>
+          </tr>
+          <tr class="cc-tarifa-grado-1">
+            <td>Sustraendo</td>
+            <td></td><td>0,23 UT</td><td>1,48 UT</td><td>3,98 UT</td><td>10,23 UT</td><td>35,23 UT</td><td>85,23 UT</td><td>285,23 UT</td>
+          </tr>
+          <!-- 2° Grado -->
+          <tr class="cc-tarifa-grado-2">
+            <td rowspan="2">2° Hermanos, Sobrinos por Derecho de Representación</td>
+            <td>Porcentaje</td>
+            <td>2,5%</td><td>5%</td><td>10%</td><td>15%</td><td>20%</td><td>25%</td><td>30%</td><td>40%</td>
+          </tr>
+          <tr class="cc-tarifa-grado-2">
+            <td>Sustraendo</td>
+            <td></td><td>0,38 UT</td><td>2,88 UT</td><td>7,88 UT</td><td>20,38 UT</td><td>45,38 UT</td><td>95,38 UT</td><td>495,38 UT</td>
+          </tr>
+          <!-- 3° Grado -->
+          <tr class="cc-tarifa-grado-3">
+            <td rowspan="2">3° Otros Colaterales de 3° Grado y los de 4° Grado</td>
+            <td>Porcentaje</td>
+            <td>6%</td><td>12,5%</td><td>20%</td><td>25%</td><td>30%</td><td>35%</td><td>40%</td><td>50%</td>
+          </tr>
+          <tr class="cc-tarifa-grado-3">
+            <td>Sustraendo</td>
+            <td></td><td>0,98 UT</td><td>4,73 UT</td><td>9,73 UT</td><td>22,23 UT</td><td>47,23 UT</td><td>97,23 UT</td><td>497,23 UT</td>
+          </tr>
+          <!-- 4° Grado -->
+          <tr class="cc-tarifa-grado-4">
+            <td rowspan="2">4° Afines, Otros Parientes y Extraños</td>
+            <td>Porcentaje</td>
+            <td>10%</td><td>15%</td><td>25%</td><td>30%</td><td>35%</td><td>40%</td><td>45%</td><td>55%</td>
+          </tr>
+          <tr class="cc-tarifa-grado-4">
+            <td>Sustraendo</td>
+            <td></td><td>0,75 UT</td><td>5,75 UT</td><td>10,75 UT</td><td>23,25 UT</td><td>48,25 UT</td><td>98,25 UT</td><td>498,25 UT</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 

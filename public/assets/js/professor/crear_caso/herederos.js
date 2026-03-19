@@ -177,13 +177,15 @@ export function renderHerederosPremuertos() {
 
   tbody.innerHTML = caseData.herederos_premuertos.map((h, i) => {
     const pName = getCatalogs().parentescos.find(p => p.parentesco_id == h.parentesco_id)?.nombre || '<em style="color:var(--cc-slate-300)">Sin definir</em>';
-    return `
+      const padre = caseData.herederos.find(her => her._uid === h.premuerto_padre_id);
+      const padreLabel = padre ? `${padre.nombres} ${padre.apellidos}` : '<em style="color:var(--cc-slate-300)">Ninguno</em>';
+      return `
     <tr>
       <td>${h.nombres || ''} ${h.apellidos || ''}</td>
       <td>${h.letra_cedula || 'V'}-${h.cedula || ''}</td>
       <td><span class="status-badge ${h.caracter === 'HEREDERO' ? 'status-active' : 'status-review'}">${h.caracter || ''}</span></td>
       <td>${pName}</td>
-      <td><span class="status-badge status-draft">${h.premuerto_padre_id || '<em style="color:var(--cc-slate-300)">Ninguno</em>'}</span></td>
+      <td><span class="status-badge status-draft">${padreLabel}</span></td>
       <td>
         <div class="cc-td-actions">
           <button class="btn-icon" onclick="CC.openModal('heredero_premuerto', ${i})"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>

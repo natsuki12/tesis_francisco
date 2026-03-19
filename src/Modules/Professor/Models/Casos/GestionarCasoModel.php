@@ -34,13 +34,19 @@ class GestionarCasoModel
                     p_caus.sexo AS causante_sexo, p_caus.estado_civil AS causante_estado_civil,
                     p_caus.fecha_nacimiento AS causante_fecha_nacimiento,
                     p_caus.pasaporte AS causante_pasaporte,
+                    p_caus.rif_personal AS causante_rif_personal,
+                    p_caus.nacionalidad AS causante_nacionalidad_id,
+                    pais_caus.nombre AS causante_nacionalidad_nombre,
                     p_rep.nombres AS rep_nombres, p_rep.apellidos AS rep_apellidos,
                     p_rep.tipo_cedula AS rep_tipo_cedula, p_rep.cedula AS rep_cedula,
                     p_rep.sexo AS rep_sexo, p_rep.fecha_nacimiento AS rep_fecha_nacimiento,
                     p_rep.estado_civil AS rep_estado_civil,
+                    p_rep.pasaporte AS rep_pasaporte,
+                    p_rep.rif_personal AS rep_rif_personal,
                     ut.valor AS ut_valor, ut.anio AS ut_anio
                 FROM sim_casos_estudios c
                 LEFT JOIN sim_personas p_caus ON c.causante_id = p_caus.id
+                LEFT JOIN paises pais_caus ON p_caus.nacionalidad = pais_caus.id
                 LEFT JOIN sim_personas p_rep ON c.representante_id = p_rep.id
                 LEFT JOIN sim_cat_unidades_tributarias ut ON c.unidad_tributaria_id = ut.id
                 WHERE c.id = :id AND c.profesor_id = :prof AND c.estado != 'Eliminado'";
@@ -105,8 +111,8 @@ class GestionarCasoModel
         // 6. Herederos (participantes)
         $stmt = $this->db->prepare("SELECT cp.*, 
                 per.nombres, per.apellidos, per.tipo_cedula, per.cedula, per.sexo,
-                per.estado_civil, per.fecha_nacimiento,
-                par.etiqueta AS parentesco_nombre,
+                per.estado_civil, per.fecha_nacimiento, per.pasaporte, per.rif_personal,
+                par.etiqueta AS parentesco_nombre, par.grupo_tarifa_id,
                 ad.fecha_fallecimiento,
                 CONCAT(p_padre.nombres, ' ', p_padre.apellidos) AS premuerto_padre_nombre
             FROM sim_caso_participantes cp
@@ -143,6 +149,95 @@ class GestionarCasoModel
             WHERE bm.caso_estudio_id = :cid AND bm.deleted_at IS NULL");
         $stmt->execute(['cid' => $casoId]);
         $bienesMuebles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // 8c. Cargar detalles específicos por categoría de bienes muebles
+        $bmIds = array_column($bienesMuebles, 'id');
+        if (!empty($bmIds)) {
+            $placeholders = implode(',', array_fill(0, count($bmIds), '?'));
+
+            // Seguro
+            $stmt = $this->db->prepare("SELECT s.bien_mueble_id, s.numero_prima, e.razon_social AS empresa_nombre
+                FROM sim_caso_bm_seguro s LEFT JOIN sim_empresas e ON s.empresa_id = e.id
+                WHERE s.bien_mueble_id IN ($placeholders)");
+            $stmt->execute($bmIds);
+            $seguroMap = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) $seguroMap[$r['bien_mueble_id']] = $r;
+
+            // Transporte
+            $stmt = $this->db->prepare("SELECT * FROM sim_caso_bm_transporte WHERE bien_mueble_id IN ($placeholders)");
+            $stmt->execute($bmIds);
+            $transporteMap = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) $transporteMap[$r['bien_mueble_id']] = $r;
+
+            // Acciones
+            $stmt = $this->db->prepare("SELECT a.bien_mueble_id, e.razon_social AS empresa_nombre
+                FROM sim_caso_bm_acciones a LEFT JOIN sim_empresas e ON a.empresa_id = e.id
+                WHERE a.bien_mueble_id IN ($placeholders)");
+            $stmt->execute($bmIds);
+            $accionesMap = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) $accionesMap[$r['bien_mueble_id']] = $r;
+
+            // Bonos
+            $stmt = $this->db->prepare("SELECT * FROM sim_caso_bm_bonos WHERE bien_mueble_id IN ($placeholders)");
+            $stmt->execute($bmIds);
+            $bonosMap = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) $bonosMap[$r['bien_mueble_id']] = $r;
+
+            // Cuentas por Cobrar
+            $stmt = $this->db->prepare("SELECT * FROM sim_caso_bm_cuentas_cobrar WHERE bien_mueble_id IN ($placeholders)");
+            $stmt->execute($bmIds);
+            $cuentasCobrarMap = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) $cuentasCobrarMap[$r['bien_mueble_id']] = $r;
+
+            // Opciones de Compra
+            $stmt = $this->db->prepare("SELECT * FROM sim_caso_bm_opciones_compra WHERE bien_mueble_id IN ($placeholders)");
+            $stmt->execute($bmIds);
+            $opcionesMap = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) $opcionesMap[$r['bien_mueble_id']] = $r;
+
+            // Prestaciones Sociales
+            $stmt = $this->db->prepare("SELECT p.bien_mueble_id, p.posee_banco, p.numero_cuenta,
+                    b.nombre AS banco_prestaciones_nombre, e.razon_social AS empresa_nombre
+                FROM sim_caso_bm_prestaciones p
+                LEFT JOIN sim_cat_bancos b ON p.banco_id = b.id
+                LEFT JOIN sim_empresas e ON p.empresa_id = e.id
+                WHERE p.bien_mueble_id IN ($placeholders)");
+            $stmt->execute($bmIds);
+            $prestacionesMap = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) $prestacionesMap[$r['bien_mueble_id']] = $r;
+
+            // Semovientes
+            $stmt = $this->db->prepare("SELECT s.bien_mueble_id, s.cantidad, ts.nombre AS tipo_semoviente_nombre
+                FROM sim_caso_bm_semovientes s
+                LEFT JOIN sim_cat_tipos_semoviente ts ON s.tipo_semoviente_id = ts.id
+                WHERE s.bien_mueble_id IN ($placeholders)");
+            $stmt->execute($bmIds);
+            $semovientesMap = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) $semovientesMap[$r['bien_mueble_id']] = $r;
+
+            // Caja de Ahorro
+            $stmt = $this->db->prepare("SELECT c.bien_mueble_id, e.razon_social AS empresa_nombre
+                FROM sim_caso_bm_caja_ahorro c LEFT JOIN sim_empresas e ON c.empresa_id = e.id
+                WHERE c.bien_mueble_id IN ($placeholders)");
+            $stmt->execute($bmIds);
+            $cajaAhorroMap = [];
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $r) $cajaAhorroMap[$r['bien_mueble_id']] = $r;
+
+            // Adjuntar detalles a cada bien mueble
+            foreach ($bienesMuebles as &$bm) {
+                $id = $bm['id'];
+                $bm['detalle_seguro'] = $seguroMap[$id] ?? null;
+                $bm['detalle_transporte'] = $transporteMap[$id] ?? null;
+                $bm['detalle_acciones'] = $accionesMap[$id] ?? null;
+                $bm['detalle_bonos'] = $bonosMap[$id] ?? null;
+                $bm['detalle_cuentas_cobrar'] = $cuentasCobrarMap[$id] ?? null;
+                $bm['detalle_opciones_compra'] = $opcionesMap[$id] ?? null;
+                $bm['detalle_prestaciones'] = $prestacionesMap[$id] ?? null;
+                $bm['detalle_semovientes'] = $semovientesMap[$id] ?? null;
+                $bm['detalle_caja_ahorro'] = $cajaAhorroMap[$id] ?? null;
+            }
+            unset($bm);
+        }
 
         // 8b. Datos litigiosos (para inmuebles y muebles)
         $stmt = $this->db->prepare("SELECT * FROM sim_caso_bienes_litigiosos WHERE caso_estudio_id = :cid");
@@ -245,6 +340,31 @@ class GestionarCasoModel
         foreach ($pasivosGastos as $pg)
             $totalPasivos += (float) ($pg['valor_declarado'] ?? 0);
 
+        // 12. Tarifas de sucesión
+        $stmt = $this->db->prepare("SELECT * FROM sim_cat_tarifas_sucesion WHERE activo = 1 ORDER BY grupo_tarifa_id, rango_desde_ut");
+        $stmt->execute();
+        $tarifas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // 13. Grupos de tarifa
+        $stmt = $this->db->prepare("SELECT * FROM sim_cat_grupos_tarifa WHERE activo = 1 ORDER BY id");
+        $stmt->execute();
+        $gruposTarifa = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // 14. Cálculo manual (si existe)
+        $stmt = $this->db->prepare("SELECT cm.*, CONCAT(p.nombres, ' ', p.apellidos) AS heredero_nombre
+            FROM sim_caso_calculo_manual cm
+            LEFT JOIN sim_caso_participantes cp ON cm.participante_id = cp.id
+            LEFT JOIN sim_personas p ON cp.persona_id = p.id
+            WHERE cm.caso_estudio_id = :cid");
+        $stmt->execute(['cid' => $casoId]);
+        $calculoManual = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Totals for resumen
+        $totalExenciones = 0;
+        foreach ($exenciones as $ex) $totalExenciones += (float)($ex['valor_declarado'] ?? 0);
+        $totalExoneraciones = 0;
+        foreach ($exoneraciones as $eo) $totalExoneraciones += (float)($eo['valor_declarado'] ?? 0);
+
         return [
             'caso' => $caso,
             'source' => 'publicado',
@@ -263,10 +383,15 @@ class GestionarCasoModel
             'config' => $config,
             'configs' => $configs,
             'asignaciones' => $asignaciones,
+            'tarifas' => $tarifas,
+            'grupos_tarifa' => $gruposTarifa,
+            'calculo_manual' => $calculoManual,
             'resumen' => [
                 'total_herederos' => count($herederos),
                 'total_activos' => $totalActivos,
                 'total_pasivos' => $totalPasivos,
+                'total_exenciones' => $totalExenciones,
+                'total_exoneraciones' => $totalExoneraciones,
                 'patrimonio_neto' => $totalActivos - $totalPasivos,
                 'total_bienes' => count($bienesInmuebles) + count($bienesMuebles),
                 'total_items' => count($bienesInmuebles) + count($bienesMuebles) + count($pasivosDeuda) + count($pasivosGastos),

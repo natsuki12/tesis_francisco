@@ -6111,3 +6111,59 @@ Stack trace:
 #4 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/simulador/suce...')
 #5 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
 #6 {main}
+[18-Mar-2026 19:07:10 America/Caracas] PHP Warning:  Undefined array key "numero_tdc" in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\StoreCasoModel.php on line 902
+[18-Mar-2026 19:07:10 America/Caracas] PHP Warning:  Undefined array key "numero_tdc" in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\StoreCasoModel.php on line 902
+[18-Mar-2026 19:27:23 America/Caracas] PHP Warning:  Undefined array key "numero_tdc" in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\StoreCasoModel.php on line 926
+[18-Mar-2026 19:27:23 America/Caracas] PHP Warning:  Undefined array key "numero_tdc" in C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Models\Casos\StoreCasoModel.php on line 926
+[18-Mar-2026 20:50:19 America/Caracas] PHP Warning:  Undefined variable $totalExenciones in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1473
+[18-Mar-2026 20:50:19 America/Caracas] PHP Warning:  Undefined variable $totalExoneraciones in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1473
+[18-Mar-2026 20:50:19 America/Caracas] PHP Warning:  Undefined variable $tarifas in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1479
+[18-Mar-2026 20:50:19 America/Caracas] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1479
+[18-Mar-2026 20:50:19 America/Caracas] PHP Warning:  Undefined variable $totalExenciones in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1606
+[18-Mar-2026 20:50:19 America/Caracas] [CRITICAL] formatBs(): Argument #1 ($val) must be of type float, null given, called in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1606 in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php:29
+[18-Mar-2026 20:50:19 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php(1606): formatBs(NULL)
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\tesis_francisco\routes\web.php(937): App\Core\App->view('professor/gesti...', Array)
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}('13')
+#4 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#5 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#6 {main}
+[18-Mar-2026 20:50:26 America/Caracas] PHP Warning:  Undefined variable $totalExenciones in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1473
+[18-Mar-2026 20:50:26 America/Caracas] PHP Warning:  Undefined variable $totalExoneraciones in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1473
+[18-Mar-2026 20:50:26 America/Caracas] PHP Warning:  Undefined variable $tarifas in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1479
+[18-Mar-2026 20:50:26 America/Caracas] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1479
+[18-Mar-2026 20:50:26 America/Caracas] PHP Warning:  Undefined variable $totalExenciones in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1606
+[18-Mar-2026 20:50:26 America/Caracas] [CRITICAL] formatBs(): Argument #1 ($val) must be of type float, null given, called in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1606 in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php:29
+[18-Mar-2026 20:50:26 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php(1606): formatBs(NULL)
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\tesis_francisco\routes\web.php(937): App\Core\App->view('professor/gesti...', Array)
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}('13')
+#4 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#5 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#6 {main}
+[18-Mar-2026 20:50:39 America/Caracas] PHP Warning:  Undefined variable $totalExenciones in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1473
+[18-Mar-2026 20:50:39 America/Caracas] PHP Warning:  Undefined variable $totalExoneraciones in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1473
+[18-Mar-2026 20:50:39 America/Caracas] PHP Warning:  Undefined variable $tarifas in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1479
+[18-Mar-2026 20:50:39 America/Caracas] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1479
+[18-Mar-2026 20:50:39 America/Caracas] PHP Warning:  Undefined variable $totalExenciones in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1606
+[18-Mar-2026 20:50:39 America/Caracas] [CRITICAL] formatBs(): Argument #1 ($val) must be of type float, null given, called in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1606 in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php:29
+[18-Mar-2026 20:50:39 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php(1606): formatBs(NULL)
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\tesis_francisco\routes\web.php(937): App\Core\App->view('professor/gesti...', Array)
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}('13')
+#4 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#5 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#6 {main}
+[18-Mar-2026 20:53:01 America/Caracas] PHP Warning:  Undefined variable $totalExenciones in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1496
+[18-Mar-2026 20:53:01 America/Caracas] PHP Warning:  Undefined variable $totalExoneraciones in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1496
+[18-Mar-2026 20:53:01 America/Caracas] PHP Warning:  Undefined variable $tarifas in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1504
+[18-Mar-2026 20:53:01 America/Caracas] PHP Warning:  foreach() argument must be of type array|object, null given in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1504
+[18-Mar-2026 20:53:01 America/Caracas] PHP Warning:  Undefined variable $totalExenciones in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1646
+[18-Mar-2026 20:53:01 America/Caracas] [CRITICAL] formatBs(): Argument #1 ($val) must be of type float, null given, called in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php on line 1646 in C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php:29
+[18-Mar-2026 20:53:01 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\resources\views\professor\gestionar_caso.php(1646): formatBs(NULL)
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\tesis_francisco\routes\web.php(937): App\Core\App->view('professor/gesti...', Array)
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}('13')
+#4 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/casos-sucesora...')
+#5 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#6 {main}

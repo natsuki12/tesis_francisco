@@ -1,6 +1,6 @@
 127.0.0.1/information_schema/KEY_COLUMN_USAGE/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=spdss
 
-   Mostrando filas 0 - 126 (total de 127, La consulta tardó 0,0013 segundos.)
+   Mostrando filas 0 - 130 (total de 131, La consulta tardó 0,0013 segundos.)
 
 
 SELECT 
@@ -66,6 +66,8 @@ sim_caso_bm_seguro	empresa_id	fk_cbms_empresa	sim_empresas	id
 sim_caso_bm_semovientes	bien_mueble_id	fk_cbmsem_bien	sim_caso_bienes_muebles	id	
 sim_caso_bm_semovientes	tipo_semoviente_id	fk_cbmsem_tipo	sim_cat_tipos_semoviente	id	
 sim_caso_bm_transporte	bien_mueble_id	fk_cbmt_bien	sim_caso_bienes_muebles	id	
+sim_caso_calculo_manual	caso_estudio_id	fk_ccm_caso	sim_casos_estudios	id	
+sim_caso_calculo_manual	participante_id	fk_ccm_participante	sim_caso_participantes	id	
 sim_caso_configs	caso_id	fk_scc_caso	sim_casos_estudios	id	
 sim_caso_configs	profesor_id	fk_scc_profesor	profesores	id	
 sim_caso_direcciones	ciudad_id	fk_scd_ciudad	ciudades	id	
@@ -117,9 +119,11 @@ sim_intento_bm_seguro	bien_mueble_id	fk_ibms_bien	sim_intento_bienes_muebles	id
 sim_intento_bm_seguro	empresa_id	fk_ibms_empresa	sim_empresas	id	
 sim_intento_bm_semovientes	bien_mueble_id	fk_ibmsem_bien	sim_intento_bienes_muebles	id	
 sim_intento_bm_semovientes	tipo_semoviente_id	fk_ibmsem_tipo	sim_cat_tipos_semoviente	id	
-sim_intento_bm_transporte	bien_mueble_id	fk_ibmt_bien	sim_intento_bienes_muebles	id	
-sim_intento_datos_basicos	intento_id	fk_sird_intento	sim_intentos	id	
 
+sim_intento_bm_transporte	bien_mueble_id	fk_ibmt_bien	sim_intento_bienes_muebles	id	
+sim_intento_calculo_manual	intento_id	fk_icm_intento	sim_intentos	id	
+sim_intento_calculo_manual	relacion_id	fk_icm_relacion	sim_intento_relaciones	id	
+sim_intento_datos_basicos	intento_id	fk_sird_intento	sim_intentos	id	
 sim_intento_datos_basicos	nacionalidad	fk_sird_nacionalidad	paises	id	
 sim_intento_direcciones	ciudad_id	fk_sid_ciudad	ciudades	id	
 sim_intento_direcciones	codigo_postal_id	fk_sid_codigo_postal	codigos_postales	id	

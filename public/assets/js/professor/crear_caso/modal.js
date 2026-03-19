@@ -4,6 +4,11 @@ import { renderHerederos, renderHerederosPremuertos } from './herederos.js';
 import { renderInventario } from './inventario.js';
 import { getCatalogs } from '../../global/catalogos.js';
 
+// Capture local ref to parseDecimal at module-load time (tamper-proof)
+const _parseDecimal = typeof parseDecimal === 'function'
+    ? parseDecimal
+    : (v) => { const n = parseFloat(String(v).replace(/\./g, '').replace(',', '.')); return isNaN(n) ? 0 : n; };
+
 /**
  * Muestra un diálogo de confirmación estilizado.
  * Retorna una Promise que resuelve a true (Aceptar) o false (Cancelar).
@@ -161,6 +166,8 @@ const MODAL_CONFIGS = {
       if (typeof form._locked_fields === 'string') {
         try { form._locked_fields = JSON.parse(form._locked_fields); } catch { form._locked_fields = []; }
       }
+      // Assign stable _uid for cálculo manual linkage
+      if (!form._uid) form._uid = crypto.randomUUID();
       if (UIState.editIndex !== null) { caseData.herederos[UIState.editIndex] = form; }
       else { caseData.herederos.push(form); }
       renderHerederos();
@@ -230,7 +237,7 @@ const MODAL_CONFIGS = {
             <option value="">No aplica...</option>
             ${caseData.herederos.map((h, i) => {
       if (h.premuerto === 'SI') {
-        return `<option value="${h.cedula}" ${form.premuerto_padre_id == h.cedula ? 'selected' : ''}>${h.nombres} ${h.apellidos}</option>`;
+        return `<option value="${h._uid}" ${form.premuerto_padre_id == h._uid ? 'selected' : ''}>${h.nombres} ${h.apellidos}</option>`;
       }
       return '';
     }).join('')}
@@ -276,6 +283,8 @@ const MODAL_CONFIGS = {
       if (typeof form._locked_fields === 'string') {
         try { form._locked_fields = JSON.parse(form._locked_fields); } catch { form._locked_fields = []; }
       }
+      // Assign stable _uid for cálculo manual linkage
+      if (!form._uid) form._uid = crypto.randomUUID();
       if (UIState.editIndex !== null) { caseData.herederos_premuertos[UIState.editIndex] = form; }
       else { caseData.herederos_premuertos.push(form); }
       renderHerederosPremuertos();
@@ -313,7 +322,7 @@ const MODAL_CONFIGS = {
             <option value="Si" ${form.bien_litigioso === 'Si' ? 'selected' : ''}>Sí</option>
           </select></div>
         <div class="cc-field"><label>Porcentaje %</label>
-          <input type="text" data-modal="porcentaje" placeholder="Ej: 100" value="${form.porcentaje || 100}"></div>
+          <input type="text" class="decimal-input" data-modal="porcentaje" placeholder="Ej: 100" value="${form.porcentaje || 100}"></div>
       </div>
 
       <!-- Sección 9: Bloque litigioso condicional -->
@@ -340,11 +349,11 @@ const MODAL_CONFIGS = {
         
         <div class="cc-grid cc-grid--3 cc-span-2">
           <div class="cc-field"><label>Superficie Construida</label>
-            <input type="text" data-modal="superficie_construida" value="${form.superficie_construida || ''}"></div>
+            <input type="text" class="decimal-input" data-modal="superficie_construida" value="${form.superficie_construida || ''}"></div>
           <div class="cc-field"><label>Superficie sin Construir</label>
-            <input type="text" data-modal="superficie_no_construida" value="${form.superficie_no_construida || ''}"></div>
+            <input type="text" class="decimal-input" data-modal="superficie_no_construida" value="${form.superficie_no_construida || ''}"></div>
           <div class="cc-field"><label>Área o Superficie</label>
-            <input type="text" data-modal="area_superficie" value="${form.area_superficie || ''}"></div>
+            <input type="text" class="decimal-input" data-modal="area_superficie" value="${form.area_superficie || ''}"></div>
         </div>
 
         <div class="cc-field cc-span-2"><label>Dirección</label>
@@ -374,9 +383,9 @@ const MODAL_CONFIGS = {
           <input type="text" data-modal="folio_real_anio" value="${form.folio_real_anio || ''}"></div>
 
         <div class="cc-field"><label>Valor Original (Bs.)</label>
-          <input type="text" data-modal="valor_original" placeholder="0.00" value="${form.valor_original || ''}"></div>
+          <input type="text" class="decimal-input decimal-signed" data-modal="valor_original" placeholder="0,00" value="${form.valor_original || ''}"></div>
         <div class="cc-field"><label>Valor Declarado (Bs.)</label>
-          <input type="text" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>
+          <input type="text" class="decimal-input decimal-signed" data-modal="valor_declarado" placeholder="0,00" value="${form.valor_declarado || ''}"></div>
       </div>`,
     collect: () => {
       const f = collectModalFields();
@@ -396,7 +405,7 @@ const MODAL_CONFIGS = {
     },
     validate: (form) => {
       if (!form.tipo_bien_inmueble_id || form.tipo_bien_inmueble_id.length === 0) return "Debe seleccionar al menos un Tipo de Bien.";
-      if (!form.porcentaje || parseFloat(form.porcentaje) <= 0 || parseFloat(form.porcentaje) > 100) return "Porcentaje inválido.";
+      if (!form.porcentaje || _parseDecimal(form.porcentaje) <= 0 || _parseDecimal(form.porcentaje) > 100) return "Porcentaje inválido.";
 
       // Solo un bien inmueble puede ser vivienda principal
       if (form.vivienda_principal === 'Si') {
@@ -407,7 +416,7 @@ const MODAL_CONFIGS = {
       }
 
       if (form.bien_litigioso === 'Si') {
-        if (!form.numero_expediente || !form.tribunal_causa || !form.partes_juicio || !form.estado_juicio) {
+        if (!form.numero_expediente?.trim() || !form.tribunal_causa?.trim() || !form.partes_juicio?.trim() || !form.estado_juicio?.trim()) {
           return "Debe completar todos los detalles del Bien Litigioso.";
         }
       }
@@ -415,7 +424,7 @@ const MODAL_CONFIGS = {
       if (!form.descripcion || !form.linderos || !form.superficie_construida || !form.superficie_no_construida || !form.area_superficie || !form.direccion || !form.oficina_registro || !form.nro_registro || !form.libro || !form.protocolo || !form.fecha_registro || !form.trimestre || !form.asiento_registral || !form.matricula || !form.folio_real_anio || !form.valor_original || !form.valor_declarado) {
         return "Por favor, complete todos los campos obligatorios del bien inmueble, incluyendo los datos registrales.";
       }
-      if (parseFloat(form.valor_declarado) <= 0) return "El Valor Declarado debe ser mayor a 0.";
+
 
       return null;
     },
@@ -592,12 +601,12 @@ const MODAL_CONFIGS = {
         ${bloqueLitigiosoHTML}
 
         <div class="cc-field"><label>Porcentaje %</label>
-          <input type="text" data-modal="porcentaje" placeholder="0.01 - 100" value="${form.porcentaje || '0.01'}"></div>
+          <input type="text" class="decimal-input" data-modal="porcentaje" placeholder="0,01 - 100" value="${form.porcentaje || 100}"></div>
         <div class="cc-field"><label>Descripción</label>
           <textarea data-modal="descripcion" placeholder="Descripción del bien mueble...">${form.descripcion || ''}</textarea></div>
         <div class="cc-field cc-span-2" style="display:flex; justify-content:flex-end;">
           <div class="cc-field" style="max-width:300px; width:100%;"><label>Valor Declarado (Bs.)</label>
-            <input type="text" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>
+            <input type="text" class="decimal-input decimal-signed" data-modal="valor_declarado" placeholder="0,00" value="${form.valor_declarado || ''}"></div>
         </div>
       </div>`;
     },
@@ -612,8 +621,10 @@ const MODAL_CONFIGS = {
       return form;
     },
     validate: (form) => {
+      if (!form.descripcion || !form.descripcion.trim()) return "Debe ingresar la Descripción.";
       if (!form.valor_declarado) return "Debe ingresar el Valor Declarado.";
-      if (parseFloat(form.valor_declarado) <= 0) return "El Valor Declarado debe ser mayor a 0.";
+
+      if (form.porcentaje && (_parseDecimal(form.porcentaje) <= 0 || _parseDecimal(form.porcentaje) > 100)) return "Porcentaje inválido (debe ser entre 0.01 y 100).";
 
       const cat = getCatalogs().categoriasBienMueble.find(c => c.categoria_bien_mueble_id == UIState.currentSubTab);
       const nameKey = cat ? cat.nombre.toLowerCase() : '';
@@ -633,6 +644,7 @@ const MODAL_CONFIGS = {
       if (nameKey.includes('banco')) {
         if (!form.banco_id) return "Debe seleccionar el Banco.";
         if (!form.numero_cuenta) return "Debe ingresar el Número de Cuenta.";
+        if (!/^\d{20}$/.test(form.numero_cuenta)) return "El Número de Cuenta debe tener exactamente 20 dígitos.";
       } else if (nameKey.includes('seguro')) {
         if (!form.numero_prima) return "Debe ingresar el Número de Prima.";
       } else if (nameKey.includes('transporte')) {
@@ -651,13 +663,14 @@ const MODAL_CONFIGS = {
         if (!form.nombre_oferente) return "Debe ingresar el Nombre del Oferente.";
       } else if (nameKey.includes('prestaciones')) {
         if (form.posee_banco === 'SI' && !form.banco_id) return "Debe seleccionar el Banco.";
+        if (form.posee_banco === 'SI' && form.numero_cuenta && !/^\d{20}$/.test(form.numero_cuenta)) return "El Número de Cuenta debe tener exactamente 20 dígitos.";
       } else if (nameKey.includes('semovientes')) {
         if (!form.tipo_semoviente_id) return "Debe seleccionar el Tipo de Semoviente.";
         if (!form.cantidad) return "Debe ingresar la Cantidad.";
       }
 
       if (form.bien_litigioso === 'Si') {
-        if (!form.numero_expediente || !form.tribunal_causa || !form.partes_juicio || !form.estado_juicio) {
+        if (!form.numero_expediente?.trim() || !form.tribunal_causa?.trim() || !form.partes_juicio?.trim() || !form.estado_juicio?.trim()) {
           return "Debe completar todos los detalles del Bien Litigioso.";
         }
       }
@@ -741,13 +754,13 @@ const MODAL_CONFIGS = {
           <input type="text" data-modal="numero_tdc" value="${form.numero_tdc || ''}"></div>
 
         <div class="cc-field" id="wrapPorcentajeDeuda" style="order:3; grid-column:1;"><label>Porcentaje %</label>
-          <input type="text" data-modal="porcentaje" placeholder="0.01 - 100" value="${form.porcentaje || '0.01'}"></div>
+          <input type="text" class="decimal-input" data-modal="porcentaje" placeholder="0,01 - 100" value="${form.porcentaje || 100}"></div>
         
         <div class="cc-field" id="wrapDescDeuda" style="order:4; grid-column:2;"><label>Descripción</label>
           <textarea data-modal="descripcion" placeholder="Descripción de la deuda..." rows="2">${form.descripcion || ''}</textarea></div>
         
         <div class="cc-field" id="wrapValorDeuda" style="order:5; grid-column:2;"><label>Valor Declarado (Bs.)</label>
-          <input type="text" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>
+          <input type="text" class="decimal-input decimal-signed" data-modal="valor_declarado" placeholder="0,00" value="${form.valor_declarado || ''}"></div>
       </div>`;
     },
     collect: () => {
@@ -766,9 +779,10 @@ const MODAL_CONFIGS = {
     },
     validate: (form) => {
       if (!form.tipo_pasivo_deuda_id) return "Debe seleccionar un Tipo de Deuda.";
+      if (!form.descripcion || !form.descripcion.trim()) return "Debe ingresar la Descripción.";
       if (!form.valor_declarado) return "Debe ingresar el Valor Declarado.";
-      if (parseFloat(form.valor_declarado) <= 0) return "El Valor Declarado debe ser mayor a 0.";
-      if (form.porcentaje && (parseFloat(form.porcentaje) <= 0 || parseFloat(form.porcentaje) > 100)) return "Porcentaje inválido (debe ser entre 0.01 y 100).";
+      if (_parseDecimal(form.valor_declarado) <= 0) return "El Valor Declarado debe ser mayor a 0.";
+      if (form.porcentaje && (_parseDecimal(form.porcentaje) <= 0 || _parseDecimal(form.porcentaje) > 100)) return "Porcentaje inválido (debe ser entre 0.01 y 100).";
 
       const catalogs = getCatalogs();
       const tipo = catalogs.tiposPasivoDeuda.find(t => t.tipo_pasivo_deuda_id == form.tipo_pasivo_deuda_id);
@@ -776,6 +790,9 @@ const MODAL_CONFIGS = {
 
       if (name.includes('tarjeta') && (!form.banco_id || !form.numero_tdc)) {
         return "Debe ingresar el Banco y el N° de TDC.";
+      }
+      if (name.includes('tarjeta') && form.numero_tdc && !/^\d{16,}$/.test(form.numero_tdc)) {
+        return "El N° de TDC debe tener al menos 16 dígitos numéricos.";
       }
       if (!name.includes('tarjeta') && (name.includes('préstamo') || name.includes('crédito') || name.includes('efecto') || name.includes('hipotecario') || name.includes('cuenta')) && !form.banco_id) {
         return "Debe seleccionar el Banco.";
@@ -804,18 +821,19 @@ const MODAL_CONFIGS = {
             ${getCatalogs().tiposPasivoGasto.map(t => `<option value="${t.tipo_pasivo_gasto_id}" ${form.tipo_pasivo_gasto_id == t.tipo_pasivo_gasto_id ? 'selected' : ''}>${t.nombre}</option>`).join('')}
           </select></div>
         <div class="cc-field"><label>Porcentaje %</label>
-          <input type="text" data-modal="porcentaje" placeholder="0.01 - 100" value="${form.porcentaje || 100}"></div>
+          <input type="text" class="decimal-input" data-modal="porcentaje" placeholder="0,01 - 100" value="${form.porcentaje || 100}"></div>
         <div class="cc-field cc-span-2"><label>Descripción</label>
           <textarea data-modal="descripcion" placeholder="Motivo del gasto...">${form.descripcion || ''}</textarea></div>
         <div class="cc-field cc-span-2"><label>Valor Declarado (Bs.)</label>
-          <input type="text" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>
+          <input type="text" class="decimal-input decimal-signed" data-modal="valor_declarado" placeholder="0,00" value="${form.valor_declarado || ''}"></div>
       </div>`,
     collect: () => collectModalFields(),
     validate: (form) => {
       if (!form.tipo_pasivo_gasto_id) return "Debe seleccionar un Tipo de Gasto.";
+      if (!form.descripcion || !form.descripcion.trim()) return "Debe ingresar la Descripción.";
       if (!form.valor_declarado) return "Debe ingresar el Valor Declarado.";
-      if (parseFloat(form.valor_declarado) <= 0) return "El Valor Declarado debe ser mayor a 0.";
-      if (form.porcentaje && (parseFloat(form.porcentaje) <= 0 || parseFloat(form.porcentaje) > 100)) return "Porcentaje inválido (debe ser entre 0.01 y 100).";
+      if (_parseDecimal(form.valor_declarado) <= 0) return "El Valor Declarado debe ser mayor a 0.";
+      if (form.porcentaje && (_parseDecimal(form.porcentaje) <= 0 || _parseDecimal(form.porcentaje) > 100)) return "Porcentaje inválido (debe ser entre 0.01 y 100).";
       return null;
     },
     save: (form) => {
@@ -838,12 +856,13 @@ const MODAL_CONFIGS = {
       <div class="cc-field cc-mt"><label>Descripción</label>
         <textarea data-modal="descripcion" placeholder="Descripción...">${form.descripcion || ''}</textarea></div>
       <div class="cc-field cc-mt"><label>Valor Declarado (Bs.)</label>
-        <input type="text" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>`,
+        <input type="text" class="decimal-input decimal-signed" data-modal="valor_declarado" placeholder="0,00" value="${form.valor_declarado || ''}"></div>`,
     collect: () => collectModalFields(),
     validate: (form) => {
       if (!form.tipo_exencion) return "Debe ingresar el Tipo de Exención.";
+      if (!form.descripcion || !form.descripcion.trim()) return "Debe ingresar la Descripción.";
       if (!form.valor_declarado) return "Debe ingresar el Valor Declarado.";
-      if (parseFloat(form.valor_declarado) <= 0) return "El Valor Declarado debe ser mayor a 0.";
+      if (_parseDecimal(form.valor_declarado) <= 0) return "El Valor Declarado debe ser mayor a 0.";
       return null;
     },
     save: (form) => {
@@ -866,12 +885,13 @@ const MODAL_CONFIGS = {
       <div class="cc-field cc-mt"><label>Descripción</label>
         <textarea data-modal="descripcion" placeholder="Descripción...">${form.descripcion || ''}</textarea></div>
       <div class="cc-field cc-mt"><label>Valor Declarado (Bs.)</label>
-        <input type="text" data-modal="valor_declarado" placeholder="0.00" value="${form.valor_declarado || ''}"></div>`,
+        <input type="text" class="decimal-input decimal-signed" data-modal="valor_declarado" placeholder="0,00" value="${form.valor_declarado || ''}"></div>`,
     collect: () => collectModalFields(),
     validate: (form) => {
       if (!form.tipo_exoneracion) return "Debe ingresar el Tipo de Exoneración.";
+      if (!form.descripcion || !form.descripcion.trim()) return "Debe ingresar la Descripción.";
       if (!form.valor_declarado) return "Debe ingresar el Valor Declarado.";
-      if (parseFloat(form.valor_declarado) <= 0) return "El Valor Declarado debe ser mayor a 0.";
+      if (_parseDecimal(form.valor_declarado) <= 0) return "El Valor Declarado debe ser mayor a 0.";
       return null;
     },
     save: (form) => {
@@ -1453,21 +1473,7 @@ export function openModal(type, editIdx) {
         }
         const rif = 'J' + digits; // Concatenar letra + dígitos
 
-        // 1. Buscar primero en los bienes ya guardados en este caso
-        const muebles = caseData.bienes_muebles || {};
-        for (const catId of Object.keys(muebles)) {
-          if (!Array.isArray(muebles[catId])) continue;
-          for (const bien of muebles[catId]) {
-            if (bien.rif_empresa === rif && bien.razon_social) {
-              razonSocialInput.value = bien.razon_social;
-              unlockRazonSocial(); // Dejar editable por si quiere cambiar el nombre
-              if (rifHint) rifHint.textContent = 'Razón social tomada de otro bien. Si la modifica, se le preguntará si desea actualizarla en todos.';
-              return;
-            }
-          }
-        }
-
-        // 2. Si no se encontró en el caso, buscar en la BD
+        // 1. Buscar primero en la BD (si existe, siempre bloquea razón social)
         try {
           const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
           const resp = await fetch(`${baseUrl}/api/buscar-empresa-rif?rif=${encodeURIComponent(rif)}`);
@@ -1476,15 +1482,32 @@ export function openModal(type, editIdx) {
             razonSocialInput.value = data.data.nombre || '';
             lockRazonSocial();
             if (rifHint) rifHint.textContent = '';
-          } else {
-            razonSocialInput.value = '';
-            unlockRazonSocial();
-            if (rifHint) rifHint.textContent = 'RIF no encontrado en la base de datos. Ingrese la Razón Social manualmente.';
+            return; // Empresa existe en DB → locked, no buscar más
           }
         } catch (e) {
           razonSocialInput.value = ''; lockRazonSocial();
           if (rifHint) rifHint.textContent = 'Error buscando RIF';
+          return;
         }
+
+        // 2. Si no se encontró en la BD, buscar en los bienes ya guardados en este borrador
+        const muebles = caseData.bienes_muebles || {};
+        for (const catId of Object.keys(muebles)) {
+          if (!Array.isArray(muebles[catId])) continue;
+          for (const bien of muebles[catId]) {
+            if (bien.rif_empresa === rif && bien.razon_social) {
+              razonSocialInput.value = bien.razon_social;
+              unlockRazonSocial(); // Editable porque la empresa no existe en DB
+              if (rifHint) rifHint.textContent = 'Razón social tomada de otro bien. Si la modifica, se le preguntará si desea actualizarla en todos.';
+              return;
+            }
+          }
+        }
+
+        // 3. No encontrado en ningún lado → campo libre
+        razonSocialInput.value = '';
+        unlockRazonSocial();
+        if (rifHint) rifHint.textContent = 'RIF no encontrado en la base de datos. Ingrese la Razón Social manualmente.';
       };
       rifInput.addEventListener('blur', buscarRif);
       // Si hay RIF al abrir (editando), verificar si debe bloquear o desbloquear razón social
@@ -1492,43 +1515,40 @@ export function openModal(type, editIdx) {
     }
   }
 
-  // ── Restringir campos decimales a max 2 dígitos después del punto ──
+  // ── Restricciones adicionales sobre campos decimal-input ──
+  // (La sanitización básica la maneja decimal_input.js globalmente.
+  //  Aquí solo aplicamos restricciones de longitud máxima y cap de porcentaje.)
   const decimalFields = bodyEl.querySelectorAll(
     '[data-modal="valor_declarado"], [data-modal="valor_original"], [data-modal="porcentaje"], ' +
     '[data-modal="superficie_construida"], [data-modal="superficie_no_construida"], [data-modal="area_superficie"]'
   );
   decimalFields.forEach(el => {
     el.addEventListener('input', () => {
-      // Permitir solo dígitos y un punto decimal
-      let val = el.value.replace(/[^0-9.]/g, '');
-      // Solo un punto decimal
-      const parts = val.split('.');
-      if (parts.length > 2) val = parts[0] + '.' + parts.slice(1).join('');
-      // Max 2 dígitos después del punto
-      if (parts.length === 2 && parts[1].length > 2) {
-        val = parts[0] + '.' + parts[1].slice(0, 2);
-      }
-      // Campos de dinero: max 18 dígitos antes del punto (DECIMAL 20,2)
+      let val = el.value;
+      // Campos de dinero: max 18 dígitos antes de la coma (DECIMAL 20,2)
       const moneyFields = ['valor_declarado', 'valor_original'];
       if (moneyFields.includes(el.dataset.modal)) {
-        const p = val.split('.');
-        if (p[0].length > 18) {
-          val = p[0].slice(0, 18) + (p[1] !== undefined ? '.' + p[1] : '');
+        const p = val.split(',');
+        const intPart = p[0].replace(/\D/g, '');
+        if (intPart.length > 18) {
+          val = intPart.slice(0, 18) + (p[1] !== undefined ? ',' + p[1] : '');
+          el.value = val;
         }
       }
-      // Campos de superficie: max 10 dígitos antes del punto (DECIMAL 12,2)
+      // Campos de superficie: max 10 dígitos antes de la coma (DECIMAL 12,2)
       const surfaceFields = ['superficie_construida', 'superficie_no_construida', 'area_superficie'];
       if (surfaceFields.includes(el.dataset.modal)) {
-        const p = val.split('.');
-        if (p[0].length > 10) {
-          val = p[0].slice(0, 10) + (p[1] !== undefined ? '.' + p[1] : '');
+        const p = val.split(',');
+        const intPart = p[0].replace(/\D/g, '');
+        if (intPart.length > 10) {
+          val = intPart.slice(0, 10) + (p[1] !== undefined ? ',' + p[1] : '');
+          el.value = val;
         }
       }
       // Porcentaje no puede ser mayor a 100
-      if (el.dataset.modal === 'porcentaje' && parseFloat(val) > 100) {
-        val = '100';
+      if (el.dataset.modal === 'porcentaje' && _parseDecimal(val) > 100) {
+        el.value = '100';
       }
-      el.value = val;
     });
   });
 
@@ -1562,16 +1582,19 @@ export function removeItem(collection, index) {
   // Si es un heredero premuerto, borrar sus herederos del premuerto en cascada
   if (collection === 'herederos') {
     const heredero = caseData.herederos[index];
-    if (heredero && heredero.premuerto === 'SI' && heredero.cedula) {
-      const cedula = heredero.cedula;
-      const letra = heredero.letra_cedula || 'V';
-      // Eliminar todos los herederos_premuertos que pertenecen a este premuerto
+    if (heredero && heredero.premuerto === 'SI' && heredero._uid) {
+      // Eliminar todos los herederos_premuertos que pertenecen a este premuerto (linked by _uid)
       for (let i = caseData.herederos_premuertos.length - 1; i >= 0; i--) {
         const hp = caseData.herederos_premuertos[i];
-        if (hp.premuerto_padre_id === cedula || hp.premuerto_padre_id === (letra + '-' + cedula)) {
+        if (hp.premuerto_padre_id === heredero._uid) {
           caseData.herederos_premuertos.splice(i, 1);
         }
       }
+    }
+    // Limpiar calculo_manual del heredero eliminado
+    if (heredero && heredero._uid && Array.isArray(caseData.calculo_manual)) {
+      const cmIdx = caseData.calculo_manual.findIndex(cm => cm._uid === heredero._uid);
+      if (cmIdx !== -1) caseData.calculo_manual.splice(cmIdx, 1);
     }
   }
   caseData[collection].splice(index, 1);

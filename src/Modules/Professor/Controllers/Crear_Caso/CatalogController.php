@@ -85,6 +85,17 @@ class CatalogController
         $this->jsonResponse($model->getTiposPasivoGasto());
     }
 
+    public function getTarifasSucesion()
+    {
+        try {
+            $model = new CatalogModel();
+            $this->jsonResponse($model->getTarifasSucesion());
+        } catch (\Throwable $e) {
+            error_log('[CatalogController::getTarifasSucesion] Error: ' . $e->getMessage());
+            $this->jsonResponse([]);
+        }
+    }
+
     public function getSeccionesProfesor()
     {
         if (session_status() === PHP_SESSION_NONE)

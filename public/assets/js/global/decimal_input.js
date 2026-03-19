@@ -2,12 +2,14 @@
  * decimal_input.js — Formateo automático de inputs decimales venezolanos
  *
  * Uso: agregar la clase CSS "decimal-input" a cualquier <input> de texto.
+ *      Para permitir valores negativos, agregar también "decimal-signed".
  *
  * Comportamiento:
  *  - Al escribir un punto (.), se convierte automáticamente en coma (,)
  *  - Solo permite dígitos, una coma, y máximo 2 decimales
  *  - Al perder el foco (blur), formatea con separadores de miles: 1234567,89 → 1.234.567,89
  *  - Al obtener el foco (focus), quita los separadores de miles para facilitar la edición
+ *  - [decimal-signed] Tecla "-" pone signo negativo al inicio; "+" lo quita
  */
 (function () {
     'use strict';
@@ -15,9 +17,18 @@
     /**
      * Formatea un string numérico limpio (sin puntos de miles) al formato venezolano.
      * Entrada: "1234567,89" → Salida: "1.234.567,89"
+     * Entrada: "-1234567,89" → Salida: "-1.234.567,89"
      */
     function formatVenezolano(raw) {
         if (!raw) return '0,00';
+
+        // Preservar signo negativo
+        var negative = false;
+        if (raw.charAt(0) === '-') {
+            negative = true;
+            raw = raw.substring(1);
+        }
+
         var parts = raw.split(',');
         var intPart = parts[0] || '0';
         var decPart = parts[1] || '';
@@ -32,14 +43,25 @@
         // Asegurar 2 decimales
         decPart = (decPart + '00').substring(0, 2);
 
-        return intPart + ',' + decPart;
+        // No poner negativo si el valor es 0,00
+        if (negative && intPart === '0' && decPart === '00') negative = false;
+
+        return (negative ? '-' : '') + intPart + ',' + decPart;
     }
 
     /**
      * Limpia un valor a solo dígitos y una coma, máximo 2 decimales.
      * Convierte puntos a comas. Quita caracteres no válidos.
+     * Si allowSign es true, preserva un "-" al inicio.
      */
-    function sanitize(value) {
+    function sanitize(value, allowSign) {
+        // Detectar y preservar signo negativo al inicio
+        var negative = false;
+        if (allowSign && value.charAt(0) === '-') {
+            negative = true;
+            value = value.substring(1);
+        }
+
         // Reemplazar punto por coma
         value = value.replace(/\./g, ',');
 
@@ -58,15 +80,40 @@
             value = value.substring(0, firstComma + 3);
         }
 
-        return value;
+        return (negative ? '-' : '') + value;
     }
 
-    // Interceptar punto/coma: si ya existe una coma, mover cursor ahí en vez de insertar
+    // Interceptar teclas especiales
     document.addEventListener('keydown', function (e) {
         if (!e.target.classList.contains('decimal-input')) return;
+        var el = e.target;
+
+        // ── Manejo de +/- para campos con decimal-signed ──
+        if (el.classList.contains('decimal-signed')) {
+            if (e.key === '-') {
+                e.preventDefault();
+                // No poner negativo si el valor es 0 o vacío
+                var numVal = el.value.replace(/[^\d]/g, '');
+                if (!numVal || parseInt(numVal, 10) === 0) return;
+                // Si no tiene signo negativo, agregarlo al inicio
+                if (el.value.charAt(0) !== '-') {
+                    el.value = '-' + el.value;
+                }
+                return;
+            }
+            if (e.key === '+') {
+                e.preventDefault();
+                // Quitar signo negativo si existe
+                if (el.value.charAt(0) === '-') {
+                    el.value = el.value.substring(1);
+                }
+                return;
+            }
+        }
+
+        // ── Interceptar punto/coma ──
         if (e.key !== '.' && e.key !== ',') return;
 
-        var el = e.target;
         var commaPos = el.value.indexOf(',');
 
         if (commaPos !== -1) {
@@ -85,7 +132,8 @@
         var el = e.target;
         var pos = el.selectionStart;
         var before = el.value;
-        var clean = sanitize(before);
+        var allowSign = el.classList.contains('decimal-signed');
+        var clean = sanitize(before, allowSign);
 
         if (clean !== before) {
             var diff = before.length - clean.length;
@@ -100,7 +148,7 @@
         if (!e.target.classList.contains('decimal-input')) return;
 
         var el = e.target;
-        // Quitar puntos de miles existentes (por si hay), dejar solo dígitos y coma
+        // Quitar puntos de miles existentes (por si hay), dejar solo dígitos, coma y signo
         var raw = el.value.replace(/\./g, '');
         el.value = formatVenezolano(raw);
     }, true); // useCapture para blur

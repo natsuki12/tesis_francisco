@@ -463,9 +463,9 @@ ob_start();
         var INTENTO_ID = <?= json_encode($intento['id'] ?? 0) ?>;
         var BASE = <?= json_encode(rtrim(($_ENV['APP_BASE'] ?? getenv('APP_BASE')) ?: '', '/')) ?>;
     </script>
-    <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/number_utils.js') ?>"></script>
+    <script src="<?= base_url('/assets/js/global/number_utils.js') ?>"></script>
     <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/datos_tribunal.js') ?>"></script>
-    <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/decimal_input.js') ?>"></script>
+    <script src="<?= base_url('/assets/js/global/decimal_input.js') ?>"></script>
     <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/modal_info.js') ?>"></script>
     <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/rif_lookup.js') ?>"></script>
     <script src="<?= base_url('/assets/js/simulator/seniat_actual/sucesion/crud_manager.js') ?>"></script>

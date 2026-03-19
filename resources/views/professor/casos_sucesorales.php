@@ -69,21 +69,6 @@ ob_start();
       <div class="stat-label">En Borrador</div>
     </div>
   </div>
-
-  <div class="stat-card">
-    <div class="stat-icon purple">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    </div>
-    <div class="stat-info">
-      <div class="stat-value"><?= $stats['estudiantes_asignados'] ?? 0 ?></div>
-      <div class="stat-label">Estudiantes Asignados</div>
-    </div>
-  </div>
 </div>
 
 <!-- Toolbar -->
@@ -132,7 +117,7 @@ ob_start();
         <th class="sortable" data-sort="causante">Causante</th>
         <th>Herederos</th>
         <th class="sortable" data-sort="patrimonio">Patrimonio Neto</th>
-        <th>Tipo</th>
+
         <th class="sortable" data-sort="estado">Estado</th>
         <th class="sortable" data-sort="fecha">Fecha</th>
         <th></th>
@@ -141,7 +126,7 @@ ob_start();
     <tbody id="casos-tbody">
       <?php if (empty($casos)): ?>
         <tr>
-          <td colspan="10" style="text-align: center; padding: 2rem;">No tienes casos creados aún. <a
+          <td colspan="9" style="text-align: center; padding: 2rem;">No tienes casos creados aún. <a
               href="<?= base_url('/crear-caso') ?>">Crear el primero</a></td>
         </tr>
       <?php else: ?>
@@ -166,23 +151,11 @@ ob_start();
 
           $cedula = $caso['causante_cedula'] ? ($caso['causante_nacionalidad'] ?? 'V') . '-' . number_format((float) $caso['causante_cedula'], 0, ',', '.') : 'S/C';
 
-          // 3. Patrimonio Neto (Monto base, en el futuro se calculará real desde BD)
-          // Por ahora pondremos un monto base a 0 si es borrador
-          $patrimonio = 'Bs. 0,00';
+          // 3. Patrimonio Neto (calculado desde BD)
+          $patrimonioRaw = (float) ($caso['patrimonio_neto'] ?? 0);
+          $patrimonio = 'Bs. ' . number_format($patrimonioRaw, 2, ',', '.');
 
-          // 4. Modalidad del caso
-          $modalidadMap = [
-            'Practica_Libre' => ['practice-free', 'Libre'],
-            'Practica_guiada' => ['practice-guided', 'Guiada'],
-            'Evaluacion' => ['practice-guided', 'Evaluación'],
-          ];
-          $modInfo = $modalidadMap[$caso['modalidad'] ?? ''] ?? ['practice-guided', 'Borrador'];
-          $modalidadClase = $modInfo[0];
-          $modalidadTexto = $modInfo[1];
-          if (empty($caso['modalidad'])) {
-            $modalidadClase = 'practice-guided';
-            $modalidadTexto = 'Borrador';
-          }
+
 
           // 5. Estado badge
           $statusClass = match ($caso['estado']) {
@@ -207,7 +180,8 @@ ob_start();
           <tr data-estado="<?= htmlspecialchars($caso['estado']) ?>" data-id="<?= $caso['id'] ?>"
             data-titulo="<?= htmlspecialchars(strtolower($caso['titulo'] ?? '')) ?>"
             data-causante="<?= htmlspecialchars(strtolower($fullName)) ?>"
-            data-cedula="<?= htmlspecialchars($caso['causante_cedula'] ?? '') ?>" data-fecha="<?= $caso['created_at'] ?>">
+            data-cedula="<?= htmlspecialchars($caso['causante_cedula'] ?? '') ?>" data-fecha="<?= $caso['created_at'] ?>"
+            data-patrimonio="<?= $patrimonioRaw ?>">
             <td class="checkbox-cell"><input type="checkbox" class="custom-check row-check"></td>
             <td><a href="<?= base_url('/casos-sucesorales/' . $caso['id']) ?>" class="case-id"
                 style="text-decoration: none; color: inherit;"><?= htmlspecialchars($caseId) ?></a></td>
@@ -233,7 +207,7 @@ ob_start();
               </div>
             </td>
             <td><span class="patrimonio-value"><?= $patrimonio ?></span></td>
-            <td><span class="practice-type <?= $modalidadClase ?>"><?= $modalidadTexto ?></span></td>
+
             <td><span class="status-badge <?= $statusClass ?>"><?= htmlspecialchars($caso['estado']) ?></span></td>
             <td>
               <div class="date-cell">
@@ -839,6 +813,7 @@ ob_start();
           case 'causante': va = a.dataset.causante; vb = b.dataset.causante; break;
           case 'estado': va = a.dataset.estado; vb = b.dataset.estado; break;
           case 'fecha': va = a.dataset.fecha; vb = b.dataset.fecha; break;
+          case 'patrimonio': va = +a.dataset.patrimonio; vb = +b.dataset.patrimonio; break;
           default: return 0;
         }
         return va < vb ? -sortDir : va > vb ? sortDir : 0;
@@ -851,6 +826,9 @@ ob_start();
       if (currentPage > totalPages) currentPage = totalPages;
       const start = (currentPage - 1) * PER_PAGE;
       const pageRows = visible.slice(start, start + PER_PAGE);
+
+      // Reorder DOM to match sort order
+      visible.forEach(r => tbody.appendChild(r));
 
       Array.from(tbody.querySelectorAll('tr[data-estado]')).forEach(r => r.style.display = 'none');
       pageRows.forEach(r => r.style.display = '');

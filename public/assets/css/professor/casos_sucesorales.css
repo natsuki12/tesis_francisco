@@ -153,7 +153,42 @@
     height: 16px;
 }
 
-/* ===== TABLE VIEW ===== */`r`n/* Case ID column */
+/* ===== SORTABLE HEADERS ===== */
+th.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 20px !important;
+    transition: color var(--transition);
+}
+th.sortable:hover {
+    color: var(--blue-600);
+}
+th.sortable::after {
+    content: '⇅';
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: var(--gray-300);
+    transition: color var(--transition);
+}
+th.sortable.sort-asc::after {
+    content: '▲';
+    color: var(--blue-500);
+}
+th.sortable.sort-desc::after {
+    content: '▼';
+    color: var(--blue-500);
+}
+th.sortable.sort-asc,
+th.sortable.sort-desc {
+    color: var(--blue-600);
+}
+
+/* ===== TABLE VIEW ===== */
+/* Case ID column */
 .case-id {
     font-weight: 600;
     color: var(--blue-600);

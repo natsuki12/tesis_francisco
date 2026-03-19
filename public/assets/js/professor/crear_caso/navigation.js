@@ -2,7 +2,7 @@ import { $, $$, show, hide } from '../../global/utils.js';
 import { UIState, saveCaseData } from './state.js';
 import { renderHerederos } from './herederos.js';
 import { renderInventario } from './inventario.js';
-import { renderSummary } from './summary.js';
+import { renderSummary, initCalculoManualModal } from './summary.js';
 
 export function setStep(n) {
     n = Math.max(0, Math.min(3, n));
@@ -33,6 +33,7 @@ export function setStep(n) {
         hide(btnNext);
         show(btnPub);
         renderSummary();
+        initCalculoManualModal();
     } else {
         show(btnNext);
         hide(btnPub);

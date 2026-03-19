@@ -62,6 +62,9 @@ export function loadCaseData() {
         // Restore step
         const savedStep = sessionStorage.getItem(STORAGE_KEY_STEP);
         if (savedStep !== null) UIState.currentStep = parseInt(savedStep, 10) || 0;
+        // Ensure all herederos have _uid (backwards compat with old borradores)
+        (caseData.herederos || []).forEach(h => { if (!h._uid) h._uid = crypto.randomUUID(); });
+        (caseData.herederos_premuertos || []).forEach(h => { if (!h._uid) h._uid = crypto.randomUUID(); });
         return true;
     } catch (e) { return false; }
 }
@@ -95,6 +98,9 @@ export function hydrateCaseData(serverData) {
             }
         }
     }
+    // Ensure all herederos have _uid (backwards compat)
+    (caseData.herederos || []).forEach(h => { if (!h._uid) h._uid = crypto.randomUUID(); });
+    (caseData.herederos_premuertos || []).forEach(h => { if (!h._uid) h._uid = crypto.randomUUID(); });
     _savingDisabled = false;
 }
 
@@ -238,6 +244,8 @@ export const caseData = createReactiveState({
     },
     prorrogas: [],
 
+    // ── Cálculo manual overrides (persisted in borrador_json) ──
+    calculo_manual: [],  // [{ _uid: "...", cuota_parte_ut: N, reduccion_bs: N }]
 
 }, onStateChange);
 

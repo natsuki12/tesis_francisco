@@ -20,6 +20,28 @@ class StoreCasoModel
     }
 
     /**
+     * Safely parse a value that may be in Venezuelan format (dots=thousands, comma=decimal)
+     * e.g. "-1.234.567,89" → -1234567.89
+     */
+    private static function toFloat(mixed $value, float $default = 0): float
+    {
+        if (is_int($value) || is_float($value))
+            return (float) $value;
+        if (!is_string($value) || $value === '')
+            return $default;
+        // Already standard numeric (e.g. "123.45")
+        if (is_numeric($value))
+            return (float) $value;
+        // Venezuelan format: comma present → strip dots, swap comma for dot
+        if (str_contains($value, ',')) {
+            $clean = str_replace('.', '', $value);
+            $clean = str_replace(',', '.', $clean);
+            return is_numeric($clean) ? (float) $clean : $default;
+        }
+        return $default;
+    }
+
+    /**
      * Guarda (INSERT o UPDATE) un borrador: solo titulo + JSON del stepper.
      * No toca tablas relacionadas (personas, direcciones, herederos, etc.).
      * @return int caso_id
@@ -82,8 +104,6 @@ class StoreCasoModel
             $fechaFallecimiento = $data['causante']['fecha_fallecimiento'] ?? null;
             $this->insertActaDefuncion($data['acta_defuncion'] ?? [], $causanteId, $fechaFallecimiento);
 
-            // 4. (Movido abajo de crear el caso, ya que ahora las direcciones van contra el caso)
-            $domicilio = $data['domicilio_causante'] ?? [];
 
             // 5. Insertar representante (sim_personas)
             $representanteId = null;
@@ -134,18 +154,13 @@ class StoreCasoModel
             $this->insertTiposHerencia($herencia['tipos'] ?? [], $casoId);
 
             // 8. Insertar herederos
-            $herederoIdMap = []; // cedula → sim_caso_participantes.id
+            $uidMap = [];        // _uid → sim_caso_participantes.id (for calculo_manual & premuerto linkage)
             foreach (($data['herederos'] ?? []) as $index => $h) {
                 $participanteId = $this->insertHeredero($h, $casoId, $profesorId, null);
-                // Key by cedula since frontend uses cedula as premuerto_padre_id reference
-                $ced = $h['cedula'] ?? null;
-                if ($ced) {
-                    $herederoIdMap[$ced] = $participanteId;
-                    // Also store with letra prefix (e.g. "V-12345678") for flexible matching
-                    $letra = $h['letra_cedula'] ?? $h['tipo_cedula'] ?? '';
-                    if ($letra) {
-                        $herederoIdMap[$letra . '-' . $ced] = $participanteId;
-                    }
+                // Map _uid → participanteId for calculo_manual and premuerto linkage
+                $uid = $h['_uid'] ?? null;
+                if ($uid) {
+                    $uidMap[$uid] = $participanteId;
                 }
             }
 
@@ -153,10 +168,16 @@ class StoreCasoModel
             foreach (($data['herederos_premuertos'] ?? []) as $hp) {
                 $padreRef = $hp['premuerto_padre_id'] ?? null;
                 $padreParticipanteId = null;
-                if ($padreRef !== null && $padreRef !== '' && isset($herederoIdMap[$padreRef])) {
-                    $padreParticipanteId = $herederoIdMap[$padreRef];
+                // premuerto_padre_id now contains _uid (not cedula), so look up in uidMap
+                if ($padreRef !== null && $padreRef !== '' && isset($uidMap[$padreRef])) {
+                    $padreParticipanteId = $uidMap[$padreRef];
                 }
-                $this->insertHeredero($hp, $casoId, $profesorId, $padreParticipanteId);
+                $pId = $this->insertHeredero($hp, $casoId, $profesorId, $padreParticipanteId);
+                // Map _uid for premuertos too (they can appear in calculo_manual)
+                $uid = $hp['_uid'] ?? null;
+                if ($uid) {
+                    $uidMap[$uid] = $pId;
+                }
             }
 
             // 10. Insertar bienes inmuebles (array)
@@ -202,7 +223,26 @@ class StoreCasoModel
                 $this->insertProrroga($pr, $casoId);
             }
 
-            // Config y asignaciones se manejan desde Gestionar Caso (no desde Crear Caso)
+            // 17. Insertar cálculo manual overrides (array)
+            $calculoManual = $data['calculo_manual'] ?? [];
+            if (!empty($calculoManual) && !empty($uidMap)) {
+                $cmStmt = $this->db->prepare(
+                    "INSERT INTO sim_caso_calculo_manual 
+                     (caso_estudio_id, participante_id, cuota_parte_ut, reduccion_bs)
+                     VALUES (:caso_id, :participante_id, :cuota, :reduccion)"
+                );
+                foreach ($calculoManual as $cm) {
+                    $uid = $cm['_uid'] ?? null;
+                    if ($uid && isset($uidMap[$uid])) {
+                        $cmStmt->execute([
+                            'caso_id' => $casoId,
+                            'participante_id' => $uidMap[$uid],
+                            'cuota' => (float) ($cm['cuota_parte_ut'] ?? 0),
+                            'reduccion' => (float) ($cm['reduccion_bs'] ?? 0),
+                        ]);
+                    }
+                }
+            }
             // Las tablas sim_caso_configs y sim_caso_asignaciones quedan vacías al publicar.
 
             // Limpiar borrador_json al publicar
@@ -416,10 +456,8 @@ class StoreCasoModel
         // Resolver unidad tributaria automáticamente desde fecha de fallecimiento
         $utId = null;
         if ($fechaFallecimiento) {
-            $year = (int) date('Y', strtotime($fechaFallecimiento));
-            $stmt = $this->db->prepare("SELECT id FROM sim_cat_unidades_tributarias WHERE anio = :anio LIMIT 1");
-            $stmt->execute(['anio' => $year]);
-            $utId = $stmt->fetchColumn() ?: null;
+            $ut = \App\Core\UnidadTributariaService::obtenerPorFecha($fechaFallecimiento);
+            $utId = $ut ? (int) $ut['id'] : null;
         }
 
         // Normalizar tipo_sucesion: frontend envía 'Con Cédula', BD espera 'Con_Cedula'
@@ -456,10 +494,8 @@ class StoreCasoModel
         // Resolver unidad tributaria
         $utId = null;
         if ($fechaFallecimiento) {
-            $year = (int) date('Y', strtotime($fechaFallecimiento));
-            $stmt = $this->db->prepare("SELECT id FROM sim_cat_unidades_tributarias WHERE anio = :anio LIMIT 1");
-            $stmt->execute(['anio' => $year]);
-            $utId = $stmt->fetchColumn() ?: null;
+            $ut = \App\Core\UnidadTributariaService::obtenerPorFecha($fechaFallecimiento);
+            $utId = $ut ? (int) $ut['id'] : null;
         }
 
         $tipoSucesion = $caso['tipo_sucesion'] ?? 'Con_Cedula';
@@ -495,11 +531,12 @@ class StoreCasoModel
     private function clearCaseRelatedData(int $casoId): void
     {
         $tables = [
+            'sim_caso_calculo_manual' => 'caso_estudio_id',
             'sim_caso_direcciones' => 'sim_caso_estudio_id',
             'sim_caso_tipoherencia_rel' => 'caso_estudio_id',
             'sim_caso_participantes' => 'caso_estudio_id',
-            'sim_caso_bienes_inmuebles' => 'caso_estudio_id',
-            'sim_caso_bienes_muebles' => 'caso_estudio_id',
+            // Child detail tables BEFORE parent bienes tables (FK order)
+            'sim_caso_bienes_litigiosos' => 'caso_estudio_id',
             'sim_caso_pasivos_deuda' => 'caso_estudio_id',
             'sim_caso_pasivos_gastos' => 'caso_estudio_id',
             'sim_caso_exenciones' => 'caso_estudio_id',
@@ -510,6 +547,34 @@ class StoreCasoModel
         foreach ($tables as $table => $col) {
             $this->db->prepare("DELETE FROM {$table} WHERE {$col} = :cid")->execute(['cid' => $casoId]);
         }
+
+        // Delete bien mueble detail tables (FK to sim_caso_bienes_muebles.id)
+        $bienMuebleIds = $this->db->prepare("SELECT id FROM sim_caso_bienes_muebles WHERE caso_estudio_id = :cid");
+        $bienMuebleIds->execute(['cid' => $casoId]);
+        $bmIds = $bienMuebleIds->fetchAll(\PDO::FETCH_COLUMN);
+        if (!empty($bmIds)) {
+            $inClause = implode(',', array_map('intval', $bmIds));
+            $detailTables = [
+                'sim_caso_bm_banco', 'sim_caso_bm_seguro', 'sim_caso_bm_transporte',
+                'sim_caso_bm_opciones_compra', 'sim_caso_bm_cuentas_cobrar',
+                'sim_caso_bm_semovientes', 'sim_caso_bm_bonos', 'sim_caso_bm_acciones',
+                'sim_caso_bm_prestaciones', 'sim_caso_bm_caja_ahorro'
+            ];
+            foreach ($detailTables as $dt) {
+                $this->db->exec("DELETE FROM {$dt} WHERE bien_mueble_id IN ({$inClause})");
+            }
+        }
+        $this->db->prepare("DELETE FROM sim_caso_bienes_muebles WHERE caso_estudio_id = :cid")->execute(['cid' => $casoId]);
+
+        // Delete bien inmueble relation table (FK to sim_caso_bienes_inmuebles.id)
+        $bienInmIds = $this->db->prepare("SELECT id FROM sim_caso_bienes_inmuebles WHERE caso_estudio_id = :cid");
+        $bienInmIds->execute(['cid' => $casoId]);
+        $biIds = $bienInmIds->fetchAll(\PDO::FETCH_COLUMN);
+        if (!empty($biIds)) {
+            $inClause = implode(',', array_map('intval', $biIds));
+            $this->db->exec("DELETE FROM sim_caso_bien_inmueble_tipo_rel WHERE bien_inmueble_id IN ({$inClause})");
+        }
+        $this->db->prepare("DELETE FROM sim_caso_bienes_inmuebles WHERE caso_estudio_id = :cid")->execute(['cid' => $casoId]);
 
         // Config y asignaciones
         $stmt = $this->db->prepare("SELECT id FROM sim_caso_configs WHERE caso_id = :cid");
@@ -659,12 +724,12 @@ class StoreCasoModel
             'caso_id' => $casoId,
             'vivienda' => $esVivienda ? 1 : 0,
             'litigioso' => $esLitigioso ? 1 : 0,
-            'porcentaje' => (float) ($b['porcentaje'] ?? 100),
+            'porcentaje' => self::toFloat($b['porcentaje'] ?? 100, 100),
             'descripcion' => $b['descripcion'] ?? null,
             'linderos' => $b['linderos'] ?? null,
-            'sup_const' => (float) ($b['superficie_construida'] ?? 0),
-            'sup_no_const' => (float) ($b['superficie_no_construida'] ?? 0),
-            'area' => (float) ($b['area_superficie'] ?? 0),
+            'sup_const' => self::toFloat($b['superficie_construida'] ?? 0),
+            'sup_no_const' => self::toFloat($b['superficie_no_construida'] ?? 0),
+            'area' => self::toFloat($b['area_superficie'] ?? 0),
             'direccion' => $b['direccion'] ?? null,
             'oficina' => $b['oficina_registro'] ?? null,
             'nro_registro' => $b['nro_registro'] ?? null,
@@ -675,8 +740,8 @@ class StoreCasoModel
             'asiento' => $b['asiento_registral'] ?? null,
             'matricula' => $b['matricula'] ?? null,
             'folio_anio' => $b['folio_real_anio'] ?? null,
-            'val_original' => (float) ($b['valor_original'] ?? 0),
-            'val_declarado' => (float) ($b['valor_declarado'] ?? 0),
+            'val_original' => self::toFloat($b['valor_original'] ?? 0),
+            'val_declarado' => self::toFloat($b['valor_declarado'] ?? 0),
         ]);
 
         $bienId = (int) $this->db->lastInsertId();
@@ -718,9 +783,9 @@ class StoreCasoModel
             'cat_id' => (int) ($b['categoria_bien_mueble_id'] ?? 0),
             'tipo_id' => !empty($b['tipo_bien_mueble_id']) ? (int) $b['tipo_bien_mueble_id'] : null,
             'litigioso' => $esLitigioso ? 1 : 0,
-            'porcentaje' => (float) ($b['porcentaje'] ?? 100),
+            'porcentaje' => self::toFloat($b['porcentaje'] ?? 100, 100),
             'descripcion' => $b['descripcion'] ?? null,
-            'valor' => (float) ($b['valor_declarado'] ?? 0),
+            'valor' => self::toFloat($b['valor_declarado'] ?? 0),
         ]);
 
         $bienMuebleId = (int) $this->db->lastInsertId();
@@ -858,10 +923,10 @@ class StoreCasoModel
             'caso_id' => $casoId,
             'tipo_id' => (int) ($pd['tipo_pasivo_deuda_id'] ?? 0),
             'banco_id' => !empty($pd['banco_id']) ? (int) $pd['banco_id'] : null,
-            'tdc' => $pd['numero_tdc'] ?: null,
-            'pct' => (float) ($pd['porcentaje'] ?? 100),
+            'tdc' => ($pd['numero_tdc'] ?? null) ?: null,
+            'pct' => self::toFloat($pd['porcentaje'] ?? 100, 100),
             'desc' => $pd['descripcion'] ?? null,
-            'valor' => (float) ($pd['valor_declarado'] ?? 0),
+            'valor' => self::toFloat($pd['valor_declarado'] ?? 0),
         ]);
     }
 
@@ -875,9 +940,9 @@ class StoreCasoModel
         $stmt->execute([
             'caso_id' => $casoId,
             'tipo_id' => (int) ($pg['tipo_pasivo_gasto_id'] ?? 0),
-            'pct' => (float) ($pg['porcentaje'] ?? 100),
+            'pct' => self::toFloat($pg['porcentaje'] ?? 100, 100),
             'desc' => $pg['descripcion'] ?? null,
-            'valor' => (float) ($pg['valor_declarado'] ?? 0),
+            'valor' => self::toFloat($pg['valor_declarado'] ?? 0),
         ]);
     }
 
@@ -893,7 +958,7 @@ class StoreCasoModel
             'caso_id' => $casoId,
             'tipo' => $ex['tipo_exencion'] ?? null,
             'desc' => $ex['descripcion'] ?? null,
-            'valor' => (float) ($ex['valor_declarado'] ?? 0),
+            'valor' => self::toFloat($ex['valor_declarado'] ?? 0),
         ]);
     }
 
@@ -906,7 +971,7 @@ class StoreCasoModel
             'caso_id' => $casoId,
             'tipo' => $ex['tipo_exoneracion'] ?? null,
             'desc' => $ex['descripcion'] ?? null,
-            'valor' => (float) ($ex['valor_declarado'] ?? 0),
+            'valor' => self::toFloat($ex['valor_declarado'] ?? 0),
         ]);
     }
 

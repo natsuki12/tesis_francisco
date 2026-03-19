@@ -113,10 +113,25 @@ class CasoValidator
     {
         if (is_int($value) || is_float($value))
             return $value;
-        if (is_string($value) && $value !== '' && is_numeric($value)) {
+        if (!is_string($value) || $value === '')
+            return $value;
+
+        // Already a standard numeric string (e.g. "123.45", "-0.5")
+        if (is_numeric($value)) {
             return str_contains($value, '.') ? (float) $value : (int) $value;
         }
-        return $value; // Dejar como está si no es convertible (el validador lo atrapará)
+
+        // Venezuelan format: dots as thousands, comma as decimal (e.g. "-1.234.567,89")
+        // Detect: contains comma, possibly dots before it
+        if (str_contains($value, ',')) {
+            $clean = str_replace('.', '', $value); // Remove thousands dots
+            $clean = str_replace(',', '.', $clean); // Comma → dot for decimal
+            if (is_numeric($clean)) {
+                return (float) $clean;
+            }
+        }
+
+        return $value; // Leave as-is if not convertible (the validator will catch it)
     }
 
     /**
@@ -740,9 +755,7 @@ class CasoValidator
                     break;
                 }
             }
-            if ((float) ($b['valor_declarado'] ?? 0) <= 0) {
-                $this->errors[] = "Inmueble #{$n}: El Valor Declarado debe ser mayor a 0.";
-            }
+
             if (($b['bien_litigioso'] ?? '') === 'Si') {
                 $litFields = ['numero_expediente', 'tribunal_causa', 'partes_juicio', 'estado_juicio'];
                 foreach ($litFields as $lf) {
@@ -770,9 +783,10 @@ class CasoValidator
                 $n = $i + 1;
                 $label = "Mueble (cat:{$catId}) #{$n}";
 
-                if ((float) ($b['valor_declarado'] ?? 0) <= 0) {
-                    $this->errors[] = "{$label}: El Valor Declarado debe ser mayor a 0.";
+                if (empty(trim($b['descripcion'] ?? ''))) {
+                    $this->errors[] = "{$label}: La Descripción es obligatoria.";
                 }
+
                 if (($b['bien_litigioso'] ?? '') === 'Si') {
                     $litFields = ['numero_expediente', 'tribunal_causa', 'partes_juicio', 'estado_juicio'];
                     foreach ($litFields as $lf) {
@@ -796,9 +810,10 @@ class CasoValidator
             if (empty($d['tipo_pasivo_deuda_id'])) {
                 $this->errors[] = "Deuda #{$n}: Debe seleccionar un Tipo de Deuda.";
             }
-            if ((float) ($d['valor_declarado'] ?? 0) <= 0) {
-                $this->errors[] = "Deuda #{$n}: El Valor Declarado debe ser mayor a 0.";
+            if (empty(trim($d['descripcion'] ?? ''))) {
+                $this->errors[] = "Deuda #{$n}: La Descripción es obligatoria.";
             }
+
             $pct = (float) ($d['porcentaje'] ?? 100);
             if ($pct <= 0 || $pct > 100) {
                 $this->errors[] = "Deuda #{$n}: Porcentaje inválido.";
@@ -816,9 +831,10 @@ class CasoValidator
             if (empty($g['tipo_pasivo_gasto_id'])) {
                 $this->errors[] = "Gasto #{$n}: Debe seleccionar un Tipo de Gasto.";
             }
-            if ((float) ($g['valor_declarado'] ?? 0) <= 0) {
-                $this->errors[] = "Gasto #{$n}: El Valor Declarado debe ser mayor a 0.";
+            if (empty(trim($g['descripcion'] ?? ''))) {
+                $this->errors[] = "Gasto #{$n}: La Descripción es obligatoria.";
             }
+
         }
     }
 
@@ -832,9 +848,10 @@ class CasoValidator
             if (empty($e['tipo_exencion'])) {
                 $this->errors[] = "Exención #{$n}: Tipo de exención es obligatorio.";
             }
-            if ((float) ($e['valor_declarado'] ?? 0) <= 0) {
-                $this->errors[] = "Exención #{$n}: El Valor Declarado debe ser mayor a 0.";
+            if (empty(trim($e['descripcion'] ?? ''))) {
+                $this->errors[] = "Exención #{$n}: La Descripción es obligatoria.";
             }
+
         }
     }
 
@@ -848,9 +865,10 @@ class CasoValidator
             if (empty($e['tipo_exoneracion'])) {
                 $this->errors[] = "Exoneración #{$n}: Tipo de exoneración es obligatorio.";
             }
-            if ((float) ($e['valor_declarado'] ?? 0) <= 0) {
-                $this->errors[] = "Exoneración #{$n}: El Valor Declarado debe ser mayor a 0.";
+            if (empty(trim($e['descripcion'] ?? ''))) {
+                $this->errors[] = "Exoneración #{$n}: La Descripción es obligatoria.";
             }
+
         }
     }
 

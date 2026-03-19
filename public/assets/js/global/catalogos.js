@@ -16,6 +16,7 @@ const catalogsCache = {
     tiposSemoviente: [],
     tiposPasivoDeuda: [],
     tiposPasivoGasto: [],
+    tarifasSucesion: [],
     secciones: [],
     estudiantes: []
 };
@@ -39,7 +40,6 @@ async function fetchCatalog(endpoint, errorMessage) {
 }
 
 export async function initCatalogos() {
-    console.log('Inicializando catálogos...');
 
     const [
         ut,
@@ -53,6 +53,7 @@ export async function initCatalogos() {
         semovientes,
         deudas,
         gastos,
+        tarifas,
         secciones,
         estudiantes
     ] = await Promise.all([
@@ -67,6 +68,7 @@ export async function initCatalogos() {
         fetchCatalog('tipos-semoviente', 'Error cargando Tipos Semoviente'),
         fetchCatalog('tipos-pasivo-deuda', 'Error cargando Tipos Pasivo Deuda'),
         fetchCatalog('tipos-pasivo-gasto', 'Error cargando Tipos Pasivo Gasto'),
+        fetchCatalog('tarifas-sucesion', 'Error cargando Tarifas Sucesión'),
         fetchCatalog('secciones-profesor', 'Error cargando Secciones'),
         fetchCatalog('estudiantes-profesor', 'Error cargando Estudiantes')
     ]);
@@ -82,6 +84,7 @@ export async function initCatalogos() {
     catalogsCache.tiposSemoviente = semovientes;
     catalogsCache.tiposPasivoDeuda = deudas;
     catalogsCache.tiposPasivoGasto = gastos;
+    catalogsCache.tarifasSucesion = tarifas;
     catalogsCache.secciones = secciones;
     catalogsCache.estudiantes = estudiantes;
 
@@ -94,7 +97,6 @@ export async function initCatalogos() {
         await Promise.all(promises);
     }
 
-    console.log('Catálogos cargados:', catalogsCache);
 }
 
 export function getCatalogs() {

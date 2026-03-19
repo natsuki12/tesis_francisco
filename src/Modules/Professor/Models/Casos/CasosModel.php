@@ -30,16 +30,23 @@ class CasosModel
                 p.nombres AS causante_nombres,
                 p.apellidos AS causante_apellidos,
                 p.cedula AS causante_cedula,
-                conf.modalidad,
+                COALESCE(p.tipo_cedula, 'V') AS causante_nacionalidad,
                 (
                     SELECT COUNT(*) 
                     FROM sim_caso_participantes cp 
                     WHERE cp.caso_estudio_id = c.id 
                     AND cp.rol_en_caso = 'Heredero'
-                ) as herederos_count
+                ) as herederos_count,
+                (
+                    COALESCE((SELECT SUM(bi.valor_declarado) FROM sim_caso_bienes_inmuebles bi WHERE bi.caso_estudio_id = c.id), 0)
+                    + COALESCE((SELECT SUM(bm.valor_declarado) FROM sim_caso_bienes_muebles bm WHERE bm.caso_estudio_id = c.id), 0)
+                    - COALESCE((SELECT SUM(ex.valor_declarado) FROM sim_caso_exenciones ex WHERE ex.caso_estudio_id = c.id), 0)
+                    - COALESCE((SELECT SUM(eo.valor_declarado) FROM sim_caso_exoneraciones eo WHERE eo.caso_estudio_id = c.id), 0)
+                    - COALESCE((SELECT SUM(pd.valor_declarado) FROM sim_caso_pasivos_deuda pd WHERE pd.caso_estudio_id = c.id), 0)
+                    - COALESCE((SELECT SUM(pg.valor_declarado) FROM sim_caso_pasivos_gastos pg WHERE pg.caso_estudio_id = c.id), 0)
+                ) as patrimonio_neto
             FROM sim_casos_estudios c
             LEFT JOIN sim_personas p ON c.causante_id = p.id
-            LEFT JOIN sim_caso_configs conf ON conf.caso_id = c.id
             WHERE c.profesor_id = :profesor_id
             AND c.estado != 'Eliminado'
             ORDER BY c.created_at DESC

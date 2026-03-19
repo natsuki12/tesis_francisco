@@ -121,12 +121,23 @@ class CasosController
         // Insertar en la BD
         try {
             $storeModel = new StoreCasoModel();
+            $inputCasoId = isset($data['caso_id']) ? (int) $data['caso_id'] : null;
+
+            // Guard: bloquear re-publicación de un caso ya publicado
+            if ($inputCasoId && $modo === 'Publicar') {
+                $db = \App\Core\DB::connect();
+                $chk = $db->prepare("SELECT estado FROM sim_casos_estudios WHERE id = :id AND profesor_id = :prof");
+                $chk->execute(['id' => $inputCasoId, 'prof' => $profesorId]);
+                $estadoActual = $chk->fetchColumn();
+                if ($estadoActual === 'Publicado') {
+                    echo json_encode(['success' => true, 'caso_id' => $inputCasoId, 'message' => 'Este caso ya fue publicado.']);
+                    exit;
+                }
+            }
 
             if ($modo === 'Borrador') {
-                $inputCasoId = isset($data['caso_id']) ? (int) $data['caso_id'] : null;
                 $casoId = $storeModel->storeDraft($data, $profesorId, $inputCasoId);
             } else {
-                $inputCasoId = isset($data['caso_id']) ? (int) $data['caso_id'] : null;
                 $casoId = $storeModel->store($data, $profesorId, $inputCasoId);
             }
 

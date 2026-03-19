@@ -11,7 +11,7 @@ use PDO;
  *
  * Reglas:
  *  - Compara por fecha_gaceta en sim_cat_unidades_tributarias.
- *  - Si la fecha es anterior a 2021, devuelve la UT con id = 21.
+ *  - Si la fecha es anterior a 2021-04-01, devuelve la UT con id = 21.
  *  - Si la fecha es posterior a todas las UTs registradas, devuelve la última (fecha más reciente).
  */
 class UnidadTributariaService
@@ -36,8 +36,10 @@ class UnidadTributariaService
 
             $pdo = DB::connect();
 
-            // Regla 1: Si el año es anterior a 2021, usar UT con id = 21
-            if ($anio < 2021) {
+            // Regla 1: Si la fecha es anterior a la primera gaceta registrada (2021-04-01),
+            //          usar UT con id = 21 (la más antigua disponible).
+            //          Cubre todos los años < 2021 Y los meses de 2021 previos a la gaceta.
+            if ($fechaNorm < '2021-04-01') {
                 $stmt = $pdo->prepare(
                     'SELECT id, anio, valor, fecha_gaceta
                        FROM sim_cat_unidades_tributarias

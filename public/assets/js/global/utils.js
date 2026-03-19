@@ -9,7 +9,14 @@ export const show = (el) => { if (el) el.style.display = ''; };
 export const hide = (el) => { if (el) el.style.display = 'none'; };
 
 export const formatBs = (v) => {
-    const n = parseFloat(v) || 0;
+    // Handle Venezuelan format: "1.500,00" → strip dots, swap comma → "1500.00"
+    let n = 0;
+    if (typeof v === 'number') {
+        n = v;
+    } else if (typeof v === 'string' && v !== '') {
+        const clean = v.replace(/\./g, '').replace(',', '.');
+        n = parseFloat(clean) || 0;
+    }
     return 'Bs. ' + n.toLocaleString('es-VE', { minimumFractionDigits: 2 });
 };
 

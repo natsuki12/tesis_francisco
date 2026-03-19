@@ -35,7 +35,18 @@ class CatalogModel
     public function getParentescos()
     {
         $db = DB::connect();
-        $sql = "SELECT id as parentesco_id, etiqueta as nombre FROM sim_cat_parentescos WHERE activo = 1 ORDER BY id ASC";
+        $sql = "SELECT id as parentesco_id, etiqueta as nombre, grupo_tarifa_id FROM sim_cat_parentescos WHERE activo = 1 ORDER BY id ASC";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getTarifasSucesion()
+    {
+        $db = DB::connect();
+        $sql = "SELECT grupo_tarifa_id, rango_desde_ut, rango_hasta_ut, porcentaje, sustraendo_ut
+                  FROM sim_cat_tarifas_sucesion WHERE activo = 1
+                  ORDER BY grupo_tarifa_id, rango_desde_ut";
         $stmt = $db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -177,9 +188,11 @@ class CatalogModel
 
         $sql = "SELECT p.id as persona_id, p.tipo_cedula, p.nacionalidad, p.cedula, p.pasaporte, p.rif_personal, 
                        p.nombres, p.apellidos, p.fecha_nacimiento, p.estado_civil, p.sexo, 
-                       a.fecha_fallecimiento 
+                       a.fecha_fallecimiento,
+                       df.fecha_cierre_fiscal, df.domiciliado_pais
                 FROM sim_personas p
                 LEFT JOIN sim_actas_defunciones a ON a.sim_persona_id = p.id
+                LEFT JOIN sim_causante_datos_fiscales df ON df.sim_persona_id = p.id
                 WHERE 1=0";
 
         $params = [];

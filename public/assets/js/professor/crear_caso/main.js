@@ -6,7 +6,12 @@ import { caseData, UIState, loadCaseData, saveCaseData, clearSavedCaseData, hydr
  * @param {'Borrador'|'Publicado'} modo
  */
 let _submitted = false;
+let _saving = false;
 async function submitCase(modo) {
+    // Guard: prevent double-click / multiple submissions
+    if (_saving || _submitted) return;
+    _saving = true;
+
     // Fijar el estado antes de enviar
     caseData.caso.estado = modo;
 
@@ -44,6 +49,7 @@ async function submitCase(modo) {
             } else {
                 serverErrors.forEach(err => showToast(err));
             }
+            _saving = false;
             return;
         }
 
@@ -62,6 +68,7 @@ async function submitCase(modo) {
             setTimeout(() => { window.location.href = baseUrl + '/casos-sucesorales'; }, 1500);
         }
     } catch (err) {
+        _saving = false;
         showToast('Error de red al guardar el caso: ' + err.message);
     }
 }
@@ -72,7 +79,7 @@ import { initStepperClicks, setStep, nextStep, prevStep } from './navigation.js'
 import { initCatalogos, getCatalogs } from '../../global/catalogos.js';
 import { openModal, closeModal, saveModal, removeItem, removeMueble } from './modal.js';
 import { saveProrroga, renderProrrogas, deleteProrroga, editProrroga } from './prorroga.js';
-import { renderInventario } from './inventario.js';
+import { renderInventario, viewLitigioso } from './inventario.js';
 
 /**
  * Validación frontend antes de publicar.
@@ -551,8 +558,8 @@ function validateBeforePublish() {
     // Validar que cada heredero premuerto tenga al menos un heredero del premuerto
     c.herederos.forEach((h, i) => {
         if (h.premuerto === 'SI') {
-            const ced = (h.cedula || '').trim();
-            const tieneSubHerederos = (c.herederos_premuertos || []).some(hp => hp.premuerto_padre_id === ced);
+            const uid = h._uid || '';
+            const tieneSubHerederos = (c.herederos_premuertos || []).some(hp => hp.premuerto_padre_id === uid);
             if (!tieneSubHerederos) {
                 errors.push(`Heredero #${i + 1} (${h.nombres || ''} ${h.apellidos || ''}): Está marcado como premuerto pero no tiene herederos del premuerto asignados`);
             }
@@ -635,7 +642,7 @@ function showValidationPopup(errors, title = 'No se puede publicar') {
 window.CC = {
     nextStep, prevStep, setStep,
     openModal, closeModal, saveModal,
-    removeItem, removeMueble,
+    removeItem, removeMueble, viewLitigioso,
     saveDireccion, editDireccion, deleteDireccion,
     saveProrroga, deleteProrroga, editProrroga,
     publish: () => {
@@ -675,6 +682,11 @@ function initCausanteAutocomplete() {
             const elPid = $('[data-bind="causante.persona_id"]');
             if (elPid) { elPid.value = ''; }
             caseData.causante._locked_fields = [];
+
+            // Clear datos fiscales that were auto-filled
+            caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
+            const cierreEl = $('#input_fecha_cierre_fiscal');
+            if (cierreEl) { cierreEl.value = ''; cierreEl.disabled = false; cierreEl.style.backgroundColor = ''; }
         };
 
         const fetchCausante = async () => {
@@ -755,6 +767,16 @@ function initCausanteAutocomplete() {
                     fillAndDisable('[data-bind="causante.nacionalidad"]', data.nacionalidad);
                     if (data.fecha_fallecimiento) {
                         fillAndDisable('[data-bind="causante.fecha_fallecimiento"]', data.fecha_fallecimiento);
+                    }
+
+                    // Populate datos fiscales if available from DB
+                    if (data.fecha_cierre_fiscal) {
+                        caseData.datos_fiscales_causante.fecha_cierre_fiscal = data.fecha_cierre_fiscal;
+                        fillAndDisable('#input_fecha_cierre_fiscal', data.fecha_cierre_fiscal);
+                    }
+                    if (data.domiciliado_pais !== null && data.domiciliado_pais !== undefined) {
+                        caseData.datos_fiscales_causante.domiciliado_pais = data.domiciliado_pais;
+                        fillAndDisable('[data-bind="datos_fiscales_causante.domiciliado_pais"]', data.domiciliado_pais);
                     }
 
                     showToast('Datos del causante autocompletados', 'success');
