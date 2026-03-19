@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-03-2026 a las 22:28:44
+-- Tiempo de generación: 19-03-2026 a las 03:13:28
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -317,7 +317,9 @@ INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento
 (271, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-18 16:12:03'),
 (272, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-18 16:12:03'),
 (273, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-18 17:58:28'),
-(274, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-18 17:58:28');
+(274, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-18 17:58:28'),
+(275, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-19 01:04:44'),
+(276, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-19 01:04:44');
 
 -- --------------------------------------------------------
 
@@ -5211,7 +5213,8 @@ INSERT INTO `sim_actas_defunciones` (`id`, `sim_persona_id`, `fecha_fallecimient
 (1, 1, '2024-03-28', NULL, NULL, NULL, '2026-03-06 18:36:07', '2026-03-06 18:36:07'),
 (2, 2, '2017-03-02', NULL, NULL, NULL, '2026-03-06 22:46:50', '2026-03-06 22:46:50'),
 (3, 5, '2025-02-01', NULL, NULL, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
-(4, 8, '2026-03-01', '12345', '2026', '1', '2026-03-08 03:33:25', '2026-03-08 03:33:25');
+(4, 8, '2026-03-01', '12345', '2026', '1', '2026-03-08 03:33:25', '2026-03-08 03:33:25'),
+(5, 3, '2026-03-12', NULL, NULL, NULL, '2026-03-18 23:07:10', '2026-03-18 23:07:10');
 
 -- --------------------------------------------------------
 
@@ -5239,12 +5242,14 @@ CREATE TABLE `sim_casos_estudios` (
 --
 
 INSERT INTO `sim_casos_estudios` (`id`, `profesor_id`, `causante_id`, `representante_id`, `unidad_tributaria_id`, `tipo_sucesion`, `titulo`, `descripcion`, `estado`, `borrador_json`, `created_at`, `updated_at`) VALUES
-(1, 1, NULL, NULL, NULL, 'Con_Cedula', '5to', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"5to\",\"descripcion\":\"ejemplo 2\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Sin Cédula\"},\"caso_id\":1,\"herencia\":{\"tipos\":[{\"tipo_herencia_id\":\"4\"}]},\"causante\":{\"tipo_cedula\":\"\",\"sexo\":\"\",\"estado_civil\":\"\",\"nacionalidad\":\"\",\"cedula\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"fecha_nacimiento\":\"\",\"fecha_fallecimiento\":\"\",\"_locked_fields\":[]},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"sexo\":\"\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"\",\"letra_rif\":\"V\",\"rif_personal\":\"\",\"nacionalidad\":\"\",\"_locked_fields\":[],\"pasaporte\":\"\"},\"herederos\":[],\"herederos_premuertos\":[],\"bienes_inmuebles\":[{\"vivienda_principal\":\"Si\",\"bien_litigioso\":\"No\",\"porcentaje\":100,\"descripcion\":\" \",\"linderos\":\" \",\"superficie_construida\":0,\"superficie_no_construida\":0,\"area_superficie\":0,\"direccion\":\" \",\"oficina_registro\":\" \",\"nro_registro\":\" \",\"libro\":\" \",\"protocolo\":\" \",\"fecha_registro\":\"2026-03-10\",\"trimestre\":\" \",\"asiento_registral\":\" \",\"matricula\":\" \",\"folio_real_anio\":\" \",\"valor_original\":0,\"valor_declarado\":0,\"tipo_bien_inmueble_id\":[\"1\",\"2\",\"5\",\"6\",\"7\",\"9\"]}],\"bienes_muebles\":{\"1\":[{\"tipo_bien_mueble_id\":\"1\",\"banco_id\":\"1\",\"numero_cuenta\":\"33333333333333333333\",\"bien_litigioso\":\"Si\",\"numero_expediente\":\"de\",\"tribunal_causa\":\"de\",\"partes_juicio\":\"de\",\"estado_juicio\":\"de\",\"porcentaje\":\"100\",\"descripcion\":\"eedd3\",\"valor_declarado\":343}],\"9\":[{\"posee_banco\":\"NO\",\"banco_id\":\"\",\"numero_cuenta\":\"\",\"rif_empresa\":\"J123456789\",\"razon_social\":\"unimar\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"dddd\",\"valor_declarado\":4}],\"length\":0},\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorrogas\":[]}', '2026-03-05 20:48:40', '2026-03-18 19:32:39'),
-(2, 1, 1, 3, 24, 'Con_Cedula', 'caso 2', 'prueba', 'Publicado', NULL, '2026-03-05 21:01:35', '2026-03-07 19:12:09'),
-(3, 1, NULL, NULL, NULL, 'Con_Cedula', 'este ', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"este \",\"descripcion\":\"\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":3,\"config\":{\"modalidad\":\"\",\"max_intentos\":0,\"fecha_limite\":\"\",\"tipo_asignacion\":\"Seccion\",\"seccion_id\":\"\"},\"herencia\":{\"tipos\":[]},\"causante\":{\"tipo_cedula\":\"E\",\"sexo\":\"\",\"estado_civil\":\"\",\"nacionalidad\":\"\",\"cedula\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"\",\"apellidos\":\"\",\"fecha_nacimiento\":\"\",\"fecha_fallecimiento\":\"\"},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"domicilio_causante\":{\"tipo_direccion\":\"Casa_Matriz_Establecimiento_Principal\",\"tipo_vialidad\":\"\",\"tipo_inmueble\":\"\",\"nombre_vialidad\":\"\",\"nro_inmueble\":\"\",\"tipo_nivel\":\"\",\"tipo_sector\":\"\",\"nro_nivel\":\"\",\"nombre_sector\":\"\",\"estado\":\"\",\"municipio\":\"\",\"parroquia\":\"\",\"ciudad\":\"\",\"telefono_fijo\":\"\",\"telefono_celular\":\"\",\"fax\":\"\",\"codigo_postal_id\":\"\",\"punto_referencia\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"\",\"nombres\":\"finalmenter\",\"apellidos\":\"diaz\",\"sexo\":\"\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nacionalidad\":\"\"},\"herederos\":[{\"nombres\":\"Valeria\",\"apellidos\":\"Cardier\",\"tipo_documento\":\"RIF\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2026-03-12\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"17\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2026-04-02\"}],\"herederos_premuertos\":[],\"bienes_inmuebles\":[],\"bienes_muebles\":{\"length\":0},\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorroga\":{\"fecha_solicitud\":\"\",\"nro_resolucion\":\"67\",\"fecha_resolucion\":\"\",\"plazo_dias\":\"\",\"fecha_vencimiento\":\"\"},\"prorrogas\":[],\"estudiantes_asignados\":[]}', '2026-03-05 21:09:30', '2026-03-06 19:29:15'),
-(4, 1, NULL, NULL, NULL, 'Con_Cedula', 'test', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"test\",\"descripcion\":\"\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":4,\"config\":{\"modalidad\":\"\",\"max_intentos\":0,\"fecha_limite\":\"\",\"tipo_asignacion\":\"Seccion\",\"seccion_id\":\"\"},\"herencia\":{\"tipos\":[]},\"causante\":{\"tipo_cedula\":\"V\",\"sexo\":\"F\",\"estado_civil\":\"Soltero\",\"nacionalidad\":190,\"cedula\":\"4079920\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"Maria\",\"apellidos\":\"Sarmiento\",\"fecha_nacimiento\":\"2001-05-29\",\"fecha_fallecimiento\":\"2024-03-28\",\"_locked_fields\":[],\"persona_id\":1},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"direcciones_causante\":[],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"sexo\":\"M\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nacionalidad\":190,\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"nacionalidad\"],\"persona_id\":3},\"herederos\":[{\"persona_id\":\"2\",\"nombres\":\"jesus\",\"apellidos\":\"estanga\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"4224014\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2019-03-01\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"17\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2017-03-02\"}],\"herederos_premuertos\":[],\"bienes_inmuebles\":[],\"bienes_muebles\":{\"length\":0},\"pasivos_deuda\":[],\"pasivos_gastos\":[],\"exenciones\":[],\"exoneraciones\":[],\"prorrogas\":[],\"estudiantes_asignados\":[]}', '2026-03-07 05:22:36', '2026-03-07 05:27:10'),
-(10, 1, 1, 3, 24, 'Con_Cedula', 'caso 1', 'prueba', 'Publicado', NULL, '2026-03-07 07:12:52', '2026-03-18 19:33:25'),
-(11, 1, 8, 9, NULL, 'Sin_Cedula', '3', 'Descripcion de prueba para caso sin cedula', 'Publicado', NULL, '2026-03-08 02:28:25', '2026-03-09 05:27:03');
+(1, 1, 1, 3, 23, 'Con_Cedula', 'prueba inteligente', 'prueba real', 'Publicado', NULL, '2026-03-05 20:48:40', '2026-03-19 00:35:36'),
+(2, 1, 1, 3, 23, 'Con_Cedula', 'caso 2', 'prueba', 'Publicado', NULL, '2026-03-05 21:01:35', '2026-03-19 00:35:25'),
+(3, 1, 1, 3, 23, 'Con_Cedula', 'ultima prueba', 'prueba real', 'Publicado', NULL, '2026-03-05 21:09:30', '2026-03-18 23:33:33'),
+(4, 1, 1, 3, 23, 'Con_Cedula', 'test prueba 2', 'prueba real 2', 'Publicado', NULL, '2026-03-07 05:22:36', '2026-03-18 23:27:23'),
+(10, 1, 1, 3, 23, 'Con_Cedula', 'caso 1', 'prueba', 'Publicado', NULL, '2026-03-07 07:12:52', '2026-03-19 00:35:16'),
+(11, 1, 8, 9, 23, 'Sin_Cedula', '3', 'Descripcion de prueba para caso sin cedula', 'Publicado', NULL, '2026-03-08 02:28:25', '2026-03-19 00:35:38'),
+(12, 1, 1, 3, 23, 'Con_Cedula', 'caso de prueba total', 'prueba real', 'Publicado', NULL, '2026-03-18 23:34:25', '2026-03-18 23:35:13'),
+(13, 1, NULL, NULL, NULL, 'Con_Cedula', 'prueba calculos', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"prueba calculos\",\"descripcion\":\"prueba real\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":13,\"herencia\":{\"tipos\":[{\"tipo_herencia_id\":\"4\"},{\"tipo_herencia_id\":\"1\",\"nombre\":\"Testamento\",\"subtipo_testamento\":\"Abierto\",\"fecha_testamento\":\"2024-03-28\"}]},\"causante\":{\"tipo_cedula\":\"V\",\"sexo\":\"F\",\"estado_civil\":\"Casado\",\"nacionalidad\":190,\"cedula\":\"4079920\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"Maria\",\"apellidos\":\"Sarmiento\",\"fecha_nacimiento\":\"2001-05-29\",\"fecha_fallecimiento\":\"2024-03-28\",\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"estado_civil\",\"nacionalidad\",\"fecha_fallecimiento\"],\"persona_id\":1},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"2024-12-31\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"direcciones_causante\":[{\"tipo_direccion\":\"Domicilio_Fiscal\",\"tipo_vialidad\":\"Calle\",\"tipo_inmueble\":\"Casa\",\"nombre_vialidad\":\"ROJAS\",\"nro_inmueble\":\"CASA - NRO 35\",\"tipo_nivel\":\"\",\"tipo_sector\":\"Urbanizacion\",\"nro_nivel\":\"NO APLICA\",\"nombre_sector\":\"VILLAS DE LA ASUNCION 2\",\"estado\":\"16\",\"municipio\":\"211\",\"parroquia\":\"702\",\"ciudad\":\"211\",\"telefono_fijo\":\"\",\"telefono_celular\":\"0412-7048856\",\"fax\":\"\",\"codigo_postal_id\":\"1833\",\"punto_referencia\":\"LA ZONA EDUCATIVA\",\"desc_inmueble\":\"casa\",\"piso_nivel\":\"35\"}],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"sexo\":\"M\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"letra_rif\":\"J\",\"rif_personal\":\"37836650\",\"nacionalidad\":190,\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"nacionalidad\"],\"pasaporte\":\"\",\"persona_id\":3},\"herederos\":[{\"persona_id\":\"3\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"16\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2026-03-12\",\"_uid\":\"98114a25-469c-43ca-a48b-e78d1560064d\"},{\"persona_id\":\"4\",\"nombres\":\"valeria\",\"apellidos\":\"cardier\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"31120479\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2004-11-20\",\"sexo\":\"F\",\"estado_civil\":\"Casado\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"1\",\"premuerto\":\"NO\",\"fecha_fallecimiento\":\"\",\"_uid\":\"ca226943-ebc3-4d0f-a805-f2b6853792fa\"}],\"herederos_premuertos\":[{\"persona_id\":\"2\",\"nombres\":\"jesus\",\"apellidos\":\"estanga\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"4224014\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2000-03-01\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"8\",\"premuerto_padre_id\":\"98114a25-469c-43ca-a48b-e78d1560064d\",\"_uid\":\"e4604131-c249-4f72-af2a-12119c827c50\",\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"estado_civil\"]}],\"bienes_inmuebles\":[{\"vivienda_principal\":\"Si\",\"bien_litigioso\":\"No\",\"porcentaje\":100,\"descripcion\":\" vivienda principal\",\"linderos\":\"no se que es un lindero\",\"superficie_construida\":250,\"superficie_no_construida\":750,\"area_superficie\":1000,\"direccion\":\"calle la poza\",\"oficina_registro\":\" no tiene\",\"nro_registro\":\" 1\",\"libro\":\" 1\",\"protocolo\":\" 1\",\"fecha_registro\":\"2026-03-10\",\"trimestre\":\" 1\",\"asiento_registral\":\" 1\",\"matricula\":\" 1\",\"folio_real_anio\":\" 1\",\"valor_original\":2000,\"valor_declarado\":50000,\"tipo_bien_inmueble_id\":[\"2\",\"4\"]}],\"bienes_muebles\":{\"1\":[{\"tipo_bien_mueble_id\":\"1\",\"banco_id\":\"1\",\"numero_cuenta\":\"33333333333333333333\",\"bien_litigioso\":\"Si\",\"numero_expediente\":\"de\",\"tribunal_causa\":\"de\",\"partes_juicio\":\"de\",\"estado_juicio\":\"de\",\"porcentaje\":\"100\",\"descripcion\":\"eedd3\",\"valor_declarado\":5000}],\"2\":[{\"tipo_bien_mueble_id\":\"8\",\"rif_empresa\":\"J123456789\",\"razon_social\":\"unimar\",\"numero_prima\":\"7\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"seguro montepio\",\"valor_declarado\":2500},{\"tipo_bien_mueble_id\":\"9\",\"rif_empresa\":\"J378366509\",\"razon_social\":\"seguros vidal 2\",\"numero_prima\":\"333\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"un buen seguro\",\"valor_declarado\":1500}],\"9\":[{\"posee_banco\":\"NO\",\"banco_id\":\"\",\"numero_cuenta\":\"\",\"rif_empresa\":\"J123456789\",\"razon_social\":\"unimar\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"dddd\",\"valor_declarado\":500}],\"length\":0},\"pasivos_deuda\":[{\"tipo_pasivo_deuda_id\":\"2\",\"banco_id\":\"19\",\"porcentaje\":100,\"descripcion\":\"deuda 1\",\"valor_declarado\":250},{\"tipo_pasivo_deuda_id\":\"4\",\"porcentaje\":100,\"descripcion\":\"otros\",\"valor_declarado\":300}],\"pasivos_gastos\":[{\"tipo_pasivo_gasto_id\":\"3\",\"porcentaje\":\"100\",\"descripcion\":\"testamento\",\"valor_declarado\":250}],\"exenciones\":[{\"tipo_exencion\":\"excencion 1\",\"descripcion\":\"excencion 1\",\"valor_declarado\":250}],\"exoneraciones\":[{\"tipo_exoneracion\":\"exoneraicon 1\",\"descripcion\":\"exoneraicon 1\",\"valor_declarado\":250}],\"prorrogas\":[{\"fecha_solicitud\":\"2026-03-18\",\"nro_resolucion\":\"123456\",\"fecha_resolucion\":\"2026-03-18\",\"plazo_dias\":\"7\",\"fecha_vencimiento\":\"2026-03-25\"}],\"calculo_manual\":[{\"_uid\":\"98114a25-469c-43ca-a48b-e78d1560064d\",\"cuota_parte_ut\":233.33,\"reduccion_bs\":10},{\"_uid\":\"ca226943-ebc3-4d0f-a805-f2b6853792fa\",\"cuota_parte_ut\":233.33,\"reduccion_bs\":0}]}', '2026-03-19 00:49:36', '2026-03-19 00:54:32');
 
 -- --------------------------------------------------------
 
@@ -5321,7 +5326,11 @@ INSERT INTO `sim_caso_bienes_inmuebles` (`id`, `caso_estudio_id`, `es_vivienda_p
 (2, 10, 0, 0, 10.50, 'ccc', 'cc', 33.30, 33.30, 3.30, '3333', '33', '33', '33', '33', '2026-03-03', '33', '33', '33', '33', 33.30, 333.30, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
 (3, 2, 1, 1, 50.50, '5656', '5656', 666.30, 66.50, 66.30, 'la asuncion', 'no se', '500', '055', '0221', '2026-03-04', '55', '54', '44', '44', 2.20, 2.20, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
 (4, 2, 0, 0, 10.50, 'ccc', 'cc', 33.30, 33.30, 3.30, '3333', '33', '33', '33', '33', '2026-03-03', '33', '33', '33', '33', 33.30, 333.30, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
-(5, 11, 0, 0, 100.00, 'Casa de habitacion', 'Norte: calle 1, Sur: calle 2, Este: avenida 3, Oeste: avenida 4', 150.00, 50.00, 200.00, 'Av. Principal, Sector Centro, Municipio Marino', 'Oficina Subalterna de Registro del Municipio Marino', 'R-2019-001', 'Libro 5', 'Protocolo 1', '2019-05-20', '2do', 'A-123', 'M-2019-001', '2019', 50000.00, 75000.00, NULL, '2026-03-08 03:33:25', '2026-03-08 03:33:25');
+(5, 11, 0, 0, 100.00, 'Casa de habitacion', 'Norte: calle 1, Sur: calle 2, Este: avenida 3, Oeste: avenida 4', 150.00, 50.00, 200.00, 'Av. Principal, Sector Centro, Municipio Marino', 'Oficina Subalterna de Registro del Municipio Marino', 'R-2019-001', 'Libro 5', 'Protocolo 1', '2019-05-20', '2do', 'A-123', 'M-2019-001', '2019', 50000.00, 75000.00, NULL, '2026-03-08 03:33:25', '2026-03-08 03:33:25'),
+(6, 1, 1, 0, 100.00, ' vivienda principal', 'no se que es un lindero', 250.00, 750.00, 1000.00, 'calle la poza', ' no tiene', ' 1', ' 1', ' 1', '2026-03-10', ' 1', ' 1', ' 1', ' 1', 2000.00, 50000.00, NULL, '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
+(7, 4, 1, 0, 100.00, ' vivienda principal', 'no se que es un lindero', 250.00, 750.00, 1000.00, 'calle la poza', ' no tiene', ' 1', ' 1', ' 1', '2026-03-10', ' 1', ' 1', ' 1', ' 1', 2000.00, 50000.00, NULL, '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
+(9, 3, 1, 0, 100.00, ' vivienda principal', 'no se que es un lindero', 250.00, 750.00, 1000.00, 'calle la poza', ' no tiene', ' 1', ' 1', ' 1', '2026-03-10', ' 1', ' 1', ' 1', ' 1', 2000.00, 50000.00, NULL, '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
+(10, 12, 1, 0, 100.00, ' vivienda principal', 'no se que es un lindero', 250.00, 750.00, 1000.00, 'calle la poza', ' no tiene', ' 1', ' 1', ' 1', '2026-03-10', ' 1', ' 1', ' 1', ' 1', 2000.00, 50000.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -5368,7 +5377,11 @@ INSERT INTO `sim_caso_bienes_litigiosos` (`id`, `caso_estudio_id`, `bien_tipo`, 
 (19, 2, 'Mueble', 43, '44', '44', '44', '44', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
 (20, 2, 'Mueble', 46, '33', '33', '33', '33', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
 (21, 2, 'Mueble', 52, '44', '44', '44', '44', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
-(22, 2, 'Mueble', 56, 'ee', 'ee', 'ee', 'ee', '2026-03-07 19:12:09', '2026-03-07 19:12:09');
+(22, 2, 'Mueble', 56, 'ee', 'ee', 'ee', 'ee', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(23, 1, 'Mueble', 59, 'de', 'de', 'de', 'de', '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
+(24, 4, 'Mueble', 63, 'de', 'de', 'de', 'de', '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
+(26, 3, 'Mueble', 71, 'de', 'de', 'de', 'de', '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
+(27, 12, 'Mueble', 75, 'de', 'de', 'de', 'de', '2026-03-18 23:35:13', '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -5452,7 +5465,23 @@ INSERT INTO `sim_caso_bienes_muebles` (`id`, `caso_estudio_id`, `categoria_bien_
 (55, 2, 11, NULL, 0, 100.00, 'que es una plantacion', 4343.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
 (56, 2, 11, NULL, 1, 100.00, 'loool', 300.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
 (57, 2, 12, NULL, 0, 100.00, 'bueno es otro', 4555.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
-(58, 2, 12, NULL, 0, 100.00, '55555', 5555555555.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09');
+(58, 2, 12, NULL, 0, 100.00, '55555', 5555555555.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(59, 1, 1, 1, 1, 100.00, 'eedd3', 5000.00, NULL, '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
+(60, 1, 2, 8, 0, 100.00, 'seguro montepio', 2500.00, NULL, '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
+(61, 1, 2, 9, 0, 100.00, 'un buen seguro', 1500.00, NULL, '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
+(62, 1, 9, NULL, 0, 100.00, 'dddd', 500.00, NULL, '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
+(63, 4, 1, 1, 1, 100.00, 'eedd3', 5000.00, NULL, '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
+(64, 4, 2, 8, 0, 100.00, 'seguro montepio', 2500.00, NULL, '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
+(65, 4, 2, 9, 0, 100.00, 'un buen seguro', 1500.00, NULL, '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
+(66, 4, 9, NULL, 0, 100.00, 'dddd', 500.00, NULL, '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
+(71, 3, 1, 1, 1, 100.00, 'eedd3', 5000.00, NULL, '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
+(72, 3, 2, 8, 0, 100.00, 'seguro montepio', 2500.00, NULL, '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
+(73, 3, 2, 9, 0, 100.00, 'un buen seguro', 1500.00, NULL, '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
+(74, 3, 9, NULL, 0, 100.00, 'dddd', 500.00, NULL, '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
+(75, 12, 1, 1, 1, 100.00, 'eedd3', 5000.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13'),
+(76, 12, 2, 8, 0, 100.00, 'seguro montepio', 2500.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13'),
+(77, 12, 2, 9, 0, 100.00, 'un buen seguro', 1500.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13'),
+(78, 12, 9, NULL, 0, 100.00, 'dddd', 500.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -5484,7 +5513,15 @@ INSERT INTO `sim_caso_bien_inmueble_tipo_rel` (`id`, `bien_inmueble_id`, `tipo_b
 (10, 4, 2, '2026-03-07 19:12:09'),
 (11, 4, 5, '2026-03-07 19:12:09'),
 (12, 4, 6, '2026-03-07 19:12:09'),
-(13, 5, 1, '2026-03-08 03:33:25');
+(13, 5, 1, '2026-03-08 03:33:25'),
+(14, 6, 2, '2026-03-18 23:07:10'),
+(15, 6, 4, '2026-03-18 23:07:10'),
+(16, 7, 2, '2026-03-18 23:27:23'),
+(17, 7, 4, '2026-03-18 23:27:23'),
+(20, 9, 2, '2026-03-18 23:34:05'),
+(21, 9, 4, '2026-03-18 23:34:05'),
+(22, 10, 2, '2026-03-18 23:35:13'),
+(23, 10, 4, '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -5531,7 +5568,11 @@ INSERT INTO `sim_caso_bm_banco` (`id`, `bien_mueble_id`, `banco_id`, `numero_cue
 (1, 1, 1, '88888888888888888888', '2026-03-07 07:12:52'),
 (2, 2, 2, '88888888888888888888', '2026-03-07 07:12:52'),
 (3, 30, 1, '88888888888888888888', '2026-03-07 19:12:09'),
-(4, 31, 2, '88888888888888888888', '2026-03-07 19:12:09');
+(4, 31, 2, '88888888888888888888', '2026-03-07 19:12:09'),
+(5, 59, 1, '33333333333333333333', '2026-03-18 23:07:10'),
+(6, 63, 1, '33333333333333333333', '2026-03-18 23:27:23'),
+(8, 71, 1, '33333333333333333333', '2026-03-18 23:34:05'),
+(9, 75, 1, '33333333333333333333', '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -5656,7 +5697,11 @@ INSERT INTO `sim_caso_bm_prestaciones` (`id`, `bien_mueble_id`, `posee_banco`, `
 (1, 20, 1, 2, '565656', 1, '2026-03-07 07:12:52'),
 (2, 21, 1, 2, '33323232', 4, '2026-03-07 07:12:52'),
 (3, 49, 1, 2, '565656', 1, '2026-03-07 19:12:09'),
-(4, 50, 1, 2, '33323232', 4, '2026-03-07 19:12:09');
+(4, 50, 1, 2, '33323232', 4, '2026-03-07 19:12:09'),
+(5, 62, 0, NULL, NULL, 1, '2026-03-18 23:07:10'),
+(6, 66, 0, NULL, NULL, 1, '2026-03-18 23:27:23'),
+(8, 74, 0, NULL, NULL, 1, '2026-03-18 23:34:05'),
+(9, 78, 0, NULL, NULL, 1, '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -5682,7 +5727,15 @@ INSERT INTO `sim_caso_bm_seguro` (`id`, `bien_mueble_id`, `empresa_id`, `numero_
 (3, 5, 4, '4545', '2026-03-07 07:12:52'),
 (4, 32, 2, '44', '2026-03-07 19:12:09'),
 (5, 33, 3, '5454', '2026-03-07 19:12:09'),
-(6, 34, 4, '4545', '2026-03-07 19:12:09');
+(6, 34, 4, '4545', '2026-03-07 19:12:09'),
+(7, 60, 1, '7', '2026-03-18 23:07:10'),
+(8, 61, 6, '333', '2026-03-18 23:07:10'),
+(9, 64, 1, '7', '2026-03-18 23:27:23'),
+(10, 65, 6, '333', '2026-03-18 23:27:23'),
+(13, 72, 1, '7', '2026-03-18 23:34:05'),
+(14, 73, 6, '333', '2026-03-18 23:34:05'),
+(15, 76, 1, '7', '2026-03-18 23:35:13'),
+(16, 77, 6, '333', '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -5753,6 +5806,15 @@ CREATE TABLE `sim_caso_calculo_manual` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `sim_caso_calculo_manual`
+--
+
+INSERT INTO `sim_caso_calculo_manual` (`id`, `caso_estudio_id`, `participante_id`, `cuota_parte_ut`, `reduccion_bs`, `created_at`) VALUES
+(1, 1, 15, 233.33000000, 0.00, '2026-03-18 23:07:10'),
+(2, 4, 17, 233.33000000, 0.00, '2026-03-18 23:27:23'),
+(3, 4, 18, 233.33000000, 0.00, '2026-03-18 23:27:23');
+
 -- --------------------------------------------------------
 
 --
@@ -5820,7 +5882,11 @@ INSERT INTO `sim_caso_direcciones` (`id`, `sim_caso_estudio_id`, `tipo_direccion
 (10, 10, 'Bodega_Almacenamiento_Deposito', 'Carretera', 'PARA POZ', 'Centro_Comercial', 'LA VELA - NIVEL 1', 'Local', 'A-05', 'Sector', 'MANEIRO', 16, 215, 713, 215, 1833, NULL, '0416-6864545', NULL, 'LA VELA'),
 (11, 2, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Edificio', 'GARAJONAY - PISO PH', 'Apartamento', 'PH2', 'Urbanizacion', 'URB PRUEBA 1', 6, 71, 244, 71, 527, NULL, '0412-7048856', NULL, 'CERCAS DE TROPIC'),
 (12, 2, 'Bodega_Almacenamiento_Deposito', 'Carretera', 'PARA POZ', 'Centro_Comercial', 'LA VELA - NIVEL 1', 'Local', 'A-05', 'Sector', 'MANEIRO', 16, 215, 713, 215, 1833, NULL, '0416-6864545', NULL, 'LA VELA'),
-(13, 11, 'Domicilio_Fiscal', 'Calle', 'LA REDONDA', 'Quinta', 'SECTOR 1 - NRO LA AS', '', 'NO APLICA', 'Zona', 'LA ARBOLEDA', 16, 210, 701, 210, 1818, '0412-7048856', NULL, NULL, 'PDP');
+(13, 11, 'Domicilio_Fiscal', 'Calle', 'LA REDONDA', 'Quinta', 'SECTOR 1 - NRO LA AS', '', 'NO APLICA', 'Zona', 'LA ARBOLEDA', 16, 210, 701, 210, 1818, '0412-7048856', NULL, NULL, 'PDP'),
+(14, 1, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'CASA - NRO 35', '', 'NO APLICA', 'Urbanizacion', 'VILLAS DE LA ASUNCION 2', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, 'LA ZONA EDUCATIVA'),
+(15, 4, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'CASA - NRO 35', '', 'NO APLICA', 'Urbanizacion', 'VILLAS DE LA ASUNCION 2', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, 'LA ZONA EDUCATIVA'),
+(17, 3, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'CASA - NRO 35', '', 'NO APLICA', 'Urbanizacion', 'VILLAS DE LA ASUNCION 2', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, 'LA ZONA EDUCATIVA'),
+(18, 12, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'CASA - NRO 35', '', 'NO APLICA', 'Urbanizacion', 'VILLAS DE LA ASUNCION 2', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, 'LA ZONA EDUCATIVA');
 
 -- --------------------------------------------------------
 
@@ -5847,7 +5913,11 @@ INSERT INTO `sim_caso_exenciones` (`id`, `caso_estudio_id`, `tipo`, `descripcion
 (1, 10, '555', '555', 555555.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
 (2, 10, '5555', '5555', 55555.50, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
 (3, 2, '555', '555', 555555.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
-(4, 2, '5555', '5555', 55555.50, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09');
+(4, 2, '5555', '5555', 55555.50, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(5, 1, 'excencion 1', 'excencion 1', 250.00, NULL, '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
+(6, 4, 'excencion 1', 'excencion 1', 250.00, NULL, '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
+(8, 3, 'excencion 1', 'excencion 1', 250.00, NULL, '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
+(9, 12, 'excencion 1', 'excencion 1', 250.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -5874,7 +5944,11 @@ INSERT INTO `sim_caso_exoneraciones` (`id`, `caso_estudio_id`, `tipo`, `descripc
 (1, 10, 'exo 45', 'exo exo gossip girl', 525.50, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
 (2, 10, 'exo 46', 'eeee', 0.45, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
 (3, 2, 'exo 45', 'exo exo gossip girl', 525.50, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
-(4, 2, 'exo 46', 'eeee', 0.45, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09');
+(4, 2, 'exo 46', 'eeee', 0.45, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(5, 1, 'exoneraicon 1', 'exoneraicon 1', 250.00, NULL, '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
+(6, 4, 'exoneraicon 1', 'exoneraicon 1', 250.00, NULL, '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
+(8, 3, 'exoneraicon 1', 'exoneraicon 1', 250.00, NULL, '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
+(9, 12, 'exoneraicon 1', 'exoneraicon 1', 250.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -5905,7 +5979,19 @@ INSERT INTO `sim_caso_participantes` (`id`, `caso_estudio_id`, `persona_id`, `ro
 (10, 2, 2, 'Heredero', 16, 1, NULL),
 (11, 2, 6, 'Heredero', 7, 0, NULL),
 (12, 2, 7, 'Heredero', 17, 0, NULL),
-(13, 11, 10, 'Heredero', 1, 0, NULL);
+(13, 11, 10, 'Heredero', 1, 0, NULL),
+(14, 1, 3, 'Heredero', 16, 1, NULL),
+(15, 1, 4, 'Heredero', 1, 0, NULL),
+(16, 1, 2, 'Heredero', 8, 0, 14),
+(17, 4, 3, 'Heredero', 16, 1, NULL),
+(18, 4, 4, 'Heredero', 1, 0, NULL),
+(19, 4, 2, 'Heredero', 8, 0, 17),
+(23, 3, 3, 'Heredero', 16, 1, NULL),
+(24, 3, 4, 'Heredero', 1, 0, NULL),
+(25, 3, 2, 'Heredero', 8, 0, 23),
+(26, 12, 3, 'Heredero', 16, 1, NULL),
+(27, 12, 4, 'Heredero', 1, 0, NULL),
+(28, 12, 2, 'Heredero', 8, 0, 26);
 
 -- --------------------------------------------------------
 
@@ -5935,7 +6021,15 @@ INSERT INTO `sim_caso_pasivos_deuda` (`id`, `caso_estudio_id`, `tipo_pasivo_deud
 (1, 10, 2, 15, NULL, 100.00, 'erer', 333333.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
 (2, 10, 4, NULL, NULL, 100.00, '333', 33333333333.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
 (3, 2, 2, 15, NULL, 100.00, 'erer', 333333.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
-(4, 2, 4, NULL, NULL, 100.00, '333', 33333333333.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09');
+(4, 2, 4, NULL, NULL, 100.00, '333', 33333333333.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(5, 1, 2, 19, NULL, 100.00, 'deuda 1', 250.00, NULL, '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
+(6, 1, 4, NULL, NULL, 100.00, 'otros', 300.00, NULL, '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
+(7, 4, 2, 19, NULL, 100.00, 'deuda 1', 250.00, NULL, '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
+(8, 4, 4, NULL, NULL, 100.00, 'otros', 300.00, NULL, '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
+(11, 3, 2, 19, NULL, 100.00, 'deuda 1', 250.00, NULL, '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
+(12, 3, 4, NULL, NULL, 100.00, 'otros', 300.00, NULL, '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
+(13, 12, 2, 19, NULL, 100.00, 'deuda 1', 250.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13'),
+(14, 12, 4, NULL, NULL, 100.00, 'otros', 300.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -5963,7 +6057,11 @@ INSERT INTO `sim_caso_pasivos_gastos` (`id`, `caso_estudio_id`, `tipo_pasivo_gas
 (1, 10, 7, 100.00, 'en btc', 10000000000000.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
 (2, 10, 3, 100.00, 'que caroooo', 50000000.00, NULL, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
 (3, 2, 7, 100.00, 'en btc', 10000000000000.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
-(4, 2, 3, 100.00, 'que caroooo', 50000000.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09');
+(4, 2, 3, 100.00, 'que caroooo', 50000000.00, NULL, '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
+(5, 1, 3, 100.00, 'testamento', 250.00, NULL, '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
+(6, 4, 3, 100.00, 'testamento', 250.00, NULL, '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
+(8, 3, 3, 100.00, 'testamento', 250.00, NULL, '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
+(9, 12, 3, 100.00, 'testamento', 250.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -5990,7 +6088,11 @@ INSERT INTO `sim_caso_prorrogas` (`id`, `caso_estudio_id`, `fecha_solicitud`, `n
 (1, 10, '2026-03-05', '4520', '2026-03-07', 30, '2026-03-30', '2026-03-07 07:12:52'),
 (2, 10, '2026-03-05', '45445', '2026-03-06', 45, '2026-03-27', '2026-03-07 07:12:52'),
 (3, 2, '2026-03-05', '4520', '2026-03-07', 30, '2026-03-30', '2026-03-07 19:12:09'),
-(4, 2, '2026-03-05', '45445', '2026-03-06', 45, '2026-03-27', '2026-03-07 19:12:09');
+(4, 2, '2026-03-05', '45445', '2026-03-06', 45, '2026-03-27', '2026-03-07 19:12:09'),
+(5, 1, '2026-03-18', '123456', '2026-03-18', 7, '2026-03-25', '2026-03-18 23:07:10'),
+(6, 4, '2026-03-18', '123456', '2026-03-18', 7, '2026-03-25', '2026-03-18 23:27:23'),
+(8, 3, '2026-03-18', '123456', '2026-03-18', 7, '2026-03-25', '2026-03-18 23:34:05'),
+(9, 12, '2026-03-18', '123456', '2026-03-18', 7, '2026-03-25', '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -6017,7 +6119,15 @@ INSERT INTO `sim_caso_tipoherencia_rel` (`id`, `caso_estudio_id`, `tipo_herencia
 (10, 10, 1, 'Abierto', '2024-03-12', NULL, '2026-03-07 07:12:52'),
 (11, 2, 2, NULL, NULL, NULL, '2026-03-07 19:12:09'),
 (12, 2, 1, 'Abierto', '2024-03-12', NULL, '2026-03-07 19:12:09'),
-(13, 11, 2, NULL, NULL, NULL, '2026-03-08 03:33:25');
+(13, 11, 2, NULL, NULL, NULL, '2026-03-08 03:33:25'),
+(14, 1, 4, NULL, NULL, NULL, '2026-03-18 23:07:10'),
+(15, 1, 1, 'Abierto', '2024-03-28', NULL, '2026-03-18 23:07:10'),
+(16, 4, 4, NULL, NULL, NULL, '2026-03-18 23:27:23'),
+(17, 4, 1, 'Abierto', '2024-03-28', NULL, '2026-03-18 23:27:23'),
+(20, 3, 4, NULL, NULL, NULL, '2026-03-18 23:34:05'),
+(21, 3, 1, 'Abierto', '2024-03-28', NULL, '2026-03-18 23:34:05'),
+(22, 12, 4, NULL, NULL, NULL, '2026-03-18 23:35:13'),
+(23, 12, 1, 'Abierto', '2024-03-28', NULL, '2026-03-18 23:35:13');
 
 -- --------------------------------------------------------
 
@@ -6581,7 +6691,8 @@ INSERT INTO `sim_empresas` (`id`, `rif`, `razon_social`, `activo`, `created_at`,
 (2, '1239876548', 'unimar', 1, '2026-03-07 07:12:52', '2026-03-15 04:47:46'),
 (3, 'J012345678', 'alados c.o', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
 (4, 'J987654321', 'seguros vidal', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
-(5, 'J321654987', 'crunchyroll', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52');
+(5, 'J321654987', 'crunchyroll', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
+(6, 'J378366509', 'seguros vidal 2', 1, '2026-03-18 23:07:10', '2026-03-18 23:07:10');
 
 -- --------------------------------------------------------
 
@@ -6615,7 +6726,7 @@ CREATE TABLE `sim_intentos` (
 --
 
 INSERT INTO `sim_intentos` (`id`, `asignacion_id`, `numero_intento`, `estado`, `paso_actual`, `pasos_completados`, `borrador_json`, `numero_control`, `submitted_at`, `reviewed_at`, `approved_at`, `rif_sucesoral`, `password_rif`, `usuario_seniat`, `fuera_de_fecha`, `created_at`, `updated_at`) VALUES
-(1, 13, 1, 'En_Progreso', 1, '', '{\"tipo_sucesion\":\"Con_Cedula\",\"datos_basicos\":{\"cedula\":\"V4079920\",\"fecha_fallecimiento\":\"2024-03-28\",\"parroquia_acta\":null,\"numero_acta\":null,\"year_acta\":null,\"apellidos\":\"SARMIENTO\",\"nombres\":\"MARIA\",\"sexo\":\"F\",\"estado_civil\":\"CASADO\",\"domiciliado_pais\":1,\"nacionalidad\":\"190\",\"fecha_cierre_fiscal\":\"2024-12-31\",\"email_sucesion\":\"fadr2001@gmail.com\"},\"direcciones\":[{\"tipoDireccion\":\"06\",\"tipoDireccionText\":\"DOMICILIO FISCAL\",\"tipoVialidad\":\"01\",\"tipoVialidadLabel\":\"calle\",\"vialidad\":\"ROJAS 5\",\"tipoEdificacion\":\"01\",\"tipoEdificacionLabel\":\"edificio\",\"edificacion\":\"GARAJONAY\",\"piso\":\"PH\",\"tipoLocal\":\"01\",\"tipoLocalLabel\":\"apartamento\",\"local\":\"PH2\",\"tipoSector\":\"01\",\"tipoSectorLabel\":\"urbanizacion\",\"sector\":\"URB PRUEBA 1\",\"estado\":\"6\",\"estadoText\":\"Bolívar\",\"municipio\":\"71\",\"municipioText\":\"Heres\",\"parroquia\":\"244\",\"ciudad\":\"71\",\"ciudadText\":\"Ciudad Bolívar\",\"zonaPostal\":\"527\",\"telefono\":\"\",\"celular\":\"0412-7048856\",\"fax\":\"\",\"referencia\":\"\"},{\"tipoDireccion\":\"03\",\"tipoDireccionText\":\"BODEGA, ALMACENAMIENTO, DEPÓSITO\",\"tipoVialidad\":\"04\",\"tipoVialidadLabel\":\"carretera\",\"vialidad\":\"PARA POZ\",\"tipoEdificacion\":\"02\",\"tipoEdificacionLabel\":\"centro comercial\",\"edificacion\":\"LA VELA\",\"piso\":\"1\",\"tipoLocal\":\"02\",\"tipoLocalLabel\":\"local\",\"local\":\"A-05\",\"tipoSector\":\"03\",\"tipoSectorLabel\":\"sector\",\"sector\":\"MANEIRO\",\"estado\":\"16\",\"estadoText\":\"Nueva Esparta\",\"municipio\":\"215\",\"municipioText\":\"Maneiro\",\"parroquia\":\"713\",\"ciudad\":\"215\",\"ciudadText\":\"Pampatar\",\"zonaPostal\":\"1833\",\"telefono\":\"\",\"celular\":\"0416-6864545\",\"fax\":\"\",\"referencia\":\"LA VELA\"}],\"relaciones\":[{\"apellido\":\"DIAZ\",\"nombre\":\"FRANCISCO\",\"tipodocumento\":\"R\",\"cedula\":\"27836650\",\"parentesco\":\"50\",\"parentescoText\":\"REPRESENTANTE DE LA SUCESION\",\"pasaporte\":\"\",\"idDocumento\":\"J37836650\"},{\"apellido\":\"RODRIGUEZ\",\"nombre\":\"JANETSY\",\"tipodocumento\":\"C\",\"cedula\":\"11171151\",\"parentesco\":\"51\",\"parentescoText\":\"HEREDERO\",\"pasaporte\":\"\",\"idDocumento\":\"J11171151\",\"premuerto\":\"Si\",\"fecha_nacimiento\":\"2026-03-11\",\"fecha_fallecimiento\":\"2026-03-12\",\"parentesco_id\":2},{\"apellido\":\"ESTANGA\",\"nombre\":\"JESUS\",\"tipodocumento\":\"C\",\"cedula\":\"4224014\",\"parentesco\":\"51\",\"parentescoText\":\"HEREDERO\",\"pasaporte\":\"\",\"idDocumento\":\"V42240148\",\"premuerto\":\"No\",\"fecha_nacimiento\":\"2026-03-16\",\"fecha_fallecimiento\":\"\",\"parentesco_id\":1}],\"tipos_herencia\":{\"items\":[{\"tipo_herencia_id\":3,\"subtipo_testamento\":null,\"fecha_testamento\":null,\"fecha_conclusion_inventario\":null},{\"tipo_herencia_id\":4,\"subtipo_testamento\":null,\"fecha_testamento\":null,\"fecha_conclusion_inventario\":null}]},\"herederos_premuertos\":[{\"nombre\":\"Daniel\",\"apellido\":\"Diaz\",\"cedula\":\"30061516\",\"fecha_nacimiento\":\"05\\/03\\/2026\",\"parentesco_id\":1,\"premuerto_padre_id\":\"11171151\"}],\"bienes_inmuebles\":[{\"tipo_bien_inmueble_id\":[\"1\",\"2\"],\"tipo_bien_nombres\":\"Anexo, Apartamento\",\"vivienda_principal\":\"true\",\"bien_litigioso\":\"false\",\"porcentaje\":\"50,50\",\"descripcion\":\"5656\",\"linderos\":\"5656\",\"superficie_construida\":\"666.30\",\"superficie_no_construida\":\"66.30\",\"area_superficie\":\"66.30\",\"direccion\":\"la asuncion\",\"oficina_registro\":\"45\",\"nro_registro\":\"33\",\"libro\":\"055\",\"protocolo\":\"0221\",\"fecha_registro\":\"14\\/03\\/2026\",\"trimestre\":\"553\",\"asiento_registral\":\"54\",\"matricula\":\"443\",\"folio_real_anio\":\"56\",\"valor_original\":\"3\",\"valor_declarado\":\"2,20\"},{\"tipo_bien_inmueble_id\":[\"1\",\"2\",\"5\",\"6\"],\"tipo_bien_nombres\":\"Anexo, Apartamento, Construcción destinado a Explotación, Consultorio\",\"vivienda_principal\":\"false\",\"bien_litigioso\":\"false\",\"porcentaje\":\"10,50\",\"descripcion\":\"ccc\",\"linderos\":\"cc\",\"superficie_construida\":\"33.30\",\"superficie_no_construida\":\"33.30\",\"area_superficie\":\"3.30\",\"direccion\":\"3333\",\"oficina_registro\":\"33\",\"nro_registro\":\"33\",\"libro\":\"33\",\"protocolo\":\"33\",\"fecha_registro\":\"03\\/03\\/2026\",\"trimestre\":\"33\",\"asiento_registral\":\"33\",\"matricula\":\"33\",\"folio_real_anio\":\"33\",\"valor_original\":\"33,30\",\"valor_declarado\":\"333,30\"}],\"bienes_muebles_banco\":[{\"tipo_bien\":\"2\",\"tipo_bien_nombre\":\"Cajas de Ahorro\",\"banco\":\"8\",\"banco_nombre\":\"BANCO DE LA FUERZA ARMADA NACIONAL BOLIVARIANA, BANCO UNIVERSAL\",\"numero_cuenta\":\"88888888888888888888\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"90.500\",\"descripcion\":\"juju\",\"valor_declarado\":\"365\"},{\"tipo_bien\":\"5\",\"tipo_bien_nombre\":\"Inventario Caja de Seguridad\",\"banco\":\"21\",\"banco_nombre\":\"BANCO SOFITASA BANCO UNIVERSAL, C. A.\",\"numero_cuenta\":\"88888888888888888888\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"90.50\",\"descripcion\":\"5.5.5\",\"valor_declarado\":\"60\"}],\"bienes_muebles_seguro\":[{\"tipo_bien\":\"7\",\"tipo_bien_nombre\":\"Caja de Ahorro\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"numero_prima\":\"44\",\"bien_litigioso\":\"true\",\"num_expediente\":\"dd\",\"tribunal_causa\":\"dd\",\"partes_juicio\":\"dd\",\"estado_juicio\":\"dd\",\"porcentaje\":\"0,01\",\"descripcion\":\"frfr\",\"valor_declarado\":\"692.00\"}],\"bienes_muebles_transporte\":[{\"tipo_bien\":\"10\",\"tipo_bien_nombre\":\"Aéreos\",\"anio\":\"ddsd\",\"marca\":\"sdsdsd\",\"modelo\":\"sdsds\",\"serial\":\"sddsdsd\",\"bien_litigioso\":\"true\",\"num_expediente\":\"xcxc\",\"tribunal_causa\":\"xcxc\",\"partes_juicio\":\"xcxc\",\"estado_juicio\":\"xsx4\",\"porcentaje\":\"0,01\",\"descripcion\":\"sdsdsds\",\"valor_declarado\":\"13\"},{\"tipo_bien\":\"11\",\"tipo_bien_nombre\":\"Maquinaria\",\"anio\":\"3333\",\"marca\":\"toyotra\",\"modelo\":\"333333333\",\"serial\":\"333\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"33\",\"valor_declarado\":\"998643.6\"}],\"bienes_muebles_opciones_compra\":[{\"tipo_bien\":\"13\",\"tipo_bien_nombre\":\"Opciones de Compras\",\"nombre_oferente\":\"2005\",\"bien_litigioso\":\"true\",\"num_expediente\":\"44\",\"tribunal_causa\":\"44\",\"partes_juicio\":\"44\",\"estado_juicio\":\"44\",\"porcentaje\":\"0,01\",\"descripcion\":\"ffffff\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"13\",\"tipo_bien_nombre\":\"Opciones de Compras\",\"nombre_oferente\":\"88888888888888888888\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"www\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"13\",\"tipo_bien_nombre\":\"Opciones de Compras\",\"nombre_oferente\":\"dddd\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_semovientes\":[{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Semovientes\",\"tipo_semoviente\":\"4\",\"tipo_semoviente_nombre\":\"Conejos o Liebres\",\"cantidad\":\"25\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"eee\",\"valor_declarado\":\"0\"},{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Semovientes\",\"tipo_semoviente\":\"6\",\"tipo_semoviente_nombre\":\"Ganado Caprino\",\"cantidad\":\"34\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"33\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Semovientes\",\"tipo_semoviente\":\"8\",\"tipo_semoviente_nombre\":\"Ganado Ovino\",\"cantidad\":\"4444\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fffff\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_bonos\":[{\"tipo_bien\":\"18\",\"tipo_bien_nombre\":\"Bonos\",\"tipo_bonos\":\"eee\",\"numero_bonos\":\"ee\",\"numero_serie\":\"ee\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ee\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"18\",\"tipo_bien_nombre\":\"Bonos\",\"tipo_bonos\":\"eee\",\"numero_bonos\":\"ee\",\"numero_serie\":\"ee\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fffff\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_acciones\":[{\"tipo_bien\":\"19\",\"tipo_bien_nombre\":\"Cotizadas en la Bolsa de Valores\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"frfr\",\"valor_declarado\":\"01\"},{\"tipo_bien\":\"45\",\"tipo_bien_nombre\":\"COTIZADAS EN LA BOLSA DE VALORES\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_prestaciones_sociales\":[{\"posee_banco\":\"true\",\"cod_banco\":\"3\",\"nombre_banco\":\"BANCO ACTIVO\",\"numero_cuenta\":\"88888888888888888888\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"Derecha\",\"valor_declarado\":\"0\"},{\"posee_banco\":\"false\",\"cod_banco\":\"\",\"nombre_banco\":\"-- Seleccione --\",\"numero_cuenta\":\"NO APLICA\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"eeeeee\",\"valor_declarado\":\"0,00\"},{\"posee_banco\":\"false\",\"cod_banco\":\"\",\"nombre_banco\":\"-- Seleccione --\",\"numero_cuenta\":\"NO APLICA\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_caja_ahorro\":[{\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"cool\",\"valor_declarado\":\"0,00\"},{\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_plantaciones\":[{\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"},{\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddd\",\"valor_declarado\":\"0,00\"},{\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ffffff\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_otros\":[{\"cod_tipo_bien\":\"19\",\"nombre_tipo_bien\":\"Otros Especifique\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_bien\":\"19\",\"nombre_tipo_bien\":\"Otros Especifique\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_bien\":\"19\",\"nombre_tipo_bien\":\"Otros Especifique\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"vvvvv\",\"valor_declarado\":\"0,00\"}],\"prorrogas\":[{\"fecha_solicitud\":\"05\\/03\\/2026\",\"nro_resolucion\":\"6654\",\"fecha_resolucion\":\"04\\/03\\/2026\",\"plazo_dias\":\"35\",\"fecha_vencimiento\":\"06\\/03\\/2026\"}],\"pasivos_deuda_tdc\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"1\",\"nombre_tipo_deuda\":\"Tarjeta de Crédito\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX\",\"numero_tdc\":\"88888888888888888888\",\"porcentaje\":\"0,01\",\"descripcion\":\"e\",\"valor_declarado\":\"110,00\"}],\"pasivos_deuda_ch\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"2\",\"nombre_tipo_deuda\":\"Crédito Hipotecario\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"2\",\"nombre_tipo_deuda\":\"Crédito Hipotecario\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"20,00\"}],\"pasivos_deuda_pce\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"3\",\"nombre_tipo_deuda\":\"Préstamos, Cuentas y Efectos por Pagar\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX\",\"porcentaje\":\"0,01\",\"descripcion\":\"hhgghg\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"3\",\"nombre_tipo_deuda\":\"Préstamos, Cuentas y Efectos por Pagar\",\"cod_banco\":\"4\",\"nombre_banco\":\"BANCO AGRICOLA DE VENEZUELA\",\"porcentaje\":\"0,01\",\"descripcion\":\"ccc\",\"valor_declarado\":\"0,00\"}],\"pasivos_deuda_otros\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"4\",\"nombre_tipo_deuda\":\"Otro Especifique\",\"porcentaje\":\"0,01\",\"descripcion\":\"rrrr\",\"valor_declarado\":\"0,00\"}],\"pasivos_gastos\":[{\"cod_tipo_pasivo\":\"2\",\"nombre_tipo_pasivo\":\"Gastos\",\"cod_tipo_gasto\":\"7\",\"nombre_tipo_gasto\":\"Otros (Especifique)\",\"porcentaje\":\"0,01\",\"descripcion\":\"gggg\",\"valor_declarado\":\"01\"},{\"cod_tipo_pasivo\":\"2\",\"nombre_tipo_pasivo\":\"Gastos\",\"cod_tipo_gasto\":\"7\",\"nombre_tipo_gasto\":\"Otros (Especifique)\",\"porcentaje\":\"0,01\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"}],\"exenciones\":[{\"tipo\":\"trtf\",\"descripcion\":\"fff\",\"valor_declarado\":\"10,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"eee\",\"descripcion\":\"ee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"33\",\"descripcion\":\"33\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dd\",\"descripcion\":\"dd\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"ggg\",\"descripcion\":\"gggg\",\"valor_declarado\":\"0,00\"}],\"exoneraciones\":[{\"tipo\":\"fff\",\"descripcion\":\"fffff\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"ggg\",\"descripcion\":\"gggg\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_cuentas_efectos\":[{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Clubes\",\"rif_cedula\":\"V278366509\",\"nombre_apellido\":\"dddddddd\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"23\"},{\"tipo_bien\":\"15\",\"tipo_bien_nombre\":\"Asociación Civil\",\"rif_cedula\":\"V278366509\",\"nombre_apellido\":\"dddddddd\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"w\",\"valor_declarado\":\"0,00\"}]}', NULL, NULL, NULL, NULL, 'V-70017894-0', 'Fadr2001+', 'franciscoadr', 0, '2026-03-10 03:08:01', '2026-03-18 06:02:40'),
+(1, 13, 1, 'En_Progreso', 1, '', '{\"tipo_sucesion\":\"Con_Cedula\",\"datos_basicos\":{\"cedula\":\"V4079920\",\"fecha_fallecimiento\":\"2024-03-28\",\"parroquia_acta\":null,\"numero_acta\":null,\"year_acta\":null,\"apellidos\":\"SARMIENTO\",\"nombres\":\"MARIA\",\"sexo\":\"F\",\"estado_civil\":\"CASADO\",\"domiciliado_pais\":1,\"nacionalidad\":\"190\",\"fecha_cierre_fiscal\":\"2024-12-31\",\"email_sucesion\":\"fadr2001@gmail.com\"},\"direcciones\":[{\"tipoDireccion\":\"06\",\"tipoDireccionText\":\"DOMICILIO FISCAL\",\"tipoVialidad\":\"01\",\"tipoVialidadLabel\":\"calle\",\"vialidad\":\"ROJAS 5\",\"tipoEdificacion\":\"01\",\"tipoEdificacionLabel\":\"edificio\",\"edificacion\":\"GARAJONAY\",\"piso\":\"PH\",\"tipoLocal\":\"01\",\"tipoLocalLabel\":\"apartamento\",\"local\":\"PH2\",\"tipoSector\":\"01\",\"tipoSectorLabel\":\"urbanizacion\",\"sector\":\"URB PRUEBA 1\",\"estado\":\"6\",\"estadoText\":\"Bolívar\",\"municipio\":\"71\",\"municipioText\":\"Heres\",\"parroquia\":\"244\",\"ciudad\":\"71\",\"ciudadText\":\"Ciudad Bolívar\",\"zonaPostal\":\"527\",\"telefono\":\"\",\"celular\":\"0412-7048856\",\"fax\":\"\",\"referencia\":\"\"},{\"tipoDireccion\":\"03\",\"tipoDireccionText\":\"BODEGA, ALMACENAMIENTO, DEPÓSITO\",\"tipoVialidad\":\"04\",\"tipoVialidadLabel\":\"carretera\",\"vialidad\":\"PARA POZ\",\"tipoEdificacion\":\"02\",\"tipoEdificacionLabel\":\"centro comercial\",\"edificacion\":\"LA VELA\",\"piso\":\"1\",\"tipoLocal\":\"02\",\"tipoLocalLabel\":\"local\",\"local\":\"A-05\",\"tipoSector\":\"03\",\"tipoSectorLabel\":\"sector\",\"sector\":\"MANEIRO\",\"estado\":\"16\",\"estadoText\":\"Nueva Esparta\",\"municipio\":\"215\",\"municipioText\":\"Maneiro\",\"parroquia\":\"713\",\"ciudad\":\"215\",\"ciudadText\":\"Pampatar\",\"zonaPostal\":\"1833\",\"telefono\":\"\",\"celular\":\"0416-6864545\",\"fax\":\"\",\"referencia\":\"LA VELA\"}],\"relaciones\":[{\"apellido\":\"DIAZ\",\"nombre\":\"FRANCISCO\",\"tipodocumento\":\"R\",\"cedula\":\"27836650\",\"parentesco\":\"50\",\"parentescoText\":\"REPRESENTANTE DE LA SUCESION\",\"pasaporte\":\"\",\"idDocumento\":\"J37836650\"},{\"apellido\":\"RODRIGUEZ\",\"nombre\":\"JANETSY\",\"tipodocumento\":\"C\",\"cedula\":\"11171151\",\"parentesco\":\"51\",\"parentescoText\":\"HEREDERO\",\"pasaporte\":\"\",\"idDocumento\":\"J11171151\",\"premuerto\":\"Si\",\"fecha_nacimiento\":\"2026-03-11\",\"fecha_fallecimiento\":\"2026-03-12\",\"parentesco_id\":12},{\"apellido\":\"ESTANGA\",\"nombre\":\"JESUS\",\"tipodocumento\":\"C\",\"cedula\":\"4224014\",\"parentesco\":\"51\",\"parentescoText\":\"HEREDERO\",\"pasaporte\":\"\",\"idDocumento\":\"V42240148\",\"premuerto\":\"No\",\"fecha_nacimiento\":\"2026-03-16\",\"fecha_fallecimiento\":\"\",\"parentesco_id\":1}],\"tipos_herencia\":{\"items\":[{\"tipo_herencia_id\":3,\"subtipo_testamento\":null,\"fecha_testamento\":null,\"fecha_conclusion_inventario\":null},{\"tipo_herencia_id\":4,\"subtipo_testamento\":null,\"fecha_testamento\":null,\"fecha_conclusion_inventario\":null}]},\"herederos_premuertos\":[{\"nombre\":\"Daniel\",\"apellido\":\"Diaz\",\"cedula\":\"30061516\",\"fecha_nacimiento\":\"05\\/03\\/2026\",\"parentesco_id\":1,\"premuerto_padre_id\":\"11171151\"}],\"bienes_inmuebles\":[{\"tipo_bien_inmueble_id\":[\"1\",\"2\"],\"tipo_bien_nombres\":\"Anexo, Apartamento\",\"vivienda_principal\":\"true\",\"bien_litigioso\":\"false\",\"porcentaje\":\"50,50\",\"descripcion\":\"5656\",\"linderos\":\"5656\",\"superficie_construida\":\"666.30\",\"superficie_no_construida\":\"66.30\",\"area_superficie\":\"66.30\",\"direccion\":\"la asuncion\",\"oficina_registro\":\"45\",\"nro_registro\":\"33\",\"libro\":\"055\",\"protocolo\":\"0221\",\"fecha_registro\":\"14\\/03\\/2026\",\"trimestre\":\"553\",\"asiento_registral\":\"54\",\"matricula\":\"443\",\"folio_real_anio\":\"56\",\"valor_original\":\"3\",\"valor_declarado\":\"2,20\"},{\"tipo_bien_inmueble_id\":[\"1\",\"2\",\"5\",\"6\"],\"tipo_bien_nombres\":\"Anexo, Apartamento, Construcción destinado a Explotación, Consultorio\",\"vivienda_principal\":\"false\",\"bien_litigioso\":\"false\",\"porcentaje\":\"10,50\",\"descripcion\":\"ccc\",\"linderos\":\"cc\",\"superficie_construida\":\"33.30\",\"superficie_no_construida\":\"33.30\",\"area_superficie\":\"3.30\",\"direccion\":\"3333\",\"oficina_registro\":\"33\",\"nro_registro\":\"33\",\"libro\":\"33\",\"protocolo\":\"33\",\"fecha_registro\":\"03\\/03\\/2026\",\"trimestre\":\"33\",\"asiento_registral\":\"33\",\"matricula\":\"33\",\"folio_real_anio\":\"33\",\"valor_original\":\"33,30\",\"valor_declarado\":\"333,30\"}],\"bienes_muebles_banco\":[{\"tipo_bien\":\"2\",\"tipo_bien_nombre\":\"Cajas de Ahorro\",\"banco\":\"8\",\"banco_nombre\":\"BANCO DE LA FUERZA ARMADA NACIONAL BOLIVARIANA, BANCO UNIVERSAL\",\"numero_cuenta\":\"88888888888888888888\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"90.500\",\"descripcion\":\"juju\",\"valor_declarado\":\"365\"},{\"tipo_bien\":\"5\",\"tipo_bien_nombre\":\"Inventario Caja de Seguridad\",\"banco\":\"21\",\"banco_nombre\":\"BANCO SOFITASA BANCO UNIVERSAL, C. A.\",\"numero_cuenta\":\"88888888888888888888\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"90.50\",\"descripcion\":\"5.5.5\",\"valor_declarado\":\"60\"}],\"bienes_muebles_seguro\":[{\"tipo_bien\":\"7\",\"tipo_bien_nombre\":\"Caja de Ahorro\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"numero_prima\":\"44\",\"bien_litigioso\":\"true\",\"num_expediente\":\"dd\",\"tribunal_causa\":\"dd\",\"partes_juicio\":\"dd\",\"estado_juicio\":\"dd\",\"porcentaje\":\"0,01\",\"descripcion\":\"frfr\",\"valor_declarado\":\"692.00\"}],\"bienes_muebles_transporte\":[{\"tipo_bien\":\"10\",\"tipo_bien_nombre\":\"Aéreos\",\"anio\":\"ddsd\",\"marca\":\"sdsdsd\",\"modelo\":\"sdsds\",\"serial\":\"sddsdsd\",\"bien_litigioso\":\"true\",\"num_expediente\":\"xcxc\",\"tribunal_causa\":\"xcxc\",\"partes_juicio\":\"xcxc\",\"estado_juicio\":\"xsx4\",\"porcentaje\":\"0,01\",\"descripcion\":\"sdsdsds\",\"valor_declarado\":\"13\"},{\"tipo_bien\":\"11\",\"tipo_bien_nombre\":\"Maquinaria\",\"anio\":\"3333\",\"marca\":\"toyotra\",\"modelo\":\"333333333\",\"serial\":\"333\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"33\",\"valor_declarado\":\"1.000,00\"}],\"bienes_muebles_opciones_compra\":[{\"tipo_bien\":\"13\",\"tipo_bien_nombre\":\"Opciones de Compras\",\"nombre_oferente\":\"2005\",\"bien_litigioso\":\"true\",\"num_expediente\":\"44\",\"tribunal_causa\":\"44\",\"partes_juicio\":\"44\",\"estado_juicio\":\"44\",\"porcentaje\":\"0,01\",\"descripcion\":\"ffffff\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"13\",\"tipo_bien_nombre\":\"Opciones de Compras\",\"nombre_oferente\":\"88888888888888888888\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"www\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"13\",\"tipo_bien_nombre\":\"Opciones de Compras\",\"nombre_oferente\":\"dddd\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_semovientes\":[{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Semovientes\",\"tipo_semoviente\":\"4\",\"tipo_semoviente_nombre\":\"Conejos o Liebres\",\"cantidad\":\"25\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"eee\",\"valor_declarado\":\"0\"},{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Semovientes\",\"tipo_semoviente\":\"6\",\"tipo_semoviente_nombre\":\"Ganado Caprino\",\"cantidad\":\"34\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"33\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Semovientes\",\"tipo_semoviente\":\"8\",\"tipo_semoviente_nombre\":\"Ganado Ovino\",\"cantidad\":\"4444\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fffff\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_bonos\":[{\"tipo_bien\":\"18\",\"tipo_bien_nombre\":\"Bonos\",\"tipo_bonos\":\"eee\",\"numero_bonos\":\"ee\",\"numero_serie\":\"ee\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ee\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"18\",\"tipo_bien_nombre\":\"Bonos\",\"tipo_bonos\":\"eee\",\"numero_bonos\":\"ee\",\"numero_serie\":\"ee\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fffff\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_acciones\":[{\"tipo_bien\":\"19\",\"tipo_bien_nombre\":\"Cotizadas en la Bolsa de Valores\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"frfr\",\"valor_declarado\":\"01\"},{\"tipo_bien\":\"45\",\"tipo_bien_nombre\":\"COTIZADAS EN LA BOLSA DE VALORES\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_prestaciones_sociales\":[{\"posee_banco\":\"true\",\"cod_banco\":\"3\",\"nombre_banco\":\"BANCO ACTIVO\",\"numero_cuenta\":\"88888888888888888888\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"Derecha\",\"valor_declarado\":\"0\"},{\"posee_banco\":\"false\",\"cod_banco\":\"\",\"nombre_banco\":\"-- Seleccione --\",\"numero_cuenta\":\"NO APLICA\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"eeeeee\",\"valor_declarado\":\"0,00\"},{\"posee_banco\":\"false\",\"cod_banco\":\"\",\"nombre_banco\":\"-- Seleccione --\",\"numero_cuenta\":\"NO APLICA\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_caja_ahorro\":[{\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"cool\",\"valor_declarado\":\"0,00\"},{\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_plantaciones\":[{\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"},{\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddd\",\"valor_declarado\":\"0,00\"},{\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ffffff\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_otros\":[{\"cod_tipo_bien\":\"19\",\"nombre_tipo_bien\":\"Otros Especifique\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_bien\":\"19\",\"nombre_tipo_bien\":\"Otros Especifique\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_bien\":\"19\",\"nombre_tipo_bien\":\"Otros Especifique\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"vvvvv\",\"valor_declarado\":\"0,00\"}],\"prorrogas\":[{\"fecha_solicitud\":\"05\\/03\\/2026\",\"nro_resolucion\":\"6654\",\"fecha_resolucion\":\"04\\/03\\/2026\",\"plazo_dias\":\"35\",\"fecha_vencimiento\":\"06\\/03\\/2026\"}],\"pasivos_deuda_tdc\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"1\",\"nombre_tipo_deuda\":\"Tarjeta de Crédito\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX\",\"numero_tdc\":\"88888888888888888888\",\"porcentaje\":\"0,01\",\"descripcion\":\"e\",\"valor_declarado\":\"110,00\"}],\"pasivos_deuda_ch\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"2\",\"nombre_tipo_deuda\":\"Crédito Hipotecario\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"2\",\"nombre_tipo_deuda\":\"Crédito Hipotecario\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"20,00\"}],\"pasivos_deuda_pce\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"3\",\"nombre_tipo_deuda\":\"Préstamos, Cuentas y Efectos por Pagar\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX\",\"porcentaje\":\"0,01\",\"descripcion\":\"hhgghg\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"3\",\"nombre_tipo_deuda\":\"Préstamos, Cuentas y Efectos por Pagar\",\"cod_banco\":\"4\",\"nombre_banco\":\"BANCO AGRICOLA DE VENEZUELA\",\"porcentaje\":\"0,01\",\"descripcion\":\"ccc\",\"valor_declarado\":\"0,00\"}],\"pasivos_deuda_otros\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"4\",\"nombre_tipo_deuda\":\"Otro Especifique\",\"porcentaje\":\"0,01\",\"descripcion\":\"rrrr\",\"valor_declarado\":\"0,00\"}],\"pasivos_gastos\":[{\"cod_tipo_pasivo\":\"2\",\"nombre_tipo_pasivo\":\"Gastos\",\"cod_tipo_gasto\":\"7\",\"nombre_tipo_gasto\":\"Otros (Especifique)\",\"porcentaje\":\"0,01\",\"descripcion\":\"gggg\",\"valor_declarado\":\"01\"},{\"cod_tipo_pasivo\":\"2\",\"nombre_tipo_pasivo\":\"Gastos\",\"cod_tipo_gasto\":\"7\",\"nombre_tipo_gasto\":\"Otros (Especifique)\",\"porcentaje\":\"0,01\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"}],\"exenciones\":[{\"tipo\":\"trtf\",\"descripcion\":\"fff\",\"valor_declarado\":\"10,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"eee\",\"descripcion\":\"ee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"33\",\"descripcion\":\"33\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dd\",\"descripcion\":\"dd\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"ggg\",\"descripcion\":\"gggg\",\"valor_declarado\":\"0,00\"}],\"exoneraciones\":[{\"tipo\":\"fff\",\"descripcion\":\"fffff\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"ggg\",\"descripcion\":\"gggg\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_cuentas_efectos\":[{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Clubes\",\"rif_cedula\":\"V278366509\",\"nombre_apellido\":\"dddddddd\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"23\"},{\"tipo_bien\":\"15\",\"tipo_bien_nombre\":\"Asociación Civil\",\"rif_cedula\":\"V278366509\",\"nombre_apellido\":\"dddddddd\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"w\",\"valor_declarado\":\"0,00\"}]}', NULL, NULL, NULL, NULL, 'V-70017894-0', 'Fadr2001+', 'franciscoadr', 0, '2026-03-10 03:08:01', '2026-03-19 01:09:22'),
 (2, 6, 1, 'En_Progreso', 1, '', '{}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-10 03:54:31', '2026-03-14 03:02:11'),
 (3, 11, 1, 'En_Progreso', 1, '', '{}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-11 00:38:40', '2026-03-11 00:38:40'),
 (4, 3, 1, 'En_Progreso', 0, '', '{\"tipo_sucesion\":\"Con_Cedula\",\"datos_basicos\":{\"cedula\":\"V4079920\",\"fecha_fallecimiento\":\"28\\/03\\/2024\",\"parroquia_acta\":null,\"numero_acta\":null,\"year_acta\":null}}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-11 03:01:26', '2026-03-15 00:31:07');
@@ -7220,8 +7331,8 @@ CREATE TABLE `user_sessions` (
 --
 
 INSERT INTO `user_sessions` (`id`, `user_id`, `session_id`, `ip_address`, `user_agent`, `last_activity`, `created_at`) VALUES
-(41, 1, 'na8m3gdkim8oml0aft6u1nj6mf', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-18 17:15:12', '2026-03-11 16:15:43'),
-(70, 3, 'bd6lu8jsihutp0627i5g12tck3', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-18 16:29:21', '2026-03-16 00:13:25');
+(41, 1, 'na8m3gdkim8oml0aft6u1nj6mf', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-18 22:12:11', '2026-03-11 16:15:43'),
+(70, 3, '974oeitcd2sfj3i4bujr0kj9oc', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-18 21:09:23', '2026-03-16 00:13:25');
 
 --
 -- Índices para tablas volcadas
@@ -7951,7 +8062,7 @@ ALTER TABLE `user_sessions`
 -- AUTO_INCREMENT de la tabla `bitacora_accesos`
 --
 ALTER TABLE `bitacora_accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=275;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=277;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -8059,7 +8170,7 @@ ALTER TABLE `sim_actas_defunciones`
 -- AUTO_INCREMENT de la tabla `sim_casos_estudios`
 --
 ALTER TABLE `sim_casos_estudios`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_asignaciones`
@@ -8071,25 +8182,25 @@ ALTER TABLE `sim_caso_asignaciones`
 -- AUTO_INCREMENT de la tabla `sim_caso_bienes_inmuebles`
 --
 ALTER TABLE `sim_caso_bienes_inmuebles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bienes_litigiosos`
 --
 ALTER TABLE `sim_caso_bienes_litigiosos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bienes_muebles`
 --
 ALTER TABLE `sim_caso_bienes_muebles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bien_inmueble_tipo_rel`
 --
 ALTER TABLE `sim_caso_bien_inmueble_tipo_rel`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_acciones`
@@ -8101,7 +8212,7 @@ ALTER TABLE `sim_caso_bm_acciones`
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_banco`
 --
 ALTER TABLE `sim_caso_bm_banco`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_bonos`
@@ -8131,13 +8242,13 @@ ALTER TABLE `sim_caso_bm_opciones_compra`
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_prestaciones`
 --
 ALTER TABLE `sim_caso_bm_prestaciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_seguro`
 --
 ALTER TABLE `sim_caso_bm_seguro`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_semovientes`
@@ -8155,7 +8266,7 @@ ALTER TABLE `sim_caso_bm_transporte`
 -- AUTO_INCREMENT de la tabla `sim_caso_calculo_manual`
 --
 ALTER TABLE `sim_caso_calculo_manual`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_configs`
@@ -8167,19 +8278,19 @@ ALTER TABLE `sim_caso_configs`
 -- AUTO_INCREMENT de la tabla `sim_caso_direcciones`
 --
 ALTER TABLE `sim_caso_direcciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_exenciones`
 --
 ALTER TABLE `sim_caso_exenciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_exoneraciones`
 --
 ALTER TABLE `sim_caso_exoneraciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_participantes`
@@ -8191,25 +8302,25 @@ ALTER TABLE `sim_caso_participantes`
 -- AUTO_INCREMENT de la tabla `sim_caso_pasivos_deuda`
 --
 ALTER TABLE `sim_caso_pasivos_deuda`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_pasivos_gastos`
 --
 ALTER TABLE `sim_caso_pasivos_gastos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_prorrogas`
 --
 ALTER TABLE `sim_caso_prorrogas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_tipoherencia_rel`
 --
 ALTER TABLE `sim_caso_tipoherencia_rel`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_cat_bancos`
@@ -8299,7 +8410,7 @@ ALTER TABLE `sim_cat_unidades_tributarias`
 -- AUTO_INCREMENT de la tabla `sim_empresas`
 --
 ALTER TABLE `sim_empresas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_intentos`
@@ -8491,7 +8602,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `user_sessions`
 --
 ALTER TABLE `user_sessions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- Restricciones para tablas volcadas

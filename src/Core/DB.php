@@ -46,7 +46,10 @@ class DB
         // --- 1. CONFIGURACIÓN ---
         // Obtenemos variables cargadas previamente en $_ENV (evitando getenv por razones de thread-safety en Apache Windows)
         $host = $_ENV['DB_HOST'] ?? '127.0.0.1';
-        $db = $_ENV['DB_NAME'] ?? 'sistema_seniat';
+        if (empty($_ENV['DB_NAME'])) {
+            throw new \RuntimeException('[DB] La variable de entorno DB_NAME no está definida. Verifique el archivo .env');
+        }
+        $db = $_ENV['DB_NAME'];
         $user = $_ENV['DB_USER'] ?? 'root';
         $pass = $_ENV['DB_PASS'] ?? '';
         $charset = $_ENV['DB_CHARSET'] ?? 'utf8mb4'; // utf8mb4 es más seguro que utf8
