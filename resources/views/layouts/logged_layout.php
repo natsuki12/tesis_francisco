@@ -41,7 +41,7 @@ if (!isset($user)) {
             --sim-white: #ffffff;
             --sim-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             --sim-shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.07);
-            --header-height: 56px;
+            --header-height: 71px;
             --sidebar-width: 240px;
         }
 
@@ -64,7 +64,7 @@ if (!isset($user)) {
         /* Layout Grid */
         .sim-layout {
             display: grid;
-            grid-template-areas: "header header" "sidebar main";
+            grid-template-areas: "sidebar header" "sidebar main";
             grid-template-rows: var(--header-height) 1fr;
             grid-template-columns: var(--sidebar-width) 1fr;
             height: 100vh;

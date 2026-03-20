@@ -1,6 +1,6 @@
 <?php
 // Placeholders para imágenes
-$logoMain = $logoMain ?? asset('img/brand/logo-small.png');
+$logoMain = $logoMain ?? asset('img/logos/logo-unimar.png');
 $phLogo = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij4KICA8cmVjdCB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIGZpbGw9IiMwYjVhYTYiIHJ4PSI0Ii8+CiAgPHRleHQgeD0iMjQiIHk9IjI4IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5VTTwvdGV4dD4KPC9zdmc+';
 $activePage = $activePage ?? '';
 $role = $_SESSION['role_id'] ?? 3;
@@ -12,7 +12,7 @@ $role = $_SESSION['role_id'] ?? 3;
             <img class="sim-sidebar__logo" src="<?= $logoMain ?>" alt="Logo"
                 onerror="this.onerror=null;this.src='<?= $phLogo ?>';">
             <div class="sim-sidebar__brand-text">
-                <div class="sim-sidebar__brand-name">Nombre_Sistema</div>
+                <div class="sim-sidebar__brand-name">SPDSS</div>
                 <div class="sim-sidebar__brand-sub">Universidad de Margarita</div>
             </div>
         </div>
@@ -357,20 +357,33 @@ $role = $_SESSION['role_id'] ?? 3;
     <!-- ============================================================= -->
     <!-- FOOTER: Perfil & Cerrar Sesión (push to bottom)               -->
     <!-- ============================================================= -->
+    <?php
+    // Generar iniciales del usuario para el avatar
+    $fullName = $_SESSION['user_name'] ?? 'Usuario';
+    $nameParts = explode(' ', trim($fullName));
+    $initials = '';
+    foreach (array_slice($nameParts, 0, 2) as $part) {
+        $initials .= mb_strtoupper(mb_substr($part, 0, 1));
+    }
+    $roleName = $_SESSION['role_name'] ?? 'Usuario';
+    ?>
     <div class="sim-sidebar__footer">
         <?php if ($role != 1): ?>
-            <a href="<?= base_url('/perfil') ?>"
-                class="sim-nav__link <?= $activePage === 'perfil' ? 'sim-nav__link--active' : '' ?>">
-                <span class="sim-nav__icon">
+            <div class="sim-sidebar__profile">
+                <div class="sim-sidebar__profile-avatar"><?= $initials ?></div>
+                <div class="sim-sidebar__profile-info">
+                    <span class="sim-sidebar__profile-name"><?= htmlspecialchars($fullName) ?></span>
+                    <span class="sim-sidebar__profile-role"><?= htmlspecialchars($roleName) ?></span>
+                </div>
+                <a href="<?= base_url('/perfil') ?>" class="sim-sidebar__profile-settings" aria-label="Configuración de perfil">
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round">
                         <circle cx="12" cy="12" r="3" />
                         <path
                             d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                     </svg>
-                </span>
-                <span class="sim-nav__text">Perfil</span>
-            </a>
+                </a>
+            </div>
         <?php endif; ?>
         <a href="<?= base_url('/logout') ?>" class="sim-nav__link">
             <span class="sim-nav__icon">

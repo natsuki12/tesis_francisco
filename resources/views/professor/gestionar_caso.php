@@ -22,7 +22,9 @@ $source = $casoData['source']; // 'borrador' o 'publicado'
 $titulo = htmlspecialchars($caso['titulo'] ?? 'Sin título');
 $estado = $caso['estado'] ?? 'Borrador';
 $estadoClase = $estado === 'Publicado' ? 'status-completed has-dot' : 'status-review has-dot';
-$fechaAlta = isset($caso['created_at']) ? date('d/m/Y', strtotime($caso['created_at'])) : '—';
+$fechaPublicacion = ($estado === 'Publicado' && !empty($caso['updated_at']))
+    ? date('d/m/Y', strtotime($caso['updated_at']))
+    : (isset($caso['created_at']) ? date('d/m/Y', strtotime($caso['created_at'])) : '—');
 $casoId = (int) $caso['id'];
 
 // Helper para formatear moneda
@@ -270,8 +272,7 @@ if ($source === 'borrador') {
             <div class="gc-stat-card">
                 <div class="gc-stat-icon green">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                        <line x1="12" y1="1" x2="12" y2="23"></line>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" stroke="none">Bs</text>
                     </svg>
                 </div>
                 <div class="gc-stat-info">
@@ -289,8 +290,8 @@ if ($source === 'borrador') {
                     </svg>
                 </div>
                 <div class="gc-stat-info">
-                    <span class="gc-stat-label">Fecha de Alta</span>
-                    <span class="gc-stat-value"><?= $fechaAlta ?></span>
+                    <span class="gc-stat-label">Fecha de Publicación</span>
+                    <span class="gc-stat-value"><?= $fechaPublicacion ?></span>
                 </div>
             </div>
             <div class="gc-stat-card">
@@ -797,8 +798,7 @@ if ($source === 'borrador') {
             <div class="gc-stat-card">
                 <div class="gc-stat-icon blue">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="1" x2="12" y2="23"></line>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" stroke="none">Bs</text>
                     </svg>
                 </div>
                 <div class="gc-stat-info">
