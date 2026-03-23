@@ -56,11 +56,9 @@ class StudentAttemptModel
             return ['ok' => false, 'razon' => 'Esta asignación ya no acepta nuevos intentos.'];
         }
 
-        // 2. Fecha límite (solo Evaluacion)
-        if ($row['modalidad'] === 'Evaluacion' && $row['fecha_limite']) {
-            if (strtotime($row['fecha_limite']) < time()) {
-                return ['ok' => false, 'razon' => 'La fecha límite ha vencido.'];
-            }
+        // 2. Fecha límite (aplica a todas las modalidades)
+        if ($row['fecha_limite'] && strtotime($row['fecha_limite']) < time()) {
+            return ['ok' => false, 'razon' => 'La fecha límite ha vencido.'];
         }
 
         // 3. Verificar intento activo
@@ -78,7 +76,7 @@ class StudentAttemptModel
             }
         }
 
-        return ['ok' => true];
+        return ['ok' => true, 'modalidad' => $row['modalidad']];
     }
 
     /**
@@ -111,6 +109,24 @@ class StudentAttemptModel
     }
 
     // ─── Crear / Cargar ───────────────────────────────────
+
+    /**
+     * Obtiene la modalidad de la config asociada a una asignación.
+     */
+    public function getModalidadByAsignacion(int $asignacionId): ?string
+    {
+        $sql = "
+            SELECT cfg.modalidad
+            FROM sim_caso_asignaciones a
+            INNER JOIN sim_caso_configs cfg ON cfg.id = a.config_id
+            WHERE a.id = :asig_id
+            LIMIT 1
+        ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':asig_id', $asignacionId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() ?: null;
+    }
 
     /**
      * Crea un nuevo intento y lo retorna.

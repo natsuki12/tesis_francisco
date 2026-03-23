@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Professor\Controllers\Asignaciones;
 
+use App\Core\BitacoraModel;
 use App\Modules\Professor\Models\Asignaciones\AsignacionesModel;
 
 /**
@@ -36,6 +37,19 @@ class AsignacionesController
             return;
         }
         $result = $this->model->createConfig($casoId, $this->profesorId, $data);
+
+        if ($result['ok']) {
+            BitacoraModel::registrar(
+                BitacoraModel::CONFIG_CREATED,
+                'asignaciones',
+                $this->profesorId,
+                null,
+                'sim_config_caso',
+                (int) ($result['config_id'] ?? 0),
+                detalle: 'Modalidad: ' . ($data['modalidad'] ?? '')
+            );
+        }
+
         $this->json($result, $result['ok'] ? 201 : 500);
     }
 
@@ -44,6 +58,18 @@ class AsignacionesController
     {
         $data = $this->input();
         $result = $this->model->updateConfig($configId, $data);
+
+        if ($result['ok']) {
+            BitacoraModel::registrar(
+                BitacoraModel::CONFIG_UPDATED,
+                'asignaciones',
+                $this->profesorId,
+                null,
+                'sim_config_caso',
+                $configId
+            );
+        }
+
         $this->json($result, $result['ok'] ? 200 : 422);
     }
 
@@ -51,6 +77,18 @@ class AsignacionesController
     public function destroy(int $configId): void
     {
         $result = $this->model->deleteOrDeactivateConfig($configId);
+
+        if ($result['ok']) {
+            BitacoraModel::registrar(
+                BitacoraModel::CONFIG_DELETED,
+                'asignaciones',
+                $this->profesorId,
+                null,
+                'sim_config_caso',
+                $configId
+            );
+        }
+
         $this->json($result, $result['ok'] ? 200 : 500);
     }
 
@@ -64,6 +102,19 @@ class AsignacionesController
             return;
         }
         $result = $this->model->addEstudiantes($configId, $ids);
+
+        if ($result['ok'] ?? false) {
+            BitacoraModel::registrar(
+                BitacoraModel::ASSIGNMENT_CREATED,
+                'asignaciones',
+                $this->profesorId,
+                null,
+                'sim_config_caso',
+                $configId,
+                detalle: count($ids) . ' estudiante(s) asignado(s)'
+            );
+        }
+
         $this->json($result);
     }
 
@@ -71,6 +122,18 @@ class AsignacionesController
     public function removeEstudiante(int $configId, int $asignacionId): void
     {
         $result = $this->model->removeOrDeactivateEstudiante($asignacionId);
+
+        if ($result['ok'] ?? false) {
+            BitacoraModel::registrar(
+                BitacoraModel::ASSIGNMENT_REMOVED,
+                'asignaciones',
+                $this->profesorId,
+                null,
+                'sim_asignaciones',
+                $asignacionId
+            );
+        }
+
         $this->json($result);
     }
 

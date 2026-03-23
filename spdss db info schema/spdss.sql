@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-03-2026 a las 03:13:28
+-- Tiempo de generación: 23-03-2026 a las 07:30:28
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -24,302 +24,335 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `bitacora_accesos`
+-- Estructura de tabla para la tabla `bitacora_eventos`
 --
 
-CREATE TABLE `bitacora_accesos` (
+CREATE TABLE `bitacora_eventos` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED DEFAULT NULL,
   `attempted_email` varchar(150) DEFAULT NULL,
   `tipo_evento_id` int(10) UNSIGNED NOT NULL,
-  `fail_reason` varchar(100) DEFAULT NULL,
+  `modulo` varchar(50) NOT NULL DEFAULT 'autenticacion',
+  `entidad_tipo` varchar(50) DEFAULT NULL COMMENT 'Tabla afectada: sim_casos_estudios, sim_intentos, users, etc.',
+  `entidad_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'PK del registro afectado en la tabla referenciada',
+  `detalle` varchar(255) DEFAULT NULL COMMENT 'Info adicional: razón de fallo, nota contextual, etc.',
   `ip_address` varchar(45) DEFAULT NULL,
   `user_agent` varchar(512) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Bitácora unificada: autenticación + acciones de negocio del sistema';
 
 --
--- Volcado de datos para la tabla `bitacora_accesos`
+-- Volcado de datos para la tabla `bitacora_eventos`
 --
 
-INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento_id`, `fail_reason`, `ip_address`, `user_agent`, `created_at`) VALUES
-(1, 2, 'fdiaz.6650@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:22:14'),
-(2, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:26:50'),
-(3, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:28:06'),
-(4, 2, 'fdiaz.6650@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:28:20'),
-(5, 2, 'fdiaz.6650@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:46:17'),
-(6, 6, 'superadmin@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:46:36'),
-(7, 6, 'superadmin@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:50:24'),
-(8, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:10:19'),
-(9, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:10:32'),
-(10, 2, 'fdiaz.6650@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:10:39'),
-(11, 2, 'fdiaz.6650@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:10:51'),
-(12, 6, 'superadmin@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:11:04'),
-(13, 6, 'superadmin@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:11:07'),
-(14, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:11:19'),
-(15, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:11:21'),
-(16, 2, 'fdiaz.6650@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:11:28'),
-(17, 2, 'fdiaz.6650@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:11:36'),
-(18, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-27 22:40:46'),
-(19, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-27 22:40:49'),
-(20, NULL, 'cardierv@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-27 22:40:56'),
-(21, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-27 22:41:03'),
-(22, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 01:51:40'),
-(23, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 03:51:11'),
-(24, NULL, 'admin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 05:19:08'),
-(25, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 05:20:20'),
-(26, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-02 04:22:40'),
-(27, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-02 05:04:56'),
-(28, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 04:26:52'),
-(29, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 04:37:20'),
-(30, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 04:37:34'),
-(31, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 16:26:07'),
-(32, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 22:20:07'),
-(33, NULL, 'fadr2001@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 22:21:20'),
-(34, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 22:22:57'),
-(35, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 01:32:45'),
-(36, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 03:42:49'),
-(37, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 04:04:00'),
-(38, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 04:04:08'),
-(39, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 04:05:01'),
-(40, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 04:05:09'),
-(41, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 06:06:45'),
-(42, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 06:22:31'),
-(43, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 22:41:21'),
-(44, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 00:42:23'),
-(45, NULL, 'admin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 02:25:48'),
-(46, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 02:48:26'),
-(47, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:41:56'),
-(48, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:42:05'),
-(49, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:42:07'),
-(50, NULL, 'fadr2001@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:42:17'),
-(51, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:42:25'),
-(52, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 20:46:23'),
-(53, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:01:02'),
-(54, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:01:20'),
-(55, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:05:24'),
-(56, NULL, 'fdiaz.6650@unimar.edu.ve', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:05:34'),
-(57, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:05:39'),
-(58, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 23:05:46'),
-(59, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 01:09:37'),
-(60, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 03:12:15'),
-(61, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 17:45:43'),
-(62, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 17:51:52'),
-(63, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 17:51:57'),
-(64, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 20:05:12'),
-(65, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 22:14:15'),
-(66, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 00:48:57'),
-(67, NULL, 'admin@admin.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 01:20:38'),
-(68, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 02:49:06'),
-(69, NULL, 'fadr2001@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 04:55:55'),
-(70, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 04:56:01'),
-(71, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 06:56:34'),
-(72, NULL, '27836650', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 07:23:54'),
-(73, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 16:56:03'),
-(74, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 18:56:25'),
-(75, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 01:59:45'),
-(76, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 02:03:29'),
-(77, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:46:48'),
-(78, 2, 'fdiaz.6650@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:47:31'),
-(79, 2, 'fdiaz.6650@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:48:29'),
-(80, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:51:43'),
-(81, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:52:14'),
-(82, NULL, 'Fadr2001', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:53:36'),
-(83, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:53:41'),
-(84, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:57:47'),
-(85, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:57:58'),
-(86, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:16:18'),
-(87, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:34:09'),
-(88, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:34:36'),
-(89, 2, 'fdiaz.6650@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:35:17'),
-(90, 2, 'fdiaz.6650@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:47:13'),
-(91, NULL, 'fadr2001@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:47:24'),
-(92, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:47:29'),
-(93, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:10'),
-(94, 2, 'fdiaz.6650@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:18'),
-(95, 2, 'fdiaz.6650@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:33'),
-(96, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:39'),
-(97, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 05:32:59'),
-(98, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:33:48'),
-(99, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:13:44'),
-(100, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:44:36'),
-(101, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:46:30'),
-(102, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:46:42'),
-(103, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:48:38'),
-(104, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:48:38'),
-(105, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:49:01'),
-(106, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:50:06'),
-(107, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:51:57'),
-(108, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 20:25:39'),
-(109, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 20:25:46'),
-(110, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 20:25:46'),
-(111, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 20:27:21'),
-(112, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 20:27:21'),
-(113, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 01:50:59'),
-(114, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 01:50:59'),
-(115, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:53:33'),
-(116, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:53:43'),
-(117, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:53:44'),
-(118, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:53:50'),
-(119, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:54:49'),
-(120, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:54:57'),
-(121, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:55:01'),
-(122, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:55:18'),
-(123, NULL, 'cardierv@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-09 02:58:42'),
-(124, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-09 02:58:53'),
-(125, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:04:12'),
-(126, NULL, 'admin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:09:33'),
-(127, NULL, 'admin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:09:43'),
-(128, NULL, 'admin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:09:53'),
-(129, NULL, 'superadmin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:10:15'),
-(130, NULL, 'superadmin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:10:27'),
-(131, NULL, 'superadmin@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:11:44'),
-(132, 6, 'superadmin@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:12:00'),
-(133, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:16:03'),
-(134, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:16:15'),
-(135, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 04:09:29'),
-(136, 6, 'superadmin@unimar.edu.ve', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:12:13'),
-(137, 6, 'superadmin@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:12:13'),
-(138, 6, 'superadmin@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:02'),
-(139, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:08'),
-(140, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:08'),
-(141, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 16:58:04'),
-(142, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 16:58:04'),
-(143, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:43:04'),
-(144, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:43:14'),
-(145, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:44:01'),
-(146, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:44:08'),
-(147, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 20:02:59'),
-(148, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 20:02:59'),
-(149, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:17:32'),
-(150, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:17:32'),
-(151, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:24:01'),
-(152, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:24:13'),
-(153, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:24:13'),
-(154, NULL, 'fdiaz.6650@unimar.edu.ve', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 23:07:11'),
-(155, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-09 23:21:43'),
-(156, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 00:40:10'),
-(157, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 02:59:41'),
-(158, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 02:59:41'),
-(159, NULL, 'vcardier.0479@unimar.edu.ve', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 03:01:02'),
-(160, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-10 03:04:21'),
-(161, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-10 03:04:21'),
-(162, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 15:46:55'),
-(163, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 15:46:55'),
-(164, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 16:01:18'),
-(165, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 16:01:18'),
-(166, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 16:08:43'),
-(167, 4, 'vcardier.0479@unimar.edu.ve', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 00:38:36'),
-(168, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 00:38:36'),
-(169, 4, 'vcardier.0479@unimar.edu.ve', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 02:47:49'),
-(170, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 02:47:49'),
-(171, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-11 03:01:04'),
-(172, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-11 03:01:04'),
-(173, 4, 'vcardier.0479@unimar.edu.ve', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 04:49:42'),
-(174, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 04:49:42'),
-(175, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-11 15:13:36'),
-(176, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-11 15:13:36'),
-(177, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 15:20:51'),
-(178, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 16:30:59'),
-(179, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 16:30:59'),
-(180, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 16:36:11'),
-(181, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 16:36:11'),
-(182, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 20:14:30'),
-(183, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 20:14:30'),
-(184, 1, 'fadr2001@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 20:14:35'),
-(185, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 20:14:47'),
-(186, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 20:14:47'),
-(187, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-11 20:15:43'),
-(188, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 22:23:02'),
-(189, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 22:23:02'),
-(190, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 22:26:30'),
-(191, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 22:26:37'),
-(192, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 22:29:07'),
-(193, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 22:29:16'),
-(194, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 01:28:43'),
-(195, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 01:28:43'),
-(196, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 03:36:17'),
-(197, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 03:36:17'),
-(198, NULL, 'cardierv@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 05:40:47'),
-(199, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 05:40:54'),
-(200, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 05:40:54'),
-(201, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 06:02:51'),
-(202, NULL, 'cardierv@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 02:19:01'),
-(203, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 02:19:08'),
-(204, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 02:19:49'),
-(205, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 02:19:49'),
-(206, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 05:02:10'),
-(207, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 05:02:10'),
-(208, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 16:26:52'),
-(209, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 16:26:52'),
-(210, NULL, 'cardierv@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 16:27:26'),
-(211, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 16:27:33'),
-(212, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 16:27:33'),
-(213, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 21:13:09'),
-(214, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 21:13:09'),
-(215, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 21:18:47'),
-(216, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 21:18:47'),
-(217, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 23:17:51'),
-(218, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 23:17:51'),
-(219, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:06'),
-(220, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:06'),
-(221, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:12'),
-(222, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:22'),
-(223, 4, 'vcardier.0479@unimar.edu.ve', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:23:13'),
-(224, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:23:13'),
-(225, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:32:05'),
-(226, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:32:16'),
-(227, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:32:16'),
-(228, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 05:39:52'),
-(229, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 05:39:52'),
-(230, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 18:09:43'),
-(231, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 18:09:43'),
-(232, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 18:20:24'),
-(233, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 18:20:39'),
-(234, NULL, 'cardierv@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:24:07'),
-(235, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:24:13'),
-(236, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:24:13'),
-(237, NULL, 'cardierv@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:48:40'),
-(238, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:48:46'),
-(239, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:48:46'),
-(240, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 22:37:28'),
-(241, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 22:37:28'),
-(242, 4, 'vcardier.0479@unimar.edu.ve', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 00:30:32'),
-(243, 4, 'vcardier.0479@unimar.edu.ve', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 00:31:22'),
-(244, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 00:43:41'),
-(245, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 00:43:41'),
-(246, NULL, 'frank@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:35:35'),
-(247, NULL, 'frank@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:35:58'),
-(248, NULL, 'frank@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:36:02'),
-(249, NULL, 'frank@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:36:13'),
-(250, NULL, 'frank@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:36:58'),
-(251, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 03:23:23'),
-(252, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 03:23:23');
-INSERT INTO `bitacora_accesos` (`id`, `user_id`, `attempted_email`, `tipo_evento_id`, `fail_reason`, `ip_address`, `user_agent`, `created_at`) VALUES
-(253, NULL, 'cardierv@gmail.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 22:03:19'),
-(254, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 22:03:27'),
-(255, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 22:03:27'),
-(256, 3, 'cardierv@gmail.com', 2, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 04:13:05'),
-(257, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 04:13:25'),
-(258, NULL, 'admin@admin.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 05:35:33'),
-(259, NULL, 'admin@admin.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 05:35:49'),
-(260, NULL, 'admin@admin.com', 3, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 05:35:55'),
-(261, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-16 07:43:40'),
-(262, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-16 07:43:40'),
-(263, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-16 08:42:16'),
-(264, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-16 08:42:16'),
-(265, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-16 13:17:39'),
-(266, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-16 13:17:39'),
-(267, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-17 18:25:40'),
-(268, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-17 18:25:40'),
-(269, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-17 19:39:34'),
-(270, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-17 19:39:34'),
-(271, 1, 'fadr2001@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-18 16:12:03'),
-(272, 1, 'fadr2001@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-18 16:12:03'),
-(273, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-18 17:58:28'),
-(274, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-18 17:58:28'),
-(275, 3, 'cardierv@gmail.com', 1, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-19 01:04:44'),
-(276, 3, 'cardierv@gmail.com', 1, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-19 01:04:44');
+INSERT INTO `bitacora_eventos` (`id`, `user_id`, `attempted_email`, `tipo_evento_id`, `modulo`, `entidad_tipo`, `entidad_id`, `detalle`, `ip_address`, `user_agent`, `created_at`) VALUES
+(1, 2, 'fdiaz.6650@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:22:14'),
+(2, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:26:50'),
+(3, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:28:06'),
+(4, 2, 'fdiaz.6650@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:28:20'),
+(5, 2, 'fdiaz.6650@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:46:17'),
+(6, 6, 'superadmin@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:46:36'),
+(7, 6, 'superadmin@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 04:50:24'),
+(8, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:10:19'),
+(9, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:10:32'),
+(10, 2, 'fdiaz.6650@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:10:39'),
+(11, 2, 'fdiaz.6650@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:10:51'),
+(12, 6, 'superadmin@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:11:04'),
+(13, 6, 'superadmin@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:11:07'),
+(14, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:11:19'),
+(15, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:11:21'),
+(16, 2, 'fdiaz.6650@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:11:28'),
+(17, 2, 'fdiaz.6650@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-23 05:11:36'),
+(18, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-27 22:40:46'),
+(19, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-27 22:40:49'),
+(20, NULL, 'cardierv@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-27 22:40:56'),
+(21, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-02-27 22:41:03'),
+(22, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 01:51:40'),
+(23, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 03:51:11'),
+(24, NULL, 'admin@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 05:19:08'),
+(25, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-01 05:20:20'),
+(26, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-02 04:22:40'),
+(27, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-02 05:04:56'),
+(28, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 04:26:52'),
+(29, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 04:37:20'),
+(30, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 04:37:34'),
+(31, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 16:26:07'),
+(32, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 22:20:07'),
+(33, NULL, 'fadr2001@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 22:21:20'),
+(34, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-03 22:22:57'),
+(35, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 01:32:45'),
+(36, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 03:42:49'),
+(37, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 04:04:00'),
+(38, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 04:04:08'),
+(39, 4, 'vcardier.0479@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 04:05:01'),
+(40, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 04:05:09'),
+(41, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 06:06:45'),
+(42, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 06:22:31'),
+(43, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-04 22:41:21'),
+(44, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 00:42:23'),
+(45, NULL, 'admin@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 02:25:48'),
+(46, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 02:48:26'),
+(47, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:41:56'),
+(48, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:42:05'),
+(49, 4, 'vcardier.0479@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:42:07'),
+(50, NULL, 'fadr2001@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:42:17'),
+(51, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 03:42:25'),
+(52, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 20:46:23'),
+(53, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:01:02'),
+(54, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:01:20'),
+(55, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:05:24'),
+(56, NULL, 'fdiaz.6650@unimar.edu.ve', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:05:34'),
+(57, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 21:05:39'),
+(58, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-05 23:05:46'),
+(59, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 01:09:37'),
+(60, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 03:12:15'),
+(61, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 17:45:43'),
+(62, 4, 'vcardier.0479@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 17:51:52'),
+(63, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 17:51:57'),
+(64, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 20:05:12'),
+(65, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-06 22:14:15'),
+(66, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 00:48:57'),
+(67, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 01:20:38'),
+(68, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 02:49:06'),
+(69, NULL, 'fadr2001@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 04:55:55'),
+(70, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 04:56:01'),
+(71, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 06:56:34'),
+(72, NULL, '27836650', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 07:23:54'),
+(73, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 16:56:03'),
+(74, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-07 18:56:25'),
+(75, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 01:59:45'),
+(76, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 02:03:29'),
+(77, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:46:48'),
+(78, 2, 'fdiaz.6650@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:47:31'),
+(79, 2, 'fdiaz.6650@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:48:29'),
+(80, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:51:43'),
+(81, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:52:14'),
+(82, NULL, 'Fadr2001', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:53:36'),
+(83, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:53:41'),
+(84, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:57:47'),
+(85, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 03:57:58'),
+(86, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:16:18'),
+(87, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:34:09'),
+(88, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:34:36'),
+(89, 2, 'fdiaz.6650@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:35:17'),
+(90, 2, 'fdiaz.6650@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:47:13'),
+(91, NULL, 'fadr2001@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:47:24'),
+(92, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 04:47:29'),
+(93, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:10'),
+(94, 2, 'fdiaz.6650@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:18'),
+(95, 2, 'fdiaz.6650@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:33'),
+(96, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:30:39'),
+(97, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 05:32:59'),
+(98, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 05:33:48'),
+(99, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:13:44'),
+(100, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:44:36'),
+(101, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:46:30'),
+(102, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:46:42'),
+(103, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:48:38'),
+(104, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:48:38'),
+(105, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:49:01'),
+(106, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 18:50:06'),
+(107, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 18:51:57'),
+(108, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 20:25:39'),
+(109, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 20:25:46'),
+(110, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-08 20:25:46'),
+(111, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 20:27:21'),
+(112, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-08 20:27:21'),
+(113, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 01:50:59'),
+(114, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 01:50:59'),
+(115, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:53:33'),
+(116, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:53:43'),
+(117, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:53:44'),
+(118, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:53:50'),
+(119, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:54:49'),
+(120, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:54:57'),
+(121, 4, 'vcardier.0479@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:55:01'),
+(122, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 02:55:18'),
+(123, NULL, 'cardierv@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-09 02:58:42'),
+(124, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-09 02:58:53'),
+(125, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:04:12'),
+(126, NULL, 'admin@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:09:33'),
+(127, NULL, 'admin@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:09:43'),
+(128, NULL, 'admin@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:09:53'),
+(129, NULL, 'superadmin@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:10:15'),
+(130, NULL, 'superadmin@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:10:27'),
+(131, NULL, 'superadmin@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:11:44'),
+(132, 6, 'superadmin@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:12:00'),
+(133, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:16:03'),
+(134, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 03:16:15'),
+(135, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 04:09:29'),
+(136, 6, 'superadmin@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:12:13'),
+(137, 6, 'superadmin@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:12:13'),
+(138, 6, 'superadmin@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:02'),
+(139, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:08'),
+(140, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 05:45:08'),
+(141, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 16:58:04'),
+(142, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 16:58:04'),
+(143, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:43:04'),
+(144, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:43:14'),
+(145, 4, 'vcardier.0479@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:44:01'),
+(146, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 17:44:08'),
+(147, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 20:02:59'),
+(148, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 20:02:59'),
+(149, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:17:32'),
+(150, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:17:32'),
+(151, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:24:01'),
+(152, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:24:13'),
+(153, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 22:24:13'),
+(154, NULL, 'fdiaz.6650@unimar.edu.ve', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-09 23:07:11'),
+(155, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-09 23:21:43'),
+(156, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 00:40:10'),
+(157, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 02:59:41'),
+(158, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 02:59:41'),
+(159, NULL, 'vcardier.0479@unimar.edu.ve', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 03:01:02'),
+(160, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-10 03:04:21'),
+(161, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-10 03:04:21'),
+(162, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 15:46:55'),
+(163, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 15:46:55'),
+(164, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 16:01:18'),
+(165, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 16:01:18'),
+(166, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-10 16:08:43'),
+(167, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 00:38:36'),
+(168, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 00:38:36'),
+(169, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 02:47:49'),
+(170, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 02:47:49'),
+(171, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-11 03:01:04'),
+(172, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-11 03:01:04'),
+(173, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 04:49:42'),
+(174, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 04:49:42'),
+(175, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-11 15:13:36'),
+(176, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-11 15:13:36'),
+(177, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 15:20:51'),
+(178, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 16:30:59'),
+(179, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 16:30:59'),
+(180, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 16:36:11'),
+(181, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 16:36:11'),
+(182, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 20:14:30'),
+(183, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 20:14:30'),
+(184, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 20:14:35'),
+(185, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 20:14:47'),
+(186, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 20:14:47'),
+(187, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-11 20:15:43'),
+(188, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 22:23:02'),
+(189, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 22:23:02'),
+(190, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 22:26:30'),
+(191, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 22:26:37'),
+(192, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 22:29:07'),
+(193, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-11 22:29:16'),
+(194, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 01:28:43'),
+(195, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 01:28:43'),
+(196, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 03:36:17'),
+(197, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 03:36:17'),
+(198, NULL, 'cardierv@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 05:40:47'),
+(199, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 05:40:54'),
+(200, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 05:40:54'),
+(201, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-12 06:02:51'),
+(202, NULL, 'cardierv@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 02:19:01'),
+(203, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 02:19:08'),
+(204, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 02:19:49'),
+(205, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 02:19:49'),
+(206, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 05:02:10'),
+(207, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 05:02:10'),
+(208, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 16:26:52'),
+(209, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 16:26:52'),
+(210, NULL, 'cardierv@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 16:27:26'),
+(211, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 16:27:33'),
+(212, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 16:27:33'),
+(213, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 21:13:09'),
+(214, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 21:13:09'),
+(215, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 21:18:47'),
+(216, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-13 21:18:47'),
+(217, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 23:17:51'),
+(218, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-13 23:17:51'),
+(219, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:06'),
+(220, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:06'),
+(221, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:12');
+INSERT INTO `bitacora_eventos` (`id`, `user_id`, `attempted_email`, `tipo_evento_id`, `modulo`, `entidad_tipo`, `entidad_id`, `detalle`, `ip_address`, `user_agent`, `created_at`) VALUES
+(222, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 01:21:22'),
+(223, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:23:13'),
+(224, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:23:13'),
+(225, 4, 'vcardier.0479@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:32:05'),
+(226, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:32:16'),
+(227, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 03:32:16'),
+(228, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 05:39:52'),
+(229, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 05:39:52'),
+(230, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 18:09:43'),
+(231, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 18:09:43'),
+(232, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 18:20:24'),
+(233, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 18:20:39'),
+(234, NULL, 'cardierv@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:24:07'),
+(235, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:24:13'),
+(236, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:24:13'),
+(237, NULL, 'cardierv@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:48:40'),
+(238, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:48:46'),
+(239, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 20:48:46'),
+(240, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 22:37:28'),
+(241, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-14 22:37:28'),
+(242, 4, 'vcardier.0479@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 00:30:32'),
+(243, 4, 'vcardier.0479@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 00:31:22'),
+(244, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 00:43:41'),
+(245, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 00:43:41'),
+(246, NULL, 'frank@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:35:35'),
+(247, NULL, 'frank@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:35:58'),
+(248, NULL, 'frank@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:36:02'),
+(249, NULL, 'frank@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:36:13'),
+(250, NULL, 'frank@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 01:36:58'),
+(251, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 03:23:23'),
+(252, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0', '2026-03-15 03:23:23'),
+(253, NULL, 'cardierv@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 22:03:19'),
+(254, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 22:03:27'),
+(255, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-15 22:03:27'),
+(256, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 04:13:05'),
+(257, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 04:13:25'),
+(258, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 05:35:33'),
+(259, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 05:35:49'),
+(260, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-16 05:35:55'),
+(261, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-16 07:43:40'),
+(262, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-16 07:43:40'),
+(263, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-16 08:42:16'),
+(264, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-16 08:42:16'),
+(265, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-16 13:17:39'),
+(266, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-16 13:17:39'),
+(267, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-17 18:25:40'),
+(268, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-17 18:25:40'),
+(269, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-17 19:39:34'),
+(270, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-17 19:39:34'),
+(271, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-18 16:12:03'),
+(272, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-18 16:12:03'),
+(273, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-18 17:58:28'),
+(274, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-18 17:58:28'),
+(275, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-19 01:04:44'),
+(276, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-19 01:04:44'),
+(277, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-19 22:29:33'),
+(278, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-19 22:29:33'),
+(279, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-20 00:30:00'),
+(280, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-20 00:30:00'),
+(281, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-20 00:31:08'),
+(282, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-20 00:31:15'),
+(283, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-20 00:31:15'),
+(284, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-20 00:54:51'),
+(285, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-22 04:23:13'),
+(286, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-22 04:23:13'),
+(287, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-22 04:58:48'),
+(288, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-22 04:58:48'),
+(289, 6, 'superadmin@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-22 18:59:14'),
+(290, NULL, 'admin@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-22 19:05:51'),
+(291, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-22 19:33:19'),
+(292, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-22 19:33:19'),
+(293, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 13, 'Borrador actualizado', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-22 23:42:43'),
+(294, NULL, 'cardierv@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '172.16.20.108', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-03-23 00:12:52'),
+(295, 3, 'cardierv@gmail.com', 9, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '172.16.20.108', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-03-23 00:19:21'),
+(296, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '172.16.20.108', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-03-23 00:19:21'),
+(297, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '172.16.20.108', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-03-23 00:20:03'),
+(298, NULL, 'cardierv@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '172.16.20.108', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-03-23 00:20:33'),
+(299, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '172.16.20.108', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-03-23 00:20:39'),
+(300, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-23_01-24-43.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 05:24:43'),
+(301, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 05:34:01'),
+(302, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 05:34:06'),
+(303, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 05:34:17'),
+(304, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 05:34:59'),
+(305, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 05:50:19'),
+(306, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-23_02-29-18.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 06:29:19');
 
 -- --------------------------------------------------------
 
@@ -3211,6 +3244,35 @@ INSERT INTO `codigos_postales` (`id`, `estado_id`, `codigo`, `descripcion`, `cre
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `configs_globales`
+--
+
+CREATE TABLE `configs_globales` (
+  `id` smallint(5) UNSIGNED NOT NULL,
+  `clave` varchar(100) NOT NULL,
+  `valor` text DEFAULT NULL,
+  `tipo` enum('int','bool','string') NOT NULL DEFAULT 'string',
+  `categoria` enum('seguridad','aplicativo','respaldo') NOT NULL,
+  `descripcion` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `configs_globales`
+--
+
+INSERT INTO `configs_globales` (`id`, `clave`, `valor`, `tipo`, `categoria`, `descripcion`, `created_at`, `updated_at`) VALUES
+(1, 'backup_auto_enabled', '1', 'bool', 'respaldo', 'Activar respaldo automático', '2026-03-23 04:29:13', '2026-03-23 04:45:10'),
+(2, 'backup_frecuencia', 'semanal', 'string', 'respaldo', 'Frecuencia: diario, semanal', '2026-03-23 04:29:13', '2026-03-23 04:45:10'),
+(3, 'backup_hora', '19:03', 'string', 'respaldo', 'Hora de ejecución del respaldo automático', '2026-03-23 04:29:13', '2026-03-23 04:45:10'),
+(4, 'backup_dia', '3', 'int', 'respaldo', 'Día de ejecución para semanal (0=Domingo, 1=Lunes ... 6=Sábado)', '2026-03-23 04:29:13', '2026-03-23 04:45:10'),
+(5, 'backup_retencion', '11', 'int', 'respaldo', 'Cantidad máxima de respaldos a mantener', '2026-03-23 04:29:13', '2026-03-23 04:44:38'),
+(6, 'backup_ultimo_timestamp', '2026-03-23 02:29:19', 'string', 'respaldo', 'Fecha y hora del último respaldo ejecutado', '2026-03-23 04:29:13', '2026-03-23 06:29:19');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `estados`
 --
 
@@ -5249,7 +5311,7 @@ INSERT INTO `sim_casos_estudios` (`id`, `profesor_id`, `causante_id`, `represent
 (10, 1, 1, 3, 23, 'Con_Cedula', 'caso 1', 'prueba', 'Publicado', NULL, '2026-03-07 07:12:52', '2026-03-19 00:35:16'),
 (11, 1, 8, 9, 23, 'Sin_Cedula', '3', 'Descripcion de prueba para caso sin cedula', 'Publicado', NULL, '2026-03-08 02:28:25', '2026-03-19 00:35:38'),
 (12, 1, 1, 3, 23, 'Con_Cedula', 'caso de prueba total', 'prueba real', 'Publicado', NULL, '2026-03-18 23:34:25', '2026-03-18 23:35:13'),
-(13, 1, NULL, NULL, NULL, 'Con_Cedula', 'prueba calculos', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"prueba calculos\",\"descripcion\":\"prueba real\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":13,\"herencia\":{\"tipos\":[{\"tipo_herencia_id\":\"4\"},{\"tipo_herencia_id\":\"1\",\"nombre\":\"Testamento\",\"subtipo_testamento\":\"Abierto\",\"fecha_testamento\":\"2024-03-28\"}]},\"causante\":{\"tipo_cedula\":\"V\",\"sexo\":\"F\",\"estado_civil\":\"Casado\",\"nacionalidad\":190,\"cedula\":\"4079920\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"Maria\",\"apellidos\":\"Sarmiento\",\"fecha_nacimiento\":\"2001-05-29\",\"fecha_fallecimiento\":\"2024-03-28\",\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"estado_civil\",\"nacionalidad\",\"fecha_fallecimiento\"],\"persona_id\":1},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"2024-12-31\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"direcciones_causante\":[{\"tipo_direccion\":\"Domicilio_Fiscal\",\"tipo_vialidad\":\"Calle\",\"tipo_inmueble\":\"Casa\",\"nombre_vialidad\":\"ROJAS\",\"nro_inmueble\":\"CASA - NRO 35\",\"tipo_nivel\":\"\",\"tipo_sector\":\"Urbanizacion\",\"nro_nivel\":\"NO APLICA\",\"nombre_sector\":\"VILLAS DE LA ASUNCION 2\",\"estado\":\"16\",\"municipio\":\"211\",\"parroquia\":\"702\",\"ciudad\":\"211\",\"telefono_fijo\":\"\",\"telefono_celular\":\"0412-7048856\",\"fax\":\"\",\"codigo_postal_id\":\"1833\",\"punto_referencia\":\"LA ZONA EDUCATIVA\",\"desc_inmueble\":\"casa\",\"piso_nivel\":\"35\"}],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"sexo\":\"M\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"letra_rif\":\"J\",\"rif_personal\":\"37836650\",\"nacionalidad\":190,\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"nacionalidad\"],\"pasaporte\":\"\",\"persona_id\":3},\"herederos\":[{\"persona_id\":\"3\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"16\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2026-03-12\",\"_uid\":\"98114a25-469c-43ca-a48b-e78d1560064d\"},{\"persona_id\":\"4\",\"nombres\":\"valeria\",\"apellidos\":\"cardier\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"31120479\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2004-11-20\",\"sexo\":\"F\",\"estado_civil\":\"Casado\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"1\",\"premuerto\":\"NO\",\"fecha_fallecimiento\":\"\",\"_uid\":\"ca226943-ebc3-4d0f-a805-f2b6853792fa\"}],\"herederos_premuertos\":[{\"persona_id\":\"2\",\"nombres\":\"jesus\",\"apellidos\":\"estanga\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"4224014\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2000-03-01\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"8\",\"premuerto_padre_id\":\"98114a25-469c-43ca-a48b-e78d1560064d\",\"_uid\":\"e4604131-c249-4f72-af2a-12119c827c50\",\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"estado_civil\"]}],\"bienes_inmuebles\":[{\"vivienda_principal\":\"Si\",\"bien_litigioso\":\"No\",\"porcentaje\":100,\"descripcion\":\" vivienda principal\",\"linderos\":\"no se que es un lindero\",\"superficie_construida\":250,\"superficie_no_construida\":750,\"area_superficie\":1000,\"direccion\":\"calle la poza\",\"oficina_registro\":\" no tiene\",\"nro_registro\":\" 1\",\"libro\":\" 1\",\"protocolo\":\" 1\",\"fecha_registro\":\"2026-03-10\",\"trimestre\":\" 1\",\"asiento_registral\":\" 1\",\"matricula\":\" 1\",\"folio_real_anio\":\" 1\",\"valor_original\":2000,\"valor_declarado\":50000,\"tipo_bien_inmueble_id\":[\"2\",\"4\"]}],\"bienes_muebles\":{\"1\":[{\"tipo_bien_mueble_id\":\"1\",\"banco_id\":\"1\",\"numero_cuenta\":\"33333333333333333333\",\"bien_litigioso\":\"Si\",\"numero_expediente\":\"de\",\"tribunal_causa\":\"de\",\"partes_juicio\":\"de\",\"estado_juicio\":\"de\",\"porcentaje\":\"100\",\"descripcion\":\"eedd3\",\"valor_declarado\":5000}],\"2\":[{\"tipo_bien_mueble_id\":\"8\",\"rif_empresa\":\"J123456789\",\"razon_social\":\"unimar\",\"numero_prima\":\"7\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"seguro montepio\",\"valor_declarado\":2500},{\"tipo_bien_mueble_id\":\"9\",\"rif_empresa\":\"J378366509\",\"razon_social\":\"seguros vidal 2\",\"numero_prima\":\"333\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"un buen seguro\",\"valor_declarado\":1500}],\"9\":[{\"posee_banco\":\"NO\",\"banco_id\":\"\",\"numero_cuenta\":\"\",\"rif_empresa\":\"J123456789\",\"razon_social\":\"unimar\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"dddd\",\"valor_declarado\":500}],\"length\":0},\"pasivos_deuda\":[{\"tipo_pasivo_deuda_id\":\"2\",\"banco_id\":\"19\",\"porcentaje\":100,\"descripcion\":\"deuda 1\",\"valor_declarado\":250},{\"tipo_pasivo_deuda_id\":\"4\",\"porcentaje\":100,\"descripcion\":\"otros\",\"valor_declarado\":300}],\"pasivos_gastos\":[{\"tipo_pasivo_gasto_id\":\"3\",\"porcentaje\":\"100\",\"descripcion\":\"testamento\",\"valor_declarado\":250}],\"exenciones\":[{\"tipo_exencion\":\"excencion 1\",\"descripcion\":\"excencion 1\",\"valor_declarado\":250}],\"exoneraciones\":[{\"tipo_exoneracion\":\"exoneraicon 1\",\"descripcion\":\"exoneraicon 1\",\"valor_declarado\":250}],\"prorrogas\":[{\"fecha_solicitud\":\"2026-03-18\",\"nro_resolucion\":\"123456\",\"fecha_resolucion\":\"2026-03-18\",\"plazo_dias\":\"7\",\"fecha_vencimiento\":\"2026-03-25\"}],\"calculo_manual\":[{\"_uid\":\"98114a25-469c-43ca-a48b-e78d1560064d\",\"cuota_parte_ut\":233.33,\"reduccion_bs\":10},{\"_uid\":\"ca226943-ebc3-4d0f-a805-f2b6853792fa\",\"cuota_parte_ut\":233.33,\"reduccion_bs\":0}]}', '2026-03-19 00:49:36', '2026-03-19 00:54:32');
+(13, 1, NULL, NULL, NULL, 'Con_Cedula', 'prueba calculos', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"prueba calculos\",\"descripcion\":\"prueba real\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":13,\"herencia\":{\"tipos\":[{\"tipo_herencia_id\":\"4\"},{\"tipo_herencia_id\":\"1\",\"nombre\":\"Testamento\",\"subtipo_testamento\":\"Abierto\",\"fecha_testamento\":\"2024-03-28\"}]},\"causante\":{\"tipo_cedula\":\"V\",\"sexo\":\"F\",\"estado_civil\":\"Casado\",\"nacionalidad\":190,\"cedula\":\"4079920\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"Maria\",\"apellidos\":\"Sarmiento\",\"fecha_nacimiento\":\"2001-05-29\",\"fecha_fallecimiento\":\"2024-03-28\",\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"estado_civil\",\"nacionalidad\",\"fecha_fallecimiento\"],\"persona_id\":1},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"2024-12-31\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"direcciones_causante\":[{\"tipo_direccion\":\"Domicilio_Fiscal\",\"tipo_vialidad\":\"Calle\",\"tipo_inmueble\":\"Casa\",\"nombre_vialidad\":\"ROJAS\",\"nro_inmueble\":\"CASA - NRO 35\",\"tipo_nivel\":\"\",\"tipo_sector\":\"Urbanizacion\",\"nro_nivel\":\"NO APLICA\",\"nombre_sector\":\"VILLAS DE LA ASUNCION 2\",\"estado\":\"16\",\"municipio\":\"211\",\"parroquia\":\"702\",\"ciudad\":\"211\",\"telefono_fijo\":\"\",\"telefono_celular\":\"0412-7048856\",\"fax\":\"\",\"codigo_postal_id\":\"1833\",\"punto_referencia\":\"LA ZONA EDUCATIVA\",\"desc_inmueble\":\"casa\",\"piso_nivel\":\"35\"}],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"sexo\":\"M\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"letra_rif\":\"J\",\"rif_personal\":\"37836650\",\"nacionalidad\":190,\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"nacionalidad\"],\"pasaporte\":\"\",\"persona_id\":3},\"herederos\":[{\"persona_id\":\"3\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"16\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2026-03-12\",\"_uid\":\"98114a25-469c-43ca-a48b-e78d1560064d\"},{\"persona_id\":\"4\",\"nombres\":\"valeria\",\"apellidos\":\"cardier\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"31120479\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2004-11-20\",\"sexo\":\"F\",\"estado_civil\":\"Casado\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"1\",\"premuerto\":\"NO\",\"fecha_fallecimiento\":\"\",\"_uid\":\"ca226943-ebc3-4d0f-a805-f2b6853792fa\"}],\"herederos_premuertos\":[{\"persona_id\":\"2\",\"nombres\":\"jesus\",\"apellidos\":\"estanga\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"4224014\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2000-03-01\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"8\",\"premuerto_padre_id\":\"98114a25-469c-43ca-a48b-e78d1560064d\",\"_uid\":\"e4604131-c249-4f72-af2a-12119c827c50\",\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"estado_civil\"]}],\"bienes_inmuebles\":[{\"vivienda_principal\":\"Si\",\"bien_litigioso\":\"No\",\"porcentaje\":100,\"descripcion\":\" vivienda principal\",\"linderos\":\"no se que es un lindero\",\"superficie_construida\":250,\"superficie_no_construida\":750,\"area_superficie\":1000,\"direccion\":\"calle la poza\",\"oficina_registro\":\" no tiene\",\"nro_registro\":\" 1\",\"libro\":\" 1\",\"protocolo\":\" 1\",\"fecha_registro\":\"2026-03-10\",\"trimestre\":\" 1\",\"asiento_registral\":\" 1\",\"matricula\":\" 1\",\"folio_real_anio\":\" 1\",\"valor_original\":2000,\"valor_declarado\":50000,\"tipo_bien_inmueble_id\":[\"2\",\"4\"]}],\"bienes_muebles\":{\"1\":[{\"tipo_bien_mueble_id\":\"1\",\"banco_id\":\"1\",\"numero_cuenta\":\"33333333333333333333\",\"bien_litigioso\":\"Si\",\"numero_expediente\":\"de\",\"tribunal_causa\":\"de\",\"partes_juicio\":\"de\",\"estado_juicio\":\"de\",\"porcentaje\":\"100\",\"descripcion\":\"eedd3\",\"valor_declarado\":5000}],\"2\":[{\"tipo_bien_mueble_id\":\"8\",\"rif_empresa\":\"J123456789\",\"razon_social\":\"unimar\",\"numero_prima\":\"7\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"seguro montepio\",\"valor_declarado\":2500},{\"tipo_bien_mueble_id\":\"9\",\"rif_empresa\":\"J378366509\",\"razon_social\":\"seguros vidal 2\",\"numero_prima\":\"333\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"un buen seguro\",\"valor_declarado\":1500}],\"9\":[{\"posee_banco\":\"NO\",\"banco_id\":\"\",\"numero_cuenta\":\"\",\"rif_empresa\":\"J123456789\",\"razon_social\":\"unimar\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"dddd\",\"valor_declarado\":500}],\"length\":0},\"pasivos_deuda\":[{\"tipo_pasivo_deuda_id\":\"2\",\"banco_id\":\"19\",\"porcentaje\":100,\"descripcion\":\"deuda 1\",\"valor_declarado\":250},{\"tipo_pasivo_deuda_id\":\"4\",\"porcentaje\":100,\"descripcion\":\"otros\",\"valor_declarado\":300}],\"pasivos_gastos\":[{\"tipo_pasivo_gasto_id\":\"3\",\"porcentaje\":\"100\",\"descripcion\":\"testamento\",\"valor_declarado\":250}],\"exenciones\":[{\"tipo_exencion\":\"excencion 1\",\"descripcion\":\"excencion 1\",\"valor_declarado\":250}],\"exoneraciones\":[{\"tipo_exoneracion\":\"exoneraicon 1\",\"descripcion\":\"exoneraicon 1\",\"valor_declarado\":250}],\"prorrogas\":[{\"fecha_solicitud\":\"2026-03-18\",\"nro_resolucion\":\"123456\",\"fecha_resolucion\":\"2026-03-18\",\"plazo_dias\":\"7\",\"fecha_vencimiento\":\"2026-03-25\"}],\"calculo_manual\":[{\"_uid\":\"98114a25-469c-43ca-a48b-e78d1560064d\",\"cuota_parte_ut\":233.33,\"reduccion_bs\":10},{\"_uid\":\"ca226943-ebc3-4d0f-a805-f2b6853792fa\",\"cuota_parte_ut\":233.33,\"reduccion_bs\":0}]}', '2026-03-19 00:49:36', '2026-03-22 23:42:43');
 
 -- --------------------------------------------------------
 
@@ -7216,6 +7278,22 @@ CREATE TABLE `sim_marco_legals` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `sim_marco_legals`
+--
+
+INSERT INTO `sim_marco_legals` (`id`, `titulo`, `tipo`, `descripcion`, `url`, `estado`, `orden`, `fecha_publicacion`, `numero_gaceta`, `created_at`, `updated_at`) VALUES
+(1, 'Constitución de la República Bolivariana de Venezuela', 'Ley', 'Norma suprema del ordenamiento jurídico venezolano. El artículo 156, numeral 12, atribuye al Poder Público Nacional la competencia en materia de impuestos sobre sucesiones, donaciones y demás ramos conexos. Fundamento constitucional de la potestad tributaria del Estado en materia sucesoral.', 'https://www.asambleanacional.gob.ve/storage/documentos/botones/constitucion-nacional-20191205135853.PDF', 'Vigente', 1, '1999-12-30', 'N° 36.860', '2026-03-23 03:43:41', '2026-03-23 03:43:41'),
+(2, 'Código Civil de Venezuela', 'Codigo', 'Ley fundamental que regula las relaciones jurídicas entre particulares. El Título II \"De las Sucesiones\" (artículos 807 al 1132) establece el régimen de sucesiones intestadas y testamentarias, órdenes de suceder, legítimas, partición de herencias y demás instituciones del derecho hereditario aplicables al cálculo del impuesto sucesoral.', 'https://www.oas.org/dil/esp/codigo_civil_venezuela.pdf', 'Vigente', 2, '1982-07-26', 'N° 2.990 Extraordinario', '2026-03-23 03:43:41', '2026-03-23 03:43:41'),
+(3, 'Código Orgánico Tributario', 'Codigo', 'Marco general del sistema tributario venezolano. Regula los principios, procedimientos, infracciones y sanciones aplicables a todos los tributos nacionales, incluyendo el impuesto sobre sucesiones. Establece normas sobre prescripción, deberes formales de los contribuyentes, facultades de la Administración Tributaria y el valor de la Unidad Tributaria como unidad de medida fiscal.', 'https://www.asambleanacional.gob.ve/storage/documentos/leyes/decreto-constituyente-mediante-el-cual-se-dicta-el-codigo-organico-tributario-20211019155621.pdf', 'Vigente', 3, '2020-01-29', 'N° 6.507 Extraordinario', '2026-03-23 03:43:41', '2026-03-23 03:43:41'),
+(4, 'Ley de Impuesto sobre Sucesiones, Donaciones y demás Ramos Conexos (LISDRC)', 'Ley', 'Ley especial que rige la materia de sucesiones y donaciones en Venezuela. Establece el hecho imponible, los sujetos pasivos, las exenciones y exoneraciones (artículos 8, 9 y 10), las reducciones por parentesco (artículo 11), la tarifa progresiva (artículo 7), la determinación del patrimonio neto heredado (artículo 15), el plazo de 180 días hábiles para declarar (artículo 27), y los procedimientos de liquidación y pago del impuesto. Base legal principal del SPDSS.', 'https://declaraciones.seniat.gob.ve/portal/page/portal/MANEJADOR_CONTENIDO_SENIAT/01NOTICIAS/00IMAGENES/GACETAOFICIAL5391SUCE.pdf', 'Vigente', 4, '1999-10-22', 'N° 5.391 Extraordinario', '2026-03-23 03:43:41', '2026-03-23 03:43:41'),
+(5, 'Ley Orgánica de Procedimientos Administrativos (LOPA)', 'Ley', 'Regula la actividad de la Administración Pública en la ejecución de sus funciones. Aplicable supletoriamente a los procedimientos tributarios del SENIAT en materia sucesoral, en cuanto a notificaciones, formación de expedientes, plazos administrativos y recursos. Establece el marco procedimental que complementa al Código Orgánico Tributario.', 'https://www.oas.org/juridico/PDFs/mesicic4_ven_ley_org_proc_adm.pdf', 'Vigente', 5, '1981-07-01', 'N° 2.818 Extraordinario', '2026-03-23 03:43:41', '2026-03-23 03:43:41'),
+(6, 'Providencia Administrativa SNAT/2013/0050 - Declaración Electrónica de Sucesiones', 'Providencia', 'Establece la obligatoriedad de presentar las declaraciones del Impuesto sobre Sucesiones de forma electrónica a través del portal del SENIAT (Sistema REDESU). Define el procedimiento de inscripción del RIF sucesoral, la presentación electrónica de la declaración, el pago del impuesto y la consignación de recaudos para la obtención del certificado de solvencia o liberación. Referente directo del flujo que replica el SPDSS.', NULL, 'Vigente', 6, '2013-07-29', 'N° 40.216', '2026-03-23 03:43:41', '2026-03-23 03:43:41'),
+(7, 'Decreto N° 360 con Rango y Fuerza de Ley de Reforma de la LISDRC', 'Ley', 'Decreto mediante el cual el Ejecutivo Nacional reformó la Ley de Impuesto sobre Sucesiones, Donaciones y demás Ramos Conexos, en ejercicio de habilitación legislativa. Constituye la base del texto vigente de la LISDRC publicado en Gaceta Oficial N° 5.391.', 'https://www.asambleanacional.gob.ve/leyes/sancionadas/decreto-no-360-con-rango-y-fuerza-de-ley-de-reforma-de-la-ley-de-impuestos-sobre-sucesiones-donaciones-y-demas-ramos-conexos', 'Vigente', 7, '1999-10-05', 'N° 5.391 Extraordinario', '2026-03-23 03:43:41', '2026-03-23 03:43:41'),
+(8, 'Decreto con Rango, Valor y Fuerza de Ley del SENIAT', 'Ley', 'Establece la creación, organización, competencias y funcionamiento del Servicio Nacional Integrado de Administración Aduanera y Tributaria (SENIAT), ente encargado de la recaudación y control del impuesto sobre sucesiones. Define las facultades del Superintendente para dictar providencias administrativas en materia tributaria.', NULL, 'Vigente', 8, '2015-12-30', 'N° 6.211 Extraordinario', '2026-03-23 03:43:41', '2026-03-23 03:43:41'),
+(9, 'Providencia Administrativa SNAT/2025/000048 - Reajuste de la Unidad Tributaria', 'Providencia', 'Establece el reajuste del valor de la Unidad Tributaria (UT) de Bs. 9,00 a Bs. 43,00. La UT es la unidad de medida utilizada para el cálculo de los tramos de la tarifa progresiva del impuesto sobre sucesiones (artículo 7 de la LISDRC) y para la determinación de exenciones y sanciones tributarias.', NULL, 'Vigente', 9, '2025-06-02', 'N° 43.140', '2026-03-23 03:43:41', '2026-03-23 03:43:41'),
+(10, 'Ley de Infogobierno', 'Ley', 'Establece los principios, bases y lineamientos que rigen el uso de las tecnologías de información en el Poder Público y el Poder Popular. Obliga al uso de software libre y estándares abiertos en los sistemas del Estado. Regula los servicios electrónicos gubernamentales, la transparencia digital y el derecho de las personas a realizar trámites, pagos y declaraciones de impuestos mediante tecnologías de información. Fundamento legal del portal electrónico del SENIAT y de la declaración sucesoral en línea que el SPDSS replica como herramienta educativa.', 'https://www.suscerte.gob.ve/wp-content/uploads/2024/02/GO-40274-Ley-de-Infogobierno.pdf', 'Vigente', 10, '2013-10-17', 'N° 40.274', '2026-03-23 03:43:41', '2026-03-23 03:43:41');
+
 -- --------------------------------------------------------
 
 --
@@ -7279,7 +7357,33 @@ INSERT INTO `tipos_eventos` (`id`, `codigo`, `descripcion`, `nivel_riesgo`) VALU
 (4, 'user_blocked', 'Intento de acceso de usuario bloqueado', 'critical'),
 (5, 'password_reset_req', 'Solicitud de recuperación de contraseña', 'warning'),
 (6, 'password_reset_ok', 'Cambio de contraseña exitoso', 'info'),
-(7, 'suspicious_ip', 'Acceso denegado por IP sospechosa', 'critical');
+(7, 'suspicious_ip', 'Acceso denegado por IP sospechosa', 'critical'),
+(8, 'user_registered', 'Nuevo usuario registrado en el sistema', 'info'),
+(9, 'session_displaced', 'Sesión anterior desplazada por nuevo inicio', 'warning'),
+(10, 'professor_created', 'Profesor creado por administrador', 'info'),
+(11, 'professor_updated', 'Datos de profesor actualizados', 'info'),
+(12, 'professor_deleted', 'Profesor eliminado del sistema', 'warning'),
+(13, 'user_status_changed', 'Estado de usuario modificado por administrador', 'warning'),
+(14, 'case_created', 'Caso de estudio creado', 'info'),
+(15, 'case_published', 'Caso de estudio publicado', 'info'),
+(16, 'case_deleted', 'Caso de estudio eliminado', 'warning'),
+(17, 'case_status_changed', 'Estado del caso de estudio cambiado', 'info'),
+(18, 'case_duplicated', 'Caso de estudio duplicado', 'info'),
+(19, 'config_created', 'Configuración de caso creada', 'info'),
+(20, 'config_updated', 'Configuración de caso actualizada', 'info'),
+(21, 'config_deleted', 'Configuración de caso eliminada', 'warning'),
+(22, 'assignment_created', 'Estudiante asignado a configuración', 'info'),
+(23, 'assignment_removed', 'Estudiante removido de configuración', 'warning'),
+(24, 'attempt_started', 'Intento de simulación iniciado', 'info'),
+(25, 'attempt_submitted', 'Intento de simulación enviado', 'info'),
+(26, 'attempt_graded', 'Intento calificado automáticamente', 'info'),
+(27, 'attempt_cancelled', 'Intento de simulación cancelado', 'info'),
+(28, 'attempt_rif_reviewed', 'RIF sucesoral revisado por profesor', 'info'),
+(29, 'log_exported', 'Bitácora exportada por administrador', 'info'),
+(30, 'system_backup', 'Respaldo del sistema ejecutado', 'info'),
+(31, 'backup_config_changed', 'Configuración de respaldo modificada', 'info'),
+(32, 'backup_deleted', 'Respaldo eliminado', 'warning'),
+(33, 'backup_downloaded', 'Respaldo descargado', 'info');
 
 -- --------------------------------------------------------
 
@@ -7294,6 +7398,7 @@ CREATE TABLE `users` (
   `email` varchar(150) NOT NULL,
   `password` varchar(255) NOT NULL,
   `status` enum('active','inactive','banned') NOT NULL DEFAULT 'active',
+  `force_password_change` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -7302,13 +7407,13 @@ CREATE TABLE `users` (
 -- Volcado de datos para la tabla `users`
 --
 
-INSERT INTO `users` (`id`, `persona_id`, `role_id`, `email`, `password`, `status`, `created_at`, `updated_at`) VALUES
-(1, 1, 2, 'fadr2001@gmail.com', '$2y$10$Kzl4AdugrrTAgIwZ6NDz6.TqiHejK/6/.98Tw4I0cjzfmovJRopba', 'active', '2026-02-11 04:44:49', '2026-02-19 02:16:13'),
-(2, 2, 3, 'fdiaz.6650@unimar.edu.ve', '$2y$10$ctwj3nxTnx.83Ax9hNT3Ye5SHMEi6ATT5LzUh.G3oIVhsWEiMqobm', 'active', '2026-02-11 04:50:54', '2026-02-11 04:50:54'),
-(3, 3, 3, 'cardierv@gmail.com', '$2y$10$ZbEymi1ldw5.s46K0t4cdOOCS5EAVPntryBTZCx2ozNskNLTjpMtq', 'active', '2026-02-11 05:13:38', '2026-02-11 05:13:38'),
-(4, 4, 3, 'vcardier.0479@unimar.edu.ve', '$2y$10$KRc/FlxyrUVWliVPC13RK.Vuak8bRsta4f16HeHlXBhovaT5b93r6', 'active', '2026-02-12 18:08:20', '2026-02-12 18:08:20'),
-(5, 5, 3, 'valefrancardiaz@gmail.com', '$2y$10$JCFra4N/FFLg3zA66srZeOWbVXPdaz9m8A8ctl4c0aVosYhzS1SYm', 'active', '2026-02-12 18:10:33', '2026-02-12 18:10:33'),
-(6, 6, 1, 'superadmin@unimar.edu.ve', '$2b$12$MkQGYT/hI/gXvGe.ItqZyuLdEQxN3oFr64c7SDvVdmOnbH1pR8p4C', 'active', '2026-02-23 04:45:28', '2026-03-09 03:11:16');
+INSERT INTO `users` (`id`, `persona_id`, `role_id`, `email`, `password`, `status`, `force_password_change`, `created_at`, `updated_at`) VALUES
+(1, 1, 2, 'fadr2001@gmail.com', '$2y$10$Kzl4AdugrrTAgIwZ6NDz6.TqiHejK/6/.98Tw4I0cjzfmovJRopba', 'active', 0, '2026-02-11 04:44:49', '2026-02-19 02:16:13'),
+(2, 2, 3, 'fdiaz.6650@unimar.edu.ve', '$2y$10$ctwj3nxTnx.83Ax9hNT3Ye5SHMEi6ATT5LzUh.G3oIVhsWEiMqobm', 'active', 0, '2026-02-11 04:50:54', '2026-02-11 04:50:54'),
+(3, 3, 3, 'cardierv@gmail.com', '$2y$10$ZbEymi1ldw5.s46K0t4cdOOCS5EAVPntryBTZCx2ozNskNLTjpMtq', 'active', 0, '2026-02-11 05:13:38', '2026-02-11 05:13:38'),
+(4, 4, 3, 'vcardier.0479@unimar.edu.ve', '$2y$10$KRc/FlxyrUVWliVPC13RK.Vuak8bRsta4f16HeHlXBhovaT5b93r6', 'active', 0, '2026-02-12 18:08:20', '2026-02-12 18:08:20'),
+(5, 5, 3, 'valefrancardiaz@gmail.com', '$2y$10$JCFra4N/FFLg3zA66srZeOWbVXPdaz9m8A8ctl4c0aVosYhzS1SYm', 'active', 0, '2026-02-12 18:10:33', '2026-02-12 18:10:33'),
+(6, 6, 1, 'superadmin@unimar.edu.ve', '$2b$12$MkQGYT/hI/gXvGe.ItqZyuLdEQxN3oFr64c7SDvVdmOnbH1pR8p4C', 'active', 0, '2026-02-23 04:45:28', '2026-03-09 03:11:16');
 
 -- --------------------------------------------------------
 
@@ -7331,21 +7436,24 @@ CREATE TABLE `user_sessions` (
 --
 
 INSERT INTO `user_sessions` (`id`, `user_id`, `session_id`, `ip_address`, `user_agent`, `last_activity`, `created_at`) VALUES
-(41, 1, 'na8m3gdkim8oml0aft6u1nj6mf', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-18 22:12:11', '2026-03-11 16:15:43'),
-(70, 3, '974oeitcd2sfj3i4bujr0kj9oc', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-18 21:09:23', '2026-03-16 00:13:25');
+(82, 1, 'djoiaqln8ko95ubkqvkhmd80ni', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-22 19:42:44', '2026-03-19 20:54:51'),
+(85, 6, 'so2pctctjmq9braorul996g7l9', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 02:29:21', '2026-03-22 14:59:14'),
+(88, 3, 'ei5o7nejtqlce1timj2k41rjog', '172.16.20.108', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-03-22 20:20:39', '2026-03-22 20:20:39');
 
 --
 -- Índices para tablas volcadas
 --
 
 --
--- Indices de la tabla `bitacora_accesos`
+-- Indices de la tabla `bitacora_eventos`
 --
-ALTER TABLE `bitacora_accesos`
+ALTER TABLE `bitacora_eventos`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_audit_user` (`user_id`,`created_at`),
-  ADD KEY `idx_audit_ip` (`ip_address`,`created_at`),
-  ADD KEY `idx_audit_evento` (`tipo_evento_id`,`created_at`);
+  ADD KEY `idx_created_at` (`created_at`),
+  ADD KEY `idx_user_id` (`user_id`,`created_at`),
+  ADD KEY `idx_tipo_evento` (`tipo_evento_id`,`created_at`),
+  ADD KEY `idx_modulo` (`modulo`),
+  ADD KEY `idx_entidad` (`entidad_tipo`,`entidad_id`);
 
 --
 -- Indices de la tabla `carreras`
@@ -7370,6 +7478,13 @@ ALTER TABLE `codigos_postales`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_codigo` (`codigo`),
   ADD KEY `fk_cp_estado` (`estado_id`) USING BTREE;
+
+--
+-- Indices de la tabla `configs_globales`
+--
+ALTER TABLE `configs_globales`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `clave` (`clave`);
 
 --
 -- Indices de la tabla `estados`
@@ -8059,10 +8174,10 @@ ALTER TABLE `user_sessions`
 --
 
 --
--- AUTO_INCREMENT de la tabla `bitacora_accesos`
+-- AUTO_INCREMENT de la tabla `bitacora_eventos`
 --
-ALTER TABLE `bitacora_accesos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=277;
+ALTER TABLE `bitacora_eventos`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=307;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -8081,6 +8196,12 @@ ALTER TABLE `ciudades`
 --
 ALTER TABLE `codigos_postales`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2484;
+
+--
+-- AUTO_INCREMENT de la tabla `configs_globales`
+--
+ALTER TABLE `configs_globales`
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `estados`
@@ -8578,7 +8699,7 @@ ALTER TABLE `sim_intento_tipoherencias`
 -- AUTO_INCREMENT de la tabla `sim_marco_legals`
 --
 ALTER TABLE `sim_marco_legals`
-  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_personas`
@@ -8590,7 +8711,7 @@ ALTER TABLE `sim_personas`
 -- AUTO_INCREMENT de la tabla `tipos_eventos`
 --
 ALTER TABLE `tipos_eventos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
@@ -8602,18 +8723,18 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `user_sessions`
 --
 ALTER TABLE `user_sessions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- Restricciones para tablas volcadas
 --
 
 --
--- Filtros para la tabla `bitacora_accesos`
+-- Filtros para la tabla `bitacora_eventos`
 --
-ALTER TABLE `bitacora_accesos`
-  ADD CONSTRAINT `fk_bitacora_tipos` FOREIGN KEY (`tipo_evento_id`) REFERENCES `tipos_eventos` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_bitacora_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `bitacora_eventos`
+  ADD CONSTRAINT `fk_bitacora_eventos_tipo` FOREIGN KEY (`tipo_evento_id`) REFERENCES `tipos_eventos` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_bitacora_eventos_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `ciudades`

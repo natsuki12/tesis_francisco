@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Modules\Professor\Controllers\Casos;
 
 use App\Core\App;
+use App\Core\BitacoraModel;
 use App\Modules\Professor\Models\Casos\CasosModel;
 use App\Modules\Professor\Models\Casos\StoreCasoModel;
 use App\Modules\Professor\Validators\CasoValidator;
@@ -135,10 +136,34 @@ class CasosController
                 }
             }
 
+            $tituloCorto = mb_substr($data['titulo'] ?? 'Sin título', 0, 60);
+
             if ($modo === 'Borrador') {
                 $casoId = $storeModel->storeDraft($data, $profesorId, $inputCasoId);
+
+                // Registrar en bitácora: crear o actualizar borrador
+                BitacoraModel::registrar(
+                    $inputCasoId ? BitacoraModel::CASE_STATUS_CHANGED : BitacoraModel::CASE_CREATED,
+                    'casos',
+                    $profesorId,
+                    null,
+                    'sim_casos_estudios',
+                    (int) $casoId,
+                    detalle: ($inputCasoId ? 'Borrador actualizado' : 'Borrador creado') . ': ' . $tituloCorto
+                );
             } else {
                 $casoId = $storeModel->store($data, $profesorId, $inputCasoId);
+
+                // Registrar en bitácora: publicar caso
+                BitacoraModel::registrar(
+                    BitacoraModel::CASE_PUBLISHED,
+                    'casos',
+                    $profesorId,
+                    null,
+                    'sim_casos_estudios',
+                    (int) $casoId,
+                    detalle: ($inputCasoId ? 'Borrador publicado' : 'Caso creado y publicado') . ': ' . $tituloCorto
+                );
             }
 
             echo json_encode([
@@ -172,9 +197,10 @@ class CasosController
             $db = \App\Core\DB::connect();
 
             // Verificar que el caso existe y pertenece al profesor
-            $stmt = $db->prepare("SELECT id FROM sim_casos_estudios WHERE id = :id AND profesor_id = :prof AND estado != 'Eliminado'");
+            $stmt = $db->prepare("SELECT id, titulo FROM sim_casos_estudios WHERE id = :id AND profesor_id = :prof AND estado != 'Eliminado'");
             $stmt->execute(['id' => $id, 'prof' => $profesorId]);
-            if (!$stmt->fetch()) {
+            $caso = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if (!$caso) {
                 http_response_code(404);
                 echo json_encode(['success' => false, 'message' => 'Caso no encontrado.']);
                 exit;
@@ -183,6 +209,17 @@ class CasosController
             // Soft delete: cambiar estado a 'Eliminado'
             $stmt = $db->prepare("UPDATE sim_casos_estudios SET estado = 'Eliminado' WHERE id = :id");
             $stmt->execute(['id' => $id]);
+
+            // Registrar en bitácora
+            BitacoraModel::registrar(
+                BitacoraModel::CASE_DELETED,
+                'casos',
+                $profesorId,
+                null,
+                'sim_casos_estudios',
+                $id,
+                detalle: 'Caso eliminado: ' . mb_substr($caso['titulo'] ?? '', 0, 60)
+            );
 
             echo json_encode(['success' => true, 'message' => 'Caso eliminado exitosamente.']);
         } catch (\Throwable $e) {
@@ -215,9 +252,10 @@ class CasosController
         try {
             $db = \App\Core\DB::connect();
 
-            $stmt = $db->prepare("SELECT id FROM sim_casos_estudios WHERE id = :id AND profesor_id = :prof AND estado != 'Eliminado'");
+            $stmt = $db->prepare("SELECT id, titulo FROM sim_casos_estudios WHERE id = :id AND profesor_id = :prof AND estado != 'Eliminado'");
             $stmt->execute(['id' => $id, 'prof' => $profesorId]);
-            if (!$stmt->fetch()) {
+            $caso = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if (!$caso) {
                 http_response_code(404);
                 echo json_encode(['success' => false, 'message' => 'Caso no encontrado.']);
                 exit;
@@ -226,12 +264,45 @@ class CasosController
             $stmt = $db->prepare("UPDATE sim_casos_estudios SET estado = :estado WHERE id = :id");
             $stmt->execute(['estado' => $nuevoEstado, 'id' => $id]);
 
+            // Registrar en bitácora
+            BitacoraModel::registrar(
+                BitacoraModel::CASE_STATUS_CHANGED,
+                'casos',
+                $profesorId,
+                null,
+                'sim_casos_estudios',
+                $id,
+                detalle: 'Estado cambiado a ' . $nuevoEstado . ': ' . mb_substr($caso['titulo'] ?? '', 0, 60)
+            );
+
             echo json_encode(['success' => true, 'message' => 'Estado actualizado a ' . $nuevoEstado . '.']);
         } catch (\Throwable $e) {
             http_response_code(500);
             echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
         }
         exit;
+    }
+
+    /**
+     * GET /casos-sucesorales/{id}
+     * Muestra la vista de gestión de un caso específico.
+     */
+    public function gestionar(int $id): string
+    {
+        try {
+            $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+            $model = new \App\Modules\Professor\Models\Casos\GestionarCasoModel();
+            $data = $model->getFullCaseById($id, $profesorId);
+            if (!$data) {
+                http_response_code(404);
+                return $this->app->view('errors/404');
+            }
+            return $this->app->view('professor/gestionar_caso', ['casoData' => $data]);
+        } catch (\Throwable $e) {
+            error_log('[CasosController::gestionar] ' . $e->getMessage());
+            http_response_code(500);
+            return $this->app->view('errors/404');
+        }
     }
 }
 

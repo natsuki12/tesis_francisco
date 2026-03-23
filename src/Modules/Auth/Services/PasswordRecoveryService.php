@@ -3,6 +3,7 @@ namespace App\Modules\Auth\Services;
 
 use App\Modules\Auth\Models\PasswordRecoveryModel;
 use App\Core\Mailer;
+use App\Core\BitacoraModel;
 
 class PasswordRecoveryService
 {
@@ -80,6 +81,14 @@ class PasswordRecoveryService
             $_SESSION['recovery_last_sent_at'] = time();
             $_SESSION['recovery_attempts'] = 0; // Reset attempts on new code
 
+            // Registrar en bitácora
+            BitacoraModel::registrar(
+                BitacoraModel::PASSWORD_RESET_REQ,
+                'autenticacion',
+                isset($user['id']) ? (int) $user['id'] : null,
+                $email
+            );
+
             return ['success' => true, 'message' => 'Código enviado. Revisa tu correo.'];
         } else {
             return ['success' => false, 'message' => 'Error al enviar el correo. Por favor intenta más tarde.'];
@@ -145,6 +154,14 @@ class PasswordRecoveryService
         if ($this->model->updateUserPassword((int) $user['id'], $hashedPassword)) {
             // Invalidate token
             $this->model->markTokenAsUsed((int) $user['id']);
+
+            // Registrar en bitácora
+            BitacoraModel::registrar(
+                BitacoraModel::PASSWORD_RESET_OK,
+                'autenticacion',
+                (int) $user['id'],
+                $email
+            );
 
             // Clean up session
             unset($_SESSION['recovery_last_sent_at']);

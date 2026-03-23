@@ -10,7 +10,7 @@ class LoginModel
         $db = DB::connect();
         
         // Traemos ID, Password (Hash), Rol, Persona_ID, Status y Nombres
-        $sql = "SELECT u.id, u.password, u.role_id, u.persona_id, u.status, r.nombre as rol_nombre, p.nombres
+        $sql = "SELECT u.id, u.password, u.role_id, u.persona_id, u.status, u.force_password_change, r.nombre as rol_nombre, p.nombres
                 FROM users u
                 JOIN roles r ON u.role_id = r.id
                 JOIN personas p ON u.persona_id = p.id

@@ -2,6 +2,7 @@
 namespace App\Modules\Auth\Services;
 
 use App\Core\Mailer;
+use App\Core\BitacoraModel;
 use App\Modules\Auth\Models\RegisterModel;
 
 class RegisterService
@@ -282,6 +283,17 @@ class RegisterService
 
             // Regenerar sesión final
             session_regenerate_id(true);
+
+            // Registrar en bitácora
+            BitacoraModel::registrar(
+                BitacoraModel::USER_REGISTERED,
+                'autenticacion',
+                null,
+                $tempUser['email'] ?? null,
+                'users',
+                null,
+                detalle: 'Estudiante registrado: ' . ($tempUser['cedula'] ?? '')
+            );
 
             // Limpieza final exitosa + borrar rate limit (misma mejora 2)
             $this->clearRegistrationSessionALL();

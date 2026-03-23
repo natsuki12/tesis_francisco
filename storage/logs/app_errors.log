@@ -6167,3 +6167,41 @@ Stack trace:
 #4 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/casos-sucesora...')
 #5 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
 #6 {main}
+[22-Mar-2026 17:05:24 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 17:05:25 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 17:05:26 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 17:09:16 America/Caracas] [BitacoraModel::getAll] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 17:09:16 America/Caracas] [BitacoraModel::getUniqueEmails] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 17:09:17 America/Caracas] [BitacoraModel::getAll] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 17:09:17 America/Caracas] [BitacoraModel::getUniqueEmails] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 17:14:07 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 17:14:09 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:49 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:50 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:51 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:51 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:51 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:52 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:52 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:52 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:52 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:52 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:52 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:53 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:53 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:53 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:53 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:53 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:53 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:54 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:54 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:54 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:54 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:54 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:54 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:55 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:55 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:55 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:56 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:57 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[22-Mar-2026 18:30:57 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist

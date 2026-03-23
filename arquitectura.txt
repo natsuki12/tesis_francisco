@@ -1,0 +1,544 @@
+================================================================================
+          ARQUITECTURA MVC DEL PROYECTO SPDSS (Simulador Educativo SENIAT)
+================================================================================
+
+Fecha de generación: 22 de marzo de 2026
+
+Este documento explica la arquitectura Modelo-Vista-Controlador (MVC) implementada
+en el proyecto, cómo se organiza cada capa, las dependencias utilizadas y el flujo
+completo de una petición HTTP desde el navegador hasta la respuesta.
+
+
+================================================================================
+1. ¿QUÉ ES MVC?
+================================================================================
+
+MVC (Model-View-Controller) es un patrón de diseño que separa una aplicación en
+tres capas independientes:
+
+  ┌────────────────┐     ┌────────────────┐     ┌────────────────┐
+  │    MODELO      │     │  CONTROLADOR   │     │     VISTA      │
+  │  (Model)       │     │  (Controller)  │     │    (View)      │
+  │                │     │                │     │                │
+  │ Acceso a datos │◄───►│ Lógica de      │────►│ Presentación   │
+  │ y reglas de    │     │ negocio y      │     │ HTML/CSS/JS    │
+  │ negocio        │     │ orquestación   │     │ al usuario     │
+  └────────────────┘     └────────────────┘     └────────────────┘
+
+  - MODELO:       Se comunica con la base de datos (MySQL via PDO).
+                  Contiene las consultas SQL y la lógica de datos.
+
+  - VISTA:        Archivos PHP que generan el HTML que ve el usuario.
+                  No contienen lógica de negocio, solo presentación.
+
+  - CONTROLADOR:  Recibe las peticiones del usuario, llama a los Modelos
+                  para obtener/guardar datos, y devuelve una Vista.
+
+
+================================================================================
+2. ESTRUCTURA DE CARPETAS
+================================================================================
+
+tesis_francisco/                 ← Raíz del proyecto
+│
+├── .env                         ← Variables de entorno (credenciales DB, SMTP, etc.)
+├── .env.example                 ← Plantilla del .env (para nuevos desarrolladores)
+├── .htaccess                    ← Reescritura de URLs (elimina "/public" de la URL)
+├── composer.json                ← Dependencias PHP del proyecto
+├── composer.lock                ← Versiones exactas instaladas
+│
+├── public/                      ← PUNTO DE ENTRADA (Document Root lógico)
+│   ├── .htaccess                ← Front Controller: redirige todo a index.php
+│   ├── index.php                ← PUNTO DE ENTRADA PRINCIPAL (arranca la app)
+│   └── assets/                  ← Archivos estáticos accesibles por el navegador
+│       ├── css/                 ← Hojas de estilo organizadas por módulo
+│       ├── js/                  ← JavaScript organizado por módulo
+│       └── img/                 ← Imágenes del sistema
+│
+├── src/                         ← CÓDIGO PHP DEL BACKEND (namespace App\)
+│   ├── Core/                    ← Núcleo del framework (clases base)
+│   │   ├── App.php              ← Clase principal: arranca todo el sistema
+│   │   ├── Router.php           ← Enrutador: mapea URLs a Controladores
+│   │   ├── Controller.php       ← Clase base abstracta de los controladores
+│   │   ├── DB.php               ← Conexión a MySQL (Singleton con PDO)
+│   │   ├── Csrf.php             ← Protección contra ataques CSRF
+│   │   ├── Mailer.php           ← Envío de correos con PHPMailer (SMTP)
+│   │   ├── BitacoraModel.php    ← Registro de eventos de seguridad
+│   │   └── helpers.php          ← Funciones globales (e(), base_url(), asset(), csrf_field())
+│   │
+│   └── Modules/                 ← Módulos del sistema (separados por rol/funcionalidad)
+│       ├── Auth/                ← Autenticación (login, registro, recuperación)
+│       │   ├── Controllers/
+│       │   ├── Models/
+│       │   └── Services/
+│       │
+│       ├── Admin/               ← Panel del Administrador
+│       │   ├── Controllers/
+│       │   │   ├── Academico/       (Periodos, Secciones)
+│       │   │   ├── Configuracion/   (Catálogos, Marco Legal, Parámetros)
+│       │   │   ├── Monitoreo/       (Bitácora, Reportes)
+│       │   │   └── Usuarios/        (Estudiantes, Profesores)
+│       │   ├── Models/
+│       │   └── Services/
+│       │
+│       ├── Professor/           ← Panel del Profesor
+│       │   ├── Controllers/
+│       │   │   ├── Asignaciones/
+│       │   │   ├── Casos/
+│       │   │   └── Crear_Caso/
+│       │   ├── Helpers/
+│       │   ├── Models/
+│       │   ├── Services/
+│       │   └── Validators/
+│       │
+│       ├── Student/             ← Panel del Estudiante
+│       │   ├── Controllers/
+│       │   ├── Models/
+│       │   └── Services/
+│       │
+│       └── Simulator/           ← Módulo del Simulador SENIAT
+│
+├── resources/                   ← VISTAS (archivos PHP que generan HTML)
+│   └── views/
+│       ├── admin/               ← Vistas del Administrador
+│       ├── auth/                ← Vistas de autenticación (login, registro)
+│       ├── errors/              ← Páginas de error (404, 500)
+│       ├── landing/             ← Página de inicio pública
+│       ├── layouts/             ← Plantillas base (guest, logged)
+│       ├── partials/            ← Componentes reutilizables (header, sidebar)
+│       ├── professor/           ← Vistas del Profesor
+│       ├── simulator/           ← Vistas del Simulador
+│       └── student/             ← Vistas del Estudiante
+│
+├── routes/                      ← DEFINICIÓN DE RUTAS
+│   └── web.php                  ← Todas las rutas GET/POST/DELETE/PATCH
+│
+├── storage/                     ← ALMACENAMIENTO INTERNO
+│   └── logs/
+│       └── app_errors.log       ← Log de errores del sistema
+│
+├── vendor/                      ← DEPENDENCIAS DE COMPOSER (auto-generado)
+│
+└── tests/                       ← Pruebas
+
+
+================================================================================
+3. DEPENDENCIAS (COMPOSER)
+================================================================================
+
+El proyecto usa Composer como gestor de dependencias de PHP.
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │  composer.json                                                      │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │                                                                     │
+  │  AUTOLOAD (PSR-4):                                                  │
+  │    "App\" → "src/"                                                  │
+  │    Esto significa que la clase App\Core\Router se busca              │
+  │    automáticamente en src/Core/Router.php                           │
+  │                                                                     │
+  │  DEPENDENCIAS:                                                      │
+  │                                                                     │
+  │  1. phpmailer/phpmailer (^7.0)                                      │
+  │     → Librería para enviar correos electrónicos vía SMTP.           │
+  │     → Se usa para: recuperación de contraseñas, notificaciones.     │
+  │     → Configuración: variables SMTP_* del archivo .env              │
+  │     → Clase wrapper: src/Core/Mailer.php                            │
+  │                                                                     │
+  │  2. mpdf/mpdf (^8.3)                                                │
+  │     → Librería para generar archivos PDF desde HTML.                │
+  │     → Se usa para: generar planillas y reportes en PDF.             │
+  │     → Convierte HTML+CSS directamente a documentos PDF.             │
+  │                                                                     │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  Instalación de dependencias:
+    > composer install
+
+  El directorio vendor/ es generado automáticamente por Composer y contiene:
+    - Las librerías descargadas (phpmailer, mpdf, etc.)
+    - El autoloader (vendor/autoload.php) que carga clases automáticamente
+
+  NOTA: vendor/ NO se sube al repositorio Git (está en .gitignore).
+        Cada desarrollador ejecuta "composer install" para regenerarlo.
+
+
+================================================================================
+4. FLUJO DE UNA PETICIÓN HTTP (CICLO DE VIDA)
+================================================================================
+
+  ┌──────────────────────────────────────────────────────────────────────┐
+  │  NAVEGADOR: Usuario escribe http://localhost/tesis_francisco/login  │
+  └────────────────────────┬─────────────────────────────────────────────┘
+                           │
+                           ▼
+  ┌──────────────────────────────────────────┐
+  │  1. APACHE (XAMPP)                       │
+  │  → Lee .htaccess de la raíz             │
+  │  → Elimina "public" de la URL visible   │
+  │  → Internamente redirige a public/      │
+  └────────────────────────┬─────────────────┘
+                           │
+                           ▼
+  ┌──────────────────────────────────────────┐
+  │  2. public/.htaccess                     │
+  │  → Si NO es un archivo real (css, js,   │
+  │    img), lo envía a index.php            │
+  │  → Patrón "Front Controller"            │
+  └────────────────────────┬─────────────────┘
+                           │
+                           ▼
+  ┌──────────────────────────────────────────┐
+  │  3. public/index.php                     │
+  │  → require vendor/autoload.php (Composer)│
+  │  → require helpers.php                   │
+  │  → Crea instancia de App                │
+  │  → Carga routes/web.php                 │
+  │  → Ejecuta $app->run()                  │
+  └────────────────────────┬─────────────────┘
+                           │
+                           ▼
+  ┌──────────────────────────────────────────┐
+  │  4. App.php → __construct()              │
+  │  → Carga variables del .env             │
+  │  → Configura manejo de errores          │
+  │  → Configura sesiones seguras           │
+  │  → Envía cabeceras de seguridad HTTP    │
+  │  → Crea el Router                       │
+  └────────────────────────┬─────────────────┘
+                           │
+                           ▼
+  ┌──────────────────────────────────────────┐
+  │  5. Router.php → dispatch()              │
+  │  → Recibe el método HTTP (GET/POST)     │
+  │  → Normaliza la URL (/login)            │
+  │  → Busca coincidencia en routes/web.php │
+  │  → Si encuentra: ejecuta el Controller  │
+  │  → Si NO encuentra: muestra 404         │
+  └────────────────────────┬─────────────────┘
+                           │
+                           ▼
+  ┌──────────────────────────────────────────┐
+  │  6. CONTROLADOR (ej: LoginController)    │
+  │  → Recibe la petición                   │
+  │  → Llama al Modelo para datos           │
+  │  → Procesa lógica de negocio            │
+  │  → Retorna una Vista con $this->view()  │
+  └────────────────────────┬─────────────────┘
+                           │
+                           ▼
+  ┌──────────────────────────────────────────┐
+  │  7. MODELO (ej: LoginModel)              │
+  │  → Se conecta a MySQL via DB::connect() │
+  │  → Ejecuta consultas con PDO preparado  │
+  │  → Retorna datos al Controlador         │
+  └──────────────────────────────────────────┘
+                           │
+                           ▼
+  ┌──────────────────────────────────────────┐
+  │  8. VISTA (ej: auth/login.php)           │
+  │  → Recibe datos del Controlador         │
+  │  → Genera HTML con PHP embebido         │
+  │  → Incluye layouts y partials           │
+  │  → Usa helper e() para escapar datos    │
+  └────────────────────────┬─────────────────┘
+                           │
+                           ▼
+  ┌──────────────────────────────────────────┐
+  │  NAVEGADOR: Muestra la página al usuario │
+  └──────────────────────────────────────────┘
+
+
+================================================================================
+5. CLASES DEL NÚCLEO (src/Core/)
+================================================================================
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │  App.php - Clase Principal del Sistema                              │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │  Responsabilidades:                                                 │
+  │  • Cargar variables de entorno (.env)                               │
+  │  • Configurar manejo de errores y logging                           │
+  │  • Configurar sesiones seguras (hardening)                          │
+  │  • Enviar cabeceras HTTP de seguridad                               │
+  │  • Renderizar vistas (método view())                                │
+  │  • Arrancar la aplicación (método run())                            │
+  │  • Verificar sesión única por usuario                               │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │  Router.php - Enrutador                                             │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │  Responsabilidades:                                                 │
+  │  • Registrar rutas (GET, POST, DELETE, PATCH)                       │
+  │  • Hacer matching de URLs con soporte para parámetros dinámicos     │
+  │    Ejemplo: /caso/{id} coincide con /caso/42 y captura id=42        │
+  │  • Instanciar controladores e inyectarles la App                    │
+  │  • Soportar closures (funciones anónimas) como handlers             │
+  │  • Retornar 404 si no hay coincidencia                              │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │  Controller.php - Clase Base Abstracta                              │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │  Todos los controladores heredan de esta clase.                     │
+  │  Métodos disponibles:                                               │
+  │  • view(nombre, datos)   → Renderiza una vista PHP                  │
+  │  • redirect(ruta)        → Redirige a otra URL (limpia CRLF)        │
+  │  • json(datos, status)   → Responde en formato JSON (para AJAX)     │
+  │  • input(key)            → Obtiene datos de $_POST o $_GET          │
+  │  • inputString(key)      → Obtiene string sanitizado con límite     │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │  DB.php - Conexión a Base de Datos (Singleton)                      │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │  • Patrón Singleton: una sola conexión en toda la petición          │
+  │  • Usa PDO con MySQL                                                │
+  │  • Charset utf8mb4 (soporta emojis y caracteres especiales)         │
+  │  • Emulación de preparadas DESACTIVADA (seguridad real contra SQL   │
+  │    Injection, la separación datos/consulta la hace MySQL)           │
+  │  • Lee credenciales del .env                                        │
+  │  • Modo desarrollo: muestra errores detallados                      │
+  │  • Modo producción: respuesta genérica en JSON                      │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │  Csrf.php - Protección CSRF                                         │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │  • Genera tokens aleatorios con random_bytes(32)                    │
+  │  • Almacena el token en $_SESSION                                   │
+  │  • Verifica con hash_equals() (resistente a timing attacks)         │
+  │  • Se usa en formularios con el helper csrf_field()                 │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │  Mailer.php - Envío de Correos                                      │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │  • Wrapper sobre PHPMailer                                          │
+  │  • Configuración via .env (SMTP_HOST, SMTP_PORT, etc.)              │
+  │  • Validación de emails contra header injection                     │
+  │  • Fix automático para certificados SSL en XAMPP (entorno local)    │
+  │  • Timeout de 10 segundos para evitar bloqueos                      │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │  BitacoraModel.php - Registro de Eventos de Seguridad               │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │  • Registra: logins exitosos/fallidos, logouts, bloqueos, etc.      │
+  │  • Captura: IP del cliente, User-Agent del navegador                │
+  │  • Tolerante a fallos: si falla el registro, no rompe la app        │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │  helpers.php - Funciones Globales                                   │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │  • e($valor)          → Escapa HTML para prevenir XSS               │
+  │  • asset($ruta)       → Genera URL a archivos estáticos (css/js)    │
+  │  • base_url($ruta)    → Genera URL con el prefijo del proyecto      │
+  │  • csrf_field()       → Genera input hidden con token CSRF          │
+  └─────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+6. SISTEMA DE ENRUTAMIENTO (routes/web.php)
+================================================================================
+
+Las rutas se definen en routes/web.php usando el objeto $router que se crea
+en public/index.php.
+
+  Sintaxis:
+
+    // Ruta GET que apunta a un Controlador
+    $router->get('/login', [LoginController::class, 'showForm']);
+
+    // Ruta POST que apunta a un Controlador
+    $router->post('/login', [LoginController::class, 'authenticate']);
+
+    // Ruta con parámetro dinámico
+    $router->get('/caso/{id}', [CasosController::class, 'show']);
+
+    // Ruta con función anónima (closure)
+    $router->get('/landing', function() use ($app) {
+        return $app->view('landing/landing');
+    });
+
+  Métodos HTTP soportados: GET, POST, DELETE, PATCH
+
+
+================================================================================
+7. PATRÓN MODULAR (src/Modules/)
+================================================================================
+
+Cada módulo del sistema sigue la estructura MVC internamente:
+
+    src/Modules/{NombreModulo}/
+        Controllers/       ← Controladores del módulo
+        Models/            ← Modelos del módulo
+        Services/          ← Servicios (lógica compleja reutilizable)
+        Validators/        ← Validadores de datos (donde aplique)
+        Helpers/           ← Funciones auxiliares del módulo
+
+  Módulos actuales:
+    • Auth       → Login, registro, recuperación de contraseña
+    • Admin      → Gestión académica, configuración, monitoreo, usuarios
+    • Professor  → Casos sucesorales, asignaciones, creación de casos
+    • Student    → Dashboard del estudiante
+    • Simulator  → Simulador SENIAT
+
+  Ejemplo de flujo en el módulo Auth:
+
+    URL: POST /login
+      → Router busca coincidencia
+      → Instancia LoginController
+      → LoginController llama a LoginModel::findByEmail()
+      → LoginModel ejecuta consulta SQL con PDO
+      → LoginController valida contraseña
+      → Si es correcto: crea sesión y redirige
+      → Si falla: retorna vista con error
+
+
+================================================================================
+8. CONFIGURACIÓN DEL ENTORNO (.env)
+================================================================================
+
+El archivo .env contiene todas las variables sensibles que NO deben estar
+en el código fuente. Está en .gitignore para no subirlo al repositorio.
+
+  Variables principales:
+
+  # Base de Datos
+  DB_HOST=127.0.0.1          ← Servidor MySQL
+  DB_NAME=nombre_bd          ← Nombre de la base de datos
+  DB_USER=root               ← Usuario de MySQL
+  DB_PASS=                   ← Contraseña de MySQL
+  DB_CHARSET=utf8mb4         ← Codificación de caracteres
+
+  # Sistema
+  APP_DEBUG=true             ← true: muestra errores | false: los oculta
+  APP_BASE=/tesis_francisco  ← Prefijo de URL del proyecto en el servidor
+  APP_ENV=local              ← Entorno (local / production)
+
+  # Correo SMTP
+  SMTP_HOST=smtp.gmail.com   ← Servidor de correo
+  SMTP_PORT=587              ← Puerto SMTP
+  SMTP_USER=correo@mail.com  ← Email remitente
+  SMTP_PASS=xxxx xxxx xxxx  ← Contraseña de aplicación
+  SMTP_FROM_NAME="Nombre"    ← Nombre visible en los correos
+
+
+================================================================================
+9. SISTEMA DE VISTAS Y LAYOUTS
+================================================================================
+
+Las vistas se organizan en resources/views/ y usan PHP puro (sin motor
+de plantillas externo).
+
+  Sistema de layouts:
+    ┌─────────────────────────────────────────┐
+    │  layouts/guest.php                       │  ← Plantilla para visitantes
+    │  layouts/logged_layout.php               │  ← Plantilla para usuarios logueados
+    ├─────────────────────────────────────────┤
+    │  Incluyen:                               │
+    │  • partials/guest/header_guest.php       │  ← Header público
+    │  • partials/logged/header_logged.php     │  ← Header de usuario
+    │  • partials/logged/sidebar_logged.php    │  ← Menú lateral
+    └─────────────────────────────────────────┘
+
+  Las vistas reciben datos del controlador mediante extract($data):
+
+    // En el Controlador:
+    return $this->view('auth/login', ['error' => 'Credenciales inválidas']);
+
+    // En la Vista (auth/login.php):
+    <?php if (!empty($error)): ?>
+        <p class="error"><?= e($error) ?></p>
+    <?php endif; ?>
+
+
+================================================================================
+10. SEGURIDAD IMPLEMENTADA
+================================================================================
+
+  ┌─ CONTRA SQL INJECTION ──────────────────────────────────────────────┐
+  │  • PDO con prepared statements nativos (emulación desactivada)      │
+  │  • Nunca se concatenan variables en consultas SQL                   │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─ CONTRA XSS ────────────────────────────────────────────────────────┐
+  │  • Función e() que aplica htmlspecialchars() a toda salida          │
+  │  • Cabecera X-XSS-Protection activada                              │
+  │  • Cookies HttpOnly (JavaScript no puede leerlas)                   │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─ CONTRA CSRF ───────────────────────────────────────────────────────┐
+  │  • Tokens aleatorios en cada formulario (csrf_field())              │
+  │  • Verificación con hash_equals() (resistente a timing attacks)     │
+  │  • Cookie SameSite=Lax                                              │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─ SESIONES SEGURAS ──────────────────────────────────────────────────┐
+  │  • Modo estricto activado (no acepta IDs externos)                  │
+  │  • Cookie HttpOnly + SameSite=Lax                                   │
+  │  • Sesión única por usuario (desplaza sesiones anteriores)          │
+  │  • Timeout de 2 horas de inactividad                                │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─ CABECERAS HTTP ────────────────────────────────────────────────────┐
+  │  • X-Frame-Options: SAMEORIGIN (anti-clickjacking)                  │
+  │  • X-Content-Type-Options: nosniff (anti-MIME sniffing)             │
+  │  • Referrer-Policy: strict-origin-when-cross-origin                 │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─ BITÁCORA ──────────────────────────────────────────────────────────┐
+  │  • Registro automático de logins, logouts, bloqueos, IPs            │
+  │  • Tolerante a fallos (no rompe el sistema si falla)                │
+  └─────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+11. STACK TECNOLÓGICO COMPLETO
+================================================================================
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │  SERVIDOR                                                           │
+  │  • XAMPP (Apache + MySQL + PHP)                                     │
+  │  • PHP 8.1+ (strict_types, union types, named arguments)           │
+  │  • MySQL / MariaDB con utf8mb4                                      │
+  │  • Apache con mod_rewrite (URLs limpias)                            │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │  BACKEND                                                            │
+  │  • Arquitectura MVC personalizada (sin framework externo)           │
+  │  • Composer (autoload PSR-4 + gestión de dependencias)              │
+  │  • PDO para acceso a base de datos                                  │
+  │  • PHPMailer para envío de correos SMTP                             │
+  │  • mPDF para generación de documentos PDF                           │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │  FRONTEND                                                           │
+  │  • HTML5 + CSS3 (vanilla, sin frameworks CSS)                       │
+  │  • JavaScript vanilla (ES6+, sin frameworks JS)                     │
+  │  • AJAX con fetch() para peticiones asíncronas                      │
+  │  • Diseño responsivo                                                │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │  HERRAMIENTAS                                                       │
+  │  • Git para control de versiones                                    │
+  │  • Composer para gestión de dependencias PHP                        │
+  │  • Variables de entorno (.env) para configuración                   │
+  └─────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+12. CÓMO SE INICIA EL PROYECTO (PASOS TÉCNICOS)
+================================================================================
+
+  1. Instalar XAMPP (Apache + MySQL + PHP 8.1+)
+  2. Clonar el repositorio en C:\xampp\htdocs\tesis_francisco\
+  3. Copiar .env.example a .env y configurar credenciales
+  4. Ejecutar: composer install  (instala dependencias en vendor/)
+  5. Importar la base de datos en phpMyAdmin
+  6. Iniciar Apache y MySQL desde el panel de XAMPP
+  7. Acceder en el navegador: http://localhost/tesis_francisco/
+
+================================================================================
+  FIN DEL DOCUMENTO
+================================================================================

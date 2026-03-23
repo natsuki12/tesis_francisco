@@ -35,7 +35,7 @@ ob_start();
                 </svg>
             </div>
             <div class="admin-stat-card__info">
-                <span class="admin-stat-card__value">482</span>
+                <span class="admin-stat-card__value"><?= (int)($stats['totalUsuarios'] ?? 0) ?></span>
                 <span class="admin-stat-card__label">Usuarios registrados</span>
             </div>
         </div>
@@ -49,7 +49,7 @@ ob_start();
                 </svg>
             </div>
             <div class="admin-stat-card__info">
-                <span class="admin-stat-card__value">15</span>
+                <span class="admin-stat-card__value"><?= (int)($stats['profesoresActivos'] ?? 0) ?></span>
                 <span class="admin-stat-card__label">Profesores activos</span>
             </div>
         </div>
@@ -63,7 +63,7 @@ ob_start();
                 </svg>
             </div>
             <div class="admin-stat-card__info">
-                <span class="admin-stat-card__value">465</span>
+                <span class="admin-stat-card__value"><?= (int)($stats['estudiantesInscritos'] ?? 0) ?></span>
                 <span class="admin-stat-card__label">Estudiantes inscritos</span>
             </div>
         </div>
@@ -79,7 +79,7 @@ ob_start();
                 </svg>
             </div>
             <div class="admin-stat-card__info">
-                <span class="admin-stat-card__value">8</span>
+                <span class="admin-stat-card__value"><?= (int)($stats['seccionesAbiertas'] ?? 0) ?></span>
                 <span class="admin-stat-card__label">Secciones abiertas</span>
             </div>
         </div>
@@ -157,46 +157,54 @@ ob_start();
             </div>
             <div class="admin-panel__body">
                 <div class="admin-activity-feed">
-                    <div class="admin-activity-item">
-                        <div class="admin-activity-item__dot bg-blue"></div>
-                        <div class="admin-activity-item__content">
-                            <p class="admin-activity-item__text"><strong>Prof. César Requena</strong> inició sesión.</p>
-                            <span class="admin-activity-item__time">Hace 25 min</span>
+                    <?php if (empty($actividad)): ?>
+                        <p style="color:var(--text-muted, #94a3b8); padding:1rem; text-align:center;">No hay actividad reciente.</p>
+                    <?php else: ?>
+                        <?php
+                        // Mapa de color según nivel de riesgo del evento
+                        $dotColorMap = [
+                            'info'     => 'bg-blue',
+                            'warning'  => 'bg-yellow',
+                            'critical' => 'bg-purple',
+                        ];
+                        foreach ($actividad as $ev):
+                            $dotClass = $dotColorMap[$ev['nivel_riesgo'] ?? 'info'] ?? 'bg-blue';
+
+                            // Nombre completo o email intentado
+                            $quien = '';
+                            if (!empty($ev['nombres'])) {
+                                $quien = e($ev['nombres'] . ' ' . $ev['apellidos']);
+                            } elseif (!empty($ev['attempted_email'])) {
+                                $quien = e($ev['attempted_email']);
+                            } else {
+                                $quien = 'Usuario desconocido';
+                            }
+
+                            // Timestamp relativo
+                            $ts    = (int)($ev['created_ts'] ?? 0);
+                            $ahora = time();
+                            $diff  = $ahora - $ts;
+                            if ($diff < 60) {
+                                $tiempo = 'Hace un momento';
+                            } elseif ($diff < 3600) {
+                                $mins = (int)floor($diff / 60);
+                                $tiempo = "Hace {$mins} min";
+                            } elseif ($diff < 86400) {
+                                $hrs = (int)floor($diff / 3600);
+                                $tiempo = $hrs === 1 ? 'Hace 1 hora' : "Hace {$hrs} horas";
+                            } else {
+                                $tiempo = date('d/m/Y, h:i A', $ts);
+                            }
+                        ?>
+                        <div class="admin-activity-item">
+                            <div class="admin-activity-item__dot <?= $dotClass ?>"></div>
+                            <div class="admin-activity-item__content">
+                                <p class="admin-activity-item__text"><strong><?= $quien ?></strong> — <?= e($ev['tipo_descripcion'] ?? '') ?></p>
+                                <span class="admin-activity-item__time"><?= $tiempo ?></span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="admin-activity-item">
-                        <div class="admin-activity-item__dot bg-green"></div>
-                        <div class="admin-activity-item__content">
-                            <p class="admin-activity-item__text">Se creó la sección <strong>4to B - Derecho
-                                    Sucesoral</strong>.</p>
-                            <span class="admin-activity-item__time">Hace 2 horas</span>
-                        </div>
-                    </div>
-                    <div class="admin-activity-item">
-                        <div class="admin-activity-item__dot bg-yellow"></div>
-                        <div class="admin-activity-item__content">
-                            <p class="admin-activity-item__text"><strong>Estudiante Carlos Mendoza</strong> agotó
-                                intentos en Borrador.</p>
-                            <span class="admin-activity-item__time">Hoy, 09:15 AM</span>
-                        </div>
-                    </div>
-                    <div class="admin-activity-item">
-                        <div class="admin-activity-item__dot bg-purple"></div>
-                        <div class="admin-activity-item__content">
-                            <p class="admin-activity-item__text">El administrador actualizó el catálogo de
-                                <strong>Unidades Tributarias</strong>.
-                            </p>
-                            <span class="admin-activity-item__time">Ayer, 04:30 PM</span>
-                        </div>
-                    </div>
-                    <div class="admin-activity-item">
-                        <div class="admin-activity-item__dot bg-blue"></div>
-                        <div class="admin-activity-item__content">
-                            <p class="admin-activity-item__text"><strong>Juan Soto</strong> se registró en la
-                                plataforma.</p>
-                            <span class="admin-activity-item__time">Ayer, 02:10 PM</span>
-                        </div>
-                    </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="admin-panel__footer">
@@ -212,32 +220,55 @@ ob_start();
             </div>
             <div class="admin-panel__body">
                 <ul class="admin-status-list">
+                    <!-- Base de datos (dinámica) -->
                     <li class="admin-status-item">
-                        <div class="admin-status-item__icon text-green">
+                        <div class="admin-status-item__icon <?= $dbStatus ? 'text-green' : 'text-yellow' ?>">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                <polyline points="22 4 12 14.01 9 11.01" />
+                                <?php if ($dbStatus): ?>
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                    <polyline points="22 4 12 14.01 9 11.01" />
+                                <?php else: ?>
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                    <line x1="12" y1="9" x2="12" y2="13" />
+                                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                                <?php endif; ?>
                             </svg>
                         </div>
                         <div class="admin-status-item__content">
                             <h4 class="admin-status-item__title">Base de datos</h4>
-                            <p class="admin-status-item__desc">Conectada — spdss (MariaDB 10.4)</p>
+                            <?php if ($dbStatus): ?>
+                                <p class="admin-status-item__desc">Conectada — <?= e($dbStatus['db_name']) ?> (<?= e($dbStatus['version']) ?>)</p>
+                            <?php else: ?>
+                                <p class="admin-status-item__desc">Sin conexión</p>
+                            <?php endif; ?>
                         </div>
                     </li>
+                    <!-- Período activo (dinámico) -->
                     <li class="admin-status-item">
-                        <div class="admin-status-item__icon text-green">
+                        <div class="admin-status-item__icon <?= $periodoActivo ? 'text-green' : 'text-yellow' ?>">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                <polyline points="22 4 12 14.01 9 11.01" />
+                                <?php if ($periodoActivo): ?>
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                    <polyline points="22 4 12 14.01 9 11.01" />
+                                <?php else: ?>
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                    <line x1="12" y1="9" x2="12" y2="13" />
+                                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                                <?php endif; ?>
                             </svg>
                         </div>
                         <div class="admin-status-item__content">
                             <h4 class="admin-status-item__title">Período activo</h4>
-                            <p class="admin-status-item__desc">2026-I (Ene 19 – Abr 17)</p>
+                            <?php if ($periodoActivo): ?>
+                                <p class="admin-status-item__desc"><?= e($periodoActivo['nombre']) ?> (<?= date('M d', strtotime($periodoActivo['fecha_inicio'])) ?> – <?= date('M d', strtotime($periodoActivo['fecha_fin'])) ?>)</p>
+                            <?php else: ?>
+                                <p class="admin-status-item__desc">Sin período activo</p>
+                            <?php endif; ?>
                         </div>
                     </li>
+                    <!-- Bitácora (dinámica) -->
                     <li class="admin-status-item">
                         <div class="admin-status-item__icon text-green">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -248,22 +279,7 @@ ob_start();
                         </div>
                         <div class="admin-status-item__content">
                             <h4 class="admin-status-item__title">Bitácora de accesos</h4>
-                            <p class="admin-status-item__desc">Activa — 7 tipos de eventos configurados</p>
-                        </div>
-                    </li>
-                    <li class="admin-status-item">
-                        <div class="admin-status-item__icon text-yellow">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round">
-                                <path
-                                    d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                                <line x1="12" y1="9" x2="12" y2="13" />
-                                <line x1="12" y1="17" x2="12.01" y2="17" />
-                            </svg>
-                        </div>
-                        <div class="admin-status-item__content">
-                            <h4 class="admin-status-item__title">Módulos pendientes</h4>
-                            <p class="admin-status-item__desc">Reportes Generales — en construcción</p>
+                            <p class="admin-status-item__desc">Activa — <?= (int)$tiposEventos ?> tipos de eventos configurados</p>
                         </div>
                     </li>
                 </ul>

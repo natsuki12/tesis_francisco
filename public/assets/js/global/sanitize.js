@@ -18,6 +18,10 @@ document.addEventListener('input', (e) => {
     // Skip fields explicitly marked as no-sanitize
     if (el.hasAttribute('data-no-sanitize')) return;
 
+    // Skip password fields (even when toggled to type="text" for visibility)
+    if ((el.name && el.name.toLowerCase().includes('password'))
+        || (el.id && el.id.toLowerCase().includes('password'))) return;
+
     // Remove dangerous characters for SQL/HTML injection
     const original = el.value;
     const sanitized = original.replace(/['"`;\\\<\>{}|~^&#$%]/g, '');

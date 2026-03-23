@@ -1,6 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Modules\Admin\Controllers\Academico;
+
+use App\Modules\Admin\Models\SeccionesModel;
 
 class SeccionesController
 {
@@ -10,8 +13,17 @@ class SeccionesController
      */
     public function index()
     {
-        // Mock data.
-        $secciones = [];
+        try {
+            $model = new SeccionesModel();
+            $secciones  = $model->getAll();
+            $periodos   = $model->getPeriodos();
+            $profesores = $model->getProfesores();
+        } catch (\Throwable $e) {
+            error_log('[SeccionesController::index] ' . $e->getMessage());
+            $secciones  = [];
+            $periodos   = [];
+            $profesores = [];
+        }
 
         require_once __DIR__ . '/../../../../../resources/views/admin/academico/gestionar_secciones.php';
     }

@@ -1,4 +1,9 @@
 <?php
+// Pseudo-cron: verificar si toca respaldo automático (solo admin, ultra-ligero)
+if (($_SESSION['role_id'] ?? 0) == 1) {
+    \App\Core\BackupMiddleware::check();
+}
+
 // Datos por defecto del usuario (si no vienen del controlador)
 if (!isset($user)) {
     $user = [

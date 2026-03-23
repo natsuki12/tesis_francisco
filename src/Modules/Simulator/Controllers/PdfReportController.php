@@ -40,6 +40,19 @@ class PdfReportController
                 return;
             }
 
+            // Validate herederos have parentesco defined (moved from web.php)
+            try {
+                $borradorCheck = new \App\Modules\Simulator\Services\BorradorService($intento);
+                foreach ($borradorCheck->getHerederosDetalle() as $h) {
+                    $pid = (int) ($h['parentesco_id'] ?? 0);
+                    if ($pid === 0 || $pid === 19) {
+                        header('Location: ' . base_url('/simulador/sucesion/herederos?datos_incompletos=1'));
+                        exit;
+                    }
+                }
+            } catch (\Throwable $e) {
+                error_log('[PdfReportController::generar] herederos check: ' . $e->getMessage());
+            }
             // 2. Run comparison
             $comparador = new DeclaracionComparador();
             $resultado = $comparador->comparar((int) $intento['id'], $estudianteId);

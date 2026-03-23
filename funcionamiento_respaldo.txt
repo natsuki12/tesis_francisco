@@ -1,0 +1,113 @@
+================================================================================
+ SPDSS — FUNCIONAMIENTO DEL SISTEMA DE RESPALDO
+ Fecha: 23/03/2026
+================================================================================
+
+1. RESUMEN
+----------
+El sistema permite generar respaldos de la base de datos (mysqldump) de forma
+manual o automática. Los archivos .sql se almacenan en la carpeta
+/database_backup/ en la raíz del proyecto.
+
+Nomenclatura de archivos:
+  - manual_2026-03-23_00-19-35.sql  → Respaldo generado por el administrador
+  - auto_2026-03-23_03-00-00.sql    → Respaldo generado automáticamente
+
+
+2. RESPALDO MANUAL
+------------------
+Ruta:   POST /admin/configuracion/backup
+Acción: El administrador presiona "Generar Respaldo (.sql)" en Parámetros.
+
+Flujo:
+  1. El frontend envía un POST con token CSRF.
+  2. ParametrosController::backup() ejecuta mysqldump vía exec().
+  3. El archivo se guarda como manual_YYYY-MM-DD_HH-mm-ss.sql.
+  4. Se actualiza backup_ultimo_timestamp en la tabla configs_globales.
+  5. Se muestra un toast de éxito y la página se recarga.
+
+
+3. RESPALDO AUTOMÁTICO (Pseudo-Cron)
+-------------------------------------
+Archivo: src/Core/BackupMiddleware.php
+Invocado desde: resources/views/layouts/logged_layout.php (solo role_id = 1).
+
+Flujo en cada request de un administrador:
+  1. SELECT backup_auto_enabled → si es '0', SALE INMEDIATAMENTE (1 query).
+  2. Si es '1', lee la configuración completa de la categoría 'respaldo'.
+  3. Compara la hora actual con backup_hora:
+     - Si aún no llegó la hora, sale.
+  4. Compara fecha de hoy con backup_ultimo_timestamp:
+     - Si ya hay un backup de hoy, sale.
+  5. Si la frecuencia es 'semanal', verifica que hoy sea el día configurado
+     (backup_dia: 0=Domingo, 1=Lunes, ..., 6=Sábado). Si no, sale.
+  6. Ejecuta mysqldump → auto_YYYY-MM-DD_HH-mm-ss.sql.
+  7. Actualiza backup_ultimo_timestamp.
+  8. Aplica la política de retención (ver sección 5).
+
+Nota: El backup se ejecuta en la primera visita del admin después de la hora
+programada. Si nadie entra al sistema, el backup se difiere hasta el próximo
+inicio de sesión del admin.
+
+
+4. CONFIGURACIÓN
+----------------
+Tabla: configs_globales (categoría = 'respaldo')
+
+  Clave                     | Tipo   | Ejemplo   | Descripción
+  --------------------------+--------+-----------+-----------------------------------
+  backup_auto_enabled       | bool   | 0 / 1     | Activa/desactiva el auto-backup
+  backup_frecuencia         | string | diario    | diario o semanal
+  backup_hora               | string | 03:00     | Hora de ejecución (HH:MM)
+  backup_dia                | int    | 0         | Día para semanal (0-6)
+  backup_retencion          | int    | 5         | Máximo de backups auto a mantener
+  backup_ultimo_timestamp   | string | NULL      | Fecha/hora del último respaldo
+
+Ruta para guardar: POST /admin/configuracion/parametros/guardar
+Vista: resources/views/admin/configuracion/parametros.php
+
+
+5. RETENCIÓN
+------------
+- Solo aplica a archivos con prefijo auto_ (los manuales NUNCA se borran).
+- Se ejecuta en dos momentos:
+    a) Después de cada respaldo automático exitoso.
+    b) Al guardar la configuración (si el admin baja el límite).
+- Ordena los archivos auto_*.sql por fecha de modificación (reciente primero).
+- Elimina los que excedan el valor de backup_retencion.
+
+Ejemplo: Si hay 8 backups automáticos y la retención es 5, se borran los 3
+más antiguos.
+
+
+6. DESCARGA Y ELIMINACIÓN MANUAL
+---------------------------------
+- Descargar: GET /admin/configuracion/backup/descargar?file=nombre.sql
+- Eliminar:  POST /admin/configuracion/backup/eliminar (con CSRF)
+
+Ambos validan el nombre del archivo con regex: /^(manual|auto)_[\d\-_]+\.sql$/
+Esto impide path traversal o acceso a archivos fuera de database_backup/.
+
+
+7. ARCHIVOS DEL SISTEMA
+------------------------
+  Archivo                                                      | Función
+  -------------------------------------------------------------+---------------------------
+  src/Modules/Admin/Models/ConfigGlobalModel.php               | CRUD configs_globales
+  src/Core/BackupMiddleware.php                                | Pseudo-cron + retención
+  src/Modules/Admin/Controllers/Configuracion/                 |
+    ParametrosController.php                                   | Controlador principal
+  resources/views/admin/configuracion/parametros.php           | Vista (formulario + AJAX)
+  resources/views/layouts/logged_layout.php                    | Invoca el middleware
+  routes/web.php                                               | 4 rutas de backup
+
+
+8. SEGURIDAD
+------------
+- CSRF verificado en todos los POST (Csrf::verify en el controlador).
+- Nombres de archivo validados con basename() + regex.
+- Todos los argumentos de shell escapados con escapeshellarg().
+- Todo el código envuelto en try-catch(\Throwable) — anti-crash.
+- El middleware nunca interrumpe el request aunque falle internamente.
+
+================================================================================

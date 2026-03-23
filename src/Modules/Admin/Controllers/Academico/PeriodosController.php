@@ -1,6 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Modules\Admin\Controllers\Academico;
+
+use App\Modules\Admin\Models\PeriodosModel;
 
 class PeriodosController
 {
@@ -10,8 +13,13 @@ class PeriodosController
      */
     public function index()
     {
-        // Mock data.
-        $periodos = [];
+        try {
+            $model = new PeriodosModel();
+            $periodos = $model->getAll();
+        } catch (\Throwable $e) {
+            error_log('[PeriodosController::index] ' . $e->getMessage());
+            $periodos = [];
+        }
 
         require_once __DIR__ . '/../../../../../resources/views/admin/academico/gestionar_periodos.php';
     }

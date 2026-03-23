@@ -26,11 +26,12 @@ class LoginService
 
             // Verificar si está activo
             if ($user['status'] !== 'active') {
-                BitacoraModel::log(
+                BitacoraModel::registrar(
                     BitacoraModel::USER_BLOCKED,
+                    'autenticacion',
                     (int) $user['id'],
                     $email,
-                    "Usuario con status: {$user['status']}"
+                    detalle: "Usuario con status: {$user['status']}"
                 );
                 return '/login?error=inactivo';
             }
@@ -47,11 +48,12 @@ class LoginService
 
             // Si desplazó una sesión previa, registrar en bitácora
             if ($displaced) {
-                BitacoraModel::log(
-                    BitacoraModel::LOGIN_SUCCESS,
+                BitacoraModel::registrar(
+                    BitacoraModel::SESSION_DISPLACED,
+                    'autenticacion',
                     (int) $user['id'],
                     $email,
-                    'Sesión anterior desplazada desde otra ubicación'
+                    detalle: 'Sesión anterior desplazada desde otra ubicación'
                 );
             }
 
@@ -65,22 +67,30 @@ class LoginService
             $_SESSION['logged_in'] = true;
 
             // D. Registrar en bitácora
-            BitacoraModel::log(
+            BitacoraModel::registrar(
                 BitacoraModel::LOGIN_SUCCESS,
+                'autenticacion',
                 (int) $user['id'],
                 $email
             );
 
-            // E. Redirigir al dashboard
+            // E. ¿Debe cambiar contraseña en primer login?
+            if (!empty($user['force_password_change'])) {
+                $_SESSION['force_password_change'] = true;
+                return '/completar-perfil';
+            }
+
+            // F. Redirigir al dashboard
             return '/home';
         }
 
         // Error de credenciales
-        BitacoraModel::log(
+        BitacoraModel::registrar(
             BitacoraModel::LOGIN_FAILED,
+            'autenticacion',
             null,
             $email,
-            'Credenciales inválidas'
+            detalle: 'Credenciales inválidas'
         );
         return '/login?error=credenciales';
     }
@@ -92,8 +102,9 @@ class LoginService
         $email = $_SESSION['email'] ?? null;
 
         // Registrar en bitácora
-        BitacoraModel::log(
+        BitacoraModel::registrar(
             BitacoraModel::LOGOUT,
+            'autenticacion',
             $userId,
             $email
         );

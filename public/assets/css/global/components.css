@@ -594,17 +594,11 @@
     border-color: var(--blue-400);
 }
 
-/* Acciones en celdas flotantes (Botones que aparecen en hover de la fila) */
+/* Acciones en celdas (siempre visibles) */
 .row-actions {
     display: flex;
     align-items: center;
     gap: 4px;
-    opacity: 0;
-    transition: opacity var(--transition);
-}
-
-.data-table tbody tr:hover .row-actions {
-    opacity: 1;
 }
 
 .row-action-btn {

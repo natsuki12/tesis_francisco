@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-// ARCHIVO: resources/views/admin/configuracion/catalogos.php
-
 $pageTitle = 'Catálogos del Sistema';
 $activePage = 'catalogos';
 $breadcrumbs = [
@@ -12,9 +10,27 @@ $breadcrumbs = [
 ];
 
 $extraCss = '
-    <link rel="stylesheet" href="' . asset('css/professor/casos_sucesorales.css') . '">
+    <link rel="stylesheet" href="' . asset('css/shared/data-table.css') . '">
+    <link rel="stylesheet" href="' . asset('css/admin/dashboard.css') . '">
     <link rel="stylesheet" href="' . asset('css/admin/configuracion.css') . '">
 ';
+
+// Datos inyectados por el controlador
+$unidadesTributarias   = $unidadesTributarias   ?? [];
+$gruposTarifa          = $gruposTarifa          ?? [];
+$tramosTarifa          = $tramosTarifa          ?? [];
+$reducciones           = $reducciones           ?? [];
+$tiposBienInmueble    = $tiposBienInmueble    ?? [];
+$categoriasBienMueble = $categoriasBienMueble ?? [];
+$tiposBienMueble      = $tiposBienMueble      ?? [];
+$tiposSemoviente      = $tiposSemoviente      ?? [];
+$parentescos           = $parentescos           ?? [];
+$tiposPasivoDeuda     = $tiposPasivoDeuda     ?? [];
+$tiposPasivoGasto     = $tiposPasivoGasto     ?? [];
+$tipoHerencias        = $tipoHerencias        ?? [];
+
+// UT vigente (primera fila = más reciente por año)
+$utVigente = $unidadesTributarias[0] ?? null;
 
 ob_start();
 ?>
@@ -22,307 +38,642 @@ ob_start();
 <div class="page-header">
     <div class="page-header-left">
         <h1>Catálogos Maestros</h1>
-        <p>Gestione las tablas maestras que alimentan los selectores del simulador.</p>
+        <p>Tablas maestras del proceso sucesoral SENIAT que alimentan los formularios del simulador (solo lectura).</p>
     </div>
 </div>
 
 <!-- Tabs Navigation -->
 <div class="config-tabs-nav">
-    <button class="config-tab-btn active" onclick="switchTab('tab-ut')">Unidad Tributaria</button>
-    <button class="config-tab-btn" onclick="switchTab('tab-parentescos')">Parentescos</button>
-    <button class="config-tab-btn" onclick="switchTab('tab-inmuebles')">Bienes Inmuebles</button>
-    <button class="config-tab-btn" onclick="switchTab('tab-muebles')">Bienes Muebles</button>
-    <button class="config-tab-btn" onclick="switchTab('tab-pasivos')">Pasivos y Otros</button>
+    <button class="config-tab-btn active" onclick="switchTab('tab-ut', this)">
+        Unidad Tributaria
+        <span class="filter-count"><?= count($unidadesTributarias) ?></span>
+    </button>
+    <button class="config-tab-btn" onclick="switchTab('tab-fiscal', this)">
+        Fiscal
+        <span class="filter-count"><?= count($gruposTarifa) + count($tramosTarifa) + count($reducciones) ?></span>
+    </button>
+    <button class="config-tab-btn" onclick="switchTab('tab-bienes', this)">
+        Bienes
+        <span class="filter-count"><?= count($tiposBienInmueble) + count($categoriasBienMueble) + count($tiposBienMueble) + count($tiposSemoviente) ?></span>
+    </button>
+    <button class="config-tab-btn" onclick="switchTab('tab-parentescos', this)">
+        Parentescos
+        <span class="filter-count"><?= count($parentescos) ?></span>
+    </button>
+    <button class="config-tab-btn" onclick="switchTab('tab-pasivos', this)">
+        Pasivos y Herencias
+        <span class="filter-count"><?= count($tiposPasivoDeuda) + count($tiposPasivoGasto) + count($tipoHerencias) ?></span>
+    </button>
 </div>
 
-<!-- Contenido: Unidad Tributaria -->
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 1: UNIDAD TRIBUTARIA
+     ═══════════════════════════════════════════════════════════ -->
 <div id="tab-ut" class="config-tab-pane active">
-    <!-- Toolbar -->
-    <div class="toolbar" style="margin-bottom: 16px;">
-        <div class="toolbar-left">
-            <div class="search-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.35-4.35" />
-                </svg>
-                <input type="text" placeholder="Buscar histórico UTM...">
+
+    <!-- Stat Cards - Valor UT Vigente -->
+    <?php if ($utVigente): ?>
+    <div class="admin-stats-row" style="grid-template-columns:repeat(3,1fr); margin-bottom:20px;">
+        <div class="admin-stat-card stat-card">
+            <div class="admin-stat-card__info">
+                <span class="admin-stat-card__label">Valor Vigente</span>
+                <span class="admin-stat-card__value text-blue">Bs. <?= e(number_format((float)($utVigente['valor'] ?? 0), 2, ',', '.')) ?></span>
             </div>
         </div>
-        <div class="filters">
-            <button class="btn btn-primary" onclick="window.modalManager.open('modal-nuevo-ut')">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                    stroke-linecap="round">
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-                Actualizar Valor UT
-            </button>
+        <div class="admin-stat-card stat-card">
+            <div class="admin-stat-card__info">
+                <span class="admin-stat-card__label">Año</span>
+                <span class="admin-stat-card__value"><?= (int)($utVigente['anio'] ?? 0) ?></span>
+            </div>
+        </div>
+        <div class="admin-stat-card stat-card">
+            <div class="admin-stat-card__info">
+                <span class="admin-stat-card__label">Fecha Gaceta</span>
+                <span class="admin-stat-card__value" style="font-size:20px;">
+                <?php
+                try {
+                    echo (new \DateTime($utVigente['fecha_gaceta']))->format('d/m/Y');
+                } catch (\Throwable $e) {
+                    echo e($utVigente['fecha_gaceta'] ?? '—');
+                }
+                ?>
+                </span>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <div class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input type="text" data-search-for="tbl-ut" placeholder="Buscar por año o valor...">
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <label style="font-size:var(--text-xs); color:var(--gray-500); display:flex; align-items:center; gap:6px;">
+                Mostrar <select data-perpage-for="tbl-ut" class="per-page-select"><option value="10">10</option><option value="15" selected>15</option><option value="25">25</option></select> filas
+            </label>
         </div>
     </div>
 
-    <!-- Table -->
     <div class="table-container">
-        <table class="data-table">
+        <table class="data-table" id="tbl-ut">
             <thead>
                 <tr>
-                    <th>Fecha Vigencia</th>
-                    <th>Valor (Bs.)</th>
-                    <th>Resolución Oficial</th>
-                    <th>Estado</th>
-                    <th></th>
+                    <th class="sortable" data-col="0" style="width:80px">Año</th>
+                    <th class="sortable" data-col="1">Valor (Bs.)</th>
+                    <th class="sortable" data-col="2">Fecha Gaceta</th>
+                    <th style="width:90px">Estado</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><strong>01/01/2026</strong></td>
-                    <td>Bs. 9.00</td>
-                    <td>Gaceta Nº 42.123</td>
-                    <td><span class="status-badge status-published">Vigente</span></td>
-                    <td>
-                        <div class="row-actions">
-                            <button class="row-action-btn" title="Editar"><svg viewBox="0 0 24 24" fill="none"
-                                    stroke="currentColor" stroke-width="2">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                </svg></button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td><strong>15/05/2024</strong></td>
-                    <td>Bs. 0.40</td>
-                    <td>Gaceta Nº 42.100</td>
-                    <td><span class="status-badge status-draft">Histórico</span></td>
-                    <td></td>
-                </tr>
+                <?php if (empty($unidadesTributarias)): ?>
+                    <tr class="empty-row"><td colspan="4" style="text-align:center; padding:30px; color:var(--gray-400);">Sin registros.</td></tr>
+                <?php else: ?>
+                    <?php foreach ($unidadesTributarias as $ut):
+                        $activo = (int)($ut['activo'] ?? 0);
+                        $fechaFmt = '';
+                        try { $fechaFmt = (new \DateTime($ut['fecha_gaceta']))->format('d/m/Y'); } catch (\Throwable $e) { $fechaFmt = e($ut['fecha_gaceta'] ?? '—'); }
+                    ?>
+                        <tr data-search="<?= e(mb_strtolower($ut['anio'] . ' ' . $ut['valor'] . ' ' . $fechaFmt)) ?>">
+                            <td><strong><?= (int)$ut['anio'] ?></strong></td>
+                            <td>Bs. <?= e(number_format((float)($ut['valor'] ?? 0), 2, ',', '.')) ?></td>
+                            <td><?= $fechaFmt ?></td>
+                            <td>
+                                <?php if ($ut === $utVigente): ?>
+                                    <span class="status-badge status-published">Vigente</span>
+                                <?php else: ?>
+                                    <span class="status-badge status-draft">Histórico</span>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
+        <div class="table-footer" data-footer-for="tbl-ut">
+            <div class="table-footer-info"></div>
+            <div class="pagination"></div>
+        </div>
     </div>
 </div>
 
-<!-- Contenidos Placeholder: Otros Tabs -->
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 2: FISCAL
+     ═══════════════════════════════════════════════════════════ -->
+<div id="tab-fiscal" class="config-tab-pane">
+
+    <div class="config-subtabs-nav">
+        <button class="config-subtab-btn active" onclick="switchSubTab('sub-grupos', this, 'tab-fiscal')">
+            Grupos de Tarifa <span class="filter-count"><?= count($gruposTarifa) ?></span>
+        </button>
+        <button class="config-subtab-btn" onclick="switchSubTab('sub-tramos', this, 'tab-fiscal')">
+            Tramos Progresivos <span class="filter-count"><?= count($tramosTarifa) ?></span>
+        </button>
+        <button class="config-subtab-btn" onclick="switchSubTab('sub-reducciones', this, 'tab-fiscal')">
+            Reducciones Art. 11 <span class="filter-count"><?= count($reducciones) ?></span>
+        </button>
+    </div>
+
+    <!-- Sub: Grupos de Tarifa -->
+    <div id="sub-grupos" class="config-subpane active">
+        <div class="table-container">
+            <table class="data-table">
+                <thead><tr><th style="width:50px">ID</th><th>Nombre del Grupo</th><th style="width:90px">Estado</th></tr></thead>
+                <tbody>
+                    <?php if (empty($gruposTarifa)): ?>
+                        <tr class="empty-row"><td colspan="3" style="text-align:center; padding:20px; color:var(--gray-400);">Sin registros.</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($gruposTarifa as $g): ?>
+                            <tr>
+                                <td style="color:var(--gray-400); font-size:12px;"><?= (int)$g['id'] ?></td>
+                                <td><?= e($g['nombre'] ?? '') ?></td>
+                                <td><?= (int)($g['activo'] ?? 1) ? '<span class="status-badge status-published">Activo</span>' : '<span class="status-badge status-draft">Inactivo</span>' ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Sub: Tramos de Tarifa Progresiva -->
+    <div id="sub-tramos" class="config-subpane">
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <div class="search-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    <input type="text" data-search-for="tbl-tramos" placeholder="Buscar tramo o grupo...">
+                </div>
+            </div>
+            <div class="toolbar-right">
+                <label style="font-size:var(--text-xs); color:var(--gray-500); display:flex; align-items:center; gap:6px;">
+                    Mostrar <select data-perpage-for="tbl-tramos" class="per-page-select"><option value="10">10</option><option value="15" selected>15</option><option value="32">32</option></select> filas
+                </label>
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="data-table" id="tbl-tramos">
+                <thead>
+                    <tr>
+                        <th class="sortable" data-col="0" style="width:40px">Nº</th>
+                        <th class="sortable" data-col="1">Grupo</th>
+                        <th class="sortable" data-col="2">Desde (UT)</th>
+                        <th class="sortable" data-col="3">Hasta (UT)</th>
+                        <th class="sortable" data-col="4">%</th>
+                        <th class="sortable" data-col="5">Sustraendo (UT)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($tramosTarifa)): ?>
+                        <tr class="empty-row"><td colspan="6" style="text-align:center; padding:20px; color:var(--gray-400);">Sin registros.</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($tramosTarifa as $t): ?>
+                            <tr data-search="<?= e(mb_strtolower(($t['grupo'] ?? '') . ' ' . $t['tramo'] . ' ' . $t['porcentaje'])) ?>">
+                                <td style="font-weight:600; color:var(--gray-500);"><?= (int)$t['tramo'] ?></td>
+                                <td><span style="font-size:12px;"><?= e($t['grupo'] ?? '—') ?></span></td>
+                                <td><?= e(number_format((float)($t['limite_inferior_ut'] ?? 0), 2)) ?></td>
+                                <td><?= $t['limite_superior_ut'] !== null ? e(number_format((float)$t['limite_superior_ut'], 2)) : '<span style="color:var(--gray-400);">∞</span>' ?></td>
+                                <td><strong><?= e(number_format((float)($t['porcentaje'] ?? 0), 2)) ?>%</strong></td>
+                                <td><?= e(number_format((float)($t['sustraendo_ut'] ?? 0), 2)) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+            <div class="table-footer" data-footer-for="tbl-tramos">
+                <div class="table-footer-info"></div>
+                <div class="pagination"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sub: Reducciones Art. 11 -->
+    <div id="sub-reducciones" class="config-subpane">
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width:40px">Ord.</th>
+                        <th>Descripción</th>
+                        <th style="width:80px">% Reduc.</th>
+                        <th style="width:100px">Condición</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($reducciones)): ?>
+                        <tr class="empty-row"><td colspan="4" style="text-align:center; padding:20px; color:var(--gray-400);">Sin registros.</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($reducciones as $r): ?>
+                            <tr>
+                                <td style="font-weight:600; color:var(--gray-500);"><?= (int)$r['ordinal'] ?></td>
+                                <td><?= e($r['etiqueta'] ?? '') ?></td>
+                                <td><strong><?= e(number_format((float)($r['porcentaje_reduccion'] ?? 0), 0)) ?>%</strong></td>
+                                <td style="font-size:12px; color:var(--gray-500);">
+                                    <?php if ((int)($r['es_por_dependiente'] ?? 0)): ?>
+                                        Por dependiente
+                                    <?php elseif ($r['cuota_max_beneficiario_ut'] !== null): ?>
+                                        Cuota ≤ <?= e(number_format((float)$r['cuota_max_beneficiario_ut'], 0)) ?> UT
+                                    <?php else: ?>
+                                        —
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 3: BIENES
+     ═══════════════════════════════════════════════════════════ -->
+<div id="tab-bienes" class="config-tab-pane">
+
+    <div class="config-subtabs-nav">
+        <button class="config-subtab-btn active" onclick="switchSubTab('sub-inmuebles', this, 'tab-bienes')">
+            Inmuebles <span class="filter-count"><?= count($tiposBienInmueble) ?></span>
+        </button>
+        <button class="config-subtab-btn" onclick="switchSubTab('sub-cat-mueble', this, 'tab-bienes')">
+            Categorías Mueble <span class="filter-count"><?= count($categoriasBienMueble) ?></span>
+        </button>
+        <button class="config-subtab-btn" onclick="switchSubTab('sub-tipos-mueble', this, 'tab-bienes')">
+            Tipos Mueble <span class="filter-count"><?= count($tiposBienMueble) ?></span>
+        </button>
+        <button class="config-subtab-btn" onclick="switchSubTab('sub-semovientes', this, 'tab-bienes')">
+            Semovientes <span class="filter-count"><?= count($tiposSemoviente) ?></span>
+        </button>
+    </div>
+
+    <!-- Sub: Inmuebles -->
+    <div id="sub-inmuebles" class="config-subpane active">
+        <div class="table-container">
+            <table class="data-table">
+                <thead><tr><th style="width:50px">ID</th><th>Nombre</th><th style="width:90px">Estado</th></tr></thead>
+                <tbody>
+                    <?php if (empty($tiposBienInmueble)): ?>
+                        <tr class="empty-row"><td colspan="3" style="text-align:center; padding:20px; color:var(--gray-400);">Sin registros.</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($tiposBienInmueble as $item): ?>
+                            <tr>
+                                <td style="color:var(--gray-400); font-size:12px;"><?= (int)$item['id'] ?></td>
+                                <td><?= e($item['nombre'] ?? '') ?></td>
+                                <td><?= (int)($item['activo'] ?? 1) ? '<span class="status-badge status-published">Activo</span>' : '<span class="status-badge status-draft">Inactivo</span>' ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Sub: Categorías Mueble -->
+    <div id="sub-cat-mueble" class="config-subpane">
+        <div class="table-container">
+            <table class="data-table">
+                <thead><tr><th style="width:50px">ID</th><th>Nombre</th><th style="width:90px">Estado</th></tr></thead>
+                <tbody>
+                    <?php if (empty($categoriasBienMueble)): ?>
+                        <tr class="empty-row"><td colspan="3" style="text-align:center; padding:20px; color:var(--gray-400);">Sin registros.</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($categoriasBienMueble as $item): ?>
+                            <tr>
+                                <td style="color:var(--gray-400); font-size:12px;"><?= (int)$item['id'] ?></td>
+                                <td><?= e($item['nombre'] ?? '') ?></td>
+                                <td><?= (int)($item['activo'] ?? 1) ? '<span class="status-badge status-published">Activo</span>' : '<span class="status-badge status-draft">Inactivo</span>' ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Sub: Tipos Mueble -->
+    <div id="sub-tipos-mueble" class="config-subpane">
+        <div class="table-container">
+            <table class="data-table">
+                <thead><tr><th style="width:50px">ID</th><th>Nombre</th><th>Categoría</th><th style="width:90px">Estado</th></tr></thead>
+                <tbody>
+                    <?php if (empty($tiposBienMueble)): ?>
+                        <tr class="empty-row"><td colspan="4" style="text-align:center; padding:20px; color:var(--gray-400);">Sin registros.</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($tiposBienMueble as $tm): ?>
+                            <tr>
+                                <td style="color:var(--gray-400); font-size:12px;"><?= (int)$tm['id'] ?></td>
+                                <td><?= e($tm['nombre'] ?? '') ?></td>
+                                <td><span style="font-size:12px; color:var(--gray-500);"><?= e($tm['categoria'] ?? '—') ?></span></td>
+                                <td><?= (int)($tm['activo'] ?? 1) ? '<span class="status-badge status-published">Activo</span>' : '<span class="status-badge status-draft">Inactivo</span>' ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Sub: Semovientes -->
+    <div id="sub-semovientes" class="config-subpane">
+        <div class="table-container">
+            <table class="data-table">
+                <thead><tr><th style="width:50px">ID</th><th>Nombre</th><th style="width:90px">Estado</th></tr></thead>
+                <tbody>
+                    <?php if (empty($tiposSemoviente)): ?>
+                        <tr class="empty-row"><td colspan="3" style="text-align:center; padding:20px; color:var(--gray-400);">Sin registros.</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($tiposSemoviente as $item): ?>
+                            <tr>
+                                <td style="color:var(--gray-400); font-size:12px;"><?= (int)$item['id'] ?></td>
+                                <td><?= e($item['nombre'] ?? '') ?></td>
+                                <td><?= (int)($item['activo'] ?? 1) ? '<span class="status-badge status-published">Activo</span>' : '<span class="status-badge status-draft">Inactivo</span>' ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 4: PARENTESCOS
+     ═══════════════════════════════════════════════════════════ -->
 <div id="tab-parentescos" class="config-tab-pane">
-    <div class="table-container" style="padding: 40px; text-align: center; color: var(--color-text-light);">
-        <p>Gestión de grados de consanguinidad para herederos.</p>
+    <div class="toolbar">
+        <div class="toolbar-left">
+            <div class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input type="text" data-search-for="tbl-parentescos" placeholder="Buscar parentesco...">
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <label style="font-size:var(--text-xs); color:var(--gray-500); display:flex; align-items:center; gap:6px;">
+                Mostrar <select data-perpage-for="tbl-parentescos" class="per-page-select"><option value="10">10</option><option value="19">19</option><option value="25">25</option></select> filas
+            </label>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="data-table" id="tbl-parentescos">
+            <thead>
+                <tr>
+                    <th style="width:50px">ID</th>
+                    <th class="sortable" data-col="1">Clave</th>
+                    <th class="sortable" data-col="2">Etiqueta</th>
+                    <th class="sortable" data-col="3">Grupo Tarifa</th>
+                    <th style="width:90px">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($parentescos)): ?>
+                    <tr class="empty-row"><td colspan="5" style="text-align:center; padding:30px; color:var(--gray-400);">Sin registros.</td></tr>
+                <?php else: ?>
+                    <?php foreach ($parentescos as $p): ?>
+                        <tr data-search="<?= e(mb_strtolower(($p['clave'] ?? '') . ' ' . ($p['etiqueta'] ?? '') . ' ' . ($p['grupo_tarifa'] ?? ''))) ?>">
+                            <td style="color:var(--gray-400); font-size:12px;"><?= (int)$p['id'] ?></td>
+                            <td><code style="font-size:12px; background:var(--gray-100); padding:2px 6px; border-radius:4px;"><?= e($p['clave'] ?? '') ?></code></td>
+                            <td><?= e($p['etiqueta'] ?? '') ?></td>
+                            <td>
+                                <?php if (!empty($p['grupo_tarifa'])): ?>
+                                    <span style="font-size:12px; color:var(--gray-500);"><?= e($p['grupo_tarifa']) ?></span>
+                                <?php else: ?>
+                                    <span style="color:var(--gray-300);">—</span>
+                                <?php endif; ?>
+                            </td>
+                            <td><?= (int)($p['activo'] ?? 1) ? '<span class="status-badge status-published">Activo</span>' : '<span class="status-badge status-draft">Inactivo</span>' ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+        <div class="table-footer" data-footer-for="tbl-parentescos">
+            <div class="table-footer-info"></div>
+            <div class="pagination"></div>
+        </div>
     </div>
 </div>
 
-<!-- Tab: Bienes Inmuebles -->
-<div id="tab-inmuebles" class="config-tab-pane">
-    <div class="table-container" style="padding: 40px; text-align: center; color: var(--color-text-light);">
-        <h3 style="color:var(--color-text-dark); margin-bottom: 8px;">Tipos de Bien Inmueble</h3>
-        <p>Gestión de los 21 tipos de inmuebles (sim_cat_tipos_bien_inmueble).</p>
-    </div>
-</div>
-
-<!-- Tab: Bienes Muebles -->
-<div id="tab-muebles" class="config-tab-pane">
-    <div style="display: flex; flex-direction: column; gap: 24px;">
-        <div class="table-container" style="padding: 30px; text-align: center; color: var(--color-text-light);">
-            <h3 style="color:var(--color-text-dark); margin-bottom: 8px;">Categorías de Bien Mueble</h3>
-            <p>12 categorías principales (sim_cat_categorias_bien_mueble).</p>
-        </div>
-        <div class="table-container" style="padding: 30px; text-align: center; color: var(--color-text-light);">
-            <h3 style="color:var(--color-text-dark); margin-bottom: 8px;">Tipos de Bien Mueble</h3>
-            <p>22 subtipos vinculados a categorías (sim_cat_tipos_bien_mueble).</p>
-        </div>
-        <div class="table-container" style="padding: 30px; text-align: center; color: var(--color-text-light);">
-            <h3 style="color:var(--color-text-dark); margin-bottom: 8px;">Tipos de Semovientes</h3>
-            <p>11 tipos de animales ganaderos (sim_cat_tipos_semoviente).</p>
-        </div>
-    </div>
-</div>
-
-<!-- Tab: Pasivos y Otros -->
+<!-- ═══════════════════════════════════════════════════════════
+     TAB 5: PASIVOS Y HERENCIAS
+     ═══════════════════════════════════════════════════════════ -->
 <div id="tab-pasivos" class="config-tab-pane">
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
-        <div class="table-container" style="padding: 30px; text-align: center; color: var(--color-text-light);">
-            <h3 style="color:var(--color-text-dark); margin-bottom: 8px;">Tipos de Deuda</h3>
-            <p>4 tipos (sim_cat_tipos_pasivo_deuda).</p>
-        </div>
-        <div class="table-container" style="padding: 30px; text-align: center; color: var(--color-text-light);">
-            <h3 style="color:var(--color-text-dark); margin-bottom: 8px;">Tipos de Gasto</h3>
-            <p>7 tipos (sim_cat_tipos_pasivo_gasto).</p>
-        </div>
-        <div class="table-container" style="padding: 30px; text-align: center; color: var(--color-text-light);">
-            <h3 style="color:var(--color-text-dark); margin-bottom: 8px;">Bancos</h3>
-            <p>31 instituciones financieras (sim_cat_bancos).</p>
-        </div>
-        <div class="table-container" style="padding: 30px; text-align: center; color: var(--color-text-light);">
-            <h3 style="color:var(--color-text-dark); margin-bottom: 8px;">Tipos de Herencia</h3>
-            <p>6 clasificaciones jurídicas (sim_cat_tipoherencias).</p>
+
+    <div class="config-subtabs-nav">
+        <button class="config-subtab-btn active" onclick="switchSubTab('sub-deuda', this, 'tab-pasivos')">
+            Tipos de Deuda <span class="filter-count"><?= count($tiposPasivoDeuda) ?></span>
+        </button>
+        <button class="config-subtab-btn" onclick="switchSubTab('sub-gasto', this, 'tab-pasivos')">
+            Gastos Funerales <span class="filter-count"><?= count($tiposPasivoGasto) ?></span>
+        </button>
+        <button class="config-subtab-btn" onclick="switchSubTab('sub-herencias', this, 'tab-pasivos')">
+            Tipos de Herencia <span class="filter-count"><?= count($tipoHerencias) ?></span>
+        </button>
+    </div>
+
+    <!-- Sub: Deuda -->
+    <div id="sub-deuda" class="config-subpane active">
+        <div class="table-container">
+            <table class="data-table">
+                <thead><tr><th style="width:50px">ID</th><th>Nombre</th><th style="width:90px">Estado</th></tr></thead>
+                <tbody>
+                    <?php if (empty($tiposPasivoDeuda)): ?>
+                        <tr class="empty-row"><td colspan="3" style="text-align:center; padding:20px; color:var(--gray-400);">Sin registros.</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($tiposPasivoDeuda as $item): ?>
+                            <tr>
+                                <td style="color:var(--gray-400); font-size:12px;"><?= (int)$item['id'] ?></td>
+                                <td><?= e($item['nombre'] ?? '') ?></td>
+                                <td><?= (int)($item['activo'] ?? 1) ? '<span class="status-badge status-published">Activo</span>' : '<span class="status-badge status-draft">Inactivo</span>' ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <!-- Sub: Gastos Funerales -->
+    <div id="sub-gasto" class="config-subpane">
+        <div class="table-container">
+            <table class="data-table">
+                <thead><tr><th style="width:50px">ID</th><th>Nombre</th><th style="width:90px">Estado</th></tr></thead>
+                <tbody>
+                    <?php if (empty($tiposPasivoGasto)): ?>
+                        <tr class="empty-row"><td colspan="3" style="text-align:center; padding:20px; color:var(--gray-400);">Sin registros.</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($tiposPasivoGasto as $item): ?>
+                            <tr>
+                                <td style="color:var(--gray-400); font-size:12px;"><?= (int)$item['id'] ?></td>
+                                <td><?= e($item['nombre'] ?? '') ?></td>
+                                <td><?= (int)($item['activo'] ?? 1) ? '<span class="status-badge status-published">Activo</span>' : '<span class="status-badge status-draft">Inactivo</span>' ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Sub: Herencias -->
+    <div id="sub-herencias" class="config-subpane">
+        <div class="table-container">
+            <table class="data-table">
+                <thead><tr><th style="width:50px">ID</th><th>Nombre</th><th>Descripción</th><th style="width:90px">Estado</th></tr></thead>
+                <tbody>
+                    <?php if (empty($tipoHerencias)): ?>
+                        <tr class="empty-row"><td colspan="4" style="text-align:center; padding:20px; color:var(--gray-400);">Sin registros.</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($tipoHerencias as $th): ?>
+                            <tr>
+                                <td style="color:var(--gray-400); font-size:12px;"><?= (int)$th['id'] ?></td>
+                                <td><strong><?= e($th['nombre'] ?? '') ?></strong></td>
+                                <td style="font-size:13px; color:var(--gray-500); max-width:400px;"><?= e($th['descripcion'] ?? '—') ?></td>
+                                <td><?= (int)($th['activo'] ?? 1) ? '<span class="status-badge status-published">Activo</span>' : '<span class="status-badge status-draft">Inactivo</span>' ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 
-<!-- JS Simple para las pestañas -->
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════════════ -->
 <script>
-    function switchTab(tabId) {
-        // Renombrar botón activo
-        document.querySelectorAll('.config-tab-btn').forEach(btn => btn.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+// ── Tab Switching (main tabs) ──
+function switchTab(tabId, btn) {
+    document.querySelectorAll('.config-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.config-tab-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+}
 
-        // Mostrar panel activo
-        document.querySelectorAll('.config-tab-pane').forEach(pane => pane.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-    }
-</script>
+// ── Sub-Tab Switching (scoped to parent tab) ──
+function switchSubTab(paneId, btn, parentId) {
+    const parent = document.getElementById(parentId);
+    if (!parent) return;
+    parent.querySelectorAll('.config-subtab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    parent.querySelectorAll('.config-subpane').forEach(p => p.classList.remove('active'));
+    document.getElementById(paneId).classList.add('active');
+}
 
-<!-- ==============================================
-     MODALES 
-     ============================================== -->
+// ── Reusable DataTable Engine ──
+(function() {
+    // Tables with pagination: those that have an id and a matching footer
+    const tables = document.querySelectorAll('table.data-table[id]');
 
-<!-- Modal: Actualizar Valor UT -->
-<dialog class="modal-base" id="modal-nuevo-ut">
-    <div class="modal-base__container" style="max-width: 480px;">
-        <div class="modal-base__header">
-            <h2 class="modal-base__title">Actualizar Unidad Tributaria</h2>
-            <button class="modal-base__close" onclick="window.modalManager.close('modal-nuevo-ut')"
-                aria-label="Cerrar modal">&times;</button>
-        </div>
-        <div class="modal-base__body">
-            <p style="font-size: 14px; color: var(--text-light); margin-bottom: 20px;">
-                Registre el nuevo valor de la Unidad Tributaria según Gaceta Oficial. Al guardar,
-                el valor anterior pasará automáticamente a estado "Histórico".
-            </p>
-            <form id="formActualizarUT" action="<?= base_url('/admin/catalogos/ut/guardar') ?>" method="POST"
-                style="display: flex; flex-direction: column; gap: 16px;">
-                <?= csrf_field() ?>
-                <input type="hidden" name="id" id="ut_id" value="">
+    tables.forEach(table => {
+        const tblId = table.id;
+        const tbody = table.querySelector('tbody');
+        if (!tbody) return;
 
-                <div class="form-group">
-                    <label class="form-label">Valor en Bolívares (Bs.)</label>
-                    <input type="text" name="valor" id="ut_valor" class="form-input" placeholder="Ej: 9.00"
-                        maxlength="15" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Fecha de Vigencia</label>
-                    <input type="date" name="fecha_vigencia" id="ut_fecha" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Resolución / Gaceta Oficial</label>
-                    <input type="text" name="resolucion" id="ut_resolucion" class="form-input"
-                        placeholder="Ej: Gaceta Nº 42.123" maxlength="100">
-                </div>
-            </form>
-        </div>
-        <div class="modal-base__footer">
-            <button type="button" class="modal-btn modal-btn-cancel"
-                onclick="window.modalManager.close('modal-nuevo-ut')">Cancelar</button>
-            <button type="submit" form="formActualizarUT" class="modal-btn modal-btn-primary">Guardar Valor UT</button>
-        </div>
-    </div>
-</dialog>
+        const rows = Array.from(tbody.querySelectorAll('tr[data-search]'));
+        if (rows.length === 0) return;
 
-<!-- Modal: Genérico para Crear/Editar Items de Catálogo -->
-<dialog class="modal-base" id="modal-catalogo">
-    <div class="modal-base__container" style="max-width: 460px;">
-        <div class="modal-base__header">
-            <h2 class="modal-base__title" id="catalogo-modal-title">Agregar Registro</h2>
-            <button class="modal-base__close" onclick="window.modalManager.close('modal-catalogo')"
-                aria-label="Cerrar modal">&times;</button>
-        </div>
-        <div class="modal-base__body">
-            <form id="formCatalogo" action="<?= base_url('/admin/catalogos/guardar') ?>" method="POST"
-                style="display: flex; flex-direction: column; gap: 16px;">
-                <?= csrf_field() ?>
-                <input type="hidden" name="id" id="catalogo_item_id" value="">
-                <input type="hidden" name="tabla" id="catalogo_tabla" value="">
+        const searchInput = document.querySelector(`[data-search-for="${tblId}"]`);
+        const perPageSel = document.querySelector(`[data-perpage-for="${tblId}"]`);
+        const footer = document.querySelector(`[data-footer-for="${tblId}"]`);
+        const footerInfo = footer?.querySelector('.table-footer-info');
+        const paginationEl = footer?.querySelector('.pagination');
 
-                <div class="form-group">
-                    <label class="form-label" id="catalogo-label-nombre">Nombre</label>
-                    <input type="text" name="nombre" id="catalogo_nombre" class="form-input"
-                        placeholder="Nombre del registro" maxlength="100" required>
-                </div>
-                <div class="form-group" id="catalogo-grupo-descripcion">
-                    <label class="form-label">Descripción (opcional)</label>
-                    <textarea name="descripcion" id="catalogo_descripcion" class="form-input"
-                        placeholder="Breve descripción..." rows="3" maxlength="255"></textarea>
-                </div>
-            </form>
-        </div>
-        <div class="modal-base__footer">
-            <button type="button" class="modal-btn modal-btn-cancel"
-                onclick="window.modalManager.close('modal-catalogo')">Cancelar</button>
-            <button type="submit" form="formCatalogo" class="modal-btn modal-btn-primary">Guardar</button>
-        </div>
-    </div>
-</dialog>
+        let searchTerm = '';
+        let currentPage = 1;
+        let sortCol = null, sortDir = 1;
 
-<!-- Modal: Confirmar Eliminación de Item de Catálogo -->
-<dialog class="modal-base" id="modal-eliminar-catalogo">
-    <div class="modal-base__container" style="max-width: 440px;">
-        <div class="modal-base__header">
-            <h2 class="modal-base__title">¿Eliminar este registro?</h2>
-            <button class="modal-base__close" onclick="window.modalManager.close('modal-eliminar-catalogo')"
-                aria-label="Cerrar modal">&times;</button>
-        </div>
-        <div class="modal-base__body">
-            <p style="font-size: 15px; color: var(--text-body); line-height: 1.5; margin-bottom: 0;">
-                Se eliminará el registro <strong id="eliminar-catalogo-nombre"></strong> de forma permanente.
-                Si está siendo utilizado por algún caso en curso, <strong>no podrá eliminarse</strong>.
-            </p>
-            <form id="formEliminarCatalogo" action="<?= base_url('/admin/catalogos/eliminar') ?>" method="POST">
-                <?= csrf_field() ?>
-                <input type="hidden" name="id" id="eliminar_catalogo_id" value="">
-                <input type="hidden" name="tabla" id="eliminar_catalogo_tabla" value="">
-            </form>
-        </div>
-        <div class="modal-base__footer" style="padding-top: 24px;">
-            <button class="modal-btn modal-btn-cancel" style="min-width: 120px;"
-                onclick="window.modalManager.close('modal-eliminar-catalogo')">Cancelar</button>
-            <button type="submit" form="formEliminarCatalogo" class="modal-btn modal-btn-danger"
-                style="min-width: 120px;">Eliminar</button>
-        </div>
-    </div>
-</dialog>
+        function getPerPage() { return parseInt(perPageSel?.value || '15', 10); }
 
-<script>
-    // --- UT Modal ---
-    function openCrearUT() {
-        document.getElementById('formActualizarUT').reset();
-        document.getElementById('ut_id').value = '';
-        document.querySelector('#modal-nuevo-ut .modal-base__title').textContent = 'Actualizar Unidad Tributaria';
-        window.modalManager.open('modal-nuevo-ut');
-    }
+        function getVisible() {
+            return rows.filter(r => !searchTerm || (r.dataset.search || '').includes(searchTerm));
+        }
 
-    function openEditarUT(btn) {
-        document.getElementById('formActualizarUT').reset();
-        document.getElementById('ut_id').value = btn.dataset.id || '';
-        document.getElementById('ut_valor').value = btn.dataset.valor || '';
-        document.getElementById('ut_fecha').value = btn.dataset.fecha || '';
-        document.getElementById('ut_resolucion').value = btn.dataset.resolucion || '';
-        document.querySelector('#modal-nuevo-ut .modal-base__title').textContent = 'Editar Valor UT';
-        window.modalManager.open('modal-nuevo-ut');
-    }
+        function sortRows(arr) {
+            if (sortCol === null) return arr;
+            return arr.slice().sort((a, b) => {
+                const va = (a.children[sortCol]?.textContent || '').trim().toLowerCase();
+                const vb = (b.children[sortCol]?.textContent || '').trim().toLowerCase();
+                const na = parseFloat(va.replace(/[^\d.-]/g, ''));
+                const nb = parseFloat(vb.replace(/[^\d.-]/g, ''));
+                if (!isNaN(na) && !isNaN(nb)) return sortDir * (na - nb);
+                return sortDir * va.localeCompare(vb);
+            });
+        }
 
-    // --- Catálogo Genérico Modal ---
-    function openCrearCatalogo(tabla, titulo, labelNombre) {
-        document.getElementById('formCatalogo').reset();
-        document.getElementById('catalogo_item_id').value = '';
-        document.getElementById('catalogo_tabla').value = tabla;
-        document.getElementById('catalogo-modal-title').textContent = 'Agregar ' + titulo;
-        document.getElementById('catalogo-label-nombre').textContent = labelNombre || 'Nombre';
-        window.modalManager.open('modal-catalogo');
-    }
+        function render() {
+            const PER_PAGE = getPerPage();
+            const visible = sortRows(getVisible());
+            const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
+            if (currentPage > totalPages) currentPage = totalPages;
+            const start = (currentPage - 1) * PER_PAGE;
+            const pageRows = visible.slice(start, start + PER_PAGE);
 
-    function openEditarCatalogo(btn, titulo, labelNombre) {
-        document.getElementById('formCatalogo').reset();
-        document.getElementById('catalogo_item_id').value = btn.dataset.id || '';
-        document.getElementById('catalogo_tabla').value = btn.dataset.tabla || '';
-        document.getElementById('catalogo_nombre').value = btn.dataset.nombre || '';
-        document.getElementById('catalogo_descripcion').value = btn.dataset.descripcion || '';
-        document.getElementById('catalogo-modal-title').textContent = 'Editar ' + titulo;
-        document.getElementById('catalogo-label-nombre').textContent = labelNombre || 'Nombre';
-        window.modalManager.open('modal-catalogo');
-    }
+            rows.forEach(r => r.style.display = 'none');
+            pageRows.forEach(r => r.style.display = '');
 
-    function openEliminarCatalogo(id, tabla, nombre) {
-        document.getElementById('eliminar_catalogo_id').value = id;
-        document.getElementById('eliminar_catalogo_tabla').value = tabla;
-        document.getElementById('eliminar-catalogo-nombre').textContent = '"' + nombre + '"';
-        window.modalManager.open('modal-eliminar-catalogo');
-    }
+            if (footerInfo) {
+                const from = visible.length > 0 ? start + 1 : 0;
+                const to = Math.min(start + PER_PAGE, visible.length);
+                footerInfo.innerHTML = `Mostrando <strong>${from}</strong> a <strong>${to}</strong> de <strong>${visible.length}</strong> registros`;
+            }
+
+            if (paginationEl) {
+                paginationEl.innerHTML = '';
+                if (totalPages > 1) {
+                    const prev = document.createElement('button');
+                    prev.innerHTML = '‹'; prev.disabled = currentPage === 1;
+                    prev.addEventListener('click', () => { currentPage--; render(); });
+                    paginationEl.appendChild(prev);
+
+                    for (let p = 1; p <= totalPages; p++) {
+                        const b = document.createElement('button');
+                        b.textContent = p;
+                        if (p === currentPage) b.classList.add('active');
+                        b.addEventListener('click', () => { currentPage = p; render(); });
+                        paginationEl.appendChild(b);
+                    }
+
+                    const next = document.createElement('button');
+                    next.innerHTML = '›'; next.disabled = currentPage === totalPages;
+                    next.addEventListener('click', () => { currentPage++; render(); });
+                    paginationEl.appendChild(next);
+                }
+            }
+        }
+
+        // Events
+        searchInput?.addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase().trim();
+            currentPage = 1;
+            render();
+        });
+
+        perPageSel?.addEventListener('change', () => { currentPage = 1; render(); });
+
+        // Sortable headers
+        table.querySelectorAll('th.sortable[data-col]').forEach(th => {
+            th.style.cursor = 'pointer';
+            th.addEventListener('click', () => {
+                const col = parseInt(th.dataset.col, 10);
+                if (sortCol === col) sortDir *= -1;
+                else { sortCol = col; sortDir = 1; }
+                table.querySelectorAll('th.sortable').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+                th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+                render();
+            });
+        });
+
+        render();
+    });
+})();
 </script>
 
 <?php

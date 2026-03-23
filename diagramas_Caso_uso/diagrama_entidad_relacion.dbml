@@ -1,0 +1,964 @@
+// ═══════════════════════════════════════════════
+// DIAGRAMA ENTIDAD-RELACIÓN — BASE DE DATOS SPDSS
+// Formato DBML (https://dbdiagram.io)
+// ═══════════════════════════════════════════════
+
+// ─────────────────────────────────────
+// MÓDULO: SISTEMA / AUTENTICACIÓN
+// ─────────────────────────────────────
+
+Table personas {
+  id bigint [pk]
+  nacionalidad enum('V','E')
+  cedula varchar
+  nombres varchar
+  apellidos varchar
+  fecha_nacimiento date
+  genero enum('M','F')
+}
+
+Table roles {
+  id int [pk]
+  nombre varchar
+  descripcion varchar
+}
+
+Table users {
+  id bigint [pk]
+  persona_id bigint [ref: > personas.id]
+  role_id int [ref: > roles.id]
+  email varchar
+  password varchar
+  status enum('active','inactive','banned')
+}
+
+Table user_sessions {
+  id bigint [pk]
+  user_id bigint [ref: > users.id]
+  session_id varchar
+  ip_address varchar
+  last_activity datetime
+  created_at datetime
+}
+
+Table password_resets {
+  id int [pk]
+  user_id bigint [ref: > users.id]
+  token_hash varchar
+  expires_at timestamp
+}
+
+Table tipos_eventos {
+  id int [pk]
+  codigo varchar
+  descripcion varchar
+  nivel_riesgo enum('info','warning','critical')
+}
+
+Table bitacora_accesos {
+  id bigint [pk]
+  user_id bigint [ref: > users.id]
+  tipo_evento_id int [ref: > tipos_eventos.id]
+  attempted_email varchar
+  ip_address varchar
+  created_at timestamp
+}
+
+// ─────────────────────────────────────
+// MÓDULO: ACADÉMICO
+// ─────────────────────────────────────
+
+Table carreras {
+  id int [pk]
+  nombre varchar
+  codigo varchar
+}
+
+Table materias {
+  id int [pk]
+  nombre varchar
+  codigo varchar
+  carrera_id int [ref: > carreras.id]
+}
+
+Table periodos {
+  id int [pk]
+  nombre varchar
+  fecha_inicio date
+  fecha_fin date
+  activo tinyint
+}
+
+Table profesores {
+  id bigint [pk]
+  persona_id bigint [ref: > personas.id]
+  titulo varchar
+}
+
+Table estudiantes {
+  id bigint [pk]
+  persona_id bigint [ref: > personas.id]
+  carrera_id int [ref: > carreras.id]
+}
+
+Table secciones {
+  id int [pk]
+  materia_id int [ref: > materias.id]
+  profesor_id bigint [ref: > profesores.id]
+  periodo_id int [ref: > periodos.id]
+  nombre varchar
+  cupo_maximo int
+}
+
+Table inscripciones {
+  id bigint [pk]
+  estudiante_id bigint [ref: > estudiantes.id]
+  seccion_id int [ref: > secciones.id]
+}
+
+// ─────────────────────────────────────
+// MÓDULO: GEOGRAFÍA
+// ─────────────────────────────────────
+
+Table estados {
+  id bigint [pk]
+  nombre varchar
+}
+
+Table municipios {
+  id bigint [pk]
+  estado_id bigint [ref: > estados.id]
+  nombre varchar
+}
+
+Table ciudades {
+  id bigint [pk]
+  municipio_id bigint [ref: > municipios.id]
+  nombre varchar
+}
+
+Table parroquias {
+  id bigint [pk]
+  municipio_id bigint [ref: > municipios.id]
+  nombre varchar
+}
+
+Table codigos_postales {
+  id bigint [pk]
+  estado_id bigint [ref: > estados.id]
+  codigo varchar
+}
+
+Table paises {
+  id smallint [pk]
+  nombre varchar
+}
+
+// ─────────────────────────────────────
+// MÓDULO: SIMULADOR - PERSONAS
+// ─────────────────────────────────────
+
+Table sim_personas {
+  id bigint [pk]
+  tipo_cedula enum('V','E','No_Aplica')
+  nacionalidad smallint [ref: > paises.id]
+  cedula varchar
+  pasaporte varchar
+  rif_personal varchar
+  nombres varchar
+  apellidos varchar
+  fecha_nacimiento date
+  estado_civil enum('Soltero','Casado','Viudo','Divorciado','Concubinato','No_aplica')
+  sexo enum('M','F')
+  created_by bigint [ref: > profesores.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_actas_defunciones {
+  id bigint [pk]
+  sim_persona_id bigint [ref: > sim_personas.id]
+  fecha_fallecimiento date
+  numero_acta varchar
+  year_acta year
+  parroquia_id bigint
+}
+
+Table sim_causante_datos_fiscales {
+  sim_persona_id bigint [pk, ref: > sim_personas.id]
+  domiciliado_pais tinyint
+  fecha_cierre_fiscal date
+}
+
+Table sim_empresas {
+  id bigint [pk]
+  rif varchar
+  razon_social varchar
+  activo tinyint
+  created_at timestamp
+  updated_at timestamp
+}
+
+// ─────────────────────────────────────
+// MÓDULO: SIMULADOR - CASOS DE ESTUDIO
+// ─────────────────────────────────────
+
+Table sim_casos_estudios {
+  id bigint [pk]
+  profesor_id bigint [ref: > profesores.id]
+  causante_id bigint [ref: > sim_personas.id]
+  representante_id bigint [ref: > sim_personas.id]
+  unidad_tributaria_id smallint [ref: > sim_cat_unidades_tributarias.id]
+  tipo_sucesion enum('Con_Cedula','Sin_Cedula')
+  titulo varchar
+  estado enum('Borrador','Publicado','Inactivo','Eliminado')
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_caso_configs {
+  id bigint [pk]
+  caso_id bigint [ref: > sim_casos_estudios.id]
+  profesor_id bigint [ref: > profesores.id]
+  modalidad enum
+  max_intentos tinyint
+  fecha_limite timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_caso_asignaciones {
+  id bigint [pk]
+  config_id bigint [ref: > sim_caso_configs.id]
+  estudiante_id bigint [ref: > estudiantes.id]
+  estado enum
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_caso_participantes {
+  id bigint [pk]
+  caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  persona_id bigint [ref: > sim_personas.id]
+  rol_en_caso enum('Heredero','Legatario')
+  parentesco_id int [ref: > sim_cat_parentescos.id]
+  es_premuerto tinyint
+  premuerto_padre_id bigint [ref: > sim_caso_participantes.id, note: 'Auto-referencia: hereda en representación del premuerto']
+}
+
+Table sim_caso_calculo_manual {
+  id bigint [pk]
+  caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  participante_id bigint [ref: > sim_caso_participantes.id]
+  cuota_parte_ut decimal
+  reduccion_bs decimal
+  created_at timestamp
+}
+
+Table sim_caso_direcciones {
+  id bigint [pk]
+  sim_caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  tipo_direccion enum('Domicilio_Fiscal','Bodega_Almacenamiento_Deposito','Casa_Matriz_Establecimiento_Principal','Direccion_Notificacion_Fisica','Negocio_Independiente','Planta_Industrial_Fabrica','Sucursal_Comercial')
+  tipo_vialidad enum
+  nombre_vialidad varchar
+  tipo_inmueble enum
+  nro_inmueble varchar
+  tipo_nivel enum
+  nro_nivel varchar
+  tipo_sector enum
+  nombre_sector varchar
+  estado_id bigint [ref: > estados.id]
+  municipio_id bigint [ref: > municipios.id]
+  parroquia_id bigint [ref: > parroquias.id]
+  ciudad_id bigint [ref: > ciudades.id]
+  codigo_postal_id bigint [ref: > codigos_postales.id]
+  telefono_fijo varchar
+  telefono_celular varchar
+  fax varchar
+  punto_referencia varchar
+}
+
+Table sim_caso_tipoherencia_rel {
+  id bigint [pk]
+  caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  tipo_herencia_id tinyint [ref: > sim_cat_tipoherencias.id]
+  subtipo_testamento enum('Abierto','Cerrado')
+  fecha_testamento date
+  fecha_conclusion_inventario date
+  created_at timestamp
+}
+
+Table sim_caso_prorrogas {
+  id bigint [pk]
+  caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  fecha_solicitud date
+  nro_resolucion varchar
+  fecha_resolucion date
+  plazo_otorgado_dias smallint
+  fecha_vencimiento date
+  created_at timestamp
+}
+
+// ─────────────────────────────────────
+// MÓDULO: SIMULADOR - BIENES INMUEBLES
+// ─────────────────────────────────────
+
+Table sim_caso_bienes_inmuebles {
+  id bigint [pk]
+  caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  es_vivienda_principal tinyint
+  es_bien_litigioso tinyint
+  porcentaje decimal
+  descripcion text
+  linderos text
+  superficie_construida decimal
+  superficie_no_construida decimal
+  area_superficie decimal
+  direccion text
+  oficina_registro varchar
+  nro_registro varchar
+  libro varchar
+  protocolo varchar
+  fecha_registro date
+  trimestre varchar
+  asiento_registral varchar
+  matricula varchar
+  folio_real_anio varchar
+  valor_original decimal
+  valor_declarado decimal
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_caso_bien_inmueble_tipo_rel {
+  id bigint [pk]
+  bien_inmueble_id bigint [ref: > sim_caso_bienes_inmuebles.id]
+  tipo_bien_inmueble_id tinyint [ref: > sim_cat_tipos_bien_inmueble.id]
+  created_at timestamp
+}
+
+Table sim_caso_bienes_litigiosos {
+  id bigint [pk]
+  caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  bien_tipo enum('Inmueble','Mueble')
+  bien_id bigint
+  numero_expediente varchar
+  tribunal_causa varchar
+  partes_juicio varchar
+  estado_juicio varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+// ─────────────────────────────────────
+// MÓDULO: SIMULADOR - BIENES MUEBLES
+// ─────────────────────────────────────
+
+Table sim_caso_bienes_muebles {
+  id bigint [pk]
+  caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  categoria_bien_mueble_id tinyint [ref: > sim_cat_categorias_bien_mueble.id]
+  tipo_bien_mueble_id smallint [ref: > sim_cat_tipos_bien_mueble.id]
+  es_bien_litigioso tinyint
+  porcentaje decimal
+  descripcion text
+  valor_declarado decimal
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_caso_bm_banco {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_caso_bienes_muebles.id]
+  banco_id smallint [ref: > sim_cat_bancos.id]
+  numero_cuenta varchar
+  created_at timestamp
+}
+
+Table sim_caso_bm_seguro {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_caso_bienes_muebles.id]
+  empresa_id bigint [ref: > sim_empresas.id]
+  numero_prima varchar
+  created_at timestamp
+}
+
+Table sim_caso_bm_transporte {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_caso_bienes_muebles.id]
+  anio varchar
+  marca varchar
+  modelo varchar
+  serial_placa varchar
+  created_at timestamp
+}
+
+Table sim_caso_bm_acciones {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_caso_bienes_muebles.id]
+  empresa_id bigint [ref: > sim_empresas.id]
+  created_at timestamp
+}
+
+Table sim_caso_bm_bonos {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_caso_bienes_muebles.id]
+  tipo_bonos varchar
+  numero_bonos varchar
+  numero_serie varchar
+  created_at timestamp
+}
+
+Table sim_caso_bm_semovientes {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_caso_bienes_muebles.id]
+  tipo_semoviente_id tinyint [ref: > sim_cat_tipos_semoviente.id]
+  cantidad int
+  created_at timestamp
+}
+
+Table sim_caso_bm_caja_ahorro {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_caso_bienes_muebles.id]
+  empresa_id bigint [ref: > sim_empresas.id]
+  created_at timestamp
+}
+
+Table sim_caso_bm_cuentas_cobrar {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_caso_bienes_muebles.id]
+  rif_cedula varchar
+  apellidos_nombres varchar
+  created_at timestamp
+}
+
+Table sim_caso_bm_opciones_compra {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_caso_bienes_muebles.id]
+  nombre_oferente varchar
+  created_at timestamp
+}
+
+Table sim_caso_bm_prestaciones {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_caso_bienes_muebles.id]
+  posee_banco tinyint
+  banco_id smallint [ref: > sim_cat_bancos.id]
+  numero_cuenta varchar
+  empresa_id bigint [ref: > sim_empresas.id]
+  created_at timestamp
+}
+
+// ─────────────────────────────────────
+// MÓDULO: SIMULADOR - PASIVOS
+// ─────────────────────────────────────
+
+Table sim_caso_pasivos_deuda {
+  id bigint [pk]
+  caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  tipo_pasivo_deuda_id tinyint [ref: > sim_cat_tipos_pasivo_deuda.id]
+  banco_id smallint [ref: > sim_cat_bancos.id]
+  numero_tdc varchar
+  porcentaje decimal
+  descripcion text
+  valor_declarado decimal
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_caso_pasivos_gastos {
+  id bigint [pk]
+  caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  tipo_pasivo_gasto_id tinyint [ref: > sim_cat_tipos_pasivo_gasto.id]
+  porcentaje decimal
+  descripcion text
+  valor_declarado decimal
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_caso_exenciones {
+  id bigint [pk]
+  caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  tipo varchar
+  descripcion text
+  valor_declarado decimal
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_caso_exoneraciones {
+  id bigint [pk]
+  caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  tipo varchar
+  descripcion text
+  valor_declarado decimal
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+// ─────────────────────────────────────
+// MÓDULO: CATÁLOGOS DEL SIMULADOR
+// ─────────────────────────────────────
+
+Table sim_cat_bancos {
+  id smallint [pk]
+  nombre varchar
+  activo tinyint
+  created_at timestamp
+}
+
+Table sim_cat_categorias_bien_mueble {
+  id tinyint [pk]
+  nombre varchar
+  activo tinyint
+  created_at timestamp
+}
+
+Table sim_cat_tipos_bien_mueble {
+  id smallint [pk]
+  categoria_bien_mueble_id tinyint [ref: > sim_cat_categorias_bien_mueble.id]
+  nombre varchar
+  activo tinyint
+  created_at timestamp
+}
+
+Table sim_cat_tipos_bien_inmueble {
+  id tinyint [pk]
+  nombre varchar
+  activo tinyint
+  created_at timestamp
+}
+
+Table sim_cat_tipos_pasivo_deuda {
+  id tinyint [pk]
+  nombre varchar
+  activo tinyint
+  created_at timestamp
+}
+
+Table sim_cat_tipos_pasivo_gasto {
+  id tinyint [pk]
+  nombre varchar
+  activo tinyint
+  created_at timestamp
+}
+
+Table sim_cat_tipos_semoviente {
+  id tinyint [pk]
+  nombre varchar
+  activo tinyint
+  created_at timestamp
+}
+
+Table sim_cat_parentescos {
+  id int [pk]
+  clave varchar
+  etiqueta varchar
+  activo tinyint
+  grupo_tarifa_id tinyint [ref: > sim_cat_grupos_tarifa.id]
+}
+
+Table sim_cat_grupos_tarifa {
+  id tinyint [pk]
+  nombre varchar
+  activo tinyint
+  created_at timestamp
+}
+
+Table sim_cat_tarifas_sucesion {
+  id smallint [pk]
+  grupo_tarifa_id tinyint [ref: > sim_cat_grupos_tarifa.id]
+  rango_desde_ut decimal
+  rango_hasta_ut decimal
+  porcentaje decimal
+  sustraendo_ut decimal
+  activo tinyint
+  created_at timestamp
+}
+
+Table sim_cat_tramos_tarifa {
+  id int [pk]
+  grupo_tarifa_id tinyint [ref: > sim_cat_grupos_tarifa.id]
+  tramo tinyint
+  limite_inferior_ut decimal
+  limite_superior_ut decimal
+  porcentaje decimal
+  sustraendo_ut decimal
+  activo tinyint
+  created_at timestamp
+}
+
+Table sim_cat_reducciones {
+  id int [pk]
+  ordinal tinyint
+  clave varchar
+  etiqueta varchar
+  porcentaje_reduccion decimal
+  es_por_dependiente tinyint
+  cuota_max_beneficiario_ut decimal
+  activo tinyint
+  created_at timestamp
+}
+
+Table sim_cat_unidades_tributarias {
+  id smallint [pk]
+  anio smallint
+  valor decimal
+  fecha_gaceta date
+  activo tinyint
+  created_at timestamp
+}
+
+Table sim_cat_tipoherencias {
+  id tinyint [pk]
+  nombre varchar
+  descripcion text
+  activo tinyint
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_marco_legals {
+  id smallint [pk]
+  titulo varchar
+  tipo enum('Ley','Codigo','Providencia','Gaceta_Oficial','Reglamento')
+  descripcion text
+  url varchar
+  estado enum('Vigente','Derogado')
+  orden smallint
+  fecha_publicacion date
+  numero_gaceta varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+// ─────────────────────────────────────
+// MÓDULO: INTENTOS DEL ESTUDIANTE
+// ─────────────────────────────────────
+
+Table sim_intentos {
+  id bigint [pk]
+  asignacion_id bigint [ref: > sim_caso_asignaciones.id]
+  numero_intento smallint
+  estado enum('En_Progreso','Enviado','Aprobado','Rechazado','Cancelado')
+  paso_actual tinyint
+  pasos_completados set
+  borrador_json longtext
+  activo tinyint [note: 'Virtual: 1 si En_Progreso, NULL si no']
+  numero_control char
+  submitted_at timestamp
+  reviewed_at timestamp
+  approved_at timestamp
+  rif_sucesoral varchar
+  password_rif varchar
+  usuario_seniat varchar
+  fuera_de_fecha tinyint
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_intento_datos_basicos {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  tipo_cedula enum('V','E','No_Aplica')
+  cedula varchar
+  rif_personal varchar
+  pasaporte varchar
+  apellidos varchar
+  nombres varchar
+  fecha_nacimiento date
+  fecha_fallecimiento date
+  sexo enum('M','F')
+  estado_civil enum('Soltero','Casado','Viudo','Divorciado','Concubinato','No_aplica')
+  domiciliado_pais tinyint
+  nacionalidad smallint [ref: > paises.id]
+  fecha_cierre_fiscal date
+  email_sucesion varchar
+  numero_acta varchar
+  year_acta year
+  parroquia_acta varchar
+}
+
+Table sim_intento_relaciones {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  rol enum('Heredero','Legatario','Representante')
+  tipo_cedula enum('V','E','No_Indica')
+  cedula varchar
+  pasaporte varchar
+  nombres varchar
+  apellidos varchar
+  fecha_nacimiento date
+  parentesco_id int [ref: > sim_cat_parentescos.id]
+  es_premuerto tinyint
+  fecha_fallecimiento date
+  premuerto_padre_id bigint [ref: > sim_intento_relaciones.id, note: 'Auto-referencia: hereda en representación del premuerto']
+  orden tinyint
+}
+
+Table sim_intento_direcciones {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  tipo_direccion enum('Domicilio_Fiscal','Bodega_Almacenamiento_Deposito','Casa_Matriz_Establecimiento_Principal','Direccion_Notificacion_Fisica','Negocio_Independiente','Planta_Industrial_Fabrica','Sucursal_Comercial')
+  tipo_vialidad enum
+  nombre_vialidad varchar
+  tipo_inmueble enum
+  nro_inmueble varchar
+  tipo_nivel enum
+  nro_nivel varchar
+  tipo_sector enum
+  nombre_sector varchar
+  estado_id bigint [ref: > estados.id]
+  municipio_id bigint [ref: > municipios.id]
+  parroquia_id bigint [ref: > parroquias.id]
+  ciudad_id bigint [ref: > ciudades.id]
+  codigo_postal_id bigint [ref: > codigos_postales.id]
+  telefono_fijo varchar
+  telefono_celular varchar
+  fax varchar
+  punto_referencia varchar
+}
+
+Table sim_intento_tipoherencias {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  tipo_herencia_id tinyint [ref: > sim_cat_tipoherencias.id]
+  subtipo_testamento enum('Abierto','Cerrado')
+  fecha_testamento date
+  fecha_conclusion_inventario date
+  created_at timestamp
+}
+
+Table sim_intento_bienes_inmuebles {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  es_vivienda_principal tinyint
+  es_bien_litigioso tinyint
+  porcentaje decimal
+  descripcion text
+  linderos text
+  superficie_construida decimal
+  superficie_no_construida decimal
+  area_superficie decimal
+  direccion text
+  oficina_registro varchar
+  nro_registro varchar
+  libro varchar
+  protocolo varchar
+  fecha_registro date
+  trimestre varchar
+  asiento_registral varchar
+  matricula varchar
+  folio_real_anio varchar
+  valor_original decimal
+  valor_declarado decimal
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_intento_bien_inmueble_tipo_rel {
+  id bigint [pk]
+  bien_inmueble_id bigint [ref: > sim_intento_bienes_inmuebles.id]
+  tipo_bien_inmueble_id tinyint [ref: > sim_cat_tipos_bien_inmueble.id]
+  created_at timestamp
+}
+
+Table sim_intento_bienes_muebles {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  categoria_bien_mueble_id tinyint [ref: > sim_cat_categorias_bien_mueble.id]
+  tipo_bien_mueble_id smallint [ref: > sim_cat_tipos_bien_mueble.id]
+  es_bien_litigioso tinyint
+  porcentaje decimal
+  descripcion text
+  valor_declarado decimal
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_intento_bienes_litigiosos {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  bien_tipo enum('Inmueble','Mueble')
+  bien_id bigint
+  numero_expediente varchar
+  tribunal_causa varchar
+  partes_juicio varchar
+  estado_juicio varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_intento_bm_banco {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_intento_bienes_muebles.id]
+  banco_id smallint [ref: > sim_cat_bancos.id]
+  numero_cuenta varchar
+  created_at timestamp
+}
+
+Table sim_intento_bm_seguro {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_intento_bienes_muebles.id]
+  empresa_id bigint [ref: > sim_empresas.id]
+  numero_prima varchar
+  created_at timestamp
+}
+
+Table sim_intento_bm_transporte {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_intento_bienes_muebles.id]
+  anio varchar
+  marca varchar
+  modelo varchar
+  serial_placa varchar
+  created_at timestamp
+}
+
+Table sim_intento_bm_acciones {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_intento_bienes_muebles.id]
+  empresa_id bigint [ref: > sim_empresas.id]
+  created_at timestamp
+}
+
+Table sim_intento_bm_bonos {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_intento_bienes_muebles.id]
+  tipo_bonos varchar
+  numero_bonos varchar
+  numero_serie varchar
+  created_at timestamp
+}
+
+Table sim_intento_bm_semovientes {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_intento_bienes_muebles.id]
+  tipo_semoviente_id tinyint [ref: > sim_cat_tipos_semoviente.id]
+  cantidad int
+  created_at timestamp
+}
+
+Table sim_intento_bm_caja_ahorro {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_intento_bienes_muebles.id]
+  empresa_id bigint [ref: > sim_empresas.id]
+  created_at timestamp
+}
+
+Table sim_intento_bm_cuentas_cobrar {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_intento_bienes_muebles.id]
+  rif_cedula varchar
+  apellidos_nombres varchar
+  created_at timestamp
+}
+
+Table sim_intento_bm_opciones_compra {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_intento_bienes_muebles.id]
+  nombre_oferente varchar
+  created_at timestamp
+}
+
+Table sim_intento_bm_prestaciones {
+  id bigint [pk]
+  bien_mueble_id bigint [ref: > sim_intento_bienes_muebles.id]
+  posee_banco tinyint
+  banco_id smallint [ref: > sim_cat_bancos.id]
+  numero_cuenta varchar
+  empresa_id bigint [ref: > sim_empresas.id]
+  created_at timestamp
+}
+
+Table sim_intento_calculo_manual {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  relacion_id bigint [ref: > sim_intento_relaciones.id]
+  cuota_parte_ut decimal
+  reduccion_bs decimal
+  created_at timestamp
+}
+
+Table sim_intento_pasivos_deuda {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  tipo_pasivo_deuda_id tinyint [ref: > sim_cat_tipos_pasivo_deuda.id]
+  banco_id smallint [ref: > sim_cat_bancos.id]
+  numero_tdc varchar
+  porcentaje decimal
+  descripcion text
+  valor_declarado decimal
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_intento_pasivos_gastos {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  tipo_pasivo_gasto_id tinyint [ref: > sim_cat_tipos_pasivo_gasto.id]
+  porcentaje decimal
+  descripcion text
+  valor_declarado decimal
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_intento_exenciones {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  tipo varchar
+  descripcion text
+  valor_declarado decimal
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_intento_exoneraciones {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  tipo varchar
+  descripcion text
+  valor_declarado decimal
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sim_intento_prorrogas {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  fecha_solicitud date
+  nro_resolucion varchar
+  fecha_resolucion date
+  plazo_otorgado_dias smallint
+  fecha_vencimiento date
+  created_at timestamp
+}
+
+Table sim_intento_estados {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  estado enum('En_Proceso','Pendiente_Revision','Aprobado','Cancelado')
+  comentario varchar
+  created_at timestamp
+}
+
+Table sim_intento_observaciones {
+  id bigint [pk]
+  intento_id bigint [ref: > sim_intentos.id]
+  observacion varchar
+  created_at timestamp
+}

@@ -19,8 +19,8 @@ ORDER BY
 
 
 Tabla_Origen	Columna_Foranea	Nombre_Restriccion	Tabla_Destino	Columna_Destino	
-bitacora_accesos	tipo_evento_id	fk_bitacora_tipos	tipos_eventos	id	
-bitacora_accesos	user_id	fk_bitacora_users	users	id	
+bitacora_eventos	tipo_evento_id	fk_bitacora_eventos_tipo	tipos_eventos	id	
+bitacora_eventos	user_id	fk_bitacora_eventos_user	users	id	
 ciudades	municipio_id	fk_ciudad_municipio	municipios	id	
 codigos_postales	estado_id	fk_codigo_estado	estados	id	
 estudiantes	carrera_id	fk_estudiantes_carreras	carreras	id	

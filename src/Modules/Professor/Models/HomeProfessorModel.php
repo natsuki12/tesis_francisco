@@ -26,7 +26,7 @@ class HomeProfessorModel
                 p.nacionalidad,
                 MAX(b.created_at) AS last_login,
                 UNIX_TIMESTAMP(MAX(b.created_at)) AS last_login_ts
-            FROM bitacora_accesos b
+            FROM bitacora_eventos b
             INNER JOIN users u ON b.user_id = u.id
             INNER JOIN personas p ON u.persona_id = p.id
             WHERE b.tipo_evento_id = 1

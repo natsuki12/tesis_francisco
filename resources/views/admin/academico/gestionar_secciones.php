@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-// ARCHIVO: resources/views/admin/academico/gestionar_secciones.php
-
 $pageTitle = 'Gestión de Secciones';
 $activePage = 'secciones';
 $breadcrumbs = [
@@ -11,7 +9,12 @@ $breadcrumbs = [
     'Secciones' => '#'
 ];
 
-$extraCss = '<link rel="stylesheet" href="' . asset('css/professor/casos_sucesorales.css') . '">';
+$extraCss = '<link rel="stylesheet" href="' . asset('css/shared/data-table.css') . '">';
+
+// Datos inyectados por el controlador
+$secciones  = $secciones  ?? [];
+$periodos   = $periodos   ?? [];
+$profesores = $profesores ?? [];
 
 ob_start();
 ?>
@@ -20,7 +23,7 @@ ob_start();
         <h1>Secciones Activas e Históricas</h1>
         <p>Administre las secciones disponibles, asigne a los profesores responsables y visualice la matrícula.</p>
     </div>
-    <button class="btn btn-primary" onclick="window.modalManager.open('modal-seccion')">
+    <button class="btn btn-primary" onclick="openCrearSeccion()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round">
             <line x1="12" y1="5" x2="12" y2="19" />
@@ -38,106 +41,118 @@ ob_start();
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.35-4.35" />
             </svg>
-            <input type="text" id="searchInput" placeholder="Buscar por nombre, cédula o correo...">
+            <input type="text" data-search-for="tbl-secciones" placeholder="Buscar sección, profesor o período...">
         </div>
-
-        <button class="filter-chip active" data-filter="Todos">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-            </svg>
-            Todos
-        </button>
-        <button class="filter-chip" data-filter="Activo">Activos</button>
-        <button class="filter-chip" data-filter="Inactivo">Inactivos</button>
+    </div>
+    <div class="toolbar-right">
+        <label style="font-size:var(--text-xs); color:var(--gray-500); display:flex; align-items:center; gap:6px;">
+            Mostrar <select data-perpage-for="tbl-secciones" class="per-page-select"><option value="10" selected>10</option><option value="15">15</option><option value="25">25</option></select> filas
+        </label>
     </div>
 </div>
 
 <!-- Data Table -->
 <div class="table-container">
-    <table class="data-table">
+    <table class="data-table" id="tbl-secciones">
         <thead>
             <tr>
-                <th class="sortable" data-sort="seccion">Sección</th>
-                <th class="sortable" data-sort="periodo">Período</th>
-                <th class="sortable" data-sort="profesor">Profesor Asignado</th>
-                <th class="sortable" data-sort="estudiantes">Inscritos / Cupo</th>
-                <th class="sortable" data-sort="estado">Estado</th>
-                <th></th>
+                <th class="sortable" data-col="0" style="width:50px">ID</th>
+                <th class="sortable" data-col="1">Sección</th>
+                <th class="sortable" data-col="2">Período</th>
+                <th class="sortable" data-col="3">Profesor Asignado</th>
+                <th class="sortable" data-col="4" style="width:120px">Inscritos / Cupo</th>
+                <th class="sortable" data-col="5" style="width:100px">Estado</th>
+                <th style="width:90px">Acciones</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Mock Row 1 -->
-            <tr>
-                <td><strong>1A</strong><br><span style="font-size:12px;color:var(--gray-500)">Sede Montalbán</span></td>
-                <td>2026-I</td>
-                <td>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <div class="causante-avatar m" style="width:28px;height:28px;font-size:10px;">CR</div>
-                        <span>C. Requena</span>
-                    </div>
-                </td>
-                <td><strong>35</strong> / 40</td>
-                <td><span class="status-badge status-published">Abierta</span></td>
-                <td>
-                    <div class="row-actions">
-                        <button class="row-action-btn" title="Gestionar Sección"
-                            onclick="window.modalManager.open('modal-seccion')">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                            </svg>
-                        </button>
-                    </div>
-                </td>
-            </tr>
+            <?php if (empty($secciones)): ?>
+                <tr class="empty-row"><td colspan="7" style="text-align:center; padding:40px; color:var(--gray-400);">No se encontraron secciones registradas.</td></tr>
+            <?php else: ?>
+                <?php foreach ($secciones as $sec):
+                    $nombre     = $sec['nombre'] ?? '';
+                    $periodo    = $sec['periodo'] ?? '—';
+                    $periodoAct = (int)($sec['periodo_activo'] ?? 0);
+                    $profesor   = $sec['profesor_nombre'] ?? '—';
+                    $genero     = $sec['profesor_genero'] ?? '';
+                    $inscritos  = (int)($sec['inscritos'] ?? 0);
+                    $cupo       = (int)($sec['cupo_maximo'] ?? 40);
+                    $pct        = $cupo > 0 ? round($inscritos / $cupo * 100) : 0;
 
-            <!-- Mock Row 2 -->
-            <tr>
-                <td><strong>2B</strong><br><span style="font-size:12px;color:var(--gray-500)">Sede Guayana</span></td>
-                <td>2026-I</td>
-                <td>
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <div class="causante-avatar f" style="width:28px;height:28px;font-size:10px;">MR</div>
-                        <span>M. Rodríguez</span>
-                    </div>
-                </td>
-                <td><strong>20</strong> / 25</td>
-                <td><span class="status-badge status-published">Abierta</span></td>
-                <td>
-                    <div class="row-actions">
-                        <button class="row-action-btn" title="Gestionar Sección"
-                            onclick="window.modalManager.open('modal-seccion')">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                            </svg>
-                        </button>
-                    </div>
-                </td>
-            </tr>
+                    // Initials for avatar
+                    $parts = explode(' ', $profesor);
+                    $initials = '';
+                    foreach ($parts as $p) { if ($p !== '') $initials .= mb_strtoupper(mb_substr($p, 0, 1)); }
+                    $initials = mb_substr($initials, 0, 2);
+                    $avatarClass = ($genero === 'F') ? 'f' : 'm';
+
+                    // Estado
+                    $estado = $periodoAct ? 'Abierta' : 'Cerrada';
+
+                    $searchText = mb_strtolower($nombre . ' ' . $periodo . ' ' . $profesor);
+                ?>
+                    <tr data-search="<?= e($searchText) ?>">
+                        <td style="color:var(--gray-400); font-size:12px;"><?= (int)$sec['id'] ?></td>
+                        <td><strong><?= e($nombre) ?></strong></td>
+                        <td>
+                            <?= e($periodo) ?>
+                            <?php if ($periodoAct): ?>
+                                <span style="display:inline-block; width:6px; height:6px; background:var(--green-500); border-radius:50%; margin-left:6px; vertical-align:middle;" title="Período activo"></span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <div class="causante-avatar <?= $avatarClass ?>" style="width:28px;height:28px;font-size:10px;"><?= e($initials) ?></div>
+                                <span><?= e($profesor) ?></span>
+                            </div>
+                        </td>
+                        <td>
+                            <strong><?= $inscritos ?></strong> / <?= $cupo ?>
+                            <?php if ($pct >= 90): ?>
+                                <span style="font-size:10px; color:var(--red-500); margin-left:4px;">●</span>
+                            <?php elseif ($pct >= 70): ?>
+                                <span style="font-size:10px; color:var(--yellow-500); margin-left:4px;">●</span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if ($estado === 'Abierta'): ?>
+                                <span class="status-badge status-published">Abierta</span>
+                            <?php else: ?>
+                                <span class="status-badge status-draft">Cerrada</span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <div class="row-actions">
+                                <button class="row-action-btn" title="Editar Sección"
+                                    onclick="openEditarSeccion(this)"
+                                    data-id="<?= (int)$sec['id'] ?>"
+                                    data-nombre="<?= e($nombre) ?>"
+                                    data-cupo="<?= $cupo ?>"
+                                    data-periodo-id="<?= (int)($sec['periodo_id'] ?? 0) ?>"
+                                    data-profesor-id="<?= (int)($sec['profesor_id'] ?? 0) ?>">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                </button>
+                                <button class="row-action-btn" title="Cerrar Sección"
+                                    onclick="openCerrarSeccion(<?= (int)$sec['id'] ?>)" style="color:var(--red-500);">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <line x1="15" y1="9" x2="9" y2="15"/>
+                                        <line x1="9" y1="9" x2="15" y2="15"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </tbody>
     </table>
-
-    <!-- Pagination Mock (Matched to global pagination style) -->
-    <div class="pagination-wrapper"
-        style="padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--gray-200); background: #fafafa; border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
-        <div style="font-size: 12px; color: var(--gray-500);">
-            Mostrando <span style="font-weight: 600; color: var(--gray-700);">1</span> a <span
-                style="font-weight: 600; color: var(--gray-700);">2</span> de <span
-                style="font-weight: 600; color: var(--gray-700);">15</span> registros
-        </div>
-        <div class="pagination" style="display: flex; gap: 5px;">
-            <button class="btn btn-secondary btn-sm" disabled
-                style="padding: 4px 10px; font-size: 13px; border-radius: var(--radius-sm); border-color: var(--gray-300);">Anterior</button>
-            <button class="btn btn-primary btn-sm"
-                style="padding: 4px 12px; font-size: 13px; border-radius: var(--radius-sm);">1</button>
-            <button class="btn btn-secondary btn-sm"
-                style="padding: 4px 12px; font-size: 13px; border-radius: var(--radius-sm); border-color: var(--gray-300);">2</button>
-            <button class="btn btn-secondary btn-sm"
-                style="padding: 4px 10px; font-size: 13px; border-radius: var(--radius-sm); border-color: var(--gray-300);">Siguiente</button>
-        </div>
+    <div class="table-footer" data-footer-for="tbl-secciones">
+        <div class="table-footer-info"></div>
+        <div class="pagination"></div>
     </div>
 </div>
 
@@ -146,111 +161,235 @@ ob_start();
      ============================================== -->
 
 <!-- Modal: Crear/Editar Sección -->
-<dialog class="modal-base" id="modal-seccion">
-    <div class="modal-base__container" style="max-width: 520px;">
-        <div class="modal-base__header">
-            <h2 class="modal-base__title">Crear Sección</h2>
-            <button class="modal-base__close" onclick="window.modalManager.close('modal-seccion')"
-                aria-label="Cerrar modal">&times;</button>
+<div id="modal-seccion" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <h2 id="modal-seccion-title">Crear Sección</h2>
+                <p>Defina el nombre, período, profesor y cupo de la sección.</p>
+            </div>
+            <button class="modal-close" onclick="document.getElementById('modal-seccion').classList.remove('show')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
         </div>
-        <div class="modal-base__body">
-            <p style="font-size: 14px; color: var(--text-light); margin-bottom: 20px;">
-                Defina el nombre de la sección, el período al que pertenece, el profesor asignado
-                y el cupo máximo de estudiantes.
-            </p>
-            <form id="formSeccion" action="<?= base_url('/admin/secciones/guardar') ?>" method="POST"
-                style="display: flex; flex-direction: column; gap: 16px;">
-                <?= csrf_field() ?>
-                <input type="hidden" name="id" id="seccion_id" value="">
+        <div class="modal-body">
+            <div class="form-grid">
+                <input type="hidden" id="seccion_id" value="">
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                    <div class="form-group">
-                        <label class="form-label">Nombre de Sección</label>
-                        <input type="text" name="nombre" id="seccion_nombre" class="form-input" placeholder="Ej: 1A"
-                            maxlength="10" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Cupo Máximo</label>
-                        <input type="text" name="cupo" id="seccion_cupo" class="form-input" placeholder="Ej: 40"
-                            maxlength="3" required>
-                    </div>
-                </div>
                 <div class="form-group">
-                    <label class="form-label">Período Académico</label>
-                    <select name="periodo_id" id="seccion_periodo" class="form-select" required>
+                    <label>Nombre de Sección <span class="required">*</span></label>
+                    <input type="text" id="seccion_nombre" placeholder="Ej: 1A" maxlength="20">
+                </div>
+
+                <div class="form-group">
+                    <label>Cupo Máximo <span class="required">*</span></label>
+                    <input type="number" id="seccion_cupo" placeholder="Ej: 40" min="1" max="999" value="40">
+                </div>
+
+                <div class="form-group">
+                    <label>Período Académico <span class="required">*</span></label>
+                    <select id="seccion_periodo">
                         <option value="">— Seleccione un período —</option>
-                        <!-- Se poblará dinámicamente -->
+                        <?php foreach ($periodos as $per): ?>
+                            <option value="<?= (int)$per['id'] ?>">
+                                <?= e($per['nombre']) ?><?= (int)$per['activo'] ? ' (Activo)' : '' ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label class="form-label">Profesor Asignado</label>
-                    <select name="profesor_id" id="seccion_profesor" class="form-select" required>
+                    <label>Profesor Asignado <span class="required">*</span></label>
+                    <select id="seccion_profesor">
                         <option value="">— Seleccione un profesor —</option>
-                        <!-- Se poblará dinámicamente -->
+                        <?php foreach ($profesores as $prof): ?>
+                            <option value="<?= (int)$prof['id'] ?>">
+                                <?= e(ucfirst($prof['titulo'] ?? '')) ?>. <?= e($prof['nombre_completo']) ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
-            </form>
+            </div>
         </div>
-        <div class="modal-base__footer">
-            <button type="button" class="modal-btn modal-btn-cancel"
-                onclick="window.modalManager.close('modal-seccion')">Cancelar</button>
-            <button type="submit" form="formSeccion" class="modal-btn modal-btn-primary">Guardar
-                Sección</button>
+        <div class="modal-footer">
+            <button class="btn" style="background:var(--gray-100); color:var(--gray-600); padding:10px 20px;"
+                    onclick="document.getElementById('modal-seccion').classList.remove('show')">
+                Cancelar
+            </button>
+            <button class="btn btn-primary" style="padding:10px 24px;"
+                    onclick="alert('Guardado diferido — solo lectura por ahora.'); document.getElementById('modal-seccion').classList.remove('show');">
+                Guardar Sección
+            </button>
         </div>
     </div>
-</dialog>
+</div>
 
-<!-- Modal: Confirmar Cierre de Sección -->
-<dialog class="modal-base" id="modal-eliminar">
-    <div class="modal-base__container" style="max-width: 480px;">
-        <div class="modal-base__header">
-            <h2 class="modal-base__title">¿Cerrar sección?</h2>
-            <button class="modal-base__close" onclick="window.modalManager.close('modal-eliminar')"
-                aria-label="Cerrar modal">&times;</button>
+<!-- Modal: Confirmar Cierre -->
+<div id="modal-cerrar" class="modal-overlay">
+    <div class="modal" style="max-width:480px;">
+        <div class="modal-header">
+            <div>
+                <h2>¿Cerrar sección?</h2>
+                <p>Los estudiantes inscritos no podrán continuar trabajando en sus casos.</p>
+            </div>
+            <button class="modal-close" onclick="document.getElementById('modal-cerrar').classList.remove('show')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
         </div>
-        <div class="modal-base__body">
-            <p style="font-size: 15px; color: var(--text-body); line-height: 1.5; margin-bottom: 0;">
+        <div class="modal-body">
+            <p style="font-size:14px; color:var(--gray-600); line-height:1.5;">
                 Al cerrar esta sección, <strong>los estudiantes inscritos no podrán continuar
-                    trabajando en sus casos</strong> hasta que la sección sea reactivada. Los datos
+                trabajando en sus casos</strong> hasta que la sección sea reactivada. Los datos
                 y el progreso no serán eliminados.
             </p>
-            <form id="formCerrarSeccion" action="<?= base_url('/admin/secciones/cerrar') ?>" method="POST">
-                <?= csrf_field() ?>
-                <input type="hidden" name="id" id="cerrar_seccion_id" value="">
-            </form>
         </div>
-        <div class="modal-base__footer" style="padding-top: 24px;">
-            <button class="modal-btn modal-btn-cancel" style="min-width: 120px;"
-                onclick="window.modalManager.close('modal-eliminar')">Cancelar</button>
-            <button type="submit" form="formCerrarSeccion" class="modal-btn modal-btn-danger"
-                style="min-width: 120px;">Cerrar Sección</button>
+        <div class="modal-footer">
+            <button class="btn" style="background:var(--gray-100); color:var(--gray-600); padding:10px 20px;"
+                    onclick="document.getElementById('modal-cerrar').classList.remove('show')">
+                Cancelar
+            </button>
+            <button class="btn" style="background:var(--red-500); color:white; padding:10px 24px;"
+                    onclick="alert('Cierre diferido — solo lectura por ahora.'); document.getElementById('modal-cerrar').classList.remove('show');">
+                Cerrar Sección
+            </button>
         </div>
     </div>
-</dialog>
+</div>
 
 <script>
-    function openCrearSeccion() {
-        document.getElementById('formSeccion').reset();
-        document.getElementById('seccion_id').value = '';
-        document.querySelector('#modal-seccion .modal-base__title').textContent = 'Crear Sección';
-        window.modalManager.open('modal-seccion');
+// ── Modal helpers ──
+function openCrearSeccion() {
+    document.getElementById('seccion_id').value = '';
+    document.getElementById('seccion_nombre').value = '';
+    document.getElementById('seccion_cupo').value = '40';
+    document.getElementById('seccion_periodo').value = '';
+    document.getElementById('seccion_profesor').value = '';
+    document.getElementById('modal-seccion-title').textContent = 'Crear Sección';
+    document.getElementById('modal-seccion').classList.add('show');
+}
+
+function openEditarSeccion(btn) {
+    document.getElementById('seccion_id').value = btn.dataset.id || '';
+    document.getElementById('seccion_nombre').value = btn.dataset.nombre || '';
+    document.getElementById('seccion_cupo').value = btn.dataset.cupo || '40';
+    document.getElementById('seccion_periodo').value = btn.dataset.periodoId || '';
+    document.getElementById('seccion_profesor').value = btn.dataset.profesorId || '';
+    document.getElementById('modal-seccion-title').textContent = 'Editar Sección';
+    document.getElementById('modal-seccion').classList.add('show');
+}
+
+function openCerrarSeccion(id) {
+    document.getElementById('modal-cerrar').classList.add('show');
+}
+
+// ── Close modals on click outside / Escape ──
+['modal-seccion', 'modal-cerrar'].forEach(id => {
+    document.getElementById(id)?.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('show');
+    });
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        document.getElementById('modal-seccion')?.classList.remove('show');
+        document.getElementById('modal-cerrar')?.classList.remove('show');
+    }
+});
+
+// ── DataTable Engine ──
+(function() {
+    const table = document.getElementById('tbl-secciones');
+    if (!table) return;
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr[data-search]'));
+    if (rows.length === 0) return;
+
+    const searchInput = document.querySelector('[data-search-for="tbl-secciones"]');
+    const perPageSel = document.querySelector('[data-perpage-for="tbl-secciones"]');
+    const footer = document.querySelector('[data-footer-for="tbl-secciones"]');
+    const footerInfo = footer?.querySelector('.table-footer-info');
+    const paginationEl = footer?.querySelector('.pagination');
+
+    let searchTerm = '', currentPage = 1, sortCol = null, sortDir = 1;
+
+    function getPerPage() { return parseInt(perPageSel?.value || '10', 10); }
+
+    function getVisible() {
+        return rows.filter(r => !searchTerm || (r.dataset.search || '').includes(searchTerm));
     }
 
-    function openEditarSeccion(btn) {
-        document.getElementById('formSeccion').reset();
-        document.getElementById('seccion_id').value = btn.dataset.id || '';
-        document.getElementById('seccion_nombre').value = btn.dataset.nombre || '';
-        document.getElementById('seccion_cupo').value = btn.dataset.cupo || '';
-        document.getElementById('seccion_periodo').value = btn.dataset.periodoId || '';
-        document.getElementById('seccion_profesor').value = btn.dataset.profesorId || '';
-        document.querySelector('#modal-seccion .modal-base__title').textContent = 'Editar Sección';
-        window.modalManager.open('modal-seccion');
+    function sortRows(arr) {
+        if (sortCol === null) return arr;
+        return arr.slice().sort((a, b) => {
+            const va = (a.children[sortCol]?.textContent || '').trim().toLowerCase();
+            const vb = (b.children[sortCol]?.textContent || '').trim().toLowerCase();
+            const na = parseFloat(va.replace(/[^\d.-]/g, ''));
+            const nb = parseFloat(vb.replace(/[^\d.-]/g, ''));
+            if (!isNaN(na) && !isNaN(nb)) return sortDir * (na - nb);
+            return sortDir * va.localeCompare(vb);
+        });
     }
 
-    function openCerrarSeccion(id) {
-        document.getElementById('cerrar_seccion_id').value = id;
-        window.modalManager.open('modal-eliminar');
+    function render() {
+        const PER_PAGE = getPerPage();
+        const visible = sortRows(getVisible());
+        const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
+        if (currentPage > totalPages) currentPage = totalPages;
+        const start = (currentPage - 1) * PER_PAGE;
+        const pageRows = visible.slice(start, start + PER_PAGE);
+
+        rows.forEach(r => r.style.display = 'none');
+        pageRows.forEach(r => r.style.display = '');
+
+        if (footerInfo) {
+            const from = visible.length > 0 ? start + 1 : 0;
+            const to = Math.min(start + PER_PAGE, visible.length);
+            footerInfo.innerHTML = `Mostrando <strong>${from}</strong> a <strong>${to}</strong> de <strong>${visible.length}</strong> registros`;
+        }
+
+        if (paginationEl) {
+            paginationEl.innerHTML = '';
+            if (totalPages > 1) {
+                const prev = document.createElement('button');
+                prev.innerHTML = '‹'; prev.disabled = currentPage === 1;
+                prev.addEventListener('click', () => { currentPage--; render(); });
+                paginationEl.appendChild(prev);
+                for (let p = 1; p <= totalPages; p++) {
+                    const b = document.createElement('button');
+                    b.textContent = p;
+                    if (p === currentPage) b.classList.add('active');
+                    b.addEventListener('click', () => { currentPage = p; render(); });
+                    paginationEl.appendChild(b);
+                }
+                const next = document.createElement('button');
+                next.innerHTML = '›'; next.disabled = currentPage === totalPages;
+                next.addEventListener('click', () => { currentPage++; render(); });
+                paginationEl.appendChild(next);
+            }
+        }
     }
+
+    searchInput?.addEventListener('input', e => {
+        searchTerm = e.target.value.toLowerCase().trim();
+        currentPage = 1;
+        render();
+    });
+
+    perPageSel?.addEventListener('change', () => { currentPage = 1; render(); });
+
+    table.querySelectorAll('th.sortable[data-col]').forEach(th => {
+        th.style.cursor = 'pointer';
+        th.addEventListener('click', () => {
+            const col = parseInt(th.dataset.col, 10);
+            if (sortCol === col) sortDir *= -1;
+            else { sortCol = col; sortDir = 1; }
+            table.querySelectorAll('th.sortable').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+            th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
+            render();
+        });
+    });
+
+    render();
+})();
 </script>
 
 <?php
