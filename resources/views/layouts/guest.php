@@ -9,12 +9,8 @@
     <!-- CSS del Header Guest -->
     <link rel="stylesheet" href="<?= asset('css/partials/guest/header_guest.css') ?>">
 
-    <!-- CSS Global (Variables y Tipografía) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
-        rel="stylesheet">
+    <!-- Google Fonts (local, offline) -->
+    <link rel="stylesheet" href="<?= asset('css/fonts-local.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/base.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/global/toast.css') ?>">
 

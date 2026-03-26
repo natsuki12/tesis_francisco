@@ -164,6 +164,17 @@ $role = $_SESSION['role_id'] ?? 3;
                     </span>
                     <span class="sim-nav__text">Bitácora</span>
                 </a>
+                <a href="<?= base_url('/admin/monitoreo/correos') ?>"
+                    class="sim-nav__link <?= $activePage === 'correos' ? 'sim-nav__link--active' : '' ?>">
+                    <span class="sim-nav__icon">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                            <polyline points="22,6 12,13 2,6" />
+                        </svg>
+                    </span>
+                    <span class="sim-nav__text">Correos</span>
+                </a>
                 <a href="<?= base_url('/admin/monitoreo/reportes') ?>"
                     class="sim-nav__link <?= $activePage === 'reportes' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">

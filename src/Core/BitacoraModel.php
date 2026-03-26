@@ -50,14 +50,22 @@ class BitacoraModel
     public const BACKUP_DELETED        = 32;
     public const BACKUP_DOWNLOADED     = 33;
 
+    // ── Estudiantes (34) ──
+    public const STUDENT_CREATED       = 34;
+
+    // ── Académico (35-39) ──
+    public const SECTION_CREATED       = 35;
+    public const SECTION_UPDATED       = 36;
+
     // ── Módulos (para dropdowns y validación) ──
     public const MODULOS = [
-        'autenticacion' => 'Autenticación',
-        'usuarios'      => 'Usuarios',
-        'casos'         => 'Casos de Estudio',
-        'asignaciones'  => 'Asignaciones',
-        'simulador'     => 'Simulador',
-        'sistema'       => 'Sistema',
+        'autenticacion'      => 'Autenticación',
+        'usuarios'           => 'Usuarios',
+        'casos'              => 'Casos de Estudio',
+        'asignaciones'       => 'Asignaciones',
+        'simulador'          => 'Simulador',
+        'sistema'            => 'Sistema',
+        'gestión_secciones'  => 'Gestión de Secciones',
     ];
 
     /**

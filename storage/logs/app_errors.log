@@ -6205,3 +6205,28 @@ Stack trace:
 [22-Mar-2026 18:30:56 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
 [22-Mar-2026 18:30:57 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
 [22-Mar-2026 18:30:57 America/Caracas] [DASHBOARD] getActividadReciente: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.bitacora_accesos' doesn't exist
+[24-Mar-2026 19:41:12 America/Caracas] [ProfesoresModel::getAll] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pe.genero' in 'field list'
+[24-Mar-2026 19:50:44 America/Caracas] [EstudiantesModel::getAll] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.genero' in 'field list'
+[24-Mar-2026 20:05:17 America/Caracas] [EstudiantesModel::getAll] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.genero' in 'field list'
+[24-Mar-2026 20:05:21 America/Caracas] [SeccionesModel::getAll] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pe.genero' in 'field list'
+[24-Mar-2026 20:05:29 America/Caracas] [SeccionesModel::getAll] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pe.genero' in 'field list'
+[24-Mar-2026 20:05:34 America/Caracas] [SeccionesModel::getAll] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pe.genero' in 'field list'
+[24-Mar-2026 20:05:38 America/Caracas] [SeccionesModel::getAll] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pe.genero' in 'field list'
+[24-Mar-2026 20:05:56 America/Caracas] [SeccionesModel::getAll] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pe.genero' in 'field list'
+[24-Mar-2026 20:07:50 America/Caracas] PHP Warning:  Undefined variable $genero in C:\xampp\htdocs\tesis_francisco\resources\views\admin\academico\gestionar_secciones.php on line 86
+[24-Mar-2026 20:46:15 America/Caracas] [ProfesoresController::actualizar] App\Core\BitacoraModel::registrar(): Argument #1 ($tipoEventoId) must be of type int, string given, called in C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Usuarios\ProfesoresController.php on line 230
+[24-Mar-2026 20:46:29 America/Caracas] [ProfesoresController::actualizar] App\Core\BitacoraModel::registrar(): Argument #1 ($tipoEventoId) must be of type int, string given, called in C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Usuarios\ProfesoresController.php on line 230
+[24-Mar-2026 20:47:44 America/Caracas] [ProfesoresController::actualizar] App\Core\BitacoraModel::registrar(): Argument #1 ($tipoEventoId) must be of type int, string given, called in C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Usuarios\ProfesoresController.php on line 230
+[24-Mar-2026 20:48:12 America/Caracas] [ProfesoresController::actualizar] App\Core\BitacoraModel::registrar(): Argument #1 ($tipoEventoId) must be of type int, string given, called in C:\xampp\htdocs\tesis_francisco\src\Modules\Admin\Controllers\Usuarios\ProfesoresController.php on line 230
+[25-Mar-2026 13:05:16 America/Caracas] PHP Warning:  Undefined variable $smtpHealth in C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard\home_admin.php on line 305
+[25-Mar-2026 13:05:16 America/Caracas] PHP Warning:  Trying to access array offset on value of type null in C:\xampp\htdocs\tesis_francisco\resources\views\admin\dashboard\home_admin.php on line 305
+[25-Mar-2026 17:20:47 America/Caracas] Mailer Exception: SMTP Error: Could not connect to SMTP host. Failed to connect to server SMTP server error: Failed to connect to server Additional SMTP info: php_network_getaddresses: getaddrinfo for smtp.gmail.com failed: Host desconocido. 
+[25-Mar-2026 19:09:34 America/Caracas] [BackupMiddleware] Respaldo automático generado: auto_2026-03-25_19-09-33.sql
+[25-Mar-2026 19:55:47 America/Caracas] [CRITICAL] syntax error, unexpected token "endif", expecting end of file in C:\xampp\htdocs\tesis_francisco\resources\views\admin\configuracion\parametros.php:227
+[25-Mar-2026 19:55:47 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\routes\web.php(184): App\Modules\Admin\Controllers\Configuracion\ParametrosController->index()
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/admin/configur...')
+#3 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#4 {main}
+[25-Mar-2026 20:11:08 America/Caracas] [BackupMiddleware] Respaldo automático generado: auto_2026-03-25_20-11-08.sql
+[25-Mar-2026 23:11:10 America/Caracas] [BITACORA ERROR] SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`spdss`.`bitacora_eventos`, CONSTRAINT `fk_bitacora_eventos_tipo` FOREIGN KEY (`tipo_evento_id`) REFERENCES `tipos_eventos` (`id`) ON UPDATE CASCADE)

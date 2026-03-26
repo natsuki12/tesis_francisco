@@ -173,32 +173,36 @@ ob_start();
 
 <!-- Historial de Respaldos -->
 <div style="margin-top:24px;">
-    <h3 style="font-size:14px; font-weight:600; color:var(--gray-700); margin-bottom:12px;">Historial de Respaldos</h3>
+    <div class="table-toolbar" style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+        <h3 style="font-size:14px; font-weight:600; color:var(--gray-700); margin:0;">Historial de Respaldos</h3>
+        <div style="display:flex; align-items:center; gap:12px; font-size:13px; color:var(--gray-500);">
+            Mostrar <select data-perpage-for="tbl-backups" class="per-page-select"><option value="10" selected>10</option><option value="25">25</option><option value="50">50</option></select> filas
+            <input type="text" data-search-for="tbl-backups" class="table-search-input" placeholder="Buscar respaldo..." style="padding:6px 12px; border:1px solid var(--gray-200); border-radius:8px; font-size:13px; width:180px;">
+        </div>
+    </div>
     <div class="table-container">
         <table class="data-table data-table--sm" id="tbl-backups">
             <thead>
                 <tr>
-                    <th>Fecha y Hora</th>
-                    <th>Tamaño</th>
-                    <th>Tipo</th>
+                    <th class="sortable" data-col="0">Fecha y Hora</th>
+                    <th class="sortable" data-col="1">Tamaño</th>
+                    <th class="sortable" data-col="2">Tipo</th>
                     <th style="width:90px">Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($backups)): ?>
-                    <tr class="empty-row"><td colspan="4" style="text-align:center; padding:30px; color:var(--gray-400); font-size:13px;">No hay respaldos registrados.</td></tr>
-                <?php else: ?>
-                    <?php foreach ($backups as $bk):
-                        $dt = new \DateTime();
-                        $dt->setTimestamp($bk['date']);
-                        $bkDate = $dt->format('d') . ' ' . $meses[(int)$dt->format('n') - 1] . ' ' . $dt->format('Y');
-                        $bkTime = $dt->format('H:i');
-                        $bkSize = round($bk['size'] / 1024 / 1024, 1);
-                        $bkTipo = $bk['tipo'];
-                        $tipoBg    = $bkTipo === 'Automático' ? 'var(--blue-50)'  : 'var(--green-50)';
-                        $tipoColor = $bkTipo === 'Automático' ? 'var(--blue-600)' : 'var(--green-600)';
-                    ?>
-                        <tr>
+                <?php foreach ($backups as $bk):
+                    $dt = new \DateTime();
+                    $dt->setTimestamp($bk['date']);
+                    $bkDate = $dt->format('d') . ' ' . $meses[(int)$dt->format('n') - 1] . ' ' . $dt->format('Y');
+                    $bkTime = $dt->format('H:i');
+                    $bkSize = round($bk['size'] / 1024 / 1024, 1);
+                    $bkTipo = $bk['tipo'];
+                    $tipoBg    = $bkTipo === 'Automático' ? 'var(--blue-50)'  : 'var(--green-50)';
+                    $tipoColor = $bkTipo === 'Automático' ? 'var(--blue-600)' : 'var(--green-600)';
+                    $searchText = strtolower("$bkDate $bkTime $bkTipo {$bk['filename']}");
+                ?>
+                <tr data-search="<?= $searchText ?>">
                             <td style="font-size:13px;">
                                 <strong><?= $bkDate ?></strong>
                                 <span style="color:var(--gray-400); margin-left:6px;"><?= $bkTime ?></span>
@@ -214,6 +218,13 @@ ob_start();
                                             <line x1="12" y1="15" x2="12" y2="3"/>
                                         </svg>
                                     </a>
+                                    <button class="row-action-btn" title="Restaurar base de datos" style="color:var(--blue-600);"
+                                        onclick="restaurarRespaldo('<?= e($bk['filename']) ?>')">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="1 4 1 10 7 10"/>
+                                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                                        </svg>
+                                    </button>
                                     <button class="row-action-btn" title="Eliminar" style="color:var(--red-500);"
                                         onclick="eliminarRespaldo('<?= e($bk['filename']) ?>', this)">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -225,38 +236,17 @@ ob_start();
                                 </div>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                <?php endforeach; ?>
             </tbody>
         </table>
+    </div>
+    <div class="table-footer" data-footer-for="tbl-backups">
+        <span class="table-footer-info"></span>
+        <div class="pagination"></div>
     </div>
 </div>
 
 <script>
-// ── Toast (reutiliza CSS global toast.css) ──
-function showToast(message, type = 'error', duration = 4000) {
-    let container = document.getElementById('cc-toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'cc-toast-container';
-        document.body.appendChild(container);
-    }
-    const icons = {
-        error:   '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
-        success: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-        warning: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
-        info:    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
-    };
-    const toast = document.createElement('div');
-    toast.className = 'cc-toast cc-toast--' + type;
-    toast.innerHTML = '<span class="cc-toast__icon">' + (icons[type] || icons.info) + '</span>' +
-        '<span class="cc-toast__msg">' + message + '</span>' +
-        '<button class="cc-toast__close" aria-label="Cerrar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
-    const dismiss = () => { toast.classList.add('cc-toast--exit'); toast.addEventListener('animationend', () => toast.remove()); };
-    toast.querySelector('.cc-toast__close').addEventListener('click', dismiss);
-    container.appendChild(toast);
-    if (duration > 0) setTimeout(dismiss, duration);
-}
 
 // ── Guardar configuración ──
 function guardarConfiguracion() {
@@ -319,8 +309,16 @@ function generarRespaldo() {
 }
 
 // ── Eliminar respaldo ──
-function eliminarRespaldo(filename, btn) {
-    if (!confirm('¿Eliminar este respaldo? Esta acción no se puede deshacer.')) return;
+async function eliminarRespaldo(filename, btn) {
+    const confirmed = await window.showConfirm({
+        title: 'Eliminar Respaldo',
+        message: '¿Eliminar este respaldo? Esta acción no se puede deshacer.',
+        icon: 'danger',
+        confirmText: 'Eliminar',
+        confirmStyle: 'danger'
+    });
+    if (!confirmed) return;
+
     const row = btn.closest('tr');
 
     fetch('<?= base_url('/admin/configuracion/backup/eliminar') ?>', {
@@ -338,6 +336,53 @@ function eliminarRespaldo(filename, btn) {
         }
     })
     .catch(() => showToast('Error de conexión con el servidor.', 'error'));
+}
+
+// ── Restaurar respaldo (doble confirmación) ──
+async function restaurarRespaldo(filename) {
+    // Paso 1: Advertencia inicial
+    const paso1 = await window.showConfirm({
+        title: 'Restaurar Base de Datos',
+        message: '<strong>¿Desea restaurar la base de datos desde este respaldo?</strong><br><br>' +
+                 '<code style="background:var(--gray-100); padding:4px 8px; border-radius:4px; font-size:12px;">' + filename + '</code><br><br>' +
+                 '<span style="color:var(--red-500); font-weight:600;">⚠ ADVERTENCIA: esto sobrescribirá TODOS los datos actuales de la base de datos.</span>',
+        icon: 'warning',
+        confirmText: 'Continuar',
+        confirmStyle: 'warning'
+    });
+    if (!paso1) return;
+
+    // Paso 2: Confirmación final con peligro
+    const paso2 = await window.showConfirm({
+        title: '¿Está completamente seguro?',
+        message: '<span style="font-size:14px;">Esta acción es <strong style="color:var(--red-500);">IRREVERSIBLE</strong>. ' +
+                 'Todos los datos actuales serán reemplazados por los del respaldo.</span><br><br>' +
+                 '<span style="font-size:13px; color:var(--gray-500);">Se recomienda descargar un respaldo actual antes de continuar.</span>',
+        icon: 'danger',
+        confirmText: 'Sí, restaurar ahora',
+        confirmStyle: 'danger',
+        cancelText: 'No, cancelar'
+    });
+    if (!paso2) return;
+
+    // Ejecutar restauración
+    try {
+        const res = await fetch('<?= base_url('/admin/configuracion/backup/restaurar') ?>', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'file=' + encodeURIComponent(filename) + '&csrf_token=<?= \App\Core\Csrf::getToken() ?>'
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            showToast(data.message, 'success');
+            setTimeout(() => location.reload(), 2000);
+        } else {
+            showToast(data.message || 'Error al restaurar.', 'error');
+        }
+    } catch (e) {
+        showToast('Error de conexión con el servidor.', 'error');
+    }
 }
 </script>
 

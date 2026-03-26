@@ -60,7 +60,10 @@ export function showToast(message, type = 'error', duration = 4000) {
     };
 
     toast.querySelector('.cc-toast__close').addEventListener('click', dismiss);
+    // Desplazar agresivamente a cualquier toast viejo limpiando el contenedor
+    container.innerHTML = '';
     container.appendChild(toast);
+    console.log('[Sistema Global] Toast Inyectado:', message);
 
     // Auto-dismiss
     if (duration > 0) {

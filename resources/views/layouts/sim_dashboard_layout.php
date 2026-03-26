@@ -10,7 +10,7 @@
 // ─── Collect CSS for logged_layout.php (expects string) ────────────
 $pageCss = (isset($extraCss) && is_array($extraCss)) ? $extraCss : [];
 $cssHtml  = '<link rel="stylesheet" href="' . base_url('/assets/css/simulator/seniat_actual/sucesion/bienes_muebles/banco_legacy.css') . '">' . "\n";
-$cssHtml .= '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">' . "\n";
+$cssHtml .= '<link rel="stylesheet" href="' . base_url('/assets/vendor/bootstrap-icons/bootstrap-icons.min.css') . '">' . "\n";
 foreach ($pageCss as $css) {
     $cssHtml .= '<link rel="stylesheet" href="' . base_url($css) . '">' . "\n";
 }

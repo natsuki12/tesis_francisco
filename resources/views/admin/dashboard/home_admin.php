@@ -282,11 +282,49 @@ ob_start();
                             <p class="admin-status-item__desc">Activa — <?= (int)$tiposEventos ?> tipos de eventos configurados</p>
                         </div>
                     </li>
+                    <!-- Servidor SMTP (carga async) -->
+                    <li class="admin-status-item">
+                        <div id="dash-smtp-icon" class="admin-status-item__icon" style="color:#9ca3af;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round">
+                                <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                            </svg>
+                        </div>
+                        <div class="admin-status-item__content">
+                            <h4 class="admin-status-item__title">Servidor SMTP</h4>
+                            <p id="dash-smtp-desc" class="admin-status-item__desc">Verificando...</p>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+(async function() {
+    try {
+        const res = await fetch('<?= base_url('/admin/monitoreo/correos/smtp-health') ?>');
+        const data = await res.json();
+        const icon = document.getElementById('dash-smtp-icon');
+        const desc = document.getElementById('dash-smtp-desc');
+
+        if (data.ok) {
+            icon.className = 'admin-status-item__icon text-green';
+            icon.style.color = '';
+            icon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>';
+            desc.textContent = 'Conectado — ' + data.host + ' (' + data.latency_ms + 'ms)';
+        } else {
+            icon.className = 'admin-status-item__icon text-yellow';
+            icon.style.color = '';
+            icon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>';
+            desc.textContent = 'Sin conexión — ' + (data.error || data.host);
+        }
+    } catch (e) {
+        document.getElementById('dash-smtp-desc').textContent = 'Error de red';
+    }
+})();
+</script>
 
 <?php
 $content = ob_get_clean();

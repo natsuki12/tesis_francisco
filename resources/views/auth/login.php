@@ -205,11 +205,6 @@ ob_start();
                 </button>
             </form>
 
-            <!-- Registro -->
-            <p class="auth-footer-text">
-                ¿No tienes cuenta?
-                <a href="<?= base_url('/registro') ?>" class="auth-footer-link">Crear cuenta</a>
-            </p>
 
         </div>
     </section>

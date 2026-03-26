@@ -73,6 +73,12 @@ class DB
         // --- 2. INTENTO DE CONEXIÓN ---
         try {
             self::$instance = new PDO($dsn, $user, $pass, $options);
+
+            // Forzar zona horaria de Venezuela (UTC-4) en MySQL.
+            // Garantiza que NOW(), CURDATE(), etc. devuelvan la hora correcta
+            // independientemente de la configuración del servidor.
+            self::$instance->exec("SET time_zone = '-04:00'");
+
             return self::$instance;
 
         } catch (PDOException $e) {

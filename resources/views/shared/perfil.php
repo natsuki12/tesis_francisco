@@ -8,32 +8,37 @@ $pageTitle = 'Mi Perfil — Simulador SENIAT';
 $activePage = 'perfil';
 $extraCss = '<link rel="stylesheet" href="' . asset('css/shared/perfil.css') . '">';
 
-// ── Datos Placeholder ──────────────────────────────────────
-// Cuando se conecte al backend, estos vendrán del controller.
-
+// ── Datos reales desde el controlador/ruta ──────────────────
 $roleId = (int) ($_SESSION['role_id'] ?? 3);
 
 $persona = [
-    'nombres' => $_SESSION['user_name'] ?? 'Nombre',
-    'apellidos' => 'Apellidos',
-    'nacionalidad' => 'V',
-    'cedula' => '00.000.000',
-    'fecha_nacimiento' => '2000-01-15',
-    'genero' => 'Prefiero no decir',
-    'email' => $_SESSION['user_email'] ?? 'correo@ejemplo.com',
+    'nombres'          => $personaRow['nombres'] ?? ($_SESSION['user_name'] ?? 'Nombre'),
+    'apellidos'        => $personaRow['apellidos'] ?? '—',
+    'nacionalidad'     => $personaRow['nacionalidad'] ?? 'V',
+    'cedula'           => $personaRow['cedula'] ?? '—',
+    'fecha_nacimiento' => $personaRow['fecha_nacimiento'] ?? null,
+    'genero'           => $personaRow['genero'] ?? null,
+    'email'            => $_SESSION['email'] ?? 'correo@ejemplo.com',
 ];
+
+// Formatear cédula con puntos: 31120479 → 31.120.479
+$cedulaRaw = preg_replace('/[^0-9]/', '', $persona['cedula']);
+$persona['cedula'] = $cedulaRaw ? number_format((float) $cedulaRaw, 0, '', '.') : '—';
 
 // Solo estudiante
 $estudiante = [
-    'carrera' => 'Derecho',
-    'seccion' => '4to A',
+    'carrera' => $estudianteRow['carrera'] ?? '—',
+    'seccion' => $estudianteRow['seccion'] ?? '—',
 ];
 
 // Solo profesor
 $profesor = [
-    'titulo' => 'Ingeniero',
-    'firma_digital' => null,
+    'titulo'        => $profesorRow['titulo'] ?? '—',
+    'firma_digital' => $profesorRow['firma_digital'] ?? null,
 ];
+
+// Fecha de registro
+$memberSince = !empty($userRow['created_at']) ? $userRow['created_at'] : null;
 
 $initials = mb_strtoupper(
     mb_substr($persona['nombres'], 0, 1) . mb_substr($persona['apellidos'], 0, 1)
@@ -82,7 +87,7 @@ ob_start();
                     <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
                 Miembro desde
-                <?= date('d/m/Y') ?>
+                <?= $memberSince ? date('d/m/Y', strtotime($memberSince)) : '—' ?>
             </div>
         </div>
     </div>
@@ -125,7 +130,7 @@ ob_start();
                     <div class="perfil-field">
                         <label>Fecha de nacimiento</label>
                         <span>
-                            <?= date('d/m/Y', strtotime($persona['fecha_nacimiento'])) ?>
+                            <?= $persona['fecha_nacimiento'] ? date('d/m/Y', strtotime($persona['fecha_nacimiento'])) : '—' ?>
                         </span>
                     </div>
                     <div class="perfil-field">

@@ -451,26 +451,18 @@ class RSValidator
                         $errores[] = "Dirección #{$pos}: Tipo de inmueble no coincide. Esperado: '{$tipoInmDb}', ingresado: '{$tipoInmB}'.";
                     }
 
-                    // ── Nombre/Nro de inmueble ──
-                    // La DB concatena: "NOMBRE - PISO X" o "NOMBRE - NIVEL X" o "NOMBRE - NRO X"
-                    // El borrador guarda por separado: edificacion (nombre) y piso (nro)
-                    $nroInmDb = trim((string)($dirDb['nro_inmueble'] ?? ''));
+                    // ── Nombre de inmueble (columna normalizada) ──
                     $edificacionB = mb_strtoupper(trim((string)($dirB['edificacion'] ?? '')));
-                    $pisoB = mb_strtoupper(trim((string)($dirB['piso'] ?? '')));
-
-                    // Descomponer nro_inmueble de la DB: "NOMBRE - PISO/NIVEL/NRO X"
-                    $dbNombreInmueble = mb_strtoupper($nroInmDb);
-                    $dbPisoNivel = '';
-                    if (preg_match('/^(.+?)\s*-\s*(PISO|NIVEL|NRO)\s+(.+)$/i', $nroInmDb, $m)) {
-                        $dbNombreInmueble = mb_strtoupper(trim($m[1]));
-                        $dbPisoNivel = mb_strtoupper(trim($m[3]));
-                    }
-
+                    $dbNombreInmueble = mb_strtoupper(trim((string)($dirDb['nombre_inmueble'] ?? '')));
                     if ($edificacionB !== '' && $dbNombreInmueble !== '' && $edificacionB !== $dbNombreInmueble) {
                         $errores[] = "Dirección #{$pos}: Nombre de inmueble no coincide. Esperado: '{$dbNombreInmueble}', ingresado: '{$edificacionB}'.";
                     }
-                    if ($pisoB !== '' && $dbPisoNivel !== '' && $pisoB !== $dbPisoNivel) {
-                        $errores[] = "Dirección #{$pos}: Piso/Nivel no coincide. Esperado: '{$dbPisoNivel}', ingresado: '{$pisoB}'.";
+
+                    // ── Nro/Piso del inmueble (columna normalizada) ──
+                    $pisoB = mb_strtoupper(trim((string)($dirB['piso'] ?? '')));
+                    $dbNroInmueble = mb_strtoupper(trim((string)($dirDb['nro_inmueble'] ?? '')));
+                    if ($pisoB !== '' && $dbNroInmueble !== '' && $pisoB !== $dbNroInmueble) {
+                        $errores[] = "Dirección #{$pos}: Piso/Nivel no coincide. Esperado: '{$dbNroInmueble}', ingresado: '{$pisoB}'.";
                     }
 
                     // ── Tipo de local/nivel (código → enum) ──
@@ -576,7 +568,7 @@ class RSValidator
         $sql = "
             SELECT
                 d.tipo_direccion, d.tipo_vialidad, d.nombre_vialidad,
-                d.tipo_inmueble, d.nro_inmueble, d.tipo_nivel, d.nro_nivel,
+                d.tipo_inmueble, d.nombre_inmueble, d.nro_inmueble, d.tipo_nivel, d.nro_nivel,
                 d.tipo_sector, d.nombre_sector,
                 d.estado_id, d.municipio_id, d.parroquia_id, d.ciudad_id,
                 d.codigo_postal_id, d.telefono_fijo, d.telefono_celular,

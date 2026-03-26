@@ -77,7 +77,7 @@ ob_start();
             <!-- Header -->
             <div class="auth-header">
                 <h1 class="auth-title">Complete su perfil</h1>
-                <p class="auth-subtitle">Actualice su información personal y establezca una contraseña segura para continuar.</p>
+                <p class="auth-subtitle">Establezca una contraseña segura para continuar.</p>
             </div>
 
             <!-- Info box -->
@@ -88,38 +88,6 @@ ob_start();
             <!-- Formulario -->
             <form class="auth-form" id="form-completar" onsubmit="return false;" novalidate>
 
-                <div class="field">
-                    <label class="field-label" for="fecha_nacimiento">Fecha de Nacimiento <span style="color:#e53e3e">*</span></label>
-                    <div class="field-input-wrap">
-                        <svg class="field-icon" viewBox="0 0 24 24" width="18" height="18" fill="none"
-                            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                        <input class="field-input" type="date" id="fecha_nacimiento" name="fecha_nacimiento"
-                            max="<?= date('Y-m-d') ?>" required>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="field-label" for="genero">Género <span style="color:var(--gray-400); font-weight:400;">(opcional)</span></label>
-                    <div class="field-input-wrap">
-                        <svg class="field-icon" viewBox="0 0 24 24" width="18" height="18" fill="none"
-                            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
-                        </svg>
-                        <select class="field-input" id="genero" name="genero" style="appearance:auto; cursor:pointer;">
-                            <option value="">— No especificar —</option>
-                            <option value="M">Masculino</option>
-                            <option value="F">Femenino</option>
-                            <option value="Otro">Otro</option>
-                            <option value="Prefiero no decir">Prefiero no decir</option>
-                        </select>
-                    </div>
-                </div>
 
                 <div class="field">
                     <label class="field-label" for="password">Nueva Contraseña <span style="color:#e53e3e">*</span></label>
@@ -238,10 +206,8 @@ async function completarPerfil() {
     const btn = document.getElementById('btn-completar');
     const password = document.getElementById('password').value;
     const confirm  = document.getElementById('password_confirm').value;
-    const fecha    = document.getElementById('fecha_nacimiento').value;
 
     // Client-side quick checks
-    if (!fecha) { showAlert('Ingrese su fecha de nacimiento.', 'error'); return; }
     if (password.length < 8) { showAlert('La contraseña debe tener al menos 8 caracteres.', 'error'); return; }
     if (!/\d/.test(password)) { showAlert('La contraseña debe contener al menos 1 dígito.', 'error'); return; }
     if (password !== confirm) { showAlert('Las contraseñas no coinciden.', 'error'); return; }
@@ -251,8 +217,6 @@ async function completarPerfil() {
 
     const body = new URLSearchParams({
         csrf_token:       CSRF_TOKEN,
-        fecha_nacimiento: fecha,
-        genero:           document.getElementById('genero').value,
         password:         password,
         password_confirm: confirm
     });

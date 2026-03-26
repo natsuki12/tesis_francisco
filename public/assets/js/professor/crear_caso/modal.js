@@ -64,9 +64,9 @@ const MODAL_CONFIGS = {
       <div class="cc-grid cc-grid--2">
         <input type="hidden" data-modal="persona_id" value="${form.persona_id || ''}">
         <div class="cc-field"><label>Nombres</label>
-          <input type="text" data-modal="nombres" value="${form.nombres || ''}" placeholder="Nombres"></div>
+          <input type="text" data-modal="nombres" value="${form.nombres || ''}" placeholder="Nombres" maxlength="98"></div>
         <div class="cc-field"><label>Apellidos</label>
-          <input type="text" data-modal="apellidos" value="${form.apellidos || ''}" placeholder="Apellidos"></div>
+          <input type="text" data-modal="apellidos" value="${form.apellidos || ''}" placeholder="Apellidos" maxlength="98"></div>
         <div class="cc-field" style="grid-column: 1 / -1;"><label>TIPO DE DOCUMENTO</label>
           <div class="cc-radio-group cc-radio-group--inline" style="display:flex;gap:1.5rem; margin-top:0.25rem;">
             <label class="cc-radio"><input type="radio" name="doc_heredero" value="Cédula" data-modal="tipo_documento" ${form.tipo_documento === 'Cédula' || !form.tipo_documento ? 'checked' : ''}> CÉDULA</label>
@@ -82,11 +82,11 @@ const MODAL_CONFIGS = {
               <option value="J" ${form.letra_cedula === 'J' ? 'selected' : ''}>J</option>
               <option value="G" ${form.letra_cedula === 'G' ? 'selected' : ''}>G</option>
             </select>
-            <input type="text" data-modal="cedula" id="inputCedHer1" value="${form.cedula || ''}" placeholder="Ej: 12345678" style="flex:1;" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            <input type="text" data-modal="cedula" id="inputCedHer1" value="${form.cedula || ''}" placeholder="Ej: 12345678" style="flex:1;" maxlength="20" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
           </div>
         </div>
         <div class="cc-field" id="wrap-her1-pasaporte" style="display:none;"><label>PASAPORTE</label>
-          <input type="text" data-modal="pasaporte" id="inputPasaHer1" value="${form.pasaporte || ''}" placeholder="" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+          <input type="text" data-modal="pasaporte" id="inputPasaHer1" value="${form.pasaporte || ''}" placeholder="" maxlength="20" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
         <div class="cc-field"><label>Fecha de Nacimiento</label>
           <input type="date" data-modal="fecha_nacimiento" value="${form.fecha_nacimiento || ''}"></div>
         <div class="cc-field"><label>Sexo</label>
@@ -153,7 +153,7 @@ const MODAL_CONFIGS = {
         const dupHP = caseData.herederos_premuertos.some(h => (h.letra_cedula || '') + (h.cedula || '') === fullCed);
         if (dupHP) return "Ya existe un heredero del premuerto con esa cédula.";
       }
-      if (!form.nombres || !form.apellidos || !form.fecha_nacimiento || !form.sexo || !form.estado_civil || !form.caracter || !form.parentesco_id || !form.premuerto) {
+      if (!form.nombres || !form.apellidos || !form.fecha_nacimiento || !form.sexo || !form.caracter || !form.parentesco_id || !form.premuerto) {
         return "Por favor, complete todos los campos obligatorios del heredero.";
       }
       if (form.premuerto === 'SI' && !form.fecha_fallecimiento) {
@@ -182,9 +182,9 @@ const MODAL_CONFIGS = {
       <div class="cc-grid cc-grid--2">
         <input type="hidden" data-modal="persona_id" value="${form.persona_id || ''}">
         <div class="cc-field"><label>Nombres</label>
-          <input type="text" data-modal="nombres" value="${form.nombres || ''}" placeholder="Nombres"></div>
+          <input type="text" data-modal="nombres" value="${form.nombres || ''}" placeholder="Nombres" maxlength="98"></div>
         <div class="cc-field"><label>Apellidos</label>
-          <input type="text" data-modal="apellidos" value="${form.apellidos || ''}" placeholder="Apellidos"></div>
+          <input type="text" data-modal="apellidos" value="${form.apellidos || ''}" placeholder="Apellidos" maxlength="98"></div>
         <div class="cc-field" style="grid-column: 1 / -1;"><label>TIPO DE DOCUMENTO</label>
           <div class="cc-radio-group cc-radio-group--inline" style="display:flex;gap:1.5rem; margin-top:0.25rem;">
             <label class="cc-radio"><input type="radio" name="doc_heredero2" value="Cédula" data-modal="tipo_documento" ${form.tipo_documento === 'Cédula' || !form.tipo_documento ? 'checked' : ''}> CÉDULA</label>
@@ -200,11 +200,11 @@ const MODAL_CONFIGS = {
               <option value="J" ${form.letra_cedula === 'J' ? 'selected' : ''}>J</option>
               <option value="G" ${form.letra_cedula === 'G' ? 'selected' : ''}>G</option>
             </select>
-            <input type="text" data-modal="cedula" id="inputCedHer2" value="${form.cedula || ''}" placeholder="Ej: 12345678" style="flex:1;" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            <input type="text" data-modal="cedula" id="inputCedHer2" value="${form.cedula || ''}" placeholder="Ej: 12345678" style="flex:1;" maxlength="20" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
           </div>
         </div>
         <div class="cc-field" id="wrap-her2-pasaporte" style="display:none;"><label>PASAPORTE</label>
-          <input type="text" data-modal="pasaporte" id="inputPasaHer2" value="${form.pasaporte || ''}" placeholder="" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+          <input type="text" data-modal="pasaporte" id="inputPasaHer2" value="${form.pasaporte || ''}" placeholder="" maxlength="20" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
         <div class="cc-field"><label>Fecha de Nacimiento</label>
           <input type="date" data-modal="fecha_nacimiento" value="${form.fecha_nacimiento || ''}"></div>
         <div class="cc-field"><label>Sexo</label>
@@ -274,7 +274,7 @@ const MODAL_CONFIGS = {
         const dupHP = caseData.herederos_premuertos.some((h, i) => i !== UIState.editIndex && (h.letra_cedula || '') + (h.cedula || '') === fullCed);
         if (dupHP) return "Ya existe un heredero del premuerto con esa cédula.";
       }
-      if (!form.nombres || !form.apellidos || !form.fecha_nacimiento || !form.sexo || !form.estado_civil || !form.caracter || !form.parentesco_id || !form.premuerto_padre_id) {
+      if (!form.nombres || !form.apellidos || !form.fecha_nacimiento || !form.sexo || !form.caracter || !form.parentesco_id || !form.premuerto_padre_id) {
         return "Por favor, complete todos los campos (incluyendo a quién representa).";
       }
       return null;
@@ -330,13 +330,13 @@ const MODAL_CONFIGS = {
         <h4 class="cc-section-subtitle">📋 Detalle de Bien Litigioso</h4>
         <div class="cc-grid cc-grid--2">
           <div class="cc-field"><label>N° Expediente</label>
-            <input type="text" data-modal="numero_expediente" value="${form.numero_expediente || ''}" placeholder="Número de expediente"></div>
+            <input type="text" data-modal="numero_expediente" value="${form.numero_expediente || ''}" placeholder="Número de expediente" maxlength="98"></div>
           <div class="cc-field"><label>Tribunal de la Causa</label>
-            <input type="text" data-modal="tribunal_causa" value="${form.tribunal_causa || ''}" placeholder="Nombre del tribunal"></div>
+            <input type="text" data-modal="tribunal_causa" value="${form.tribunal_causa || ''}" placeholder="Nombre del tribunal" maxlength="253"></div>
           <div class="cc-field"><label>Partes en Juicio</label>
-            <input type="text" data-modal="partes_juicio" value="${form.partes_juicio || ''}" placeholder="Partes involucradas" maxlength="255"></div>
+            <input type="text" data-modal="partes_juicio" value="${form.partes_juicio || ''}" placeholder="Partes involucradas" maxlength="253"></div>
           <div class="cc-field"><label>Estado del Juicio</label>
-            <input type="text" data-modal="estado_juicio" value="${form.estado_juicio || ''}" placeholder="Estado actual"></div>
+            <input type="text" data-modal="estado_juicio" value="${form.estado_juicio || ''}" placeholder="Estado actual" maxlength="98"></div>
         </div>
       </div>
 
@@ -360,27 +360,27 @@ const MODAL_CONFIGS = {
           <textarea data-modal="direccion" rows="2">${form.direccion || ''}</textarea></div>
 
         <div class="cc-field cc-span-2"><label>Oficina Subalterna/ Juzgado/ Notaría/ Misión Vivienda</label>
-          <textarea data-modal="oficina_registro" rows="2">${form.oficina_registro || ''}</textarea></div>
+          <textarea data-modal="oficina_registro" rows="2" maxlength="253">${form.oficina_registro || ''}</textarea></div>
 
         <div class="cc-field"><label>Nro de Registro</label>
-          <input type="text" data-modal="nro_registro" value="${form.nro_registro || ''}"></div>
+          <input type="text" data-modal="nro_registro" value="${form.nro_registro || ''}" maxlength="48"></div>
         <div class="cc-field"><label>Libro</label>
-          <input type="text" data-modal="libro" value="${form.libro || ''}"></div>
+          <input type="text" data-modal="libro" value="${form.libro || ''}" maxlength="48"></div>
 
         <div class="cc-field"><label>Protocolo</label>
-          <input type="text" data-modal="protocolo" value="${form.protocolo || ''}"></div>
+          <input type="text" data-modal="protocolo" value="${form.protocolo || ''}" maxlength="48"></div>
         <div class="cc-field"><label>Fecha</label>
           <input type="date" data-modal="fecha_registro" value="${form.fecha_registro || ''}"></div>
 
         <div class="cc-field"><label>Trimestre</label>
-          <input type="text" data-modal="trimestre" value="${form.trimestre || ''}"></div>
+          <input type="text" data-modal="trimestre" value="${form.trimestre || ''}" maxlength="18"></div>
         <div class="cc-field"><label>Asiento Registral</label>
-          <input type="text" data-modal="asiento_registral" value="${form.asiento_registral || ''}"></div>
+          <input type="text" data-modal="asiento_registral" value="${form.asiento_registral || ''}" maxlength="48"></div>
 
         <div class="cc-field"><label>Matricula</label>
-          <input type="text" data-modal="matricula" value="${form.matricula || ''}"></div>
+          <input type="text" data-modal="matricula" value="${form.matricula || ''}" maxlength="48"></div>
         <div class="cc-field"><label>Libro de Folio Real del Año</label>
-          <input type="text" data-modal="folio_real_anio" value="${form.folio_real_anio || ''}"></div>
+          <input type="text" data-modal="folio_real_anio" value="${form.folio_real_anio || ''}" maxlength="18"></div>
 
         <div class="cc-field"><label>Valor Original (Bs.)</label>
           <input type="text" class="decimal-input decimal-signed" data-modal="valor_original" placeholder="0,00" value="${form.valor_original || ''}"></div>
@@ -472,7 +472,7 @@ const MODAL_CONFIGS = {
                   ${getCatalogs().bancos.map(b => `<option value="${b.banco_id}" ${form.banco_id == b.banco_id ? 'selected' : ''}>${b.nombre}</option>`).join('')}
                 </select></div>
               <div class="cc-field"><label>Número de Cuenta</label>
-                <input type="text" data-modal="numero_cuenta" value="${form.numero_cuenta || ''}"></div>`;
+                <input type="text" data-modal="numero_cuenta" value="${form.numero_cuenta || ''}" maxlength="20"></div>`;
 
         // ── 2. Transporte ──
       } else if (nameKey.includes('transporte')) {
@@ -480,18 +480,18 @@ const MODAL_CONFIGS = {
               <div class="cc-field"><label>Año</label>
                 <input type="number" data-modal="anio" value="${form.anio || ''}" min="1900"></div>
               <div class="cc-field"><label>Marca</label>
-                <input type="text" data-modal="marca" value="${form.marca || ''}"></div>
+                <input type="text" data-modal="marca" value="${form.marca || ''}" maxlength="13"></div>
               <div class="cc-field"><label>Modelo</label>
-                <input type="text" data-modal="modelo" value="${form.modelo || ''}"></div>
+                <input type="text" data-modal="modelo" value="${form.modelo || ''}" maxlength="13"></div>
               <div class="cc-field"><label>Serial/Número Identificador/Placas</label>
-                <input type="text" data-modal="serial_placa" value="${form.serial_placa || ''}"></div>`;
+                <input type="text" data-modal="serial_placa" value="${form.serial_placa || ''}" maxlength="28"></div>`;
 
         // ── 3. Seguro ──
       } else if (nameKey.includes('seguro')) {
         extraFields = `
               ${rifEmpresaBlock()}
               <div class="cc-field"><label>Número de Prima</label>
-                <input type="text" data-modal="numero_prima" value="${form.numero_prima || ''}"></div>`;
+                <input type="text" data-modal="numero_prima" value="${form.numero_prima || ''}" maxlength="15"></div>`;
 
         // ── 4. Acciones ──
       } else if (nameKey.includes('acciones')) {
@@ -501,11 +501,11 @@ const MODAL_CONFIGS = {
       } else if (nameKey.includes('bonos')) {
         extraFields = `
               <div class="cc-field"><label>Tipo de Bonos</label>
-                <input type="text" data-modal="tipo_bonos" value="${form.tipo_bonos || ''}"></div>
+                <input type="text" data-modal="tipo_bonos" value="${form.tipo_bonos || ''}" maxlength="58"></div>
               <div class="cc-field"><label>Número de Bonos</label>
                 <input type="number" data-modal="numero_bonos" value="${form.numero_bonos || ''}"></div>
               <div class="cc-field"><label>Número de Serie</label>
-                <input type="text" data-modal="numero_serie" value="${form.numero_serie || ''}"></div>`;
+                <input type="text" data-modal="numero_serie" value="${form.numero_serie || ''}" maxlength="28"></div>`;
 
         // ── 6. Caja de Ahorro ──  (NO tipo de bien select)
       } else if (nameKey.includes('caja de ahorro')) {
@@ -515,15 +515,15 @@ const MODAL_CONFIGS = {
       } else if (nameKey.includes('cobrar')) {
         extraFields = `
               <div class="cc-field"><label>Rif o Cédula</label>
-                <input type="text" data-modal="rif_cedula" value="${form.rif_cedula || ''}"></div>
+                <input type="text" data-modal="rif_cedula" value="${form.rif_cedula || ''}" maxlength="12"></div>
               <div class="cc-field"><label>Apellidos y Nombres</label>
-                <input type="text" data-modal="apellidos_nombres" value="${form.apellidos_nombres || ''}"></div>`;
+                <input type="text" data-modal="apellidos_nombres" value="${form.apellidos_nombres || ''}" maxlength="98"></div>`;
 
         // ── 8. Opciones de Compra ──
       } else if (nameKey.includes('compra')) {
         extraFields = `
               <div class="cc-field cc-span-2"><label>Nombre del Oferente</label>
-                <input type="text" data-modal="nombre_oferente" value="${form.nombre_oferente || ''}"></div>`;
+                <input type="text" data-modal="nombre_oferente" value="${form.nombre_oferente || ''}" maxlength="38"></div>`;
 
         // ── 9. Otros ──  (solo Tipo de Bien + campos comunes)
       } else if (nameKey.includes('otros')) {
@@ -547,7 +547,7 @@ const MODAL_CONFIGS = {
                   ${getCatalogs().bancos.map(b => `<option value="${b.banco_id}" ${form.banco_id == b.banco_id ? 'selected' : ''}>${b.nombre}</option>`).join('')}
                 </select></div>
               <div class="cc-field"><label>Número de Cuenta</label>
-                <input type="text" data-modal="numero_cuenta" id="modalPrestCuenta" value="${form.numero_cuenta || ''}" ${form.posee_banco !== 'SI' ? 'disabled' : ''}></div>
+                <input type="text" data-modal="numero_cuenta" id="modalPrestCuenta" value="${form.numero_cuenta || ''}" maxlength="20" ${form.posee_banco !== 'SI' ? 'disabled' : ''}></div>
               ${rifEmpresaBlock()}`;
 
         // ── 12. Semovientes ──
@@ -577,13 +577,13 @@ const MODAL_CONFIGS = {
                 <h4 class="cc-section-subtitle">Información del Litigio</h4>
                 <div class="cc-grid cc-grid--2">
                 <div class="cc-field"><label>Número Expediente</label>
-                    <input type="text" data-modal="numero_expediente" value="${form.numero_expediente || ''}"></div>
+                    <input type="text" data-modal="numero_expediente" value="${form.numero_expediente || ''}" maxlength="98"></div>
                 <div class="cc-field"><label>Tribunal de la causa</label>
-                    <input type="text" data-modal="tribunal_causa" value="${form.tribunal_causa || ''}"></div>
+                    <input type="text" data-modal="tribunal_causa" value="${form.tribunal_causa || ''}" maxlength="253"></div>
                 <div class="cc-field"><label>Partes en el Juicio</label>
-                    <input type="text" data-modal="partes_juicio" value="${form.partes_juicio || ''}" maxlength="255"></div>
+                    <input type="text" data-modal="partes_juicio" value="${form.partes_juicio || ''}" maxlength="253"></div>
                 <div class="cc-field"><label>Estado del Juicio</label>
-                    <input type="text" data-modal="estado_juicio" value="${form.estado_juicio || ''}"></div>
+                    <input type="text" data-modal="estado_juicio" value="${form.estado_juicio || ''}" maxlength="98"></div>
                 </div>
             </div>`;
 
@@ -751,7 +751,7 @@ const MODAL_CONFIGS = {
           </select></div>
         
         <div class="cc-field" id="wrapTdcDeuda" style="display:none; order:2"><label>Número de TDC</label>
-          <input type="text" data-modal="numero_tdc" value="${form.numero_tdc || ''}"></div>
+          <input type="text" data-modal="numero_tdc" value="${form.numero_tdc || ''}" maxlength="20"></div>
 
         <div class="cc-field" id="wrapPorcentajeDeuda" style="order:3; grid-column:1;"><label>Porcentaje %</label>
           <input type="text" class="decimal-input" data-modal="porcentaje" placeholder="0,01 - 100" value="${form.porcentaje || 100}"></div>
@@ -852,7 +852,7 @@ const MODAL_CONFIGS = {
     wide: false,
     build: (form) => `
       <div class="cc-field"><label>Tipo de Exención</label>
-        <input type="text" data-modal="tipo_exencion" placeholder="Tipo de exención" value="${form.tipo_exencion || ''}"></div>
+        <input type="text" data-modal="tipo_exencion" placeholder="Tipo de exención" value="${form.tipo_exencion || ''}" maxlength="253"></div>
       <div class="cc-field cc-mt"><label>Descripción</label>
         <textarea data-modal="descripcion" placeholder="Descripción...">${form.descripcion || ''}</textarea></div>
       <div class="cc-field cc-mt"><label>Valor Declarado (Bs.)</label>
@@ -881,7 +881,7 @@ const MODAL_CONFIGS = {
     wide: false,
     build: (form) => `
       <div class="cc-field"><label>Tipo de Exoneración</label>
-        <input type="text" data-modal="tipo_exoneracion" placeholder="Tipo de exoneración" value="${form.tipo_exoneracion || ''}"></div>
+        <input type="text" data-modal="tipo_exoneracion" placeholder="Tipo de exoneración" value="${form.tipo_exoneracion || ''}" maxlength="253"></div>
       <div class="cc-field cc-mt"><label>Descripción</label>
         <textarea data-modal="descripcion" placeholder="Descripción...">${form.descripcion || ''}</textarea></div>
       <div class="cc-field cc-mt"><label>Valor Declarado (Bs.)</label>
@@ -914,7 +914,7 @@ const MODAL_CONFIGS = {
         <div class="cc-field"><label>Fecha de Solicitud</label>
           <input type="date" data-modal="fecha_solicitud" value="${form.fecha_solicitud || ''}"></div>
         <div class="cc-field"><label>N° Resolución</label>
-          <input type="text" data-modal="nro_resolucion" value="${form.nro_resolucion || ''}" placeholder="Número de resolución" maxlength="50"></div>
+          <input type="text" data-modal="nro_resolucion" value="${form.nro_resolucion || ''}" placeholder="Número de resolución" maxlength="48"></div>
         <div class="cc-field"><label>Fecha Resolución</label>
           <input type="date" data-modal="fecha_resolucion" value="${form.fecha_resolucion || ''}"></div>
         <div class="cc-field"><label>Plazo Otorgado (días)</label>
@@ -1262,6 +1262,9 @@ export function openModal(type, editIdx) {
               return;
             }
 
+            // Clear previously locked fields before filling new person's data
+            clearPersonaData();
+
             // Llenar campos y rastrear cuáles vienen de BD
             const lockedFromDb = [];
             const fillIfExist = (sel, val, fieldName) => {
@@ -1280,8 +1283,7 @@ export function openModal(type, editIdx) {
 
             if (data.sexo) fillIfExist('[data-modal="sexo"]', data.sexo, 'sexo');
 
-            const normalizedEC = data.estado_civil ? data.estado_civil.toLowerCase().replace('_', ' ') : '';
-            if (normalizedEC !== 'no aplica') {
+            if (data.estado_civil) {
               fillIfExist('[data-modal="estado_civil"]', data.estado_civil, 'estado_civil');
             }
 

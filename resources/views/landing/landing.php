@@ -39,9 +39,7 @@ ob_start();
                     <span class="btn-label">Inicia sesión</span>
                     <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </a>
-                <a href="<?= base_url('/registro') ?>" class="btn btn-secondary">
-                    <span class="btn-label">Crear cuenta</span>
-                </a>
+
             </div>
 
             <p class="trust-note">
@@ -127,7 +125,7 @@ ob_start();
                 </svg>
             </div>
             <h3 class="feature-title">Para quién es</h3>
-            <p class="feature-desc">Estudiantes de contaduría, derecho, administración y cualquier persona que necesite entender el proceso.</p>
+            <p class="feature-desc">Estudiantes de derecho de sucesiones y cualquier persona que necesite entender el proceso.</p>
         </div>
 
     </div>
@@ -146,8 +144,8 @@ ob_start();
 
             <div class="step-card">
                 <div class="step-number">01</div>
-                <h3 class="step-title">Crea tu cuenta</h3>
-                <p class="step-desc">Regístrate con tus datos básicos y accede al simulador. No se requiere información fiscal real.</p>
+                <h3 class="step-title">Inicia sesión</h3>
+                <p class="step-desc">Ingresa con tus credenciales y accede al simulador. No se requiere información fiscal real.</p>
             </div>
 
             <div class="step-connector" aria-hidden="true">
@@ -179,13 +177,12 @@ ob_start();
 <section class="cta-section">
     <div class="cta-section-inner">
         <h2 class="cta-section-title">¿Listo para practicar?</h2>
-        <p class="cta-section-desc">Crea tu cuenta en menos de un minuto y comienza a explorar el simulador.</p>
+        <p class="cta-section-desc">Inicia sesión y comienza a explorar el simulador.</p>
         <div class="cta-section-buttons">
-            <a href="<?= base_url('/registro') ?>" class="btn btn-primary btn-lg">
+            <a href="<?= base_url('/login') ?>" class="btn btn-primary btn-lg">
                 <span class="btn-label">Comenzar ahora</span>
                 <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </a>
-            <a href="<?= base_url('/login') ?>" class="btn btn-ghost">Ya tengo cuenta</a>
         </div>
     </div>
 </section>

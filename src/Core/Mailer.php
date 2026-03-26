@@ -89,4 +89,81 @@ class Mailer
             return false;
         }
     }
+
+    /**
+     * Health Check: Verifica la conectividad con el servidor SMTP sin enviar ningún correo.
+     * Realiza un TCP + TLS handshake liviano con timeout de 5 segundos.
+     *
+     * @return array{ok: bool, host: string, latency_ms: int|null, error: string|null}
+     */
+    public static function checkHealth(): array
+    {
+        $host = $_ENV['SMTP_HOST'] ?? '';
+        $port = $_ENV['SMTP_PORT'] ?? '';
+        $user = $_ENV['SMTP_USER'] ?? '';
+        $pass = $_ENV['SMTP_PASS'] ?? '';
+        $env  = $_ENV['APP_ENV'] ?? 'production';
+
+        // Si no hay configuración SMTP, reportar inmediatamente
+        if (!$host || !$port || !$user || !$pass) {
+            return [
+                'ok'         => false,
+                'host'       => $host ?: '(no configurado)',
+                'latency_ms' => null,
+                'error'      => 'Variables SMTP no configuradas en .env'
+            ];
+        }
+
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->isSMTP();
+            $mail->Host       = $host;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $user;
+            $mail->Password   = $pass;
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = (int) $port;
+            $mail->Timeout    = 5; // Timeout corto para health check
+
+            if ($env === 'local') {
+                $mail->SMTPOptions = [
+                    'ssl' => [
+                        'verify_peer'       => false,
+                        'verify_peer_name'  => false,
+                        'allow_self_signed' => true,
+                    ],
+                ];
+            }
+
+            $start = microtime(true);
+            $connected = $mail->smtpConnect();
+            $latency = (int) round((microtime(true) - $start) * 1000);
+
+            if ($connected) {
+                $mail->smtpClose();
+                return [
+                    'ok'         => true,
+                    'host'       => $host,
+                    'latency_ms' => $latency,
+                    'error'      => null
+                ];
+            }
+
+            return [
+                'ok'         => false,
+                'host'       => $host,
+                'latency_ms' => $latency,
+                'error'      => 'No se pudo establecer conexión'
+            ];
+
+        } catch (\Throwable $e) {
+            return [
+                'ok'         => false,
+                'host'       => $host,
+                'latency_ms' => null,
+                'error'      => $e->getMessage()
+            ];
+        }
+    }
 }

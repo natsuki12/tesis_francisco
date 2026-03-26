@@ -205,7 +205,8 @@ export const caseData = createReactiveState({
         tipo_vialidad: '',                     // antes: vialidad
         tipo_inmueble: '',                     // antes: tipo_vivienda
         nombre_vialidad: '',
-        nro_inmueble: '',                      // antes: nombre_vivienda
+        nro_inmueble: '',                      // piso/nro del inmueble (normalizado)
+        nombre_inmueble: '',                   // nombre/descripción del inmueble (normalizado)
         tipo_nivel: '',                        // antes: sub_vivienda
         tipo_sector: '',
         nro_nivel: '',                         // antes: nro_piso
@@ -214,8 +215,6 @@ export const caseData = createReactiveState({
         telefono_fijo: '', telefono_celular: '', fax: '',
         codigo_postal_id: '',                  // antes: zona_postal
         punto_referencia: '',
-        desc_inmueble: '',                     // helper: nombre/descripción del inmueble (no va a BD)
-        piso_nivel: ''                         // helper: piso/nro/nivel (no va a BD)
     },
     direcciones_causante: [],
 

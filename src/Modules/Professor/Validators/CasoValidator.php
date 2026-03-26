@@ -170,6 +170,7 @@ class CasoValidator
                 $data['causante']['fecha_fallecimiento'] ?? ''
             );
             $this->validateActaDefuncion($data['acta_defuncion'] ?? [], $data['caso']['tipo_sucesion'] ?? '', $data['causante']['fecha_fallecimiento'] ?? '');
+            $this->validateDomicilio($data['direcciones_causante'] ?? []);
             $this->validateDirecciones($data['direcciones_causante'] ?? []);
             $this->validateRepresentante($data['representante'] ?? []);
             $this->validateHerencia($data['herencia'] ?? [], $data['causante']['fecha_fallecimiento'] ?? '');
@@ -244,8 +245,8 @@ class CasoValidator
             $this->errors[] = 'El Título del Caso es obligatorio.';
         }
         // #02 — Longitud máxima
-        if (strlen($titulo) > 255) {
-            $this->errors[] = 'El Título no puede exceder 255 caracteres.';
+        if (strlen($titulo) > 148) {
+            $this->errors[] = 'El Título no puede exceder 148 caracteres.';
         }
         // #03 — Título no duplicado para este profesor
         if ($titulo && $profesorId > 0) {
@@ -272,8 +273,8 @@ class CasoValidator
             $this->errors[] = 'La Descripción del Caso es obligatoria.';
         }
         // #05 — Longitud máxima
-        if (strlen($descripcion) > 1000) {
-            $this->errors[] = 'La Descripción no puede exceder 1000 caracteres.';
+        if (strlen($descripcion) > 998) {
+            $this->errors[] = 'La Descripción no puede exceder 998 caracteres.';
         }
 
         $validEstados = ['Borrador', 'Publicado'];
@@ -306,7 +307,7 @@ class CasoValidator
         if (empty($c['sexo']) || !in_array($c['sexo'], ['M', 'F'])) {
             $this->errors[] = 'Causante: Sexo debe ser M o F.';
         }
-        $validEC = ['Soltero', 'Casado', 'Divorciado', 'Viudo', 'Union_Estable', 'Concubinato'];
+        $validEC = ['Soltero', 'Casado', 'Divorciado', 'Viudo', 'Concubinato'];
         if (empty($c['estado_civil']) || !in_array($c['estado_civil'], $validEC)) {
             $this->errors[] = 'Causante: Estado civil inválido.';
         }
@@ -404,29 +405,28 @@ class CasoValidator
     }
 
     // ====================================================================
-    // Sección: Domicilio del Causante
+    // Sección: Domicilio fiscal del Causante (reglas de existencia)
     // ====================================================================
-    private function validateDomicilio(array $d): void
+    private function validateDomicilio(array $direcciones): void
     {
-        $required = [
-            'tipo_vialidad',
-            'tipo_inmueble',
-            'nombre_vialidad',
-            'nro_inmueble',
-            'tipo_nivel',
-            'tipo_sector',
-            'nro_nivel',
-            'nombre_sector',
-            'estado',
-            'municipio',
-            'parroquia',
-            'ciudad'
-        ];
-        foreach ($required as $field) {
-            if (empty($d[$field])) {
-                $this->errors[] = "Domicilio causante: El campo «{$field}» es obligatorio.";
-                break; // Un solo error genérico para no saturar
+        if (empty($direcciones)) {
+            $this->errors[] = 'Debe agregar al menos una dirección (domicilio fiscal).';
+            return;
+        }
+
+        // Contar cuántas direcciones son de tipo domicilio fiscal
+        $fiscalCount = 0;
+        foreach ($direcciones as $dir) {
+            $tipo = $dir['tipo_direccion'] ?? '';
+            if ($tipo === 'Domicilio_Fiscal') {
+                $fiscalCount++;
             }
+        }
+
+        if ($fiscalCount === 0) {
+            $this->errors[] = 'Debe existir exactamente una dirección de tipo Domicilio Fiscal.';
+        } elseif ($fiscalCount > 1) {
+            $this->errors[] = 'Solo puede existir una dirección de tipo Domicilio Fiscal. Se encontraron ' . $fiscalCount . '.';
         }
     }
 
@@ -441,7 +441,7 @@ class CasoValidator
                 'tipo_vialidad',
                 'tipo_inmueble',
                 'nombre_vialidad',
-                'nro_inmueble',
+                'nombre_inmueble',
                 'tipo_sector',
                 'nombre_sector',
                 'estado',
@@ -676,7 +676,7 @@ class CasoValidator
             if ($ced)
                 $cedulasVistas[] = $ced;
 
-            $reqFields = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'parentesco_id'];
+            $reqFields = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'parentesco_id'];
             foreach ($reqFields as $f) {
                 if (empty($h[$f])) {
                     $this->errors[] = "Heredero #{$n}: Complete todos los campos obligatorios.";
@@ -706,7 +706,7 @@ class CasoValidator
             if (empty($h['cedula']) && empty($h['pasaporte'])) {
                 $this->errors[] = "Heredero premuerto #{$n}: Debe ingresar Cédula o Pasaporte.";
             }
-            $reqFields = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'parentesco_id', 'premuerto_padre_id'];
+            $reqFields = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'parentesco_id', 'premuerto_padre_id'];
             foreach ($reqFields as $f) {
                 if (empty($h[$f])) {
                     $this->errors[] = "Heredero premuerto #{$n}: Complete todos los campos (incluyendo a quién representa).";

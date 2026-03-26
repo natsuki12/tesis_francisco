@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Modules\Admin\Controllers\Configuracion;
 
 use App\Core\Csrf;
+use App\Core\DB;
 use App\Core\BitacoraModel;
 use App\Modules\Admin\Models\ConfigGlobalModel;
 
@@ -32,7 +33,7 @@ class ParametrosController
             $files = glob($backupDir . '/*.sql');
             if ($files) {
                 usort($files, fn($a, $b) => filemtime($b) - filemtime($a));
-                foreach (array_slice($files, 0, 10) as $file) {
+                foreach ($files as $file) {
                     $filename = basename($file);
                     $tipo = str_starts_with($filename, 'auto_') ? 'Automático' : 'Manual';
                     $size = filesize($file);
@@ -120,12 +121,12 @@ class ParametrosController
                 exit;
             }
 
-            $host = $_ENV['DB_HOST'] ?? '127.0.0.1';
-            $db   = $_ENV['DB_NAME'] ?? '';
-            $user = $_ENV['DB_USER'] ?? 'root';
-            $pass = $_ENV['DB_PASS'] ?? '';
+            $host    = $_ENV['DB_HOST'] ?? '127.0.0.1';
+            $db_name = $_ENV['DB_NAME'] ?? '';
+            $user    = $_ENV['DB_USER'] ?? 'root';
+            $pass    = $_ENV['DB_PASS'] ?? '';
 
-            if (empty($db)) {
+            if (empty($db_name)) {
                 echo json_encode(['success' => false, 'message' => 'Variable DB_NAME no configurada.']);
                 exit;
             }
@@ -138,13 +139,23 @@ class ParametrosController
                 }
             }
 
-            $timestamp = date('Y-m-d_H-i-s');
+            // Usar MySQL como fuente de verdad para timestamp
+            $dbNow = DB::connect()->query("SELECT NOW() AS now")->fetch(\PDO::FETCH_ASSOC)['now'];
+            $timestamp = str_replace([' ', ':'], ['_', '-'], $dbNow);
             $filename  = "manual_{$timestamp}.sql";
             $filepath  = $backupDir . '/' . $filename;
 
-            $mysqldump = 'C:\\xampp\\mysql\\bin\\mysqldump.exe';
-            if (!file_exists($mysqldump)) {
-                $mysqldump = 'mysqldump';
+            // Detectar mysqldump según SO
+            $candidates = PHP_OS_FAMILY === 'Windows'
+                ? ['C:\\xampp\\mysql\\bin\\mysqldump.exe', 'C:\\wamp64\\bin\\mysql\\mysql8.0.31\\bin\\mysqldump.exe']
+                : ['/usr/bin/mysqldump', '/usr/local/bin/mysqldump', '/Applications/MAMP/Library/bin/mysqldump'];
+
+            $mysqldump = 'mysqldump';
+            foreach ($candidates as $path) {
+                if (file_exists($path)) {
+                    $mysqldump = $path;
+                    break;
+                }
             }
 
             $cmd = sprintf(
@@ -153,7 +164,7 @@ class ParametrosController
                 escapeshellarg($host),
                 escapeshellarg($user),
                 $pass !== '' ? '--password=' . escapeshellarg($pass) : '',
-                escapeshellarg($db),
+                escapeshellarg($db_name),
                 $filepath
             );
 
@@ -172,7 +183,7 @@ class ParametrosController
             // Actualizar timestamp en DB
             try {
                 $configModel = new ConfigGlobalModel();
-                $configModel->set('backup_ultimo_timestamp', date('Y-m-d H:i:s'));
+                $configModel->set('backup_ultimo_timestamp', $dbNow);
             } catch (\Throwable $e) {
                 error_log('[ParametrosController::backup] No se pudo actualizar timestamp: ' . $e->getMessage());
             }
@@ -284,6 +295,99 @@ class ParametrosController
             echo json_encode(['success' => true, 'message' => 'Respaldo eliminado.']);
         } catch (\Throwable $e) {
             error_log('[ParametrosController::eliminarBackup] ' . $e->getMessage());
+            echo json_encode(['success' => false, 'message' => 'Error interno del servidor.']);
+        }
+
+        exit;
+    }
+    /**
+     * Restaura la base de datos desde un archivo de respaldo .sql.
+     * POST /admin/configuracion/backup/restaurar
+     */
+    public function restaurar()
+    {
+        header('Content-Type: application/json');
+
+        try {
+            if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
+                http_response_code(403);
+                echo json_encode(['success' => false, 'message' => 'Token de seguridad inválido. Recargue la página.']);
+                exit;
+            }
+
+            $filename = $_POST['file'] ?? '';
+
+            // Sanitizar: solo letras, números, guiones, puntos y guión bajo
+            if (!preg_match('/^[a-zA-Z0-9_\-\.]+\.sql$/', $filename)) {
+                echo json_encode(['success' => false, 'message' => 'Nombre de archivo inválido.']);
+                exit;
+            }
+
+            $backupDir = __DIR__ . '/../../../../../database_backup';
+            $filepath  = $backupDir . '/' . $filename;
+
+            if (!file_exists($filepath) || filesize($filepath) === 0) {
+                echo json_encode(['success' => false, 'message' => 'El archivo de respaldo no existe o está vacío.']);
+                exit;
+            }
+
+            $host    = $_ENV['DB_HOST'] ?? '127.0.0.1';
+            $db_name = $_ENV['DB_NAME'] ?? '';
+            $user    = $_ENV['DB_USER'] ?? 'root';
+            $pass    = $_ENV['DB_PASS'] ?? '';
+
+            if (empty($db_name)) {
+                echo json_encode(['success' => false, 'message' => 'Variable DB_NAME no configurada.']);
+                exit;
+            }
+
+            // Detectar mysql binary según SO
+            $candidates = PHP_OS_FAMILY === 'Windows'
+                ? ['C:\\xampp\\mysql\\bin\\mysql.exe', 'C:\\wamp64\\bin\\mysql\\mysql8.0.31\\bin\\mysql.exe']
+                : ['/usr/bin/mysql', '/usr/local/bin/mysql', '/Applications/MAMP/Library/bin/mysql'];
+
+            $mysqlBin = 'mysql';
+            foreach ($candidates as $path) {
+                if (file_exists($path)) {
+                    $mysqlBin = $path;
+                    break;
+                }
+            }
+
+            $cmd = sprintf(
+                '"%s" --host=%s --user=%s %s %s < "%s" 2>&1',
+                $mysqlBin,
+                escapeshellarg($host),
+                escapeshellarg($user),
+                $pass !== '' ? '--password=' . escapeshellarg($pass) : '',
+                escapeshellarg($db_name),
+                $filepath
+            );
+
+            exec($cmd, $output, $returnCode);
+
+            if ($returnCode !== 0) {
+                $errorMsg = implode("\n", $output);
+                error_log("[ParametrosController::restaurar] mysql import falló (code $returnCode): $errorMsg");
+                echo json_encode(['success' => false, 'message' => 'Error al restaurar: ' . ($errorMsg ?: 'mysql no disponible.')]);
+                exit;
+            }
+
+            $sizeMB = round(filesize($filepath) / 1024 / 1024, 1);
+
+            // Registrar en bitácora
+            try {
+                BitacoraModel::registrar(BitacoraModel::SYSTEM_BACKUP, 'sistema', null, null, null, null, "Restauración de BD desde: {$filename} ({$sizeMB} MB)");
+            } catch (\Throwable $e) {
+                error_log('[ParametrosController::restaurar] Bitácora: ' . $e->getMessage());
+            }
+
+            echo json_encode([
+                'success' => true,
+                'message' => "Base de datos restaurada exitosamente desde: {$filename} ({$sizeMB} MB)"
+            ]);
+        } catch (\Throwable $e) {
+            error_log('[ParametrosController::restaurar] ' . $e->getMessage());
             echo json_encode(['success' => false, 'message' => 'Error interno del servidor.']);
         }
 

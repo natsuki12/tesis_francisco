@@ -32,8 +32,8 @@ if (!empty($intento)) {
 $pageCss = (isset($extraCss) && is_array($extraCss)) ? $extraCss : [];
 $cssHtml = '<link rel="stylesheet" href="' . base_url('/assets/css/simulator/seniat_actual/sucesion/bienes_muebles/banco_legacy.css') . '">' . "\n";
 $cssHtml .= '<link rel="stylesheet" href="' . base_url('/assets/css/simulator/seniat_actual/sucesion/tabla_seniat.css') . '">' . "\n";
-$cssHtml .= '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">' . "\n";
-$cssHtml .= '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">' . "\n";
+$cssHtml .= '<link rel="stylesheet" href="' . base_url('/assets/vendor/bootstrap-icons/bootstrap-icons.min.css') . '">' . "\n";
+$cssHtml .= '<link rel="stylesheet" href="' . base_url('/assets/vendor/flatpickr/flatpickr.min.css') . '">' . "\n";
 foreach ($pageCss as $css) {
     $cssHtml .= '<link rel="stylesheet" href="' . base_url($css) . '">' . "\n";
 }
@@ -211,9 +211,9 @@ $extraCss = $cssHtml;
 
 // ─── Collect JS for logged_layout.php (expects string) ─────────────
 $pageJs = (isset($extraJs) && is_array($extraJs)) ? $extraJs : [];
-$jsHtml = '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>' . "\n";
-$jsHtml .= '<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>' . "\n";
-$jsHtml .= '<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>' . "\n";
+$jsHtml = '<script src="' . base_url('/assets/vendor/bootstrap/bootstrap.bundle.min.js') . '"></script>' . "\n";
+$jsHtml .= '<script src="' . base_url('/assets/vendor/flatpickr/flatpickr.min.js') . '"></script>' . "\n";
+$jsHtml .= '<script src="' . base_url('/assets/vendor/flatpickr/es.js') . '"></script>' . "\n";
 foreach ($pageJs as $js) {
     $jsHtml .= '<script src="' . base_url($js) . '"></script>' . "\n";
 }

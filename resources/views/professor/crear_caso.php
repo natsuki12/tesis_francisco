@@ -293,7 +293,7 @@ ob_start();
             <div class="cc-field">
               <label>Parroquia de Emisión</label>
               <input type="text" data-bind="acta_defuncion.parroquia_registro_id" placeholder="Ej: Catedral"
-                maxlength="99">
+                maxlength="98">
             </div>
           </div>
         </div>

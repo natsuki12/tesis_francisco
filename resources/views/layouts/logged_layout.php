@@ -21,12 +21,8 @@ if (!isset($user)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $pageTitle ?? 'Simulador' ?> - UNIMAR</title>
 
-    <!-- Google Fonts (v2 Design System) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap"
-        rel="stylesheet">
+    <!-- Google Fonts (local, offline) -->
+    <link rel="stylesheet" href="<?= asset('css/fonts-local.css') ?>">
 
     <!-- CSS Base Global (Variables y Tipografía) -->
     <link rel="stylesheet" href="<?= asset('css/base.css') ?>">
@@ -112,6 +108,12 @@ if (!isset($user)) {
     <link rel="stylesheet" href="<?= asset('css/partials/logged/sidebar_logged.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/global/toast.css') ?>">
     <link rel="stylesheet" href="<?= asset('css/global/components.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/shared/confirm-modal.css') ?>">
+
+    <!-- Select2 (local) -->
+    <link rel="stylesheet" href="<?= asset('vendor/select2/select2.min.css') ?>">
+    <!-- Flatpickr (local) -->
+    <link rel="stylesheet" href="<?= asset('vendor/flatpickr/flatpickr.min.css') ?>">
 </head>
 
 <body class="sim-layout">
@@ -155,6 +157,12 @@ if (!isset($user)) {
         });
     </script>
 
+    <!-- jQuery + Select2 + Flatpickr (local, offline) -->
+    <script src="<?= asset('vendor/jquery/jquery-3.7.1.min.js') ?>"></script>
+    <script src="<?= asset('vendor/select2/select2.min.js') ?>"></script>
+    <script src="<?= asset('vendor/flatpickr/flatpickr.min.js') ?>"></script>
+    <script src="<?= asset('vendor/flatpickr/es.js') ?>"></script>
+
     <!-- Global text sanitization (removes dangerous characters from all text inputs) -->
     <script src="<?= asset('js/global/sanitize.js') ?>"></script>
 
@@ -193,6 +201,12 @@ if (!isset($user)) {
 
     <!-- Global AJAX Handlers & Formatters for Modals -->
     <script type="module" src="<?= asset('js/global/modals_ajax.js') ?>"></script>
+
+    <!-- Global DataTable Engine & DOM Morphing -->
+    <script src="<?= asset('js/global/data_table_core.js') ?>"></script>
+
+    <!-- Global Confirm Modal -->
+    <script src="<?= asset('js/global/confirm_modal.js') ?>"></script>
 
     <?php
     // ── Exit-confirmation dialog (solo dentro del simulador con sesión activa) ──

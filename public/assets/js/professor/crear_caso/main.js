@@ -192,12 +192,24 @@ function applyConstraints(container) {
         });
     });
 
-    // — Longitud máxima en campos de texto libre —
+    // — Longitud máxima en campos de texto libre (DB max - 2 para texto, exacto para numéricos) —
     [
-        { name: 'caso.titulo', max: 255 },
-        { name: 'caso.descripcion', max: 1000 },
-        { name: 'descripcion', max: 500 },    // modal descriptions
-        { name: 'linderos', max: 500 },        // inmueble linderos
+        { name: 'caso.titulo', max: 148 },            // DB: varchar(150)
+        { name: 'caso.descripcion', max: 998 },        // DB: text
+        { name: 'descripcion', max: 500 },              // modal descriptions (DB: text)
+        { name: 'linderos', max: 500 },                 // inmueble linderos (DB: text)
+        { name: 'causante.nombres', max: 98 },          // DB: varchar(100)
+        { name: 'causante.apellidos', max: 98 },        // DB: varchar(100)
+        { name: 'representante.nombres', max: 98 },     // DB: varchar(100)
+        { name: 'representante.apellidos', max: 98 },   // DB: varchar(100)
+        { name: 'acta_defuncion.numero_acta', max: 48 },// DB: varchar(50)
+        { name: 'prorroga.nro_resolucion', max: 48 },   // DB: varchar(50)
+        { name: 'domicilio_causante.nombre_vialidad', max: 98 },   // DB: varchar(100)
+        { name: 'domicilio_causante.desc_inmueble', max: 58 },     // DB: varchar(60) → nombre_inmueble
+        { name: 'domicilio_causante.piso_nivel', max: 18 },        // DB: varchar(20)
+        { name: 'domicilio_causante.nro_nivel', max: 18 },         // DB: varchar(20)
+        { name: 'domicilio_causante.nombre_sector', max: 98 },     // DB: varchar(100)
+        { name: 'domicilio_causante.punto_referencia', max: 253 }, // DB: varchar(255)
     ].forEach(({ name, max }) => {
         const el = constrain(sel(name));
         if (!el) return;
@@ -442,9 +454,9 @@ function validateBeforePublish() {
 
     // Sección 1: Caso
     if (!c.caso.titulo?.trim()) errors.push('Título del caso');
-    if ((c.caso.titulo || '').length > 255) errors.push('El título no puede exceder 255 caracteres');
+    if ((c.caso.titulo || '').length > 148) errors.push('El título no puede exceder 148 caracteres');
     if (!c.caso.descripcion?.trim()) errors.push('Descripción del caso');
-    if ((c.caso.descripcion || '').length > 1000) errors.push('La descripción no puede exceder 1000 caracteres');
+    if ((c.caso.descripcion || '').length > 998) errors.push('La descripción no puede exceder 998 caracteres');
     if (!c.caso.tipo_sucesion) errors.push('Tipo de sucesión');
 
     // Causante
@@ -714,6 +726,22 @@ function initCausanteAutocomplete() {
 
                 if (json.success && json.data) {
                     const data = json.data;
+
+                    // Clear previously locked fields before filling new person's data
+                    // (handles switching from person A to person B without clearing cedula)
+                    (caseData.causante._locked_fields || []).forEach(f => {
+                        const el = $(`[data-bind="causante.${f}"]`);
+                        if (el) { el.value = ''; el.disabled = false; el.style.backgroundColor = ''; }
+                    });
+                    caseData.causante._locked_fields = [];
+                    // Also clear datos fiscales that may have been auto-filled
+                    const cierreEl = $('#input_fecha_cierre_fiscal');
+                    if (cierreEl) { cierreEl.value = ''; cierreEl.disabled = false; cierreEl.style.backgroundColor = ''; }
+                    caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
+                    const domPaisEl = $('[data-bind="datos_fiscales_causante.domiciliado_pais"]');
+                    if (domPaisEl) { domPaisEl.value = ''; domPaisEl.disabled = false; domPaisEl.style.backgroundColor = ''; }
+                    caseData.datos_fiscales_causante.domiciliado_pais = '';
+
                     // Update state
                     if (!tipo && data.tipo_cedula) {
                         caseData.causante.tipo_cedula = data.tipo_cedula;
@@ -726,8 +754,8 @@ function initCausanteAutocomplete() {
                     caseData.causante.fecha_nacimiento = data.fecha_nacimiento;
                     caseData.causante.sexo = data.sexo;
 
-                    const normalizedEstadoCivil = data.estado_civil ? data.estado_civil.toLowerCase().replace('_', ' ') : '';
-                    if (normalizedEstadoCivil === 'no aplica') {
+                    const estadoCivilVacio = !data.estado_civil;
+                    if (estadoCivilVacio) {
                         caseData.causante.estado_civil = '';
                     } else {
                         caseData.causante.estado_civil = data.estado_civil;
@@ -741,17 +769,16 @@ function initCausanteAutocomplete() {
                     // Función auxiliar para asignar valor y deshabilitar
                     const fillAndDisable = (selector, value, forceEnable = false) => {
                         const el = $(selector);
-                        if (el && value !== undefined && value !== null) {
-                            if (forceEnable) {
-                                el.value = '';
-                                el.disabled = false;
-                                el.style.backgroundColor = '';
-                            } else {
-                                el.value = value;
-                                el.disabled = true;
-                                // Add a subtle style to indicate it's auto-filled and locked
-                                el.style.backgroundColor = 'var(--cc-slate-50, #f8fafc)';
-                            }
+                        if (!el) return;
+                        if (forceEnable) {
+                            el.value = '';
+                            el.disabled = false;
+                            el.style.backgroundColor = '';
+                        } else if (value !== undefined && value !== null) {
+                            el.value = value;
+                            el.disabled = true;
+                            // Add a subtle style to indicate it's auto-filled and locked
+                            el.style.backgroundColor = 'var(--cc-slate-50, #f8fafc)';
                         }
                     };
 
@@ -761,8 +788,7 @@ function initCausanteAutocomplete() {
                     fillAndDisable('[data-bind="causante.fecha_nacimiento"]', data.fecha_nacimiento);
                     fillAndDisable('[data-bind="causante.sexo"]', data.sexo);
 
-                    const isEstadoCivilNoAplica = (normalizedEstadoCivil === 'no aplica');
-                    fillAndDisable('[data-bind="causante.estado_civil"]', data.estado_civil, isEstadoCivilNoAplica);
+                    fillAndDisable('[data-bind="causante.estado_civil"]', data.estado_civil, estadoCivilVacio);
 
                     fillAndDisable('[data-bind="causante.nacionalidad"]', data.nacionalidad);
                     if (data.fecha_fallecimiento) {
@@ -782,7 +808,7 @@ function initCausanteAutocomplete() {
                     showToast('Datos del causante autocompletados', 'success');
                     // Guardar cuáles campos específicos se deshabilitaron
                     const lockedFields = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'nacionalidad', 'fecha_fallecimiento']
-                        .filter(f => data[f] && !(f === 'estado_civil' && isEstadoCivilNoAplica));
+                        .filter(f => data[f] && !(f === 'estado_civil' && estadoCivilVacio));
                     caseData.causante._locked_fields = lockedFields;
                     // Re-renderizar herencia para actualizar max de fecha_testamento
                     renderHerenciaCheckboxes();
@@ -858,12 +884,11 @@ function initRepresentanteAutocomplete() {
 
     const fillAndDisable = (selector, value, forceEnable = false) => {
         const el = $(selector);
-        if (el && value !== undefined && value !== null) {
-            if (forceEnable) {
-                el.value = ''; el.disabled = false; el.style.backgroundColor = '';
-            } else {
-                el.value = value; el.disabled = true; el.style.backgroundColor = lockStyle;
-            }
+        if (!el) return;
+        if (forceEnable) {
+            el.value = ''; el.disabled = false; el.style.backgroundColor = '';
+        } else if (value !== undefined && value !== null) {
+            el.value = value; el.disabled = true; el.style.backgroundColor = lockStyle;
         }
     };
 
@@ -888,6 +913,13 @@ function initRepresentanteAutocomplete() {
 
         searchOrigin = origin;
 
+        // Clear previously locked fields before filling new person's data
+        (caseData.representante._locked_fields || []).forEach(f => {
+            const el = $(`[data-bind="representante.${f}"]`);
+            if (el) { el.value = ''; el.disabled = false; el.style.backgroundColor = ''; }
+        });
+        caseData.representante._locked_fields = [];
+
         // Populate personal data
         caseData.representante.persona_id = data.persona_id;
         caseData.representante.nombres = data.nombres;
@@ -895,8 +927,8 @@ function initRepresentanteAutocomplete() {
         caseData.representante.fecha_nacimiento = data.fecha_nacimiento;
         caseData.representante.sexo = data.sexo;
 
-        const normalizedEstadoCivil = data.estado_civil ? data.estado_civil.toLowerCase().replace('_', ' ') : '';
-        if (normalizedEstadoCivil === 'no aplica') {
+        const estadoCivilVacio = !data.estado_civil;
+        if (estadoCivilVacio) {
             caseData.representante.estado_civil = '';
         } else {
             caseData.representante.estado_civil = data.estado_civil;
@@ -936,13 +968,12 @@ function initRepresentanteAutocomplete() {
         fillAndDisable('[data-bind="representante.fecha_nacimiento"]', data.fecha_nacimiento);
         fillAndDisable('[data-bind="representante.sexo"]', data.sexo);
 
-        const isEstadoCivilNoAplica = (normalizedEstadoCivil === 'no aplica');
-        fillAndDisable('[data-bind="representante.estado_civil"]', data.estado_civil, isEstadoCivilNoAplica);
+        fillAndDisable('[data-bind="representante.estado_civil"]', data.estado_civil, estadoCivilVacio);
         fillAndDisable('[data-bind="representante.nacionalidad"]', data.nacionalidad);
 
         showToast('Datos del representante autocompletados', 'success');
         const lockedFieldsRep = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'nacionalidad']
-            .filter(f => data[f] && !(f === 'estado_civil' && isEstadoCivilNoAplica));
+            .filter(f => data[f] && !(f === 'estado_civil' && estadoCivilVacio));
         caseData.representante._locked_fields = lockedFieldsRep;
     };
 

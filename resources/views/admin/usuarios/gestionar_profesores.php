@@ -21,13 +21,24 @@ ob_start();
         <h1>Gestión de Profesores</h1>
         <p>Registre y administre los profesores habilitados para supervisar secciones del simulador.</p>
     </div>
-    <button class="btn btn-primary" onclick="openCrearProfesor()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-        </svg>
-        Registrar Profesor
-    </button>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="openCrearProfesor()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Registrar Profesor
+        </button>
+        <button class="btn" style="background:#fff; color:var(--gray-700); padding:10px 16px; font-size:13px; border:1.5px solid var(--gray-300); border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.06);" onmouseover="this.style.background='var(--gray-50)';this.style.borderColor='var(--gray-400)'" onmouseout="this.style.background='#fff';this.style.borderColor='var(--gray-300)'" onclick="openImportarCSV()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="12" y1="18" x2="12" y2="12"/>
+                <polyline points="9 15 12 12 15 15"/>
+            </svg>
+            Importar CSV
+        </button>
+    </div>
 </div>
 
 <!-- Toolbar -->
@@ -40,6 +51,13 @@ ob_start();
             </svg>
             <input type="text" data-search-for="tbl-profesores" placeholder="Buscar por nombre, cédula o correo...">
         </div>
+        <button class="btn btn-secondary" id="btn-reload-tbl-profesores" data-reload-for="tbl-profesores" onclick="window.DataTableManager.reloadTableData('tbl-profesores');" title="Recargar tabla" style="padding: 10px; border-radius: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform-origin: center;">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+        </button>
     </div>
     <div class="toolbar-right">
         <label style="font-size:var(--text-xs); color:var(--gray-500); display:flex; align-items:center; gap:6px;">
@@ -63,9 +81,7 @@ ob_start();
             </tr>
         </thead>
         <tbody>
-            <?php if (empty($profesores)): ?>
-                <tr class="empty-row"><td colspan="7" style="text-align:center; padding:40px; color:var(--gray-400);">No se encontraron profesores registrados.</td></tr>
-            <?php else: ?>
+            <?php if (!empty($profesores)): ?>
                 <?php foreach ($profesores as $prof):
                     $nombres   = $prof['nombres'] ?? '';
                     $apellidos = $prof['apellidos'] ?? '';
@@ -74,13 +90,12 @@ ob_start();
                     $nac       = $prof['nacionalidad'] ?? 'V';
                     $email     = $prof['email'] ?? '';
                     $titulo    = ucfirst($prof['titulo'] ?? '');
-                    $genero    = $prof['genero'] ?? '';
                     $status    = $prof['status'] ?? 'active';
                     $secciones = (int)($prof['total_secciones'] ?? 0);
 
                     // Initials
                     $initials = mb_strtoupper(mb_substr($nombres, 0, 1) . mb_substr($apellidos, 0, 1));
-                    $avatarClass = ($genero === 'F') ? 'f' : 'm';
+                    $avatarClass = 'm';
 
                     // Status label
                     $statusLabel = $status === 'active' ? 'Activo' : ($status === 'inactive' ? 'Inactivo' : 'Bloqueado');
@@ -124,7 +139,7 @@ ob_start();
                                 </button>
                                 <?php if ($status === 'active'): ?>
                                 <button class="row-action-btn" title="Desactivar"
-                                    onclick="openToggleProfesor(<?= (int)($prof['user_id'] ?? 0) ?>, '<?= e($fullName) ?>', 'deactivate')" style="color:var(--red-500);">
+                                    onclick="openToggleProfesor(<?= (int)($prof['user_id'] ?? 0) ?>, '<?= e(addslashes($fullName)) ?>', 'deactivate')" style="color:var(--red-500);">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <circle cx="12" cy="12" r="10"/>
                                         <line x1="15" y1="9" x2="9" y2="15"/>
@@ -133,7 +148,7 @@ ob_start();
                                 </button>
                                 <?php else: ?>
                                 <button class="row-action-btn" title="Reactivar"
-                                    onclick="openToggleProfesor(<?= (int)($prof['user_id'] ?? 0) ?>, '<?= e($fullName) ?>', 'activate')" style="color:var(--green-600);">
+                                    onclick="openToggleProfesor(<?= (int)($prof['user_id'] ?? 0) ?>, '<?= e(addslashes($fullName)) ?>', 'activate')" style="color:var(--green-600);">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <circle cx="12" cy="12" r="10"/>
                                         <path d="m9 12 2 2 4-4"/>
@@ -158,18 +173,15 @@ ob_start();
      ============================================== -->
 
 <!-- Modal: Crear/Editar Profesor -->
-<div id="modal-profesor" class="modal-overlay">
-    <div class="modal">
-        <div class="modal-header">
-            <div>
-                <h2 id="modal-profesor-title">Registrar Profesor</h2>
-                <p>Complete los datos del profesor para habilitarlo en el sistema.</p>
-            </div>
-            <button class="modal-close" onclick="document.getElementById('modal-profesor').classList.remove('show')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            </button>
+<dialog class="modal-base" id="modal-profesor">
+    <div class="modal-base__container" style="max-width: 600px;">
+        <div class="modal-base__header">
+            <h2 class="modal-base__title" id="modal-profesor-title">Registrar Profesor</h2>
+            <button class="modal-base__close" onclick="window.modalManager.close('modal-profesor')" aria-label="Cerrar modal">&times;</button>
         </div>
-        <div class="modal-body">
+        <div class="modal-base__body">
+            <p style="font-size: 15px; color: var(--text-body); margin-bottom: 20px;">Complete los datos del profesor para habilitarlo en el sistema.</p>
+            
             <div class="form-grid">
                 <input type="hidden" id="profesor_id" value="">
 
@@ -215,50 +227,94 @@ ob_start();
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
-            <button class="btn" style="background:var(--gray-100); color:var(--gray-600); padding:10px 20px;"
-                    onclick="document.getElementById('modal-profesor').classList.remove('show')">
-                Cancelar
-            </button>
-            <button class="btn btn-primary" style="padding:10px 24px;" id="btn-guardar-profesor"
-                    onclick="guardarProfesor()">
-                Guardar Profesor
-            </button>
+        <div class="modal-base__footer">
+            <button class="modal-btn modal-btn-cancel" onclick="window.modalManager.close('modal-profesor')">Cancelar</button>
+            <button class="modal-btn modal-btn-primary" id="btn-guardar-profesor" onclick="guardarProfesor()">Guardar Profesor</button>
         </div>
     </div>
-</div>
+</dialog>
 
 <!-- Modal: Confirmar Activar/Desactivar -->
-<div id="modal-toggle" class="modal-overlay">
-    <div class="modal" style="max-width:480px;">
-        <div class="modal-header">
-            <div>
-                <h2 id="toggle-title">¿Desactivar profesor?</h2>
-                <p id="toggle-subtitle">El profesor no podrá acceder al sistema.</p>
-            </div>
-            <button class="modal-close" onclick="document.getElementById('modal-toggle').classList.remove('show')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            </button>
+<dialog class="modal-base" id="modal-toggle">
+    <div class="modal-base__container" style="max-width: 480px;">
+        <div class="modal-base__header">
+            <h2 class="modal-base__title" id="toggle-title">¿Desactivar profesor?</h2>
+            <button class="modal-base__close" onclick="window.modalManager.close('modal-toggle')" aria-label="Cerrar modal">&times;</button>
         </div>
-        <div class="modal-body">
-            <p style="font-size:14px; color:var(--gray-600); line-height:1.5;" id="toggle-body-text">
-                Al desactivar a <strong id="toggle-nombre"></strong>, perderá acceso al sistema.
+        <div class="modal-base__body">
+            <p style="font-size: 15px; color: var(--text-body); line-height: 1.5; margin-bottom: 0;" id="toggle-body-text">
+                Al desactivar a <strong>[Profesor]</strong>, perderá acceso al sistema.
                 Las secciones que tenga asignadas permanecerán intactas pero requerirán reasignación.
                 Esta acción puede revertirse.
             </p>
         </div>
-        <div class="modal-footer">
-            <button class="btn" style="background:var(--gray-100); color:var(--gray-600); padding:10px 20px;"
-                    onclick="document.getElementById('modal-toggle').classList.remove('show')">
-                Cancelar
-            </button>
-            <button class="btn" id="btn-toggle-confirm" style="background:var(--red-500); color:white; padding:10px 24px;"
-                    onclick="confirmarToggle()">
-                Desactivar
-            </button>
+        <div class="modal-base__footer" style="padding-top: 24px;">
+            <button class="modal-btn modal-btn-cancel" style="min-width: 120px;" onclick="window.modalManager.close('modal-toggle')">Cancelar</button>
+            <button class="modal-btn modal-btn-danger" id="btn-toggle-confirm" style="min-width: 120px;" onclick="confirmarToggle()">Desactivar</button>
         </div>
     </div>
-</div>
+</dialog>
+
+<!-- Modal: Importar CSV -->
+<dialog class="modal-base" id="modal-importar">
+    <div class="modal-base__container" style="max-width: 600px;">
+        <div class="modal-base__header">
+            <h2 class="modal-base__title">Importar Profesores desde CSV</h2>
+            <button class="modal-base__close" onclick="closeImportarCSV()" aria-label="Cerrar modal">&times;</button>
+        </div>
+        <div class="modal-base__body">
+            <p style="font-size: 15px; color: var(--text-body); margin-bottom: 20px;">Cargue un archivo .csv con los datos de los profesores a registrar.</p>
+            
+            <!-- Formato esperado -->
+            <div style="background:var(--gray-50); border:1px solid var(--gray-200); border-radius:8px; padding:14px 16px; margin-bottom:16px;">
+                <p style="font-size:12px; font-weight:600; color:var(--gray-600); margin:0 0 6px; text-transform:uppercase; letter-spacing:.5px;">Formato esperado (sin cabecera)</p>
+                <code style="display:block; font-size:12px; color:var(--gray-700); background:var(--gray-100); padding:8px 10px; border-radius:4px; line-height:1.6;">
+email,cédula,nombres,apellidos<br>
+profesor@correo.com,V12345678,Juan,Pérez<br>
+otro@correo.com,E87654321,María,López
+                </code>
+                <p style="font-size:11px; color:var(--gray-400); margin:8px 0 0;">La cédula debe iniciar con V o E seguido de 6-10 dígitos. Máximo 2MB.</p>
+            </div>
+
+            <!-- Drop zone -->
+            <div id="csv-dropzone" style="border:2px dashed var(--gray-300); border-radius:8px; padding:30px; text-align:center; cursor:pointer; transition:all .2s;" onclick="document.getElementById('csv-file-input').click()">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px;">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="12" y1="18" x2="12" y2="12"/>
+                    <polyline points="9 15 12 12 15 15"/>
+                </svg>
+                <p id="csv-dropzone-text" style="font-size:13px; color:var(--gray-500); margin:0;">Arrastra un archivo .csv aquí o haz click para seleccionar</p>
+                <input type="file" id="csv-file-input" accept=".csv" style="display:none;" onchange="handleCSVFile(this.files[0])">
+            </div>
+
+            <!-- Preview -->
+            <div id="csv-preview" style="display:none; margin-top:16px; max-height:220px; overflow-y:auto;">
+                <table class="data-table" style="font-size:12px;">
+                    <thead>
+                        <tr>
+                            <th style="width:30px">#</th>
+                            <th>Email</th>
+                            <th>Cédula</th>
+                            <th>Nombres</th>
+                            <th>Apellidos</th>
+                            <th style="width:50px">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="csv-preview-body"></tbody>
+                </table>
+                <p id="csv-preview-summary" style="font-size:12px; color:var(--gray-500); margin:8px 0 0; text-align:right;"></p>
+            </div>
+
+            <!-- Resultados post-importación -->
+            <div id="csv-results" style="display:none; margin-top:16px;"></div>
+        </div>
+        <div class="modal-base__footer">
+            <button class="modal-btn modal-btn-cancel" onclick="closeImportarCSV()">Cancelar</button>
+            <button class="modal-btn modal-btn-primary" id="btn-importar-csv" onclick="ejecutarImportacion()" disabled>Importar</button>
+        </div>
+    </div>
+</dialog>
 
 <script>
 const CSRF_TOKEN = '<?= \App\Core\Csrf::getToken() ?>';
@@ -277,27 +333,43 @@ function openCrearProfesor() {
     document.getElementById('profesor_email').value = '';
     document.getElementById('profesor_titulo').value = 'profesor';
     document.getElementById('modal-profesor-title').textContent = 'Registrar Profesor';
+    
+    // Ocultar error suavemente sin resetear de golpe usando el manager global
+    window.modalManager.clearError('modal-profesor');
+    
     // Habilitar campos para creación
     document.getElementById('profesor_nac').disabled = false;
     document.getElementById('profesor_cedula').disabled = false;
-    document.getElementById('btn-guardar-profesor').style.display = '';
-    document.getElementById('modal-profesor').classList.add('show');
+    
+    const btnGuardar = document.getElementById('btn-guardar-profesor');
+    btnGuardar.style.display = '';
+    btnGuardar.textContent = 'Guardar Profesor';
+    
+    window.modalManager.open('modal-profesor');
 }
 
 function openEditarProfesor(btn) {
-    document.getElementById('profesor_id').value = btn.dataset.id || '';
+    document.getElementById('profesor_id').value = btn.dataset.userId || '';
     document.getElementById('profesor_nombres').value = btn.dataset.nombres || '';
     document.getElementById('profesor_apellidos').value = btn.dataset.apellidos || '';
-    document.getElementById('profesor_nac').value = btn.dataset.tipoCedula || 'V';
+    document.getElementById('profesor_nac').value = btn.dataset.nacionalidad || 'V';
     document.getElementById('profesor_cedula').value = btn.dataset.cedula || '';
     document.getElementById('profesor_email').value = btn.dataset.email || '';
     document.getElementById('profesor_titulo').value = btn.dataset.titulo || 'profesor';
-    document.getElementById('modal-profesor-title').textContent = 'Detalles del Profesor';
-    // Deshabilitar campos de identidad (no se editan)
-    document.getElementById('profesor_nac').disabled = true;
-    document.getElementById('profesor_cedula').disabled = true;
-    document.getElementById('btn-guardar-profesor').style.display = 'none';
-    document.getElementById('modal-profesor').classList.add('show');
+    document.getElementById('modal-profesor-title').textContent = 'Actualizar Profesor';
+    
+    // Ocultar error suavemente usando el manager global
+    window.modalManager.clearError('modal-profesor');
+    
+    // Habilitar campos de identidad para correcciones (Opción B)
+    document.getElementById('profesor_nac').disabled = false;
+    document.getElementById('profesor_cedula').disabled = false;
+    
+    const btnGuardar = document.getElementById('btn-guardar-profesor');
+    btnGuardar.style.display = '';
+    btnGuardar.textContent = 'Actualizar Profesor';
+    
+    window.modalManager.open('modal-profesor');
 }
 
 function openToggleProfesor(userId, nombre, action) {
@@ -305,28 +377,30 @@ function openToggleProfesor(userId, nombre, action) {
     const isDeactivate = action === 'deactivate';
     
     document.getElementById('toggle-title').textContent = isDeactivate ? '¿Desactivar profesor?' : '¿Reactivar profesor?';
-    document.getElementById('toggle-subtitle').textContent = isDeactivate 
-        ? 'El profesor no podrá acceder al sistema.' 
-        : 'El profesor recuperará el acceso al sistema.';
-    document.getElementById('toggle-nombre').textContent = nombre;
+    
+    // Almacenamos el nombre en el botón para usarlo fácil luego
+    const confirmBtn = document.getElementById('btn-toggle-confirm');
+    confirmBtn.dataset.nombre = nombre;
     
     const bodyText = isDeactivate
         ? `Al desactivar a <strong>${nombre}</strong>, perderá acceso al sistema. Las secciones asignadas permanecerán intactas. Esta acción puede revertirse.`
         : `Al reactivar a <strong>${nombre}</strong>, podrá acceder nuevamente al sistema con su cuenta existente.`;
     document.getElementById('toggle-body-text').innerHTML = bodyText;
     
-    const confirmBtn = document.getElementById('btn-toggle-confirm');
     confirmBtn.textContent = isDeactivate ? 'Desactivar' : 'Reactivar';
     confirmBtn.style.background = isDeactivate ? 'var(--red-500)' : 'var(--green-600)';
     
-    document.getElementById('modal-toggle').classList.add('show');
+    window.modalManager.open('modal-toggle');
 }
 
 // ── AJAX: Guardar Profesor ──
 async function guardarProfesor() {
     const btn = document.getElementById('btn-guardar-profesor');
-    btn.disabled = true;
-    btn.textContent = 'Guardando...';
+    const profId = document.getElementById('profesor_id').value;
+    const isUpdate = profId !== '';
+
+    // Delegate exact width locking and loading state to the global manager
+    window.modalManager.setButtonLoading(btn);
 
     const body = new URLSearchParams({
         csrf_token:    CSRF_TOKEN,
@@ -338,8 +412,14 @@ async function guardarProfesor() {
         titulo:        document.getElementById('profesor_titulo').value
     });
 
+    if (isUpdate) {
+        body.append('user_id', profId);
+    }
+    
+    const url = isUpdate ? BASE_URL + '/admin/profesores/actualizar' : BASE_URL + '/admin/profesores/guardar';
+
     try {
-        const res = await fetch(BASE_URL + '/admin/profesores/guardar', {
+        const res = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body
@@ -347,18 +427,59 @@ async function guardarProfesor() {
         const data = await res.json();
 
         if (data.success) {
-            document.getElementById('modal-profesor').classList.remove('show');
+            window.modalManager.close('modal-profesor');
             showToast(data.message, 'success');
-            setTimeout(() => location.reload(), 1500);
+            
+            if (isUpdate) {
+                // Actualización interactiva en caliente (True AJAX sin recargar página)
+                const editBtn = document.querySelector(`button[onclick="openEditarProfesor(this)"][data-user-id="${profId}"]`);
+                if (editBtn) {
+                    const row = editBtn.closest('tr');
+                    
+                    const newNac = document.getElementById('profesor_nac').value;
+                    const newCedula = document.getElementById('profesor_cedula').value.trim();
+                    const newNombres = document.getElementById('profesor_nombres').value.trim();
+                    const newApellidos = document.getElementById('profesor_apellidos').value.trim();
+                    const newEmail = document.getElementById('profesor_email').value.trim();
+                    const newTitulo = document.getElementById('profesor_titulo').value;
+                    
+                    // 1. Actualizar el Dataset del botón para futuras ediciones
+                    editBtn.dataset.nombres = newNombres;
+                    editBtn.dataset.apellidos = newApellidos;
+                    editBtn.dataset.nacionalidad = newNac;
+                    editBtn.dataset.cedula = newCedula;
+                    editBtn.dataset.email = newEmail;
+                    editBtn.dataset.titulo = newTitulo;
+
+                    // 2. Transmutar el DOM visual a la nueva información
+                    if (row) {
+                        const avatar = row.querySelector('.causante-avatar');
+                        if (avatar) avatar.textContent = (newNombres.charAt(0) + newApellidos.charAt(0)).toUpperCase();
+                        
+                        const nameEl = row.querySelector('strong');
+                        if (nameEl) nameEl.textContent = newNombres + ' ' + newApellidos;
+                        
+                        const tds = row.querySelectorAll('td');
+                        if (tds.length >= 4) {
+                            tds[1].textContent = newNac + '-' + newCedula;
+                            tds[2].textContent = newEmail;
+                            tds[3].textContent = newTitulo.charAt(0).toUpperCase() + newTitulo.slice(1);
+                        }
+                    }
+                }
+            } else {
+                // Si es un profesor nuevo, recargamos silenciosamente usando DOM Morphing Global
+                window.DataTableManager.reloadTableData('tbl-profesores');
+            }
         } else {
-            showToast(data.message || 'Error al guardar.', 'error');
+            // Mostrar error usando el manager global (se encarga del shake y el scroll)
+            window.modalManager.showError('modal-profesor', data.message || 'Ocurrió un error al procesar la solicitud.');
         }
     } catch (err) {
         console.error(err);
-        showToast('Error de conexión al guardar.', 'error');
+        window.modalManager.showError('modal-profesor', 'No se pudo conectar con el servidor.');
     } finally {
-        btn.disabled = false;
-        btn.textContent = 'Guardar Profesor';
+        window.modalManager.resetButtonLoading(btn);
     }
 }
 
@@ -381,48 +502,206 @@ async function confirmarToggle() {
         });
         const data = await res.json();
 
-        document.getElementById('modal-toggle').classList.remove('show');
+        window.modalManager.close('modal-toggle');
         if (data.success) {
-            showToast(data.message, 'success');
-            setTimeout(() => location.reload(), 1200);
+            window.showToast(data.message, 'success');
+            
+            // Seamless AJAX DOM update instead of reloading
+            const isDeactivate = toggleState.action === 'deactivate';
+            const newAction = isDeactivate ? 'activate' : 'deactivate';
+            const newStatus = isDeactivate ? '0' : '1';
+            
+            // Find the edit button to locate the row (it has data-user-id)
+            const editBtn = document.querySelector(`button[onclick="openEditarProfesor(this)"][data-user-id="${toggleState.userId}"]`);
+            if (editBtn) {
+                editBtn.dataset.estado = newStatus;
+                
+                const row = editBtn.closest('tr');
+                if (row) {
+                    // 1. Update status badge
+                    const badge = row.querySelector('.status-badge');
+                    if (badge) {
+                        badge.textContent = isDeactivate ? 'Inactivo' : 'Activo';
+                        badge.className = 'status-badge ' + (isDeactivate ? 'status-draft' : 'status-published');
+                    }
+                    
+                    // 2. Update the toggle button itself
+                    const toggleBtn = Array.from(row.querySelectorAll('.row-action-btn')).find(b => 
+                        b.getAttribute('onclick')?.includes('openToggleProfesor')
+                    );
+                    if (toggleBtn) {
+                        const nombre = btn.dataset.nombre || '';
+                        // Escape quotes for the JS call
+                        const escapedNombre = nombre.replace(/'/g, "\\'");
+                        
+                        toggleBtn.setAttribute('onclick', `openToggleProfesor(${toggleState.userId}, '${escapedNombre}', '${newAction}')`);
+                        toggleBtn.title = isDeactivate ? 'Reactivar' : 'Desactivar';
+                        toggleBtn.style.color = isDeactivate ? 'var(--green-600)' : 'var(--red-500)';
+                        
+                        // Icon Update
+                        toggleBtn.innerHTML = isDeactivate 
+                            ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>`
+                            : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`;
+                    }
+                    
+                    // Update search payload for datatable
+                    if (row.dataset.search) {
+                        row.dataset.search = row.dataset.search.replace(isDeactivate ? 'activo' : 'inactivo', isDeactivate ? 'inactivo' : 'activo');
+                    }
+                }
+            }
+            // Trigger visual morphing map refresh
+            window.DataTableManager.updateData('tbl-profesores', document.querySelector('#tbl-profesores tbody').innerHTML);
+            
         } else {
-            showToast(data.message || 'Error al cambiar estado.', 'error');
+            window.showToast(data.message || 'Error al cambiar estado.', 'error');
         }
     } catch (err) {
         console.error(err);
-        showToast('Error de conexión.', 'error');
+        window.showToast('Error de conexión.', 'error');
     } finally {
         btn.disabled = false;
     }
 }
 
-// ── Toast notificación (sistema global — reutiliza toast.css) ──
-function showToast(message, type = 'error', duration = 4000) {
-    let container = document.getElementById('cc-toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'cc-toast-container';
-        document.body.appendChild(container);
-    }
-    const icons = {
-        error:   '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
-        success: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-        warning: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
-        info:    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+// ── CSV Import ──
+let csvSelectedFile = null;
+
+function openImportarCSV() {
+    csvSelectedFile = null;
+    document.getElementById('csv-file-input').value = '';
+    document.getElementById('csv-dropzone-text').textContent = 'Arrastra un archivo .csv aquí o haz click para seleccionar';
+    document.getElementById('csv-dropzone').style.borderColor = 'var(--gray-300)';
+    document.getElementById('csv-preview').style.display = 'none';
+    document.getElementById('csv-results').style.display = 'none';
+    document.getElementById('btn-importar-csv').disabled = true;
+    window.modalManager.open('modal-importar');
+}
+
+function closeImportarCSV() {
+    window.modalManager.close('modal-importar');
+}
+
+// Drag & drop
+(function() {
+    const dz = document.getElementById('csv-dropzone');
+    if (!dz) return;
+    ['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.style.borderColor = 'var(--primary)'; }));
+    ['dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.style.borderColor = 'var(--gray-300)'; }));
+    dz.addEventListener('drop', e => {
+        const file = e.dataTransfer.files[0];
+        if (file) handleCSVFile(file);
+    });
+})();
+
+function handleCSVFile(file) {
+    if (!file) return;
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (ext !== 'csv') { window.showToast('Solo se permiten archivos .csv', 'error'); return; }
+    if (file.size > 2 * 1024 * 1024) { window.showToast('El archivo excede 2MB.', 'error'); return; }
+
+    csvSelectedFile = file;
+    document.getElementById('csv-dropzone-text').textContent = '📄 ' + file.name;
+    document.getElementById('csv-dropzone').style.borderColor = 'var(--green-600)';
+    document.getElementById('csv-results').style.display = 'none';
+
+    // Parsear preview
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const lines = e.target.result.split(/\r?\n/).filter(l => l.trim() !== '');
+        const tbody = document.getElementById('csv-preview-body');
+        tbody.innerHTML = '';
+        let valid = 0, invalid = 0;
+        const delimiter = (lines[0] && lines[0].split(';').length > lines[0].split(',').length) ? ';' : ',';
+
+        lines.forEach((line, i) => {
+            const cols = line.split(delimiter).map(c => c.trim());
+            const tr = document.createElement('tr');
+            const num = i + 1;
+
+            // Client-side validation (MVC espejo)
+            const errors = [];
+            if (cols.length !== 4) errors.push('debe tener 4 columnas');
+            else {
+                if (!/^[^@]+@[^@]+\.[^@]+$/.test(cols[0])) errors.push('email');
+                if (!/^[VvEe]\d{6,10}$/.test(cols[1])) errors.push('cédula');
+                if (!cols[2] || cols[2].length < 2) errors.push('nombres');
+                if (!cols[3] || cols[3].length < 2) errors.push('apellidos');
+            }
+
+            const ok = errors.length === 0;
+            if (ok) valid++; else invalid++;
+
+            tr.innerHTML = `
+                <td>${num}</td>
+                <td>${cols[0] || ''}</td>
+                <td>${cols[1] || ''}</td>
+                <td>${cols[2] || ''}</td>
+                <td>${cols[3] || ''}</td>
+                <td><span style="color:${ok ? 'var(--green-600)' : 'var(--red-500)'}; font-size:14px;" title="${ok ? 'OK' : errors.join(', ')}">${ok ? '✔' : '✘'}</span></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('csv-preview-summary').textContent = `${valid} válida(s), ${invalid} con error(es) — Total: ${lines.length} fila(s)`;
+        document.getElementById('csv-preview').style.display = 'block';
+        document.getElementById('btn-importar-csv').disabled = valid === 0;
     };
-    const toast = document.createElement('div');
-    toast.className = 'cc-toast cc-toast--' + type;
-    toast.innerHTML = '<span class="cc-toast__icon">' + (icons[type] || icons.info) + '</span>' +
-        '<span class="cc-toast__msg">' + message + '</span>' +
-        '<button class="cc-toast__close" aria-label="Cerrar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
-    const dismiss = () => { toast.classList.add('cc-toast--exit'); toast.addEventListener('animationend', () => toast.remove()); };
-    toast.querySelector('.cc-toast__close').addEventListener('click', dismiss);
-    container.appendChild(toast);
-    if (duration > 0) setTimeout(dismiss, duration);
+    reader.readAsText(file, 'UTF-8');
+}
+
+async function ejecutarImportacion() {
+    if (!csvSelectedFile) return;
+
+    const btn = document.getElementById('btn-importar-csv');
+    btn.disabled = true;
+    btn.textContent = 'Importando...';
+
+    const formData = new FormData();
+    formData.append('csrf_token', CSRF_TOKEN);
+    formData.append('csv', csvSelectedFile);
+
+    try {
+        const res = await fetch(BASE_URL + '/admin/profesores/importar', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await res.json();
+
+        const resultsDiv = document.getElementById('csv-results');
+        resultsDiv.style.display = 'block';
+
+        if (data.success) {
+            let html = `<div style="background:#e8f5e9; border-left:4px solid #4caf50; padding:12px 16px; border-radius:0 6px 6px 0; margin-bottom:8px;">
+                <strong>✔ ${data.message}</strong></div>`;
+
+            if (data.errors && data.errors.length > 0) {
+                html += `<div style="background:#fff3e0; border-left:4px solid #ff9800; padding:12px 16px; border-radius:0 6px 6px 0; font-size:12px; max-height:150px; overflow-y:auto;">
+                    <strong>Detalles de filas omitidas:</strong><ul style="margin:6px 0 0; padding-left:18px;">`;
+                data.errors.forEach(err => html += `<li>${err}</li>`);
+                html += '</ul></div>';
+            }
+
+            resultsDiv.innerHTML = html;
+
+            if (data.created > 0) {
+                setTimeout(() => location.reload(), 2500);
+            }
+        } else {
+            resultsDiv.innerHTML = `<div style="background:#ffebee; border-left:4px solid #f44336; padding:12px 16px; border-radius:0 6px 6px 0;">
+                <strong>✘ ${data.message}</strong></div>`;
+        }
+    } catch (err) {
+        console.error(err);
+        window.showToast('Error de conexión al importar.', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Importar';
+    }
 }
 
 // ── Close modals on click outside / Escape ──
-['modal-profesor', 'modal-toggle'].forEach(id => {
+['modal-profesor', 'modal-toggle', 'modal-importar'].forEach(id => {
     document.getElementById(id)?.addEventListener('click', function(e) {
         if (e.target === this) this.classList.remove('show');
     });
@@ -431,104 +710,10 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
         document.getElementById('modal-profesor')?.classList.remove('show');
         document.getElementById('modal-toggle')?.classList.remove('show');
+        document.getElementById('modal-importar')?.classList.remove('show');
     }
 });
 
-// ── DataTable Engine ──
-(function() {
-    const table = document.getElementById('tbl-profesores');
-    if (!table) return;
-    const tbody = table.querySelector('tbody');
-    const rows = Array.from(tbody.querySelectorAll('tr[data-search]'));
-    if (rows.length === 0) return;
-
-    const searchInput = document.querySelector('[data-search-for="tbl-profesores"]');
-    const perPageSel = document.querySelector('[data-perpage-for="tbl-profesores"]');
-    const footer = document.querySelector('[data-footer-for="tbl-profesores"]');
-    const footerInfo = footer?.querySelector('.table-footer-info');
-    const paginationEl = footer?.querySelector('.pagination');
-
-    let searchTerm = '', currentPage = 1, sortCol = null, sortDir = 1;
-
-    function getPerPage() { return parseInt(perPageSel?.value || '10', 10); }
-
-    function getVisible() {
-        return rows.filter(r => !searchTerm || (r.dataset.search || '').includes(searchTerm));
-    }
-
-    function sortRows(arr) {
-        if (sortCol === null) return arr;
-        return arr.slice().sort((a, b) => {
-            const va = (a.children[sortCol]?.textContent || '').trim().toLowerCase();
-            const vb = (b.children[sortCol]?.textContent || '').trim().toLowerCase();
-            const na = parseFloat(va.replace(/[^\d.-]/g, ''));
-            const nb = parseFloat(vb.replace(/[^\d.-]/g, ''));
-            if (!isNaN(na) && !isNaN(nb)) return sortDir * (na - nb);
-            return sortDir * va.localeCompare(vb);
-        });
-    }
-
-    function render() {
-        const PER_PAGE = getPerPage();
-        const visible = sortRows(getVisible());
-        const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
-        if (currentPage > totalPages) currentPage = totalPages;
-        const start = (currentPage - 1) * PER_PAGE;
-        const pageRows = visible.slice(start, start + PER_PAGE);
-
-        rows.forEach(r => r.style.display = 'none');
-        pageRows.forEach(r => r.style.display = '');
-
-        if (footerInfo) {
-            const from = visible.length > 0 ? start + 1 : 0;
-            const to = Math.min(start + PER_PAGE, visible.length);
-            footerInfo.innerHTML = `Mostrando <strong>${from}</strong> a <strong>${to}</strong> de <strong>${visible.length}</strong> registros`;
-        }
-
-        if (paginationEl) {
-            paginationEl.innerHTML = '';
-            if (totalPages > 1) {
-                const prev = document.createElement('button');
-                prev.innerHTML = '‹'; prev.disabled = currentPage === 1;
-                prev.addEventListener('click', () => { currentPage--; render(); });
-                paginationEl.appendChild(prev);
-                for (let p = 1; p <= totalPages; p++) {
-                    const b = document.createElement('button');
-                    b.textContent = p;
-                    if (p === currentPage) b.classList.add('active');
-                    b.addEventListener('click', () => { currentPage = p; render(); });
-                    paginationEl.appendChild(b);
-                }
-                const next = document.createElement('button');
-                next.innerHTML = '›'; next.disabled = currentPage === totalPages;
-                next.addEventListener('click', () => { currentPage++; render(); });
-                paginationEl.appendChild(next);
-            }
-        }
-    }
-
-    searchInput?.addEventListener('input', e => {
-        searchTerm = e.target.value.toLowerCase().trim();
-        currentPage = 1;
-        render();
-    });
-
-    perPageSel?.addEventListener('change', () => { currentPage = 1; render(); });
-
-    table.querySelectorAll('th.sortable[data-col]').forEach(th => {
-        th.style.cursor = 'pointer';
-        th.addEventListener('click', () => {
-            const col = parseInt(th.dataset.col, 10);
-            if (sortCol === col) sortDir *= -1;
-            else { sortCol = col; sortDir = 1; }
-            table.querySelectorAll('th.sortable').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
-            th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
-            render();
-        });
-    });
-
-    render();
-})();
 </script>
 
 <?php

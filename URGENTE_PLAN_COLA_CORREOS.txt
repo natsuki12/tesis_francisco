@@ -1,0 +1,92 @@
+============================================================
+  PLAN DE IMPLEMENTACIÓN — COLA DE CORREOS (4 FASES)
+  Sistema: SPDSS | Última actualización: 2026-03-25 01:18am
+============================================================
+
+ESTADO ACTUAL: FASE 1 COMPLETADA ✓ — Continuar con FASE 2
+
+============================================================
+  FASE 1: Core del Servicio ✅ COMPLETADA
+============================================================
+ARCHIVO: src/Core/MailQueueService.php (CREADO Y VERIFICADO)
+
+Lo que se implementó:
+  - public const MAX_RETRIES = 4
+  - calcularNextRetry(): pow(2, $intentos) * 2 → 4, 8, 16 min
+  - insertQueue(): INSERT genérico con NOW() de MySQL para timestamps
+  - send(): envío directo + fallback a cola (bienvenida, rif_sucesoral)
+  - sendDirect(): envío directo + solo historial (reset_password)
+  - processPending(): file lock + try/catch individual + LIMIT 20
+  - getStats(): conteos para stat cards
+  - getAll(): registros para DataTable (sin cuerpo, LIMIT 500)
+
+Bugs corregidos durante la fase:
+  1. Precedencia de operadores en calcularNextRetry → paréntesis
+  2. PDO placeholder en INTERVAL → interpolación segura de int
+  3. Timestamps PHP vs MySQL → todo usa NOW() de MySQL
+  4. Mailer::send() sin try/catch → envuelto en \Throwable
+  5. intentos=0 → corregido a intentos=1 (envío directo cuenta)
+
+Tests: Todos pasan (getStats, getAll, send, sendDirect, processPending)
+
+============================================================
+  FASE 2: Integrar Puntos de Envío ← SIGUIENTE
+============================================================
+Reemplazar Mailer::send() por MailQueueService en 3 puntos.
+
+  1. ProfesoresController.php (~línea 128)
+     ANTES:  Mailer::send($email, $subject, $body)
+     AHORA:  MailQueueService::send($email, $subject, $body, 'bienvenida', $userId)
+     referencia_id = NULL
+
+  2. PasswordRecoveryService.php (~línea 79)
+     ANTES:  Mailer::send($email, $subject, $body)
+     AHORA:  MailQueueService::sendDirect($email, $subject, $body, 'reset_password', $user['id'])
+     NUNCA reintenta
+
+  3. RSMailerService.php → solo enviarExito() (~línea 66)
+     ANTES:  Mailer::send($destinatario, $subject, $body)
+     AHORA:  MailQueueService::send($destinatario, $subject, $body, 'rif_sucesoral', null, $intentoId)
+     referencia_id = $intentoId
+
+     enviarDiscrepancias() → NO se toca, se eliminará pronto
+
+VERIFICACIÓN: Registrar profesor, solicitar reset, completar simulación
+
+============================================================
+  FASE 3: Panel de Correos con Datos Reales
+============================================================
+  1. CorreosController.php → usar getStats(), getAll(), nuevo procesarCola()
+  2. correos.php → botón "Procesar Cola", columna Tipo, Intentos X/4
+  3. web.php → ruta POST /admin/monitoreo/correos/procesar
+
+============================================================
+  FASE 4: Script CLI para CRON
+============================================================
+  ARCHIVO NUEVO: scripts/process_mail_queue.php
+  - Carga vendor/autoload.php + .env manual (como App::loadEnv)
+  - Llama MailQueueService::processPending()
+  - Producción: */2 * * * * php scripts/process_mail_queue.php
+
+============================================================
+  ARCHIVOS RESUMEN
+============================================================
+COMPLETADOS:
+  ✅ src/Core/MailQueueService.php (Fase 1)
+  ✅ Tabla mail_queue en BD
+
+POR MODIFICAR (Fase 2):
+  - src/Modules/Admin/Controllers/Usuarios/ProfesoresController.php
+  - src/Modules/Auth/Services/PasswordRecoveryService.php
+  - src/Modules/Simulator/Services/RSMailerService.php
+
+POR MODIFICAR (Fase 3):
+  - src/Modules/Admin/Controllers/Monitoreo/CorreosController.php
+  - resources/views/admin/monitoreo/correos.php
+  - routes/web.php
+
+POR CREAR (Fase 4):
+  - scripts/process_mail_queue.php
+
+NO SE MODIFICA:
+  - src/Core/Mailer.php (queda puro, solo SMTP)

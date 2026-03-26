@@ -10,7 +10,7 @@ use App\Core\BitacoraModel;
 
 /**
  * Controlador para completar perfil en el primer login de un profesor.
- * Muestra formulario para: fecha_nacimiento, género, nueva contraseña.
+ * Muestra formulario para: nueva contraseña.
  */
 class CompletarPerfilController
 {
@@ -54,31 +54,11 @@ class CompletarPerfilController
             }
 
             // Datos
-            $fechaNacimiento = trim($_POST['fecha_nacimiento'] ?? '');
-            $genero          = trim($_POST['genero'] ?? '');
             $password        = $_POST['password'] ?? '';
             $passwordConfirm = $_POST['password_confirm'] ?? '';
 
             // Validaciones
             $errors = [];
-
-            // Fecha válida
-            if (!$fechaNacimiento || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $fechaNacimiento)) {
-                $errors[] = 'Fecha de nacimiento inválida.';
-            } else {
-                $dt = \DateTime::createFromFormat('Y-m-d', $fechaNacimiento);
-                if (!$dt || $dt->format('Y-m-d') !== $fechaNacimiento) {
-                    $errors[] = 'Fecha de nacimiento no es real.';
-                } elseif ($dt > new \DateTime()) {
-                    $errors[] = 'La fecha de nacimiento no puede ser futura.';
-                }
-            }
-
-            // Género (enum: M, F, Otro, Prefiero no decir)
-            $generosValidos = ['M', 'F', 'Otro', 'Prefiero no decir'];
-            if ($genero !== '' && !in_array($genero, $generosValidos, true)) {
-                $errors[] = 'Género inválido.';
-            }
 
             // Contraseña
             if (mb_strlen($password) < 8) {
@@ -98,23 +78,11 @@ class CompletarPerfilController
 
             // Actualizar BD
             $db = DB::connect();
-            $db->beginTransaction();
 
             try {
-                $personaId = (int) $_SESSION['persona_id'];
-                $userId    = (int) $_SESSION['user_id'];
+                $userId = (int) $_SESSION['user_id'];
 
-                // 1. UPDATE personas
-                $stmt = $db->prepare("
-                    UPDATE personas SET fecha_nacimiento = :fn, genero = :gen WHERE id = :pid
-                ");
-                $stmt->execute([
-                    ':fn'  => $fechaNacimiento,
-                    ':gen' => $genero ?: null,
-                    ':pid' => $personaId,
-                ]);
-
-                // 2. UPDATE users
+                // UPDATE users — cambiar contraseña y quitar flag
                 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
                 $stmt = $db->prepare("
                     UPDATE users SET password = :pass, force_password_change = 0, updated_at = NOW() WHERE id = :uid
@@ -123,8 +91,6 @@ class CompletarPerfilController
                     ':pass' => $passwordHash,
                     ':uid'  => $userId,
                 ]);
-
-                $db->commit();
 
                 // Limpiar flag de sesión
                 unset($_SESSION['force_password_change']);
@@ -144,7 +110,6 @@ class CompletarPerfilController
                 exit;
 
             } catch (\Throwable $e) {
-                $db->rollBack();
                 throw $e;
             }
 

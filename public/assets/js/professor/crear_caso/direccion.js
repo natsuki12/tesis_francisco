@@ -269,7 +269,7 @@ export function saveDireccion() {
         }
     });
 
-    // Leer inputs manuales de nro_inmueble
+    // Leer inputs manuales de nombre_inmueble y nro_inmueble (campos separados)
     const elDesc = document.getElementById('input_desc_inmueble');
     const elNum = document.getElementById('input_piso_nivel');
     let desc = elDesc ? elDesc.value.trim().toUpperCase() : '';
@@ -287,26 +287,19 @@ export function saveDireccion() {
         return;
     }
 
-    // Construir nro_inmueble lógicamente
-    let finalDesc = desc || 'NO APLICA';
-    let finalInmueble = '';
-
+    // Validar piso/nro obligatorio para Edificios y Centros Comerciales
     if (d.tipo_inmueble === 'Edificio') {
         if (!num) { showToast('El piso es obligatorio para Edificios.'); return; }
-        finalInmueble = `${finalDesc} - PISO ${num}`;
     } else if (d.tipo_inmueble === 'Centro_Comercial') {
         if (!num) { showToast('El nivel es obligatorio para Centros Comerciales.'); return; }
-        finalInmueble = `${finalDesc} - NIVEL ${num}`;
-    } else {
-        if (desc && num) finalInmueble = `${finalDesc} - NRO ${num}`;
-        else if (desc && !num) finalInmueble = finalDesc;
-        else if (!desc && num) finalInmueble = `NO APLICA - NRO ${num}`;
     }
 
-    d.nro_inmueble = finalInmueble;
+    // Guardar campos normalizados (separados)
+    d.nombre_inmueble = desc || 'NO APLICA';
+    d.nro_inmueble = num || null;
 
     if (!d.tipo_direccion || !d.tipo_vialidad || !d.tipo_inmueble || !d.nombre_vialidad ||
-        !d.nro_inmueble || !d.tipo_sector || !d.nombre_sector ||
+        !d.nombre_inmueble || !d.tipo_sector || !d.nombre_sector ||
         !d.estado || !d.municipio || !d.parroquia || !d.ciudad || !d.codigo_postal_id) {
         showToast('Complete todos los campos base requeridos (incluyendo Código Postal).');
         return;
@@ -372,7 +365,7 @@ export function renderDirecciones() {
             <td>${dir.tipo_direccion.replace(/_/g, ' ')}</td>
             <td>
                 <strong>${dir.tipo_vialidad}</strong>: ${dir.nombre_vialidad}<br>
-                <strong>${dir.tipo_inmueble}</strong>: ${dir.nro_inmueble} (${dir.tipo_nivel} ${dir.nro_nivel})<br>
+                <strong>${dir.tipo_inmueble}</strong>: ${dir.nombre_inmueble || ''}${dir.nro_inmueble ? ' - ' + dir.nro_inmueble : ''} (${dir.tipo_nivel} ${dir.nro_nivel})<br>
                 <strong>${dir.tipo_sector}</strong>: ${dir.nombre_sector}
             </td>
             <td>Edo. ${getOptionText('estado', dir.estado)}, Mun. ${getOptionText('municipio', dir.municipio)}, Pq. ${getOptionText('parroquia', dir.parroquia)}, ${getOptionText('ciudad', dir.ciudad)}</td>
@@ -443,19 +436,9 @@ export async function editDireccion(index) {
         }
     });
 
-    // 5. Restaurar campos manuales desc_inmueble y piso_nivel a partir de nro_inmueble
-    let desc = '', num = '';
-    if (dir.nro_inmueble) {
-        if (dir.nro_inmueble.includes(' - PISO ')) {
-            [desc, num] = dir.nro_inmueble.split(' - PISO ');
-        } else if (dir.nro_inmueble.includes(' - NIVEL ')) {
-            [desc, num] = dir.nro_inmueble.split(' - NIVEL ');
-        } else if (dir.nro_inmueble.includes(' - NRO ')) {
-            [desc, num] = dir.nro_inmueble.split(' - NRO ');
-        } else {
-            desc = dir.nro_inmueble;
-        }
-    }
+    // 5. Restaurar campos manuales desc_inmueble y piso_nivel (ya normalizados)
+    let desc = dir.nombre_inmueble || '';
+    let num = dir.nro_inmueble || '';
     if (desc === 'NO APLICA') desc = '';
 
     const elDesc = document.getElementById('input_desc_inmueble');

@@ -11,8 +11,7 @@ $breadcrumbs = [
 
 $extraCss = '<link rel="stylesheet" href="' . asset('css/shared/data-table.css') . '">';
 
-// Datos inyectados por el controlador (fallback a arrays vacíos)
-$eventos = $eventos ?? [];
+// Datos inyectados por el controlador (dropdown data only — rows load via API)
 $emails  = $emails  ?? [];
 $tipos   = $tipos   ?? [];
 $modulos = $modulos ?? [];
@@ -57,7 +56,7 @@ ob_start();
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.35-4.35" />
             </svg>
-            <input type="text" id="search-bitacora" placeholder="Buscar por usuario, IP o descripción...">
+            <input type="text" data-search-for="tbl-bitacora" placeholder="Buscar por usuario, IP o descripción...">
         </div>
 
         <select id="filter-modulo" class="filter-select">
@@ -97,7 +96,7 @@ ob_start();
     <div class="toolbar-right">
         <label style="font-size:var(--text-xs, 13px); color:var(--gray-500, #64748b); display:flex; align-items:center; gap:6px;">
             Mostrar
-            <select id="per-page" class="per-page-select">
+            <select data-perpage-for="tbl-bitacora" class="per-page-select">
                 <option value="10">10</option>
                 <option value="15" selected>15</option>
                 <option value="25">25</option>
@@ -108,259 +107,111 @@ ob_start();
     </div>
 </div>
 
-<!-- Data Table -->
+<!-- Data Table (Server-Side) -->
 <div class="table-container">
-    <table class="data-table">
+    <table class="data-table" id="tbl-bitacora"
+           data-server-url="<?= base_url('/admin/monitoreo/bitacora/api') ?>"
+           data-render="renderBitacoraRow"
+           data-columns='["email","modulo","evento","detalle","ip_address","created_at"]'>
         <thead>
             <tr>
-                <th class="sortable" data-sort="timestamp" style="width: 14%">Timestamp</th>
-                <th class="sortable" data-sort="usuario" style="width: 17%">Usuario</th>
-                <th class="sortable" data-sort="modulo" style="width: 12%">Módulo</th>
-                <th class="sortable" data-sort="evento" style="width: 22%">Evento</th>
-                <th class="sortable" data-sort="descripcion" style="width: 22%">Detalle</th>
+                <th class="sortable" data-sort-key="created_at" style="width: 14%">Timestamp</th>
+                <th class="sortable" data-sort-key="email" style="width: 17%">Usuario</th>
+                <th class="sortable" data-sort-key="modulo" style="width: 12%">Módulo</th>
+                <th class="sortable" data-sort-key="evento" style="width: 22%">Evento</th>
+                <th class="sortable" data-sort-key="detalle" style="width: 22%">Detalle</th>
                 <th style="width: 13%">IP</th>
             </tr>
         </thead>
-        <tbody id="bitacora-tbody" style="font-size: 13px; font-family: var(--font-ui);">
-            <?php if (empty($eventos)): ?>
-                <tr>
-                    <td colspan="6" style="text-align:center; padding:40px; color:var(--gray-400);">
-                        No se encontraron eventos en la bitácora.
-                    </td>
-                </tr>
-            <?php else: ?>
-                <?php
-                // Mapa de colores por nivel_riesgo
-                $riskColors = [
-                    'info'     => 'background:#eff6ff; color:#1d4ed8;',
-                    'warning'  => 'background:#fffbeb; color:#b45309;',
-                    'critical' => 'background:#fef2f2; color:#b91c1c;',
-                ];
-                // Mapa legible de módulos
-                $moduloLabels = $modulos;
-                // Mapa legible de entidades
-                $entidadLabels = [
-                    'users'                => 'Usuario',
-                    'sim_casos_estudios'   => 'Caso',
-                    'sim_intentos'         => 'Intento',
-                    'sim_asignaciones'     => 'Asignación',
-                    'sim_config_caso'      => 'Config',
-                ];
-                ?>
-                <?php foreach ($eventos as $ev): ?>
-                    <?php
-                    $ts          = $ev['created_at'] ?? '';
-                    $email       = $ev['email'] ?? 'Desconocido';
-                    $evento      = $ev['evento'] ?? 'Sin tipo';
-                    $riesgo      = $ev['nivel_riesgo'] ?? 'info';
-                    $modulo      = $ev['modulo'] ?? 'autenticacion';
-                    $entTipo     = $ev['entidad_tipo'] ?? '';
-                    $entId       = $ev['entidad_id'] ?? null;
-                    $detalle     = $ev['detalle'] ?? '';
-                    $ip          = $ev['ip_address'] ?? '—';
-                    $badgeStyle  = $riskColors[$riesgo] ?? $riskColors['info'];
-                    $moduloLabel = $moduloLabels[$modulo] ?? ucfirst($modulo);
-
-                    // Formato de timestamp legible
-                    $tsFormatted = '';
-                    if ($ts) {
-                        try {
-                            $date = new \DateTime($ts);
-                            $tsFormatted = $date->format('d M Y, H:i:s');
-                        } catch (\Throwable $e) {
-                            $tsFormatted = e($ts);
-                        }
-                    }
-
-                    // Armar texto de detalle: entidad + detalle
-                    $detalleTexto = '';
-                    if ($entTipo && $entId) {
-                        $entLabel = $entidadLabels[$entTipo] ?? $entTipo;
-                        $detalleTexto = $entLabel . ' #' . $entId;
-                        if ($detalle) {
-                            $detalleTexto .= ' — ' . $detalle;
-                        }
-                    } else {
-                        $detalleTexto = $detalle ?: '—';
-                    }
-                    ?>
-                    <tr data-timestamp="<?= e($ts) ?>"
-                        data-usuario="<?= e(mb_strtolower($email)) ?>"
-                        data-modulo="<?= e($modulo) ?>"
-                        data-evento="<?= e(mb_strtolower($evento)) ?>"
-                        data-descripcion="<?= e(mb_strtolower($detalleTexto)) ?>"
-                        data-ip="<?= e(mb_strtolower($ip)) ?>">
-                        <td style="color: var(--color-text-light);"><?= e($tsFormatted) ?></td>
-                        <td><strong><?= e($email) ?></strong></td>
-                        <td><span style="font-size:12px; color:var(--gray-500);"><?= e($moduloLabel) ?></span></td>
-                        <td><span class="status-badge" style="<?= $badgeStyle ?>"><?= e($evento) ?></span></td>
-                        <td><?= e($detalleTexto) ?></td>
-                        <td style="color: var(--color-text-light); font-size: 12px;"><?= e($ip) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </tbody>
+        <tbody style="font-size: 13px; font-family: var(--font-ui);"></tbody>
     </table>
 
-    <!-- Table Footer -->
-    <div class="table-footer">
-        <div class="table-footer-info">
-            Mostrando <strong>0</strong> de <strong>0</strong> eventos
-        </div>
+    <div class="table-footer" data-footer-for="tbl-bitacora">
+        <div class="table-footer-info"></div>
         <div class="pagination"></div>
     </div>
 </div>
 
 <script>
 (function () {
-    const tbody = document.getElementById('bitacora-tbody');
-    if (!tbody) return;
+    // ── Mapa de módulos (desde PHP) ──
+    var MODULO_LABELS = <?= json_encode($modulos) ?>;
+    // Mapa de entidades
+    var ENTIDAD_LABELS = {
+        'users': 'Usuario',
+        'sim_casos_estudios': 'Caso',
+        'sim_intentos': 'Intento',
+        'sim_asignaciones': 'Asignación',
+        'sim_config_caso': 'Config'
+    };
+    // Colores por nivel de riesgo
+    var RISK_COLORS = {
+        'info':     'background:#eff6ff; color:#1d4ed8;',
+        'warning':  'background:#fffbeb; color:#b45309;',
+        'critical': 'background:#fef2f2; color:#b91c1c;'
+    };
 
-    const searchInput   = document.getElementById('search-bitacora');
-    const filterModulo  = document.getElementById('filter-modulo');
-    const filterEvento  = document.getElementById('filter-evento');
-    const filterUser    = document.getElementById('filter-usuario');
-    const perPageSel    = document.getElementById('per-page');
-    const dateFrom      = document.getElementById('date-from');
-    const dateTo        = document.getElementById('date-to');
-    const dateClear     = document.getElementById('date-clear');
-    const footerInfo    = document.querySelector('.table-footer-info');
-    const paginationEl  = document.querySelector('.pagination');
-
-    let searchTerm = '', activeModulo = 'Todos', activeEvento = 'Todos', activeUser = 'Todos';
-    let sortKey = null, sortDir = 1, currentPage = 1;
-
-    function getPerPage() { return parseInt(perPageSel.value, 10) || 15; }
-
-    // ── Filtro ──
-    function getVisible() {
-        const fromVal = dateFrom.value;
-        const toVal   = dateTo.value;
-        return Array.from(tbody.querySelectorAll('tr[data-usuario]')).filter(r => {
-            // Filtro por módulo
-            if (activeModulo !== 'Todos' && r.dataset.modulo !== activeModulo) return false;
-            // Filtro por tipo de evento
-            if (activeEvento !== 'Todos' && r.dataset.evento !== activeEvento.toLowerCase()) return false;
-            // Filtro por usuario
-            if (activeUser !== 'Todos' && r.dataset.usuario !== activeUser.toLowerCase()) return false;
-            // Filtro de fechas
-            if (fromVal || toVal) {
-                const rowDate = r.dataset.timestamp.slice(0, 10);
-                if (fromVal && rowDate < fromVal) return false;
-                if (toVal && rowDate > toVal) return false;
-            }
-            if (!searchTerm) return true;
-            return r.dataset.usuario.includes(searchTerm) ||
-                   r.dataset.evento.includes(searchTerm) ||
-                   r.dataset.descripcion.includes(searchTerm) ||
-                   r.dataset.ip.includes(searchTerm);
-        });
-    }
-
-    // ── Sort ──
-    function sortRows(rows) {
-        if (!sortKey) return rows;
-        return rows.slice().sort((a, b) => {
-            const va = a.dataset[sortKey] || '';
-            const vb = b.dataset[sortKey] || '';
-            return va < vb ? -sortDir : va > vb ? sortDir : 0;
-        });
-    }
-
-    // ── Render ──
-    function render() {
-        const PER_PAGE = getPerPage();
-        const visible = sortRows(getVisible());
-        const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
-        if (currentPage > totalPages) currentPage = totalPages;
-        const start = (currentPage - 1) * PER_PAGE;
-        const pageRows = visible.slice(start, start + PER_PAGE);
-
-        // Reorder DOM
-        visible.forEach(r => tbody.appendChild(r));
-
-        // Hide all, show page
-        Array.from(tbody.querySelectorAll('tr[data-usuario]')).forEach(r => r.style.display = 'none');
-        pageRows.forEach(r => r.style.display = '');
-
-        // Footer info
-        if (footerInfo) {
-            footerInfo.innerHTML = 'Mostrando <strong>' + pageRows.length + '</strong> de <strong>' + visible.length + '</strong> eventos';
+    // ── Custom Row Renderer (llamado por DataTableManager) ──
+    window.renderBitacoraRow = function(row) {
+        // Timestamp formateado
+        var ts = row.created_at || '';
+        var tsFormatted = '';
+        if (ts) {
+            try {
+                var d = new Date(ts.replace(' ', 'T'));
+                var months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+                tsFormatted = d.getDate().toString().padStart(2,'0') + ' ' + months[d.getMonth()] + ' ' + d.getFullYear() + ', ' +
+                    d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0') + ':' + d.getSeconds().toString().padStart(2,'0');
+            } catch(e) { tsFormatted = ts; }
         }
 
-        // Pagination
-        if (paginationEl) {
-            paginationEl.innerHTML = '';
-            const prev = document.createElement('button');
-            prev.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>';
-            prev.disabled = currentPage === 1;
-            prev.addEventListener('click', () => { currentPage--; render(); });
-            paginationEl.appendChild(prev);
-
-            let pages = [];
-            if (totalPages <= 7) {
-                for (let i = 1; i <= totalPages; i++) pages.push(i);
-            } else {
-                pages = [1];
-                if (currentPage > 3) pages.push('...');
-                for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) pages.push(i);
-                if (currentPage < totalPages - 2) pages.push('...');
-                pages.push(totalPages);
-            }
-            pages.forEach(p => {
-                if (p === '...') {
-                    const span = document.createElement('span');
-                    span.textContent = '…'; span.style.padding = '0 4px'; span.style.color = 'var(--gray-400)';
-                    paginationEl.appendChild(span);
-                } else {
-                    const b = document.createElement('button');
-                    b.textContent = p;
-                    if (p === currentPage) b.classList.add('active');
-                    b.addEventListener('click', () => { currentPage = p; render(); });
-                    paginationEl.appendChild(b);
-                }
-            });
-
-            const next = document.createElement('button');
-            next.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
-            next.disabled = currentPage === totalPages;
-            next.addEventListener('click', () => { currentPage++; render(); });
-            paginationEl.appendChild(next);
+        // Detalle
+        var detalleTexto = '';
+        if (row.entidad_tipo && row.entidad_id) {
+            detalleTexto = (ENTIDAD_LABELS[row.entidad_tipo] || row.entidad_tipo) + ' #' + row.entidad_id;
+            if (row.detalle) detalleTexto += ' — ' + row.detalle;
+        } else {
+            detalleTexto = row.detalle || '—';
         }
+
+        var moduloLabel = MODULO_LABELS[row.modulo] || row.modulo || '';
+        var badgeStyle = RISK_COLORS[row.nivel_riesgo] || RISK_COLORS['info'];
+        var evento = row.evento || 'Sin tipo';
+
+        return '<tr>' +
+            '<td style="color:var(--color-text-light);">' + escHtml(tsFormatted) + '</td>' +
+            '<td><strong>' + escHtml(row.email || '') + '</strong></td>' +
+            '<td><span style="font-size:12px; color:var(--gray-500);">' + escHtml(moduloLabel) + '</span></td>' +
+            '<td><span class="status-badge" style="' + badgeStyle + '">' + escHtml(evento) + '</span></td>' +
+            '<td>' + escHtml(detalleTexto) + '</td>' +
+            '<td style="color:var(--color-text-light); font-size:12px;">' + escHtml(row.ip_address || '—') + '</td>' +
+        '</tr>';
+    };
+
+    function escHtml(s) {
+        var d = document.createElement('div');
+        d.textContent = String(s);
+        return d.innerHTML;
     }
 
-    // ── Event Listeners ──
-    searchInput.addEventListener('input', () => {
-        searchTerm = searchInput.value.toLowerCase().trim();
-        currentPage = 1;
-        render();
+    // ── Filtros → DataTableManager.setFilter() ──
+    var tableId = 'tbl-bitacora';
+
+    document.getElementById('filter-modulo').addEventListener('change', function() {
+        window.DataTableManager.setFilter(tableId, 'modulo', this.value === 'Todos' ? '' : this.value);
+    });
+    document.getElementById('filter-evento').addEventListener('change', function() {
+        window.DataTableManager.setFilter(tableId, 'evento', this.value === 'Todos' ? '' : this.value);
+    });
+    document.getElementById('filter-usuario').addEventListener('change', function() {
+        window.DataTableManager.setFilter(tableId, 'usuario', this.value === 'Todos' ? '' : this.value);
     });
 
-    filterModulo.addEventListener('change', () => {
-        activeModulo = filterModulo.value;
-        currentPage = 1;
-        render();
-    });
-
-    filterEvento.addEventListener('change', () => {
-        activeEvento = filterEvento.value;
-        currentPage = 1;
-        render();
-    });
-
-    filterUser.addEventListener('change', () => {
-        activeUser = filterUser.value;
-        currentPage = 1;
-        render();
-    });
-
-    perPageSel.addEventListener('change', () => {
-        currentPage = 1;
-        render();
-    });
-
-    // ── Validaciones de fecha ──
-    const today = new Date().toISOString().slice(0, 10);
+    // ── Filtros de fecha ──
+    var dateFrom = document.getElementById('date-from');
+    var dateTo = document.getElementById('date-to');
+    var dateClear = document.getElementById('date-clear');
+    var today = new Date().toISOString().slice(0, 10);
     dateFrom.max = today;
     dateTo.max = today;
 
@@ -368,151 +219,177 @@ ob_start();
         dateClear.style.display = (dateFrom.value || dateTo.value) ? '' : 'none';
     }
 
-    dateFrom.addEventListener('change', () => {
+    dateFrom.addEventListener('change', function() {
         if (dateFrom.value > today) dateFrom.value = today;
         dateTo.min = dateFrom.value || '';
         if (dateTo.value && dateFrom.value > dateTo.value) dateTo.value = dateFrom.value;
         toggleClear();
-        currentPage = 1;
-        render();
+        window.DataTableManager.setFilter(tableId, 'date_from', dateFrom.value);
     });
 
-    dateTo.addEventListener('change', () => {
+    dateTo.addEventListener('change', function() {
         if (dateTo.value > today) dateTo.value = today;
         dateFrom.max = dateTo.value || today;
         if (dateFrom.value && dateTo.value < dateFrom.value) dateFrom.value = dateTo.value;
         toggleClear();
-        currentPage = 1;
-        render();
+        window.DataTableManager.setFilter(tableId, 'date_to', dateTo.value);
     });
 
-    dateClear.addEventListener('click', () => {
+    dateClear.addEventListener('click', function() {
         dateFrom.value = '';
         dateTo.value = '';
         dateFrom.max = today;
         dateTo.min = '';
         toggleClear();
-        currentPage = 1;
-        render();
+        window.DataTableManager.setFilter(tableId, 'date_from', '');
+        window.DataTableManager.setFilter(tableId, 'date_to', '');
     });
-
-    // ── Sortable headers ──
-    document.querySelectorAll('th.sortable[data-sort]').forEach(th => {
-        th.style.cursor = 'pointer';
-        th.addEventListener('click', () => {
-            const key = th.dataset.sort;
-            if (sortKey === key) sortDir *= -1;
-            else { sortKey = key; sortDir = 1; }
-            document.querySelectorAll('th.sortable[data-sort]').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
-            th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
-            render();
-        });
-    });
-
-    // ── Initial render ──
-    render();
 
     // ── Export Dropdown Toggle ──
-    const exportBtn = document.getElementById('btn-export-toggle');
-    const exportDrop = document.getElementById('export-dropdown');
-    exportBtn.addEventListener('click', (e) => {
+    var exportBtn = document.getElementById('btn-export-toggle');
+    var exportDrop = document.getElementById('export-dropdown');
+    exportBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         exportDrop.style.display = exportDrop.style.display === 'none' ? 'block' : 'none';
     });
-    document.addEventListener('click', () => { exportDrop.style.display = 'none'; });
+    document.addEventListener('click', function() { exportDrop.style.display = 'none'; });
+
+    // ── Helper: obtener filtros actuales como query string ──
+    function getFilterParams() {
+        var params = new URLSearchParams({ limit: '9999', page: '1' });
+        var search = document.querySelector('[data-search-for="tbl-bitacora"]');
+        if (search && search.value.trim()) params.set('search', search.value.trim());
+        var modulo = document.getElementById('filter-modulo').value;
+        if (modulo !== 'Todos') params.set('modulo', modulo);
+        var evento = document.getElementById('filter-evento').value;
+        if (evento !== 'Todos') params.set('evento', evento);
+        var usuario = document.getElementById('filter-usuario').value;
+        if (usuario !== 'Todos') params.set('usuario', usuario);
+        if (dateFrom.value) params.set('date_from', dateFrom.value);
+        if (dateTo.value) params.set('date_to', dateTo.value);
+        return params;
+    }
 
     // ── Exportar CSV ──
-    window.exportarCSV = function() {
+    window.exportarCSV = async function() {
         exportDrop.style.display = 'none';
-        const rows = getVisible();
-        if (!rows.length) { alert('No hay datos para exportar.'); return; }
+        try {
+            var res = await fetch('<?= base_url('/admin/monitoreo/bitacora/api') ?>?' + getFilterParams());
+            var data = await res.json();
+            var rows = data.rows || [];
+            if (!rows.length) { alert('No hay datos para exportar.'); return; }
 
-        const headers = ['Timestamp', 'Usuario', 'Módulo', 'Evento', 'Detalle', 'IP'];
-        const csvRows = [headers.join(',')];
-
-        rows.forEach(r => {
-            const cells = r.querySelectorAll('td');
-            const line = Array.from(cells).map(c => {
-                let txt = c.textContent.trim().replace(/"/g, '""');
-                return '"' + txt + '"';
+            var headers = ['Timestamp', 'Usuario', 'Módulo', 'Evento', 'Detalle', 'IP'];
+            var csvRows = [headers.join(',')];
+            rows.forEach(function(r) {
+                var detalleTexto = '';
+                if (r.entidad_tipo && r.entidad_id) {
+                    detalleTexto = (ENTIDAD_LABELS[r.entidad_tipo] || r.entidad_tipo) + ' #' + r.entidad_id;
+                    if (r.detalle) detalleTexto += ' — ' + r.detalle;
+                } else {
+                    detalleTexto = r.detalle || '';
+                }
+                csvRows.push([
+                    '"' + (r.created_at || '').replace(/"/g, '""') + '"',
+                    '"' + (r.email || '').replace(/"/g, '""') + '"',
+                    '"' + (MODULO_LABELS[r.modulo] || r.modulo || '').replace(/"/g, '""') + '"',
+                    '"' + (r.evento || '').replace(/"/g, '""') + '"',
+                    '"' + detalleTexto.replace(/"/g, '""') + '"',
+                    '"' + (r.ip_address || '').replace(/"/g, '""') + '"'
+                ].join(','));
             });
-            csvRows.push(line.join(','));
-        });
 
-        const bom = '\uFEFF';
-        const blob = new Blob([bom + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        const fecha = new Date().toISOString().slice(0,10);
-        a.href = url;
-        a.download = 'bitacora_' + fecha + '.csv';
-        a.click();
-        URL.revokeObjectURL(url);
+            var bom = '\uFEFF';
+            var blob = new Blob([bom + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'bitacora_' + new Date().toISOString().slice(0,10) + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch(e) {
+            alert('Error al exportar: ' + e.message);
+        }
     };
 
-    // ── Exportar PDF (iframe oculto — sin pestañas extra) ──
-    window.exportarPDF = function() {
+    // ── Exportar PDF ──
+    window.exportarPDF = async function() {
         exportDrop.style.display = 'none';
-        const rows = getVisible();
-        if (!rows.length) { alert('No hay datos para exportar.'); return; }
+        try {
+            var res = await fetch('<?= base_url('/admin/monitoreo/bitacora/api') ?>?' + getFilterParams());
+            var data = await res.json();
+            var rows = data.rows || [];
+            if (!rows.length) { alert('No hay datos para exportar.'); return; }
 
-        const headers = ['Timestamp', 'Usuario', 'Módulo', 'Evento', 'Detalle', 'IP'];
-        let tableHTML = '<table style="width:100%; border-collapse:collapse; font-family:Arial,sans-serif; font-size:11px;">';
-        tableHTML += '<thead><tr>';
-        headers.forEach(h => { tableHTML += '<th style="border:1px solid #ccc; padding:6px 8px; background:#f1f5f9; text-align:left; font-size:11px;">' + h + '</th>'; });
-        tableHTML += '</tr></thead><tbody>';
+            var headers = ['Timestamp', 'Usuario', 'Módulo', 'Evento', 'Detalle', 'IP'];
+            var tableHTML = '<table style="width:100%; border-collapse:collapse; font-family:Arial,sans-serif; font-size:11px;"><thead><tr>';
+            headers.forEach(function(h) { tableHTML += '<th style="border:1px solid #ccc; padding:6px 8px; background:#f1f5f9; text-align:left; font-size:11px;">' + h + '</th>'; });
+            tableHTML += '</tr></thead><tbody>';
 
-        rows.forEach(r => {
-            const cells = r.querySelectorAll('td');
-            tableHTML += '<tr>';
-            cells.forEach(c => {
-                tableHTML += '<td style="border:1px solid #e2e8f0; padding:5px 8px; font-size:10px;">' + c.textContent.trim() + '</td>';
+            rows.forEach(function(r) {
+                var detalleTexto = '';
+                if (r.entidad_tipo && r.entidad_id) {
+                    detalleTexto = (ENTIDAD_LABELS[r.entidad_tipo] || r.entidad_tipo) + ' #' + r.entidad_id;
+                    if (r.detalle) detalleTexto += ' — ' + r.detalle;
+                } else {
+                    detalleTexto = r.detalle || '';
+                }
+                tableHTML += '<tr>';
+                tableHTML += '<td style="border:1px solid #e2e8f0; padding:5px 8px; font-size:10px;">' + escHtml(r.created_at || '') + '</td>';
+                tableHTML += '<td style="border:1px solid #e2e8f0; padding:5px 8px; font-size:10px;">' + escHtml(r.email || '') + '</td>';
+                tableHTML += '<td style="border:1px solid #e2e8f0; padding:5px 8px; font-size:10px;">' + escHtml(MODULO_LABELS[r.modulo] || r.modulo || '') + '</td>';
+                tableHTML += '<td style="border:1px solid #e2e8f0; padding:5px 8px; font-size:10px;">' + escHtml(r.evento || '') + '</td>';
+                tableHTML += '<td style="border:1px solid #e2e8f0; padding:5px 8px; font-size:10px;">' + escHtml(detalleTexto) + '</td>';
+                tableHTML += '<td style="border:1px solid #e2e8f0; padding:5px 8px; font-size:10px;">' + escHtml(r.ip_address || '') + '</td>';
+                tableHTML += '</tr>';
             });
-            tableHTML += '</tr>';
-        });
-        tableHTML += '</tbody></table>';
+            tableHTML += '</tbody></table>';
 
-        const filtrosTexto = [];
-        if (activeModulo !== 'Todos') filtrosTexto.push('Módulo: ' + activeModulo);
-        if (activeEvento !== 'Todos') filtrosTexto.push('Evento: ' + activeEvento);
-        if (activeUser !== 'Todos') filtrosTexto.push('Usuario: ' + activeUser);
-        if (dateFrom.value) filtrosTexto.push('Desde: ' + dateFrom.value);
-        if (dateTo.value) filtrosTexto.push('Hasta: ' + dateTo.value);
-        if (searchTerm) filtrosTexto.push('Búsqueda: ' + searchTerm);
+            var filtrosTexto = [];
+            var modVal = document.getElementById('filter-modulo').value;
+            var evtVal = document.getElementById('filter-evento').value;
+            var usrVal = document.getElementById('filter-usuario').value;
+            var srcVal = document.querySelector('[data-search-for="tbl-bitacora"]')?.value || '';
+            if (modVal !== 'Todos') filtrosTexto.push('Módulo: ' + modVal);
+            if (evtVal !== 'Todos') filtrosTexto.push('Evento: ' + evtVal);
+            if (usrVal !== 'Todos') filtrosTexto.push('Usuario: ' + usrVal);
+            if (dateFrom.value) filtrosTexto.push('Desde: ' + dateFrom.value);
+            if (dateTo.value) filtrosTexto.push('Hasta: ' + dateTo.value);
+            if (srcVal) filtrosTexto.push('Búsqueda: ' + srcVal);
 
-        const fecha = new Date();
-        const fechaStr = fecha.toLocaleDateString('es-VE', { day:'2-digit', month:'long', year:'numeric' });
-        const horaStr = fecha.toLocaleTimeString('es-VE', { hour:'2-digit', minute:'2-digit' });
+            var fecha = new Date();
+            var fechaStr = fecha.toLocaleDateString('es-VE', { day:'2-digit', month:'long', year:'numeric' });
+            var horaStr = fecha.toLocaleTimeString('es-VE', { hour:'2-digit', minute:'2-digit' });
 
-        let html = '<!DOCTYPE html><html><head><title>Bitácora de Auditoría</title>';
-        html += '<style>@page{size:landscape;margin:15mm} body{font-family:Arial,sans-serif; margin:0; padding:20px; color:#333;} h1{font-size:18px; margin:0 0 4px;} .meta{font-size:12px; color:#666; margin-bottom:16px;} .filtros{font-size:11px; color:#888; margin-bottom:12px;} .total{font-size:12px; color:#666; margin-top:10px; text-align:right;}</style>';
-        html += '</head><body>';
-        html += '<h1>SPDSS — Bitácora de Auditoría</h1>';
-        html += '<div class="meta">Generado el ' + fechaStr + ' a las ' + horaStr + '</div>';
-        if (filtrosTexto.length) {
-            html += '<div class="filtros">Filtros aplicados: ' + filtrosTexto.join(' | ') + '</div>';
+            var html = '<!DOCTYPE html><html><head><title>Bitácora de Auditoría</title>';
+            html += '<style>@page{size:landscape;margin:15mm} body{font-family:Arial,sans-serif; margin:0; padding:20px; color:#333;} h1{font-size:18px; margin:0 0 4px;} .meta{font-size:12px; color:#666; margin-bottom:16px;} .filtros{font-size:11px; color:#888; margin-bottom:12px;} .total{font-size:12px; color:#666; margin-top:10px; text-align:right;}</style>';
+            html += '</head><body>';
+            html += '<h1>SPDSS — Bitácora de Auditoría</h1>';
+            html += '<div class="meta">Generado el ' + fechaStr + ' a las ' + horaStr + '</div>';
+            if (filtrosTexto.length) html += '<div class="filtros">Filtros aplicados: ' + filtrosTexto.join(' | ') + '</div>';
+            html += tableHTML;
+            html += '<div class="total">Total: ' + rows.length + ' registros</div>';
+            html += '</body></html>';
+
+            var iframe = document.getElementById('print-iframe');
+            if (iframe) iframe.remove();
+            iframe = document.createElement('iframe');
+            iframe.id = 'print-iframe';
+            iframe.style.cssText = 'position:fixed; top:-9999px; left:-9999px; width:1px; height:1px; border:none;';
+            document.body.appendChild(iframe);
+
+            var doc = iframe.contentDocument || iframe.contentWindow.document;
+            doc.open();
+            doc.write(html);
+            doc.close();
+
+            iframe.onload = function() {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+            };
+        } catch(e) {
+            alert('Error al exportar: ' + e.message);
         }
-        html += tableHTML;
-        html += '<div class="total">Total: ' + rows.length + ' registros</div>';
-        html += '</body></html>';
-
-        // Usar iframe oculto para evitar abrir pestañas extra
-        let iframe = document.getElementById('print-iframe');
-        if (iframe) iframe.remove();
-        iframe = document.createElement('iframe');
-        iframe.id = 'print-iframe';
-        iframe.style.cssText = 'position:fixed; top:-9999px; left:-9999px; width:1px; height:1px; border:none;';
-        document.body.appendChild(iframe);
-
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        doc.open();
-        doc.write(html);
-        doc.close();
-
-        iframe.onload = function() {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
-        };
     };
 })();
 </script>

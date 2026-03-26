@@ -136,7 +136,7 @@ class CasosController
                 }
             }
 
-            $tituloCorto = mb_substr($data['titulo'] ?? 'Sin título', 0, 60);
+            $tituloCorto = mb_substr($data['caso']['titulo'] ?? 'Sin título', 0, 60);
 
             if ($modo === 'Borrador') {
                 $casoId = $storeModel->storeDraft($data, $profesorId, $inputCasoId);

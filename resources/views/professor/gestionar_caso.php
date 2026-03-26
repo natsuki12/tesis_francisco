@@ -668,7 +668,7 @@ if ($source === 'borrador') {
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Inmueble</span>
-                                        <span class="gc-info-value"><?= showVal(($dir['tipo_inmueble'] ?? '') . (!empty($dir['nro_inmueble']) ? ' #' . $dir['nro_inmueble'] : '')) ?></span>
+                                        <span class="gc-info-value"><?= showVal(($dir['tipo_inmueble'] ?? '') . (!empty($dir['nombre_inmueble']) ? ' ' . $dir['nombre_inmueble'] : '') . (!empty($dir['nro_inmueble']) ? ' #' . $dir['nro_inmueble'] : '')) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Nivel</span>

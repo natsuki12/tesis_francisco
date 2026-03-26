@@ -4,6 +4,7 @@
  */
 
 import { showToast } from './utils.js';
+window.showToast = showToast;
 
 document.addEventListener('DOMContentLoaded', () => {
 

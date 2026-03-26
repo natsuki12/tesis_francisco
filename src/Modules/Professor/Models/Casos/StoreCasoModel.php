@@ -136,13 +136,7 @@ class StoreCasoModel
                 $casoId = $this->insertCaso($caso, $profesorId, $causanteId, $representanteId, $fechaFallecimiento);
             }
 
-            // 4. Insertar domicilio fiscal del causante vinculándolo al caso
-            $domicilio = $data['domicilio_causante'] ?? [];
-            if (!empty($domicilio['estado'])) {
-                $this->insertDireccion($domicilio, $casoId);
-            }
-
-            // 4b. Insertar direcciones adicionales del causante vinculándolas al caso
+            // 4. Insertar direcciones del causante vinculándolas al caso
             foreach (($data['direcciones_causante'] ?? []) as $dir) {
                 if (!empty($dir['estado'])) {
                     $this->insertDireccion($dir, $casoId);
@@ -266,10 +260,10 @@ class StoreCasoModel
     {
         $personaId = !empty($p['persona_id']) ? (int) $p['persona_id'] : null;
 
-        $tipoCedula = $p['tipo_cedula'] ?? null;
-        $cedula = $p['cedula'] ?: null;
-        $pasaporte = $p['pasaporte'] ?: null;
-        $rifPersonal = $p['rif_personal'] ?: null;
+        $tipoCedula = !empty($p['tipo_cedula']) ? $p['tipo_cedula'] : 'V';
+        $cedula = $p['cedula'] ?? null ?: null;
+        $pasaporte = $p['pasaporte'] ?? null ?: null;
+        $rifPersonal = $p['rif_personal'] ?? null ?: null;
 
         // Si no viene ID, intentar buscar la persona por documento para evitar duplicados
         if (!$personaId) {
@@ -305,9 +299,9 @@ class StoreCasoModel
             // UPSERT: Actualizar SOLO los campos que estaban vacíos en la BD.
             $nombres = !empty($dbData['nombres']) ? $dbData['nombres'] : ($p['nombres'] ?? '');
             $apellidos = !empty($dbData['apellidos']) ? $dbData['apellidos'] : ($p['apellidos'] ?? '');
-            $sexo = !empty($dbData['sexo']) ? $dbData['sexo'] : ($p['sexo'] ?? null);
-            $estadoCivil = !empty($dbData['estado_civil']) ? $dbData['estado_civil'] : ($p['estado_civil'] ?? null);
-            $fechaNacimiento = !empty($dbData['fecha_nacimiento']) ? $dbData['fecha_nacimiento'] : ($p['fecha_nacimiento'] ?: null);
+            $sexo = !empty($dbData['sexo']) ? $dbData['sexo'] : (!empty($p['sexo']) ? $p['sexo'] : null);
+            $estadoCivil = !empty($dbData['estado_civil']) ? $dbData['estado_civil'] : (!empty($p['estado_civil']) ? $p['estado_civil'] : null);
+            $fechaNacimiento = !empty($dbData['fecha_nacimiento']) ? $dbData['fecha_nacimiento'] : (($p['fecha_nacimiento'] ?? null) ?: null);
             $nacionalidad = !empty($dbData['nacionalidad']) ? $dbData['nacionalidad'] : (!empty($p['nacionalidad']) ? (int) $p['nacionalidad'] : null);
 
             $sqlUpdate = "UPDATE sim_personas 
@@ -344,9 +338,9 @@ class StoreCasoModel
             'rif_personal' => $rifPersonal,
             'nombres' => $p['nombres'] ?? '',
             'apellidos' => $p['apellidos'] ?? '',
-            'sexo' => $p['sexo'] ?? null,
-            'estado_civil' => $p['estado_civil'] ?? null,
-            'fecha_nacimiento' => $p['fecha_nacimiento'] ?: null,
+            'sexo' => !empty($p['sexo']) ? $p['sexo'] : null,
+            'estado_civil' => !empty($p['estado_civil']) ? $p['estado_civil'] : null,
+            'fecha_nacimiento' => ($p['fecha_nacimiento'] ?? null) ?: null,
             'nacionalidad' => !empty($p['nacionalidad']) ? (int) $p['nacionalidad'] : null,
             'created_by' => $createdBy,
         ]);
@@ -377,7 +371,7 @@ class StoreCasoModel
         $stmt->execute([
             'persona_id' => $personaId,
             'domiciliado_pais' => (int) ($df['domiciliado_pais'] ?? 1),
-            'fecha_cierre_fiscal' => $df['fecha_cierre_fiscal'] ?: null,
+            'fecha_cierre_fiscal' => ($df['fecha_cierre_fiscal'] ?? null) ?: null,
         ]);
     }
 
@@ -403,7 +397,7 @@ class StoreCasoModel
         $stmt->execute([
             'persona_id' => $personaId,
             'fecha_fallecimiento' => $fechaFallecimiento ?: ($acta['fecha_fallecimiento'] ?? null),
-            'numero_acta' => $acta['numero_acta'] ?: null,
+            'numero_acta' => ($acta['numero_acta'] ?? null) ?: null,
             'year_acta' => !empty($acta['year_acta']) ? (int) $acta['year_acta'] : null,
             'parroquia_registro' => !empty($parroquiaVal) ? $parroquiaVal : null,
         ]);
@@ -416,35 +410,36 @@ class StoreCasoModel
     {
         $sql = "INSERT INTO sim_caso_direcciones 
                 (sim_caso_estudio_id, tipo_direccion, tipo_vialidad, nombre_vialidad, tipo_inmueble,
-                 nro_inmueble, tipo_nivel, nro_nivel, tipo_sector, nombre_sector,
+                 nombre_inmueble, nro_inmueble, tipo_nivel, nro_nivel, tipo_sector, nombre_sector,
                  estado_id, municipio_id, parroquia_id, ciudad_id, codigo_postal_id,
                  telefono_fijo, telefono_celular, fax, punto_referencia)
                 VALUES (:caso_id, :tipo_direccion, :tipo_vialidad, :nombre_vialidad, :tipo_inmueble,
-                        :nro_inmueble, :tipo_nivel, :nro_nivel, :tipo_sector, :nombre_sector,
+                        :nombre_inmueble, :nro_inmueble, :tipo_nivel, :nro_nivel, :tipo_sector, :nombre_sector,
                         :estado_id, :municipio_id, :parroquia_id, :ciudad_id, :codigo_postal_id,
                         :telefono_fijo, :telefono_celular, :fax, :punto_referencia)";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             'caso_id' => $casoId,
-            'tipo_direccion' => $d['tipo_direccion'] ?? null,
-            'tipo_vialidad' => $d['tipo_vialidad'] ?? null,
+            'tipo_direccion' => !empty($d['tipo_direccion']) ? $d['tipo_direccion'] : null,
+            'tipo_vialidad' => !empty($d['tipo_vialidad']) ? $d['tipo_vialidad'] : null,
             'nombre_vialidad' => $d['nombre_vialidad'] ?? null,
-            'tipo_inmueble' => $d['tipo_inmueble'] ?? null,
+            'tipo_inmueble' => !empty($d['tipo_inmueble']) ? $d['tipo_inmueble'] : null,
+            'nombre_inmueble' => $d['nombre_inmueble'] ?? null,
             'nro_inmueble' => $d['nro_inmueble'] ?? null,
-            'tipo_nivel' => $d['tipo_nivel'] ?? null,
+            'tipo_nivel' => !empty($d['tipo_nivel']) ? $d['tipo_nivel'] : null,
             'nro_nivel' => $d['nro_nivel'] ?? null,
-            'tipo_sector' => $d['tipo_sector'] ?? null,
+            'tipo_sector' => !empty($d['tipo_sector']) ? $d['tipo_sector'] : null,
             'nombre_sector' => $d['nombre_sector'] ?? null,
             'estado_id' => !empty($d['estado']) ? (int) $d['estado'] : null,
             'municipio_id' => !empty($d['municipio']) ? (int) $d['municipio'] : null,
             'parroquia_id' => !empty($d['parroquia']) ? (int) $d['parroquia'] : null,
             'ciudad_id' => !empty($d['ciudad']) ? (int) $d['ciudad'] : null,
             'codigo_postal_id' => !empty($d['codigo_postal_id']) ? (int) $d['codigo_postal_id'] : null,
-            'telefono_fijo' => $d['telefono_fijo'] ?: null,
-            'telefono_celular' => $d['telefono_celular'] ?: null,
-            'fax' => $d['fax'] ?: null,
-            'punto_referencia' => $d['punto_referencia'] ?: null,
+            'telefono_fijo' => ($d['telefono_fijo'] ?? null) ?: null,
+            'telefono_celular' => ($d['telefono_celular'] ?? null) ?: null,
+            'fax' => ($d['fax'] ?? null) ?: null,
+            'punto_referencia' => ($d['punto_referencia'] ?? null) ?: null,
         ]);
     }
 
@@ -735,7 +730,7 @@ class StoreCasoModel
             'nro_registro' => $b['nro_registro'] ?? null,
             'libro' => $b['libro'] ?? null,
             'protocolo' => $b['protocolo'] ?? null,
-            'fecha_reg' => $b['fecha_registro'] ?: null,
+            'fecha_reg' => ($b['fecha_registro'] ?? null) ?: null,
             'trimestre' => $b['trimestre'] ?? null,
             'asiento' => $b['asiento_registral'] ?? null,
             'matricula' => $b['matricula'] ?? null,
@@ -988,11 +983,11 @@ class StoreCasoModel
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
             'caso_id' => $casoId,
-            'solicitud' => $pr['fecha_solicitud'] ?: null,
+            'solicitud' => ($pr['fecha_solicitud'] ?? null) ?: null,
             'resolucion' => $pr['nro_resolucion'] ?? null,
-            'fecha_res' => $pr['fecha_resolucion'] ?: null,
+            'fecha_res' => ($pr['fecha_resolucion'] ?? null) ?: null,
             'plazo' => (int) ($pr['plazo_dias'] ?? 0),
-            'vencimiento' => $pr['fecha_vencimiento'] ?: null,
+            'vencimiento' => ($pr['fecha_vencimiento'] ?? null) ?: null,
         ]);
     }
 

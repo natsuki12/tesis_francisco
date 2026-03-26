@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Simulator\Services;
 
-use App\Core\Mailer;
+use App\Core\MailQueueService;
 
 /**
  * RSMailerService — Envío de correos de validación R.S.
@@ -33,14 +33,9 @@ class RSMailerService
         int    $intentoId,
         string $casoTitulo = ''
     ): bool {
-        if (empty($errores)) {
-            return false;
-        }
-
-        $subject = "Discrepancias en R.S. — Intento #{$intentoId}";
-        $body = $this->buildHtmlDiscrepancias($errores, $nombreEstudiante, $intentoId, $casoTitulo);
-
-        return Mailer::send($destinatario, $subject, $body);
+        // Desactivado en Fase 2: este método dejará de enviar correos.
+        // Se conserva la firma para no romper código que lo invoca.
+        return true;
     }
 
     /**
@@ -63,7 +58,7 @@ class RSMailerService
         $subject = "✅ RIF Sucesoral Generado — Caso: {$casoTitulo}, Intento: #{$intentoId}";
         $body = $this->buildHtmlExito($nombreEstudiante, $intentoId, $rifSucesoral, $casoTitulo);
 
-        return Mailer::send($destinatario, $subject, $body);
+        return MailQueueService::send($destinatario, $subject, $body, 'rif_sucesoral', null, $intentoId);
     }
 
     // ════════════════════════════════════════════════════════

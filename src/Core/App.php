@@ -16,7 +16,7 @@ final class App
         $this->basePath = rtrim($basePath, '/\\');
 
         // 1) Cargar variables del .env
-        $this->loadEnv($this->basePath . '/.env');
+        self::loadEnv($this->basePath . '/.env');
 
         // 2) Configurar errores / logs
         $this->setupErrorHandling();
@@ -293,7 +293,7 @@ final class App
     /**
      * Carga simple de .env
      */
-    private function loadEnv(string $envFile): void
+    public static function loadEnv(string $envFile): void
     {
         if (!is_file($envFile)) {
             return;

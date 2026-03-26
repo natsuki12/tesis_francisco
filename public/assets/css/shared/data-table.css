@@ -143,13 +143,17 @@
 
 /* ===== PER-PAGE SELECT ===== */
 .per-page-select {
-    padding: 6px 28px 6px 10px;
+    height: 36px;
+    padding: 0 28px 0 10px;
     background: var(--white);
     border: 1px solid var(--gray-200);
     border-radius: var(--radius-sm);
     font-size: var(--text-xs);
+    font-weight: 500;
     color: var(--gray-600);
     cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow-card);
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
@@ -159,6 +163,7 @@
 .per-page-select:focus {
     outline: none;
     border-color: var(--blue-400);
+    box-shadow: 0 0 0 3px rgba(37, 99, 168, 0.1);
 }
 
 /* ===== DATE RANGE FILTER ===== */
@@ -297,8 +302,6 @@
 th.sortable {
     cursor: pointer;
     user-select: none;
-    position: relative;
-    padding-right: 20px !important;
     transition: color var(--transition);
 }
 
@@ -308,10 +311,7 @@ th.sortable:hover {
 
 th.sortable::after {
     content: '⇅';
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    transform: translateY(-50%);
+    margin-left: 4px;
     font-size: 11px;
     color: var(--gray-300);
     transition: color var(--transition);
@@ -517,6 +517,17 @@ th.sortable.sort-desc {
 
 .table-container {
     animation: fadeInUp 0.4s ease 0.25s backwards;
+}
+
+.table-container table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.table-container table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* ===== RESPONSIVE ===== */

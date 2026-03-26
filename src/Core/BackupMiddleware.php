@@ -35,31 +35,35 @@ class BackupMiddleware
             $retencion   = max(1, (int)($config['backup_retencion'] ?? 5));
             $ultimoTs    = $config['backup_ultimo_timestamp'] ?? null;
 
-            // 3. ¿Toca hacer backup?
-            $now = new \DateTime();
-            $horaActual = $now->format('H:i');
+            // 3. ¿Toca hacer backup? (MySQL = fuente de verdad para hora)
+            $db = DB::connect();
+            $dbTime = $db->query("SELECT NOW() AS now, CURDATE() AS today, TIME_FORMAT(NOW(), '%H:%i') AS hora, DAYOFWEEK(NOW()) - 1 AS dia_semana")->fetch(\PDO::FETCH_ASSOC);
+            // dia_semana: MySQL DAYOFWEEK() = 1(Dom)..7(Sáb) → -1 = 0(Dom)..6(Sáb)
+
+            $horaActual = $dbTime['hora'];
+            $hoy        = $dbTime['today'];
+            $diaHoy     = (int) $dbTime['dia_semana'];
 
             // ¿Ya pasó la hora programada hoy?
             if ($horaActual < $hora) {
                 return;
             }
 
-            // ¿El último backup ya es de hoy (misma fecha)?
+            // ¿El último backup ya es de hoy Y se hizo en/después de la hora configurada?
             if ($ultimoTs) {
                 try {
-                    $ultimoDate = (new \DateTime($ultimoTs))->format('Y-m-d');
-                    if ($ultimoDate === $now->format('Y-m-d')) {
-                        return; // Ya se hizo hoy
+                    $ultimoDate = substr($ultimoTs, 0, 10); // 'Y-m-d'
+                    $ultimoHora = substr($ultimoTs, 11, 5); // 'HH:mm'
+                    if ($ultimoDate === $hoy && $ultimoHora >= $hora) {
+                        return; // Ya se hizo hoy a la hora configurada o después
                     }
                 } catch (\Throwable $e) {
-                    // Timestamp corrupto — ignorar y continuar
                     error_log('[BackupMiddleware] backup_ultimo_timestamp inválido: ' . $ultimoTs);
                 }
             }
 
             // Semanal: verificar si hoy es el día configurado (0=Domingo ... 6=Sábado)
             if ($frecuencia === 'semanal') {
-                $diaHoy = (int)$now->format('w'); // 0=Domingo
                 if ($diaHoy !== $diaSemana) {
                     return;
                 }
@@ -71,22 +75,30 @@ class BackupMiddleware
                 mkdir($backupDir, 0755, true);
             }
 
-            $timestamp = $now->format('Y-m-d_H-i-s');
+            $timestamp = str_replace([' ', ':'], ['_', '-'], $dbTime['now']); // 2026-03-25_19-45-00
             $filename  = "auto_{$timestamp}.sql";
             $filepath  = $backupDir . '/' . $filename;
 
             $host = $_ENV['DB_HOST'] ?? '127.0.0.1';
-            $db   = $_ENV['DB_NAME'] ?? '';
+            $db_name = $_ENV['DB_NAME'] ?? '';
             $user = $_ENV['DB_USER'] ?? 'root';
             $pass = $_ENV['DB_PASS'] ?? '';
 
-            if (empty($db)) {
+            if (empty($db_name)) {
                 return;
             }
 
-            $mysqldump = 'C:\\xampp\\mysql\\bin\\mysqldump.exe';
-            if (!file_exists($mysqldump)) {
-                $mysqldump = 'mysqldump';
+            // Detectar mysqldump según SO
+            $candidates = PHP_OS_FAMILY === 'Windows'
+                ? ['C:\\xampp\\mysql\\bin\\mysqldump.exe', 'C:\\wamp64\\bin\\mysql\\mysql8.0.31\\bin\\mysqldump.exe']
+                : ['/usr/bin/mysqldump', '/usr/local/bin/mysqldump', '/Applications/MAMP/Library/bin/mysqldump'];
+
+            $mysqldump = 'mysqldump'; // fallback: buscar en PATH
+            foreach ($candidates as $path) {
+                if (file_exists($path)) {
+                    $mysqldump = $path;
+                    break;
+                }
             }
 
             $cmd = sprintf(
@@ -95,7 +107,7 @@ class BackupMiddleware
                 escapeshellarg($host),
                 escapeshellarg($user),
                 $pass !== '' ? '--password=' . escapeshellarg($pass) : '',
-                escapeshellarg($db),
+                escapeshellarg($db_name),
                 $filepath
             );
 
@@ -109,8 +121,8 @@ class BackupMiddleware
                 return;
             }
 
-            // 5. Actualizar timestamp
-            $model->set('backup_ultimo_timestamp', $now->format('Y-m-d H:i:s'));
+            // 5. Actualizar timestamp (usando hora de MySQL)
+            $model->set('backup_ultimo_timestamp', $dbTime['now']);
 
             // 6. Registrar en bitácora
             BitacoraModel::registrar(BitacoraModel::SYSTEM_BACKUP, 'sistema', null, null, null, null, 'Respaldo automático: ' . $filename);

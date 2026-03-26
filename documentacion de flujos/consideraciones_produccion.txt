@@ -1,0 +1,85 @@
+============================================================
+CONSIDERACIONES PARA IMPLEMENTACIÓN EN SERVIDOR DE PRODUCCIÓN
+Sistema: SPDSS (Sistema Pedagógico de Declaración Sucesoral Simulada)
+============================================================
+
+1. ARCHIVO .env
+   - Asegurarse de que .env NO sea accesible desde el navegador.
+   - Agregar regla en .htaccess: 
+         <Files .env>
+             Deny from all
+         </Files>
+   - Verificar que APP_ENV=production (desactiva bypass SSL de SMTP).
+   - Configurar APP_DEBUG=false.
+
+2. DISPLAY DE ERRORES
+   - En php.ini del servidor:
+         display_errors = Off
+         log_errors = On
+         error_log = /ruta/al/log/php_errors.log
+   - NUNCA mostrar errores técnicos al usuario en producción.
+
+3. HTTPS OBLIGATORIO
+   - Instalar certificado SSL (Let's Encrypt es gratuito).
+   - Forzar HTTPS en .htaccess:
+         RewriteEngine On
+         RewriteCond %{HTTPS} off
+         RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+4. SEGURIDAD DE SESIONES
+   - Configurar en php.ini o al inicio de la app:
+         session.cookie_httponly = 1     (no accesible por JavaScript)
+         session.cookie_secure = 1       (solo por HTTPS)
+         session.use_strict_mode = 1     (rechaza IDs inventados)
+         session.cookie_samesite = Lax   (protección CSRF básica)
+
+5. HEADERS DE SEGURIDAD
+   - Agregar en .htaccess o en el bootstrap de PHP:
+         Header set X-Content-Type-Options "nosniff"
+         Header set X-Frame-Options "DENY"
+         Header set X-XSS-Protection "1; mode=block"
+         Header set Strict-Transport-Security "max-age=31536000"
+
+6. BASE DE DATOS
+   - Crear un usuario MySQL dedicado con permisos mínimos:
+         CREATE USER 'spdss_app'@'localhost' IDENTIFIED BY 'contraseña_fuerte';
+         GRANT SELECT, INSERT, UPDATE, DELETE ON spdss.* TO 'spdss_app'@'localhost';
+         FLUSH PRIVILEGES;
+   - NO usar root en producción.
+   - Verificar que MySQL solo escuche en localhost:
+         bind-address = 127.0.0.1 (en my.ini/my.cnf)
+
+7. CRON JOB PARA COLA DE CORREOS
+   - Configurar para ejecutar cada 5 minutos:
+         */5 * * * * /usr/bin/php /ruta/al/proyecto/scripts/process_mail_queue.php >> /ruta/logs/mail_cron.log 2>&1
+
+8. CRON JOB PARA BACKUPS
+   - Configurar backup automático según la frecuencia definida
+     en la configuración del sistema (Admin → Parámetros).
+
+9. ROTACIÓN DE LOGS
+   - Configurar logrotate para evitar que los archivos de log
+     crezcan indefinidamente:
+         /ruta/al/proyecto/storage/logs/*.log {
+             daily
+             rotate 14
+             compress
+             missingok
+             notifempty
+         }
+
+10. PERMISOS DE ARCHIVOS
+    - Directorios: 755
+    - Archivos PHP: 644
+    - storage/logs: 775 (necesita escritura)
+    - .env: 600 (solo lectura para el dueño)
+
+11. COMPOSER EN PRODUCCIÓN
+    - Instalar solo dependencias de producción:
+          composer install --no-dev --optimize-autoloader
+    - No incluir la carpeta vendor en el repositorio si se usa CI/CD.
+
+12. ZONA HORARIA (YA IMPLEMENTADO)
+    - PHP: date_default_timezone_set('America/Caracas') en index.php
+    - MySQL: SET time_zone = '-04:00' en DB::connect()
+    - Ambos sincronizados a Venezuela (UTC-4).
