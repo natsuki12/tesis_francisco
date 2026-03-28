@@ -735,10 +735,31 @@ $router->get('/marco-legal', function () use ($app, $requireAuth) {
 });
 
 // Generación de R.S. (Profesor)
-$router->get('/generacion-rs', function () use ($app, $requireAuth, $requireRole) {
+$router->get('/generacion-rs', function () use ($requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
-    return $app->view('professor/generacion_rs');
+    (new \App\Modules\Professor\Controllers\GeneracionRsController())->index();
+});
+
+// Detalle/Revisión de solicitud RIF (Profesor)
+$router->get('/generacion-rs/{id}', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new \App\Modules\Professor\Controllers\GeneracionRsController())->detalle((int) $id);
+});
+
+// API: Aprobar solicitud RIF (Profesor)
+$router->post('/api/generacion-rs/{id}/aprobar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new \App\Modules\Professor\Controllers\GeneracionRsController())->aprobar((int) $id);
+});
+
+// API: Rechazar solicitud RIF (Profesor)
+$router->post('/api/generacion-rs/{id}/rechazar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new \App\Modules\Professor\Controllers\GeneracionRsController())->rechazar((int) $id);
 });
 
 // Mis Estudiantes (Profesor)

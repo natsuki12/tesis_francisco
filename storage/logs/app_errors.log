@@ -7754,3 +7754,11 @@ Stack trace:
 #5 {main}
 [27-Mar-2026 20:53:47 America/Caracas] PHP Warning:  Undefined array key "nota" in C:\xampp\htdocs\tesis_francisco\resources\views\student\historial_st.php on line 91
 [27-Mar-2026 20:53:50 America/Caracas] PHP Warning:  Undefined array key "nota" in C:\xampp\htdocs\tesis_francisco\resources\views\student\historial_st.php on line 91
+[28-Mar-2026 11:47:30 America/Caracas] [GeneracionRsModel::getSolicitudes] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.nombre' in 'field list'
+[28-Mar-2026 11:47:31 America/Caracas] [GeneracionRsModel::getSolicitudes] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.nombre' in 'field list'
+[28-Mar-2026 11:48:46 America/Caracas] [GeneracionRsModel::getSolicitudes] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.nombre' in 'field list'
+[28-Mar-2026 11:48:48 America/Caracas] [GeneracionRsModel::getSolicitudes] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.nombre' in 'field list'
+[28-Mar-2026 11:48:56 America/Caracas] [GeneracionRsModel::getSolicitudes] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.nombre' in 'field list'
+[28-Mar-2026 11:49:40 America/Caracas] [GeneracionRsModel::getSolicitudes] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.nombre' in 'field list'
+[28-Mar-2026 11:49:41 America/Caracas] [GeneracionRsModel::getSolicitudes] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.nombre' in 'field list'
+[28-Mar-2026 11:49:46 America/Caracas] [GeneracionRsModel::getSolicitudes] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.nombre' in 'field list'

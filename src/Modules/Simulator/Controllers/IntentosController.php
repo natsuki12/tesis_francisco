@@ -6,6 +6,7 @@ namespace App\Modules\Simulator\Controllers;
 use App\Core\BitacoraModel;
 use App\Modules\Student\Models\StudentAssignmentModel;
 use App\Modules\Student\Models\StudentAttemptModel;
+use App\Modules\Simulator\Services\RifGeneratorService;
 
 /**
  * Controller para el ciclo de vida de intentos del simulador.
@@ -356,35 +357,9 @@ class IntentosController
                 $mailer = new \App\Modules\Simulator\Services\RSMailerService();
 
                 if ($result['ok']) {
-                    // Generar RIF Sucesoral simulado y persistir en DB
-                    $rifSucesoral = null;
-                    $maxReintentos = 5;
-                    for ($r = 0; $r < $maxReintentos; $r++) {
-                        $rifCandidate = $tipoCedulaCausante . str_pad((string) random_int(10000000, 99999999), 8, '0', STR_PAD_LEFT);
-                        try {
-                            $stmtRif = $db->prepare("
-                                UPDATE sim_intentos
-                                SET rif_sucesoral = :rif,
-                                    updated_at    = NOW()
-                                WHERE id = :id
-                            ");
-                            $stmtRif->execute([
-                                'rif' => $rifCandidate,
-                                'id' => $id,
-                            ]);
-                            $rifSucesoral = $rifCandidate;
-                            break;
-                        } catch (\PDOException $e) {
-                            if ($e->getCode() == '23000') {
-                                continue;
-                            }
-                            error_log("[IntentosController::validarRs] Error de DB al guardar RIF: " . $e->getMessage());
-                            break;
-                        } catch (\Throwable $e) {
-                            error_log("[IntentosController::validarRs] Error inesperado al guardar RIF: " . $e->getMessage());
-                            break;
-                        }
-                    }
+                    // Generar RIF Sucesoral vía servicio reutilizable
+                    $rifService = new RifGeneratorService();
+                    $rifSucesoral = $rifService->generar($id);
                     $result['rif_sucesoral'] = $rifSucesoral;
 
                     $emailEnviado = $mailer->enviarExito(

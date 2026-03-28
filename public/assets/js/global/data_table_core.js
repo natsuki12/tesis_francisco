@@ -427,6 +427,7 @@ window.DataTableManager = (function() {
     // Initialize all tables on load globally
     function autoInit() {
         document.querySelectorAll('table.data-table').forEach(t => {
+            if (t.dataset.noAutoInit !== undefined) return;
             if (t.dataset.serverUrl) {
                 initServerTable(t);
             } else {

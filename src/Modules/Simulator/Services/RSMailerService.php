@@ -187,4 +187,180 @@ class RSMailerService
 
         return $html;
     }
+
+    // ════════════════════════════════════════════════════════
+    //  APROBACIÓN RIF (Evaluación — aprobado por profesor)
+    // ════════════════════════════════════════════════════════
+
+    /**
+     * Envía correo al estudiante notificando que su RIF fue aprobado.
+     *
+     * @param string $destinatario      Correo del estudiante
+     * @param string $nombreEstudiante  Nombre completo del estudiante
+     * @param int    $intentoId         ID del intento
+     * @param string $rifSucesoral      RIF Sucesoral generado
+     * @param string $casoTitulo        Título del caso asignado
+     * @return bool  true si el correo se envió/encoló correctamente
+     */
+    public function enviarAprobacionRif(
+        string $destinatario,
+        string $nombreEstudiante,
+        int    $intentoId,
+        string $rifSucesoral,
+        string $casoTitulo = ''
+    ): bool {
+        $subject = "✅ RIF Sucesoral Aprobado — {$casoTitulo}";
+        $body    = $this->buildHtmlAprobacionRif($nombreEstudiante, $intentoId, $rifSucesoral, $casoTitulo);
+
+        return MailQueueService::send($destinatario, $subject, $body, 'rif_sucesoral', null, $intentoId);
+    }
+
+    /**
+     * Construye HTML del correo de aprobación de RIF.
+     * Usa encabezado gradient institucional como el correo de bienvenida.
+     */
+    private function buildHtmlAprobacionRif(
+        string $nombreEstudiante,
+        int    $intentoId,
+        string $rifSucesoral,
+        string $casoTitulo
+    ): string {
+        $n     = htmlspecialchars($nombreEstudiante, ENT_QUOTES, 'UTF-8');
+        $rif   = htmlspecialchars($rifSucesoral, ENT_QUOTES, 'UTF-8');
+        $caso  = htmlspecialchars($casoTitulo, ENT_QUOTES, 'UTF-8');
+        $fecha = date('d/m/Y H:i');
+
+        return "
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
+            <div style='background: linear-gradient(135deg, #065f46, #059669); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
+                <h1 style='margin: 0; font-size: 24px;'>✅ RIF Sucesoral Aprobado</h1>
+                <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Pedagógico de Declaración Sucesoral Simulada</p>
+            </div>
+            <div style='background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;'>
+                <p style='font-size: 16px;'>Estimado/a <strong>{$n}</strong>,</p>
+                <p>Le informamos que su inscripción de RIF Sucesoral ha sido <strong style='color: #059669;'>aprobada</strong> por su profesor. A continuación encontrará los datos generados:</p>
+
+                <div style='background: #f0fdf4; border: 2px solid #059669; border-radius: 12px; padding: 24px; margin: 24px 0; text-align: center;'>
+                    <p style='margin: 0 0 8px; font-size: 13px; color: #555;'>Su RIF Sucesoral es:</p>
+                    <strong style='font-size: 32px; letter-spacing: 5px; color: #059669;'>{$rif}</strong>
+                </div>
+
+                <div style='background: #f5f5f5; border-left: 4px solid #065f46; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
+                    <p style='margin: 5px 0;'><strong>📋 Caso:</strong> {$caso}</p>
+                    <p style='margin: 5px 0;'><strong>🔢 Intento:</strong> #{$intentoId}</p>
+                    <p style='margin: 5px 0;'><strong>📅 Fecha de aprobación:</strong> {$fecha}</p>
+                </div>
+
+                <div style='margin: 24px 0; font-size: 14px; line-height: 1.7;'>
+                    <h3 style='font-size: 15px; color: #065f46; margin: 0 0 12px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px;'>
+                        📋 Próximos pasos
+                    </h3>
+                    <ol style='margin: 0; padding-left: 20px; color: #444;'>
+                        <li style='margin-bottom: 8px;'>Guarde este RIF Sucesoral en un lugar seguro.</li>
+                        <li style='margin-bottom: 8px;'>Ingrese al simulador y diríjase a la sección de <strong>Registro de Contribuyente</strong> para inscribirse en los servicios de declaración sucesoral.</li>
+                        <li style='margin-bottom: 8px;'>Una vez registrado, complete la <strong>Declaración Sucesoral</strong> (Forma DS-99032).</li>
+                    </ol>
+                </div>
+
+                <div style='background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
+                    <p style='margin: 0; font-weight: bold; color: #92400e;'>📌 Nota sobre el proceso real</p>
+                    <p style='margin: 10px 0 0; font-size: 13px; color: #555;'>En el proceso real ante el SENIAT, el contribuyente debe presentar la planilla impresa ante la Unidad/Sector/Gerencia Regional de Tributos Internos correspondiente a su domicilio fiscal para formalizar el trámite.</p>
+                </div>
+
+                <p style='color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;'>
+                    Este correo fue generado automáticamente por el SPDSS — Simulador SENIAT.
+                </p>
+            </div>
+        </div>";
+    }
+
+    // ════════════════════════════════════════════════════════
+    //  RECHAZO RIF (Evaluación — rechazado por profesor)
+    // ════════════════════════════════════════════════════════
+
+    /**
+     * Envía correo al estudiante notificando que su RIF fue rechazado.
+     *
+     * @param string      $destinatario      Correo del estudiante
+     * @param string      $nombreEstudiante  Nombre completo
+     * @param int         $intentoId         ID del intento
+     * @param string      $casoTitulo        Título del caso
+     * @param string      $observacion       Motivo del rechazo (profesor)
+     * @param string|null $nota              Nota asignada (ej: "Reprobado" o "5")
+     * @return bool       true si el correo se envió/encoló
+     */
+    public function enviarRechazoRif(
+        string  $destinatario,
+        string  $nombreEstudiante,
+        int     $intentoId,
+        string  $casoTitulo,
+        string  $observacion,
+        ?string $nota = null
+    ): bool {
+        $subject = "❌ RIF Sucesoral No Aprobado — {$casoTitulo}";
+        $body    = $this->buildHtmlRechazoRif($nombreEstudiante, $intentoId, $casoTitulo, $observacion, $nota);
+
+        return MailQueueService::send($destinatario, $subject, $body, 'rif_sucesoral', null, $intentoId);
+    }
+
+    /**
+     * Construye HTML del correo de rechazo de RIF.
+     * Usa encabezado gradient rojo + información clara del motivo.
+     */
+    private function buildHtmlRechazoRif(
+        string  $nombreEstudiante,
+        int     $intentoId,
+        string  $casoTitulo,
+        string  $observacion,
+        ?string $nota
+    ): string {
+        $n     = htmlspecialchars($nombreEstudiante, ENT_QUOTES, 'UTF-8');
+        $caso  = htmlspecialchars($casoTitulo, ENT_QUOTES, 'UTF-8');
+        $obs   = htmlspecialchars($observacion, ENT_QUOTES, 'UTF-8');
+        $fecha = date('d/m/Y H:i');
+
+        $notaHtml = '';
+        if ($nota !== null && $nota !== '') {
+            $notaEsc = htmlspecialchars($nota, ENT_QUOTES, 'UTF-8');
+            $notaHtml = "<p style='margin: 5px 0;'><strong>📊 Nota asignada:</strong> <span style='color: #dc2626; font-weight: bold;'>{$notaEsc}</span></p>";
+        }
+
+        return "
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
+            <div style='background: linear-gradient(135deg, #991b1b, #dc2626); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
+                <h1 style='margin: 0; font-size: 24px;'>❌ RIF Sucesoral No Aprobado</h1>
+                <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Pedagógico de Declaración Sucesoral Simulada</p>
+            </div>
+            <div style='background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;'>
+                <p style='font-size: 16px;'>Estimado/a <strong>{$n}</strong>,</p>
+                <p>Le informamos que su inscripción de RIF Sucesoral <strong style='color: #dc2626;'>no ha sido aprobada</strong> por su profesor. A continuación encontrará los detalles de la revisión:</p>
+
+                <div style='background: #f5f5f5; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
+                    <p style='margin: 5px 0;'><strong>📋 Caso:</strong> {$caso}</p>
+                    <p style='margin: 5px 0;'><strong>🔢 Intento:</strong> #{$intentoId}</p>
+                    <p style='margin: 5px 0;'><strong>📅 Fecha de revisión:</strong> {$fecha}</p>
+                    {$notaHtml}
+                </div>
+
+                <div style='background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin: 24px 0;'>
+                    <h3 style='font-size: 15px; color: #991b1b; margin: 0 0 8px 0;'>📝 Observación del profesor</h3>
+                    <p style='margin: 0; font-size: 14px; color: #444; line-height: 1.7;'>{$obs}</p>
+                </div>
+
+                <div style='background: #eff6ff; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
+                    <p style='margin: 0; font-weight: bold; color: #1e40af;'>💡 ¿Qué puede hacer?</p>
+                    <p style='margin: 10px 0 0; font-size: 13px; color: #555;'>Si la configuración de su caso permite múltiples intentos, puede iniciar un nuevo intento de inscripción de RIF Sucesoral desde la vista de <strong>Mis Asignaciones</strong>, revisando cuidadosamente los datos del caso antes de enviarlo nuevamente.</p>
+                </div>
+
+                <div style='background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
+                    <p style='margin: 0; font-weight: bold; color: #92400e;'>📧 ¿Tiene dudas?</p>
+                    <p style='margin: 10px 0 0; font-size: 13px; color: #555;'>Si tiene preguntas sobre la observación o el resultado, puede comunicarse directamente con su profesor para obtener orientación adicional.</p>
+                </div>
+
+                <p style='color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;'>
+                    Este correo fue generado automáticamente por el SPDSS — Simulador SENIAT.
+                </p>
+            </div>
+        </div>";
+    }
 }

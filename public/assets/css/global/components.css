@@ -513,6 +513,7 @@
     color: var(--gray-500);
     text-align: left;
     white-space: nowrap;
+    vertical-align: middle;
 }
 
 .data-table th.sortable {

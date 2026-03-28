@@ -714,4 +714,507 @@ class RSValidator
         // Ya es YYYY-MM-DD (tomar solo los primeros 10 chars por si hay hora)
         return substr($fecha, 0, 10);
     }
+    // ════════════════════════════════════════════════════════
+    //  COMPARACIÓN PARA REVISIÓN (Profesor)
+    // ════════════════════════════════════════════════════════
+
+    /**
+     * Retorna los datos de comparación para la vista del profesor.
+     * Reutiliza las mismas queries internas del validador.
+     *
+     * @param  int $intentoId   ID del intento
+     * @param  int $profesorId  ID del profesor (para validar ownership)
+     * @return array|null  null si no existe o no pertenece al profesor
+     *   {
+     *     intento: {...},
+     *     borrador: {...},
+     *     causante: { campos: [{label, esperado, ingresado, coincide}, ...] },
+     *     relaciones: { representante: [{...}], herederos: [[{...}], ...] },
+     *     direcciones: [ [{label, esperado, ingresado, coincide}, ...], ... ]
+     *   }
+     */
+    public function getComparacionParaRevision(int $intentoId, int $profesorId): ?array
+    {
+        try {
+            // 1. Cargar intento verificando ownership por profesor
+            $intento = $this->getIntentoConCasoProfesor($intentoId, $profesorId);
+            if (!$intento) return null;
+
+            $borrador = json_decode($intento['borrador_json'] ?: '{}', true);
+            $casoId = (int) $intento['caso_id'];
+
+            // 2. Construir comparación del causante
+            $causanteComparacion = $this->compararCausanteParaVista($borrador, $casoId);
+
+            // 3. Construir comparación de relaciones
+            $relacionesComparacion = $this->compararRelacionesParaVista($borrador, $casoId);
+
+            // 4. Construir comparación de direcciones
+            $direccionesComparacion = $this->compararDireccionesParaVista($borrador, $casoId);
+
+            return [
+                'intento'      => $intento,
+                'borrador'     => $borrador,
+                'causante'     => $causanteComparacion,
+                'relaciones'   => $relacionesComparacion,
+                'direcciones'  => $direccionesComparacion,
+            ];
+        } catch (\Throwable $e) {
+            error_log('[RSValidator::getComparacionParaRevision] ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Carga intento verificando que pertenezca al profesor (no al estudiante).
+     */
+    private function getIntentoConCasoProfesor(int $intentoId, int $profesorId): ?array
+    {
+        $sql = "
+            SELECT
+                i.id, i.borrador_json, i.estado, i.numero_intento,
+                i.rif_sucesoral, i.nota_numerica, i.nota_cualitativa,
+                i.observacion, i.submitted_at, i.reviewed_at, i.approved_at,
+                ce.id AS caso_id, ce.causante_id, ce.representante_id, ce.tipo_sucesion,
+                ce.titulo AS caso_titulo,
+                cfg.tipo_calificacion, cfg.max_intentos,
+                p.nombres AS est_nombres, p.apellidos AS est_apellidos,
+                p.cedula AS est_cedula, p.nacionalidad AS est_nacionalidad,
+                u.email AS est_email
+            FROM sim_intentos i
+            INNER JOIN sim_caso_asignaciones a  ON a.id  = i.asignacion_id
+            INNER JOIN sim_caso_configs cfg     ON cfg.id = a.config_id
+            INNER JOIN sim_casos_estudios ce    ON ce.id  = cfg.caso_id
+            INNER JOIN estudiantes e            ON e.id   = a.estudiante_id
+            INNER JOIN personas p               ON p.id   = e.persona_id
+            INNER JOIN users u                  ON u.persona_id = p.id
+            WHERE i.id = :int_id
+              AND cfg.profesor_id = :prof_id
+              AND cfg.modalidad = 'Evaluacion'
+            LIMIT 1
+        ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':int_id', $intentoId, PDO::PARAM_INT);
+        $stmt->bindValue(':prof_id', $profesorId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    /**
+     * Construye array de comparación campo a campo para el causante.
+     */
+    private function compararCausanteParaVista(array $borrador, int $casoId): array
+    {
+        $campos = [];
+        $datosBasicos = $borrador['datos_basicos'] ?? [];
+        $causanteDb = $this->getCausanteDelCaso($casoId);
+
+        if (!$causanteDb || !$datosBasicos) {
+            return ['campos' => $campos, 'vacio' => true];
+        }
+
+        // Cédula
+        $cedulaB = mb_strtoupper(trim($datosBasicos['cedula'] ?? ''));
+        $cedulaDb = mb_strtoupper(trim($causanteDb['tipo_cedula'] ?? '')) . trim($causanteDb['cedula'] ?? '');
+        $campos[] = ['label' => 'Cédula', 'esperado' => $cedulaDb, 'ingresado' => $cedulaB, 'coincide' => $cedulaB === $cedulaDb];
+
+        // Nombres
+        $nombresB = mb_strtoupper(trim($datosBasicos['nombres'] ?? ''));
+        $nombresDb = mb_strtoupper(trim($causanteDb['nombres'] ?? ''));
+        $campos[] = ['label' => 'Nombres', 'esperado' => $nombresDb, 'ingresado' => $nombresB, 'coincide' => $nombresB === $nombresDb];
+
+        // Apellidos
+        $apellidosB = mb_strtoupper(trim($datosBasicos['apellidos'] ?? ''));
+        $apellidosDb = mb_strtoupper(trim($causanteDb['apellidos'] ?? ''));
+        $campos[] = ['label' => 'Apellidos', 'esperado' => $apellidosDb, 'ingresado' => $apellidosB, 'coincide' => $apellidosB === $apellidosDb];
+
+        // Fecha de fallecimiento
+        $fechaB = $this->normalizarFecha($datosBasicos['fecha_fallecimiento'] ?? '');
+        $fechaDb = $this->normalizarFecha($causanteDb['fecha_fallecimiento'] ?? '');
+        $campos[] = ['label' => 'Fecha de Fallecimiento', 'esperado' => $fechaDb, 'ingresado' => $fechaB, 'coincide' => $fechaB === $fechaDb];
+
+        // Sexo
+        $sexoB = mb_strtoupper(trim($datosBasicos['sexo'] ?? ''));
+        $sexoDb = mb_strtoupper(trim($causanteDb['sexo'] ?? ''));
+        if ($sexoB || $sexoDb) {
+            $campos[] = ['label' => 'Sexo', 'esperado' => $sexoDb, 'ingresado' => $sexoB, 'coincide' => $sexoB === $sexoDb];
+        }
+
+        // Estado civil
+        $ecB = mb_strtoupper(trim($datosBasicos['estado_civil'] ?? ''));
+        $ecDb = mb_strtoupper(trim($causanteDb['estado_civil'] ?? ''));
+        if ($ecB || $ecDb) {
+            $campos[] = ['label' => 'Estado Civil', 'esperado' => $ecDb, 'ingresado' => $ecB, 'coincide' => $ecB === $ecDb];
+        }
+
+        // Nacionalidad
+        $nacB = trim((string)($datosBasicos['nacionalidad'] ?? ''));
+        $nacDb = trim((string)($causanteDb['nacionalidad'] ?? ''));
+        if ($nacB || $nacDb) {
+            $campos[] = ['label' => 'Nacionalidad', 'esperado' => $nacDb, 'ingresado' => $nacB, 'coincide' => $nacB === $nacDb];
+        }
+
+        // Domiciliado en el país
+        $domB = $datosBasicos['domiciliado_pais'] ?? null;
+        $domDb = $causanteDb['domiciliado_pais'] ?? null;
+        if ($domB !== null || $domDb !== null) {
+            $domBStr = ($domB !== null) ? ((int)$domB ? 'Sí' : 'No') : '—';
+            $domDbStr = ($domDb !== null) ? ((int)$domDb ? 'Sí' : 'No') : '—';
+            $campos[] = ['label' => 'Domiciliado en el país', 'esperado' => $domDbStr, 'ingresado' => $domBStr, 'coincide' => $domBStr === $domDbStr];
+        }
+
+        // Fecha cierre fiscal
+        $fcB = $this->normalizarFecha($datosBasicos['fecha_cierre_fiscal'] ?? '');
+        $fcDb = $this->normalizarFecha($causanteDb['fecha_cierre_fiscal'] ?? '');
+        if ($fcB || $fcDb) {
+            $campos[] = ['label' => 'Fecha Cierre Fiscal', 'esperado' => $fcDb, 'ingresado' => $fcB, 'coincide' => $fcB === $fcDb];
+        }
+
+        // RIF personal
+        $rifB = trim($datosBasicos['rif_personal'] ?? '');
+        $rifDb = trim($causanteDb['rif_personal'] ?? '');
+        if ($rifB || $rifDb) {
+            $campos[] = ['label' => 'RIF Personal', 'esperado' => $rifDb, 'ingresado' => $rifB, 'coincide' => $rifB === $rifDb];
+        }
+
+        return ['campos' => $campos, 'vacio' => false];
+    }
+
+    /**
+     * Construye comparación para relaciones (representante + herederos).
+     */
+    private function compararRelacionesParaVista(array $borrador, int $casoId): array
+    {
+        $resultado = ['representante' => [], 'herederos' => []];
+
+        $relaciones = $borrador['relaciones'] ?? [];
+        $representanteDb = $this->getRepresentanteDelCaso($casoId);
+        $participantesDb = $this->getParticipantesDelCaso($casoId);
+
+        // Separar relaciones del borrador
+        $representanteB = null;
+        $herederosB = [];
+        foreach ($relaciones as $rel) {
+            if (($rel['parentesco'] ?? '') === '50') {
+                $representanteB = $rel;
+            } else {
+                $herederosB[] = $rel;
+            }
+        }
+
+        // ── Representante ──
+        if ($representanteDb) {
+            $campos = [];
+            $docDb = $representanteDb['rif_personal'] ?: (($representanteDb['tipo_cedula'] ?? '') . ($representanteDb['cedula'] ?? ''));
+            $docB = trim($representanteB['idDocumento'] ?? $representanteB['cedula'] ?? '');
+            $campos[] = ['label' => 'Documento', 'esperado' => $docDb, 'ingresado' => $docB, 'coincide' => $representanteB ? $this->matchDocumento($docB, $representanteDb) : false];
+
+            $nombresDb = mb_strtoupper(trim($representanteDb['nombres'] ?? ''));
+            $nombresB = mb_strtoupper(trim($representanteB['nombre'] ?? $representanteB['nombres'] ?? ''));
+            $campos[] = ['label' => 'Nombres', 'esperado' => $nombresDb, 'ingresado' => $nombresB, 'coincide' => $nombresB === $nombresDb];
+
+            $apellidosDb = mb_strtoupper(trim($representanteDb['apellidos'] ?? ''));
+            $apellidosB = mb_strtoupper(trim($representanteB['apellido'] ?? $representanteB['apellidos'] ?? ''));
+            $campos[] = ['label' => 'Apellidos', 'esperado' => $apellidosDb, 'ingresado' => $apellidosB, 'coincide' => $apellidosB === $apellidosDb];
+
+            $resultado['representante'] = $campos;
+        }
+
+        // ── Herederos ──
+        $dbUsados = [];
+        foreach ($herederosB as $i => $hB) {
+            $campos = [];
+            $docB = trim($hB['idDocumento'] ?? $hB['cedula'] ?? '');
+            $matchedDb = null;
+
+            foreach ($participantesDb as $j => $hDb) {
+                if (in_array($j, $dbUsados) || !$this->matchDocumento($docB, $hDb)) continue;
+                $matchedDb = $hDb;
+                $dbUsados[] = $j;
+                break;
+            }
+
+            if ($matchedDb) {
+                $docDb = $matchedDb['rif_personal'] ?: (($matchedDb['tipo_cedula'] ?? '') . ($matchedDb['cedula'] ?? ''));
+                $campos[] = ['label' => 'Documento', 'esperado' => $docDb, 'ingresado' => $docB, 'coincide' => true];
+
+                $nombresDb = mb_strtoupper(trim($matchedDb['nombres'] ?? ''));
+                $nombresB = mb_strtoupper(trim($hB['nombre'] ?? $hB['nombres'] ?? ''));
+                $campos[] = ['label' => 'Nombres', 'esperado' => $nombresDb, 'ingresado' => $nombresB, 'coincide' => $nombresB === $nombresDb];
+
+                $apellidosDb = mb_strtoupper(trim($matchedDb['apellidos'] ?? ''));
+                $apellidosB = mb_strtoupper(trim($hB['apellido'] ?? $hB['apellidos'] ?? ''));
+                $campos[] = ['label' => 'Apellidos', 'esperado' => $apellidosDb, 'ingresado' => $apellidosB, 'coincide' => $apellidosB === $apellidosDb];
+            } else {
+                $campos[] = ['label' => 'Documento', 'esperado' => '— No coincide —', 'ingresado' => $docB, 'coincide' => false];
+                $campos[] = ['label' => 'Nombres', 'esperado' => '—', 'ingresado' => $hB['nombre'] ?? $hB['nombres'] ?? '', 'coincide' => false];
+                $campos[] = ['label' => 'Apellidos', 'esperado' => '—', 'ingresado' => $hB['apellido'] ?? $hB['apellidos'] ?? '', 'coincide' => false];
+            }
+
+            $resultado['herederos'][] = $campos;
+        }
+
+        // Herederos que faltan (DB tiene pero estudiante no los puso)
+        foreach ($participantesDb as $j => $hDb) {
+            if (in_array($j, $dbUsados)) continue;
+            $docDb = $hDb['rif_personal'] ?: (($hDb['tipo_cedula'] ?? '') . ($hDb['cedula'] ?? ''));
+            $resultado['herederos'][] = [
+                ['label' => 'Documento', 'esperado' => $docDb, 'ingresado' => '— Falta —', 'coincide' => false],
+                ['label' => 'Nombres', 'esperado' => $hDb['nombres'] ?? '', 'ingresado' => '— Falta —', 'coincide' => false],
+                ['label' => 'Apellidos', 'esperado' => $hDb['apellidos'] ?? '', 'ingresado' => '— Falta —', 'coincide' => false],
+            ];
+        }
+
+        $resultado['conteo_esperado'] = count($participantesDb);
+        $resultado['conteo_ingresado'] = count($herederosB);
+
+        return $resultado;
+    }
+
+    /**
+     * Construye comparación para direcciones.
+     */
+    private function compararDireccionesParaVista(array $borrador, int $casoId): array
+    {
+        $resultado = [];
+        $direcciones = $borrador['direcciones'] ?? [];
+        $direccionesDb = $this->getDireccionesDelCausante($casoId);
+
+        // Mismos mapas que validarDirecciones()
+        $mapTipoDireccion = [
+            '01' => 'Casa_Matriz_Establecimiento_Principal', '02' => 'Sucursal_Comercial',
+            '03' => 'Bodega_Almacenamiento_Deposito', '04' => 'Negocio_Independiente',
+            '05' => 'Planta_Industrial_Fabrica', '06' => 'Domicilio_Fiscal',
+            '91' => 'Direccion_Notificacion_Fisica',
+        ];
+        $mapTipoVialidad = [
+            '01' => 'Calle', '02' => 'Avenida', '03' => 'Vereda',
+            '04' => 'Carretera', '05' => 'Esquina', '06' => 'Carrera',
+        ];
+        $mapTipoInmueble = [
+            '01' => 'Edificio', '02' => 'Centro_Comercial', '03' => 'Quinta',
+            '04' => 'Casa', '05' => 'Local',
+        ];
+        $mapTipoSector = [
+            '01' => 'Urbanizacion', '02' => 'Zona', '03' => 'Sector',
+            '04' => 'Conjunto_Residencial', '05' => 'Barrio', '06' => 'Caserio',
+        ];
+        $mapTipoLocal = [
+            '01' => 'Apartamento', '02' => 'Local', '03' => 'Oficina',
+        ];
+
+        $dbUsados = [];
+        foreach ($direcciones as $i => $dirB) {
+            $campos = [];
+            $matchedDb = null;
+
+            // Match por estado + municipio + parroquia
+            foreach ($direccionesDb as $j => $dirDb) {
+                if (in_array($j, $dbUsados)) continue;
+                if ((int)($dirB['estado'] ?? 0) === (int)($dirDb['estado_id'] ?? 0) &&
+                    (int)($dirB['municipio'] ?? 0) === (int)($dirDb['municipio_id'] ?? 0) &&
+                    (int)($dirB['parroquia'] ?? 0) === (int)($dirDb['parroquia_id'] ?? 0)) {
+                    $matchedDb = $dirDb;
+                    $dbUsados[] = $j;
+                    break;
+                }
+            }
+
+            if ($matchedDb) {
+                // Geografía (nombres legibles ya vienen de la query)
+                $campos[] = ['label' => 'Estado', 'esperado' => $matchedDb['estado_nombre'] ?? '—', 'ingresado' => $this->resolverNombre('estados', (int)($dirB['estado'] ?? 0)) ?? '—', 'coincide' => true];
+                $campos[] = ['label' => 'Municipio', 'esperado' => $matchedDb['municipio_nombre'] ?? '—', 'ingresado' => $this->resolverNombre('municipios', (int)($dirB['municipio'] ?? 0)) ?? '—', 'coincide' => true];
+                $campos[] = ['label' => 'Parroquia', 'esperado' => $matchedDb['parroquia_nombre'] ?? '—', 'ingresado' => $this->resolverNombre('parroquias', (int)($dirB['parroquia'] ?? 0)) ?? '—', 'coincide' => true];
+
+                // Ciudad
+                $ciudadB = $this->resolverNombre('ciudades', (int)($dirB['ciudad'] ?? 0)) ?? '—';
+                $ciudadDb = $matchedDb['ciudad_nombre'] ?? '—';
+                $campos[] = ['label' => 'Ciudad', 'esperado' => $ciudadDb, 'ingresado' => $ciudadB, 'coincide' => (int)($dirB['ciudad'] ?? 0) === (int)($matchedDb['ciudad_id'] ?? 0)];
+
+                // Zona postal
+                $zonaB = $this->resolverNombre('codigos_postales', (int)($dirB['zonaPostal'] ?? 0), 'codigo') ?? '—';
+                $zonaDb = $matchedDb['codigo_postal_codigo'] ?? '—';
+                $campos[] = ['label' => 'Zona Postal', 'esperado' => $zonaDb, 'ingresado' => $zonaB, 'coincide' => (int)($dirB['zonaPostal'] ?? 0) === (int)($matchedDb['codigo_postal_id'] ?? 0)];
+
+                // Tipo de dirección
+                $tipoDirB = $mapTipoDireccion[$dirB['tipoDireccion'] ?? ''] ?? ($dirB['tipoDireccion'] ?? '—');
+                $tipoDirDb = $matchedDb['tipo_direccion'] ?? '—';
+                $campos[] = ['label' => 'Tipo Dirección', 'esperado' => str_replace('_', ' ', $tipoDirDb), 'ingresado' => str_replace('_', ' ', $tipoDirB), 'coincide' => mb_strtoupper($tipoDirB) === mb_strtoupper($tipoDirDb)];
+
+                // Tipo de vialidad
+                $tipoVialB = $mapTipoVialidad[$dirB['tipoVialidad'] ?? ''] ?? ($dirB['tipoVialidad'] ?? '—');
+                $tipoVialDb = $matchedDb['tipo_vialidad'] ?? '—';
+                $campos[] = ['label' => 'Tipo Vialidad', 'esperado' => $tipoVialDb, 'ingresado' => $tipoVialB, 'coincide' => mb_strtoupper($tipoVialB) === mb_strtoupper($tipoVialDb)];
+
+                // Nombre vialidad
+                $vialidadB = mb_strtoupper(trim($dirB['vialidad'] ?? ''));
+                $vialidadDb = mb_strtoupper(trim($matchedDb['nombre_vialidad'] ?? ''));
+                $campos[] = ['label' => 'Nombre Vialidad', 'esperado' => $vialidadDb, 'ingresado' => $vialidadB, 'coincide' => $vialidadB === $vialidadDb || ($vialidadB && $vialidadDb && mb_strpos($vialidadB, $vialidadDb) !== false)];
+
+                // Tipo inmueble
+                $tipoInmB = $mapTipoInmueble[$dirB['tipoEdificacion'] ?? ''] ?? ($dirB['tipoEdificacion'] ?? '—');
+                $tipoInmDb = $matchedDb['tipo_inmueble'] ?? '—';
+                $campos[] = ['label' => 'Tipo Inmueble', 'esperado' => str_replace('_', ' ', $tipoInmDb), 'ingresado' => str_replace('_', ' ', $tipoInmB), 'coincide' => mb_strtoupper($tipoInmB) === mb_strtoupper($tipoInmDb)];
+
+                // Nombre inmueble
+                $edificacionB = mb_strtoupper(trim($dirB['edificacion'] ?? ''));
+                $edificacionDb = mb_strtoupper(trim($matchedDb['nombre_inmueble'] ?? ''));
+                $campos[] = ['label' => 'Nombre Inmueble', 'esperado' => $edificacionDb ?: '—', 'ingresado' => $edificacionB ?: '—', 'coincide' => $edificacionB === $edificacionDb];
+
+                // Nro inmueble / Piso
+                $pisoB = mb_strtoupper(trim($dirB['piso'] ?? ''));
+                $pisoDb = mb_strtoupper(trim($matchedDb['nro_inmueble'] ?? ''));
+                if ($pisoB || $pisoDb) {
+                    $campos[] = ['label' => 'Piso/Nivel', 'esperado' => $pisoDb ?: '—', 'ingresado' => $pisoB ?: '—', 'coincide' => $pisoB === $pisoDb];
+                }
+
+                // Tipo sector
+                $tipoSecB = $mapTipoSector[$dirB['tipoSector'] ?? ''] ?? ($dirB['tipoSector'] ?? '—');
+                $tipoSecDb = $matchedDb['tipo_sector'] ?? '—';
+                $campos[] = ['label' => 'Tipo Sector', 'esperado' => str_replace('_', ' ', $tipoSecDb), 'ingresado' => str_replace('_', ' ', $tipoSecB), 'coincide' => mb_strtoupper($tipoSecB) === mb_strtoupper($tipoSecDb)];
+
+                // Nombre sector
+                $sectorB = mb_strtoupper(trim($dirB['sector'] ?? ''));
+                $sectorDb = mb_strtoupper(trim($matchedDb['nombre_sector'] ?? ''));
+                $campos[] = ['label' => 'Nombre Sector', 'esperado' => $sectorDb ?: '—', 'ingresado' => $sectorB ?: '—', 'coincide' => $sectorB === $sectorDb];
+
+                // Teléfonos
+                $telFijoB = trim($dirB['telefono'] ?? '');
+                $telFijoDb = trim($matchedDb['telefono_fijo'] ?? '');
+                if ($telFijoB || $telFijoDb) {
+                    $campos[] = ['label' => 'Teléfono Fijo', 'esperado' => $telFijoDb ?: '—', 'ingresado' => $telFijoB ?: '—', 'coincide' => $telFijoB === $telFijoDb];
+                }
+
+                $celB = trim($dirB['celular'] ?? '');
+                $celDb = trim($matchedDb['telefono_celular'] ?? '');
+                if ($celB || $celDb) {
+                    $campos[] = ['label' => 'Teléfono Celular', 'esperado' => $celDb ?: '—', 'ingresado' => $celB ?: '—', 'coincide' => $celB === $celDb];
+                }
+
+                // Tipo local
+                $tipoLocalB = $mapTipoLocal[$dirB['tipoLocal'] ?? ''] ?? ($dirB['tipoLocal'] ?? '');
+                $tipoNivelDb = trim($matchedDb['tipo_nivel'] ?? '');
+                if ($tipoLocalB || $tipoNivelDb) {
+                    $campos[] = ['label' => 'Tipo Local', 'esperado' => $tipoNivelDb ?: '—', 'ingresado' => $tipoLocalB ?: '—', 'coincide' => mb_strtoupper($tipoLocalB) === mb_strtoupper($tipoNivelDb)];
+                }
+
+                // Nro local
+                $localB = mb_strtoupper(trim($dirB['local'] ?? ''));
+                $nroNivelDb = mb_strtoupper(trim($matchedDb['nro_nivel'] ?? ''));
+                if ($localB || $nroNivelDb) {
+                    $campos[] = ['label' => 'Nro. Local', 'esperado' => $nroNivelDb ?: '—', 'ingresado' => $localB ?: '—', 'coincide' => $localB === $nroNivelDb];
+                }
+            } else {
+                // Sin match exacto de geo → comparar campo a campo contra la primera dirección disponible del caso
+                $fallbackDb = null;
+                foreach ($direccionesDb as $j => $dirDb) {
+                    if (!in_array($j, $dbUsados)) { $fallbackDb = $dirDb; $dbUsados[] = $j; break; }
+                }
+
+                if ($fallbackDb) {
+                    // Geografía
+                    $estadoB = $this->resolverNombre('estados', (int)($dirB['estado'] ?? 0)) ?? '—';
+                    $estadoDb = $fallbackDb['estado_nombre'] ?? '—';
+                    $campos[] = ['label' => 'Estado', 'esperado' => $estadoDb, 'ingresado' => $estadoB, 'coincide' => (int)($dirB['estado'] ?? 0) === (int)($fallbackDb['estado_id'] ?? 0)];
+
+                    $muniB = $this->resolverNombre('municipios', (int)($dirB['municipio'] ?? 0)) ?? '—';
+                    $muniDb = $fallbackDb['municipio_nombre'] ?? '—';
+                    $campos[] = ['label' => 'Municipio', 'esperado' => $muniDb, 'ingresado' => $muniB, 'coincide' => (int)($dirB['municipio'] ?? 0) === (int)($fallbackDb['municipio_id'] ?? 0)];
+
+                    $parroquiaB = $this->resolverNombre('parroquias', (int)($dirB['parroquia'] ?? 0)) ?? '—';
+                    $parroquiaDb = $fallbackDb['parroquia_nombre'] ?? '—';
+                    $campos[] = ['label' => 'Parroquia', 'esperado' => $parroquiaDb, 'ingresado' => $parroquiaB, 'coincide' => (int)($dirB['parroquia'] ?? 0) === (int)($fallbackDb['parroquia_id'] ?? 0)];
+
+                    // Ciudad
+                    $ciudadB = $this->resolverNombre('ciudades', (int)($dirB['ciudad'] ?? 0)) ?? '—';
+                    $ciudadDb = $fallbackDb['ciudad_nombre'] ?? '—';
+                    $campos[] = ['label' => 'Ciudad', 'esperado' => $ciudadDb, 'ingresado' => $ciudadB, 'coincide' => (int)($dirB['ciudad'] ?? 0) === (int)($fallbackDb['ciudad_id'] ?? 0)];
+
+                    // Zona postal
+                    $zonaB = $this->resolverNombre('codigos_postales', (int)($dirB['zonaPostal'] ?? 0), 'codigo') ?? '—';
+                    $zonaDb = $fallbackDb['codigo_postal_codigo'] ?? '—';
+                    $campos[] = ['label' => 'Zona Postal', 'esperado' => $zonaDb, 'ingresado' => $zonaB, 'coincide' => (int)($dirB['zonaPostal'] ?? 0) === (int)($fallbackDb['codigo_postal_id'] ?? 0)];
+
+                    // Tipo dirección
+                    $tipoDirB = $mapTipoDireccion[$dirB['tipoDireccion'] ?? ''] ?? ($dirB['tipoDireccion'] ?? '—');
+                    $tipoDirDb = $fallbackDb['tipo_direccion'] ?? '—';
+                    $campos[] = ['label' => 'Tipo Dirección', 'esperado' => str_replace('_', ' ', $tipoDirDb), 'ingresado' => str_replace('_', ' ', $tipoDirB), 'coincide' => mb_strtoupper($tipoDirB) === mb_strtoupper($tipoDirDb)];
+
+                    // Tipo vialidad
+                    $tipoVialB = $mapTipoVialidad[$dirB['tipoVialidad'] ?? ''] ?? ($dirB['tipoVialidad'] ?? '—');
+                    $tipoVialDb = $fallbackDb['tipo_vialidad'] ?? '—';
+                    $campos[] = ['label' => 'Tipo Vialidad', 'esperado' => $tipoVialDb, 'ingresado' => $tipoVialB, 'coincide' => mb_strtoupper($tipoVialB) === mb_strtoupper($tipoVialDb)];
+
+                    // Nombre vialidad
+                    $vialidadB = mb_strtoupper(trim($dirB['vialidad'] ?? ''));
+                    $vialidadDb = mb_strtoupper(trim($fallbackDb['nombre_vialidad'] ?? ''));
+                    $campos[] = ['label' => 'Nombre Vialidad', 'esperado' => $vialidadDb ?: '—', 'ingresado' => $vialidadB ?: '—', 'coincide' => $vialidadB === $vialidadDb || ($vialidadB && $vialidadDb && mb_strpos($vialidadB, $vialidadDb) !== false)];
+
+                    // Tipo inmueble
+                    $tipoInmB = $mapTipoInmueble[$dirB['tipoEdificacion'] ?? ''] ?? ($dirB['tipoEdificacion'] ?? '—');
+                    $tipoInmDb = $fallbackDb['tipo_inmueble'] ?? '—';
+                    $campos[] = ['label' => 'Tipo Inmueble', 'esperado' => str_replace('_', ' ', $tipoInmDb), 'ingresado' => str_replace('_', ' ', $tipoInmB), 'coincide' => mb_strtoupper($tipoInmB) === mb_strtoupper($tipoInmDb)];
+
+                    // Nombre inmueble
+                    $edificacionB = mb_strtoupper(trim($dirB['edificacion'] ?? ''));
+                    $edificacionDb = mb_strtoupper(trim($fallbackDb['nombre_inmueble'] ?? ''));
+                    $campos[] = ['label' => 'Nombre Inmueble', 'esperado' => $edificacionDb ?: '—', 'ingresado' => $edificacionB ?: '—', 'coincide' => $edificacionB === $edificacionDb];
+
+                    // Piso
+                    $pisoB = mb_strtoupper(trim($dirB['piso'] ?? ''));
+                    $pisoDb = mb_strtoupper(trim($fallbackDb['nro_inmueble'] ?? ''));
+                    if ($pisoB || $pisoDb) {
+                        $campos[] = ['label' => 'Piso/Nivel', 'esperado' => $pisoDb ?: '—', 'ingresado' => $pisoB ?: '—', 'coincide' => $pisoB === $pisoDb];
+                    }
+
+                    // Tipo sector
+                    $tipoSecB = $mapTipoSector[$dirB['tipoSector'] ?? ''] ?? ($dirB['tipoSector'] ?? '—');
+                    $tipoSecDb = $fallbackDb['tipo_sector'] ?? '—';
+                    $campos[] = ['label' => 'Tipo Sector', 'esperado' => str_replace('_', ' ', $tipoSecDb), 'ingresado' => str_replace('_', ' ', $tipoSecB), 'coincide' => mb_strtoupper($tipoSecB) === mb_strtoupper($tipoSecDb)];
+
+                    // Nombre sector
+                    $sectorB = mb_strtoupper(trim($dirB['sector'] ?? ''));
+                    $sectorDb = mb_strtoupper(trim($fallbackDb['nombre_sector'] ?? ''));
+                    $campos[] = ['label' => 'Nombre Sector', 'esperado' => $sectorDb ?: '—', 'ingresado' => $sectorB ?: '—', 'coincide' => $sectorB === $sectorDb];
+
+                    // Teléfonos
+                    $telFijoB = trim($dirB['telefono'] ?? '');
+                    $telFijoDb = trim($fallbackDb['telefono_fijo'] ?? '');
+                    if ($telFijoB || $telFijoDb) {
+                        $campos[] = ['label' => 'Teléfono Fijo', 'esperado' => $telFijoDb ?: '—', 'ingresado' => $telFijoB ?: '—', 'coincide' => $telFijoB === $telFijoDb];
+                    }
+
+                    $celB = trim($dirB['celular'] ?? '');
+                    $celDb = trim($fallbackDb['telefono_celular'] ?? '');
+                    if ($celB || $celDb) {
+                        $campos[] = ['label' => 'Teléfono Celular', 'esperado' => $celDb ?: '—', 'ingresado' => $celB ?: '—', 'coincide' => $celB === $celDb];
+                    }
+
+                    // Tipo local
+                    $tipoLocalB = $mapTipoLocal[$dirB['tipoLocal'] ?? ''] ?? ($dirB['tipoLocal'] ?? '');
+                    $tipoNivelDb = trim($fallbackDb['tipo_nivel'] ?? '');
+                    if ($tipoLocalB || $tipoNivelDb) {
+                        $campos[] = ['label' => 'Tipo Local', 'esperado' => $tipoNivelDb ?: '—', 'ingresado' => $tipoLocalB ?: '—', 'coincide' => mb_strtoupper($tipoLocalB) === mb_strtoupper($tipoNivelDb)];
+                    }
+
+                    // Nro local
+                    $localB = mb_strtoupper(trim($dirB['local'] ?? ''));
+                    $nroNivelDb = mb_strtoupper(trim($fallbackDb['nro_nivel'] ?? ''));
+                    if ($localB || $nroNivelDb) {
+                        $campos[] = ['label' => 'Nro. Local', 'esperado' => $nroNivelDb ?: '—', 'ingresado' => $localB ?: '—', 'coincide' => $localB === $nroNivelDb];
+                    }
+                } else {
+                    // No hay dirección del caso para comparar
+                    $campos[] = ['label' => 'Estado', 'esperado' => '—', 'ingresado' => $this->resolverNombre('estados', (int)($dirB['estado'] ?? 0)) ?? '—', 'coincide' => false];
+                    $campos[] = ['label' => 'Municipio', 'esperado' => '—', 'ingresado' => $this->resolverNombre('municipios', (int)($dirB['municipio'] ?? 0)) ?? '—', 'coincide' => false];
+                    $campos[] = ['label' => 'Parroquia', 'esperado' => '—', 'ingresado' => $this->resolverNombre('parroquias', (int)($dirB['parroquia'] ?? 0)) ?? '—', 'coincide' => false];
+                }
+            }
+
+            $resultado[] = $campos;
+        }
+
+        return $resultado;
+    }
 }

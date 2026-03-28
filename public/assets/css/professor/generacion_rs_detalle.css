@@ -1,0 +1,338 @@
+/* ═══ generacion_rs_detalle.css ═══ */
+/* Vista de revisión con tabs: Causante · Relaciones · Direcciones.
+   sidebar-panel, comparison-table, etc. vienen de detalle_intento.css. */
+
+
+/* ── Tabs Bar ── */
+.rs-tabs-bar {
+    display: flex;
+    gap: 4px;
+    background: var(--white, #fff);
+    border-radius: var(--radius, 12px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+    padding: 6px;
+    margin-bottom: 0;
+}
+
+.rs-tab {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-sm, 8px);
+    font-size: var(--text-sm, 14px);
+    font-weight: 600;
+    font-family: var(--font-ui);
+    color: var(--gray-500, #6b7280);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rs-tab:hover {
+    background: var(--gray-50, #f9fafb);
+    color: var(--gray-700, #374151);
+}
+
+.rs-tab--active {
+    background: var(--blue-50, #eff6ff);
+    color: var(--blue-600, #2563eb);
+    box-shadow: 0 1px 4px rgba(37, 99, 235, 0.12);
+}
+
+.rs-tab svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.rs-tab-badge {
+    font-size: var(--text-2xs, 11px);
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-variant-numeric: tabular-nums;
+}
+
+.rs-tab-badge.badge-ok {
+    background: var(--green-100, #dcfce7);
+    color: var(--green-600, #16a34a);
+}
+
+.rs-tab-badge.badge-err {
+    background: var(--red-100, #fee2e2);
+    color: var(--red-600, #dc2626);
+}
+
+
+/* ── Tab Panels ── */
+.rs-panel-content {
+    background: var(--white, #fff);
+    border-radius: 0 0 var(--radius, 12px) var(--radius, 12px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+    margin-bottom: 16px;
+    overflow: hidden;
+    animation: rs-fadeIn 0.15s ease;
+}
+
+@keyframes rs-fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Override: solo colorear texto, sin fondo */
+.rs-panel-content .cell-correct {
+    background: none;
+    color: var(--green-600, #16a34a);
+}
+
+.rs-panel-content .cell-error {
+    background: none;
+    color: var(--red-600, #dc2626);
+}
+
+.rs-panel-empty {
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--gray-400, #9ca3af);
+    font-size: var(--text-sm, 14px);
+}
+
+
+/* ── Direction Cards (accordion-style) ── */
+.rs-dir-card {
+    border-bottom: 1px solid var(--gray-100, #f3f4f6);
+}
+
+.rs-dir-card:last-child {
+    border-bottom: none;
+}
+
+.rs-dir-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    border-left: 3px solid transparent;
+    font-family: var(--font-ui);
+    font-size: var(--text-sm, 14px);
+    font-weight: 600;
+    color: var(--gray-700, #374151);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.rs-dir-toggle:hover {
+    background: var(--gray-50, #f9fafb);
+}
+
+.rs-dir-card--error .rs-dir-toggle {
+    border-left-color: var(--red-300, #fca5a5);
+}
+
+.rs-dir-card--ok .rs-dir-toggle {
+    border-left-color: var(--green-300, #86efac);
+}
+
+.rs-dir-toggle-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rs-dir-toggle-left svg {
+    color: var(--gray-400);
+    flex-shrink: 0;
+}
+
+.rs-dir-chevron {
+    transition: transform 0.2s ease;
+}
+
+.rs-dir-card--open .rs-dir-chevron {
+    transform: rotate(90deg);
+}
+
+.rs-dir-body {
+    display: none;
+    padding: 0 16px 16px;
+}
+
+.rs-dir-card--open .rs-dir-body {
+    display: block;
+    animation: rs-fadeIn 0.15s ease;
+}
+
+.rs-dir-body .comparison-table {
+    border-radius: var(--radius-sm, 8px);
+    overflow: hidden;
+    border: 1px solid var(--gray-200, #e5e7eb);
+}
+
+
+/* ── Group separator row within tables ── */
+.rs-group-row td {
+    background: var(--gray-50, #f9fafb);
+    font-size: var(--text-xs, 13px);
+    font-weight: 700;
+    color: var(--gray-600, #4b5563);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 10px 14px !important;
+    border-bottom: 1px solid var(--gray-200, #e5e7eb) !important;
+    border-top: 2px solid var(--gray-200, #e5e7eb) !important;
+}
+
+.comparison-table tbody tr:first-child.rs-group-row td {
+    border-top: none !important;
+}
+
+
+/* ── Match Badge (info card header) ── */
+.rs-match-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm, 8px);
+    background: var(--red-50, #fef2f2);
+    border: 1px solid var(--red-200, #fecaca);
+    flex-shrink: 0;
+    min-width: 72px;
+    line-height: 1;
+}
+
+.rs-match-badge.badge-all-ok {
+    background: var(--green-50, #f0fdf4);
+    border-color: var(--green-200, #bbf7d0);
+}
+
+.rs-match-num {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--red-600, #dc2626);
+    font-variant-numeric: tabular-nums;
+}
+
+.badge-all-ok .rs-match-num {
+    color: var(--green-600, #16a34a);
+}
+
+.rs-match-sep {
+    font-size: var(--text-sm, 14px);
+    color: var(--gray-300, #d1d5db);
+    font-weight: 500;
+}
+
+.rs-match-total {
+    font-size: var(--text-md, 15px);
+    font-weight: 700;
+    color: var(--gray-500, #6b7280);
+    font-variant-numeric: tabular-nums;
+}
+
+.rs-match-label {
+    font-size: var(--text-2xs, 11px);
+    color: var(--gray-400, #9ca3af);
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+
+/* ── RIF Banner (aprobado / rechazado) ── */
+.rif-banner {
+    border-radius: var(--radius, 12px);
+    padding: 20px 28px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.rif-banner--aprobado {
+    background: var(--green-50, #f0fdf4);
+    border: 2px solid var(--green-400, #4ade80);
+}
+
+.rif-banner--rechazado {
+    background: var(--red-50, #fef2f2);
+    border: 2px solid var(--red-300, #fca5a5);
+}
+
+.rif-banner-label {
+    font-size: var(--text-sm, 14px);
+    color: var(--gray-500);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.rif-banner-value {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--green-600, #16a34a);
+}
+
+.rif-banner-date,
+.rif-banner-meta {
+    font-size: var(--text-sm, 14px);
+    color: var(--gray-500);
+    margin-top: 6px;
+}
+
+.rif-banner-obs {
+    font-size: var(--text-sm, 14px);
+    color: var(--gray-600);
+    margin-top: 10px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 8px;
+    text-align: left;
+}
+
+
+/* ── Barra de Acciones Sticky ── */
+.rs-acciones-sticky {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    padding: 12px 24px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--gray-200, #e5e7eb);
+    margin-top: 8px;
+}
+
+.rs-acciones-sticky .action-btn {
+    padding: 10px 28px;
+    font-size: var(--text-md, 15px);
+    border-radius: var(--radius-sm, 8px);
+}
+
+.rs-acciones-sticky .action-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .rs-tabs-bar {
+        flex-direction: column;
+    }
+
+    .rs-tab {
+        justify-content: flex-start;
+    }
+}
