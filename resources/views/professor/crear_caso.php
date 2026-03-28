@@ -4,6 +4,7 @@ $activePage = 'casos-sucesorales';
 $userName = htmlspecialchars($_SESSION['user_name'] ?? 'Profesor', ENT_QUOTES, 'UTF-8');
 
 $extraCss = '
+<link rel="stylesheet" href="' . asset('css/global/autocomplete_dropdown.css') . '">
 <link rel="stylesheet" href="' . asset('css/professor/crear_caso.css') . '">
 ';
 
@@ -13,6 +14,7 @@ $extraJs = '
 </script>
 <script src="' . asset('js/global/number_utils.js') . '"></script>
 <script src="' . asset('js/global/decimal_input.js') . '"></script>
+<script src="' . asset('js/global/autocomplete_dropdown.js') . '"></script>
 <script type="module" src="' . asset('js/professor/crear_caso/main.js') . '"></script>
 ';
 
@@ -128,11 +130,11 @@ ob_start();
     <div class="cc-card__body cc-card__collapse">
       <div class="cc-grid cc-grid--2">
         <div class="cc-field cc-span-2">
-          <label>Título del caso</label>
+          <label>Título del caso <span class="cc-required">*</span></label>
           <input type="text" data-bind="caso.titulo" placeholder="Ej: Sucesión García - Caso práctico bienes mixtos">
         </div>
         <div class="cc-field cc-span-2">
-          <label>Descripción / Narrativa del escenario</label>
+          <label>Descripción / Narrativa del escenario <span class="cc-required">*</span></label>
           <textarea data-bind="caso.descripcion" rows="3"
             placeholder="Describa el contexto del caso para orientar al estudiante..."></textarea>
         </div>
@@ -204,9 +206,28 @@ ob_start();
       </svg>
     </div>
     <div class="cc-card__body cc-card__collapse">
+
+      <!-- Buscar persona existente -->
+      <div class="cc-search-persona" id="causanteSearchContainer">
+        <label class="cc-search-persona__label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Buscar persona existente <span class="cc-search-persona__optional">(opcional)</span>
+        </label>
+        <input type="text" id="inputBuscarCausante" placeholder="Escriba cédula, RIF o nombre para buscar..." autocomplete="off">
+      </div>
+
+      <!-- Inline validation errors -->
+      <div class="cc-inline-errors" id="causanteErrors">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="causanteErrorsTitle">Error de validación:</span>
+        </p>
+        <ul class="cc-inline-errors__list" id="causanteErrorsList"></ul>
+      </div>
+
       <div class="cc-grid cc-grid--4">
         <div class="cc-field" id="campo_tipo_cedula_causante">
-          <label>Tipo Cédula</label>
+          <label>Tipo Cédula <span class="cc-required">*</span></label>
           <select data-bind="causante.tipo_cedula">
             <option value="">Seleccione...</option>
             <option value="V">V - Venezolano</option>
@@ -214,19 +235,19 @@ ob_start();
           </select>
         </div>
         <div class="cc-field" id="campo_cedula_causante">
-          <label>Cédula</label>
-          <input type="text" data-bind="causante.cedula" placeholder="12.345.678">
+          <label>Cédula <span class="cc-required">*</span></label>
+          <input type="text" data-bind="causante.cedula" placeholder="12.345.678" autocomplete="off">
         </div>
         <div class="cc-field">
-          <label>Nombres</label>
+          <label>Nombres <span class="cc-required">*</span></label>
           <input type="text" data-bind="causante.nombres" placeholder="Nombres del causante">
         </div>
         <div class="cc-field">
-          <label>Apellidos</label>
+          <label>Apellidos <span class="cc-required">*</span></label>
           <input type="text" data-bind="causante.apellidos" placeholder="Apellidos del causante">
         </div>
         <div class="cc-field">
-          <label>Sexo</label>
+          <label>Sexo <span class="cc-required">*</span></label>
           <select data-bind="causante.sexo">
             <option value="">Seleccione...</option>
             <option value="M">Masculino</option>
@@ -234,7 +255,7 @@ ob_start();
           </select>
         </div>
         <div class="cc-field">
-          <label>Estado Civil</label>
+          <label>Estado Civil <span class="cc-required">*</span></label>
           <select data-bind="causante.estado_civil">
             <option value="">Seleccione...</option>
             <option value="Soltero">Soltero</option>
@@ -245,15 +266,15 @@ ob_start();
           </select>
         </div>
         <div class="cc-field">
-          <label>Fecha de Nacimiento</label>
+          <label>Fecha de Nacimiento <span class="cc-required">*</span></label>
           <input type="date" data-bind="causante.fecha_nacimiento">
         </div>
         <div class="cc-field">
-          <label>Fecha de Fallecimiento</label>
+          <label>Fecha de Fallecimiento <span class="cc-required">*</span></label>
           <input type="date" data-bind="causante.fecha_fallecimiento">
         </div>
         <div class="cc-field">
-          <label>Nacionalidad</label>
+          <label>Nacionalidad <span class="cc-required">*</span></label>
           <select data-bind="causante.nacionalidad">
             <option value="">Seleccione...</option>
             <!-- Se llenará dinámicamente con todos los países en Fase 2 -->
@@ -266,7 +287,7 @@ ob_start();
         <!-- Datos Fiscales del Causante -->
         <h4 class="cc-section-subtitle cc-mt" style="grid-column: 1 / -1;">Datos Fiscales</h4>
         <div class="cc-field">
-          <label>Domiciliado en el país</label>
+          <label>Domiciliado en el país <span class="cc-required">*</span></label>
           <select data-bind="datos_fiscales_causante.domiciliado_pais" disabled
             style="background-color: var(--cc-slate-50, #f8fafc);">
             <option value="1" selected>Sí</option>
@@ -274,7 +295,7 @@ ob_start();
           </select>
         </div>
         <div class="cc-field">
-          <label>Fecha de Cierre Fiscal</label>
+          <label>Fecha de Cierre Fiscal <span class="cc-required">*</span></label>
           <input type="date" data-bind="datos_fiscales_causante.fecha_cierre_fiscal" id="input_fecha_cierre_fiscal">
         </div>
 
@@ -283,15 +304,15 @@ ob_start();
           <h4 class="cc-section-subtitle cc-mt">Acta de Defunción</h4>
           <div class="cc-grid cc-grid--3 cc-mt">
             <div class="cc-field">
-              <label>Número de Acta</label>
+              <label>Número de Acta <span class="cc-required">*</span></label>
               <input type="text" data-bind="acta_defuncion.numero_acta" placeholder="Número del acta">
             </div>
             <div class="cc-field">
-              <label>Año del Acta</label>
+              <label>Año del Acta <span class="cc-required">*</span></label>
               <input type="text" data-bind="acta_defuncion.year_acta" placeholder="2024" maxlength="4">
             </div>
             <div class="cc-field">
-              <label>Parroquia de Emisión</label>
+              <label>Parroquia de Emisión <span class="cc-required">*</span></label>
               <input type="text" data-bind="acta_defuncion.parroquia_registro_id" placeholder="Ej: Catedral"
                 maxlength="98">
             </div>
@@ -299,6 +320,19 @@ ob_start();
         </div>
 
       </div>
+
+      <!-- Footer Buttons -->
+      <div class="cc-mt cc-text-right">
+        <button type="button" class="btn btn-secondary btn--sm"
+          onclick="CC.clearCausante()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round">
+            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          Limpiar Campos
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -315,6 +349,15 @@ ob_start();
       </svg>
     </div>
     <div class="cc-card__body cc-card__collapse p-0" style="display:none;">
+
+      <!-- Inline validation errors -->
+      <div class="cc-inline-errors" id="direccionErrors">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Campos requeridos faltantes:
+        </p>
+        <ul class="cc-inline-errors__list" id="direccionErrorsList"></ul>
+      </div>
 
       <!-- Tipo de dirección -->
       <div class="cc-p-4 cc-border-b">
@@ -576,6 +619,15 @@ ob_start();
     </div>
     <div class="cc-card__body cc-card__collapse">
 
+      <!-- Inline validation errors -->
+      <div class="cc-inline-errors" id="prorrogaErrors">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Campos requeridos faltantes:
+        </p>
+        <ul class="cc-inline-errors__list" id="prorrogaErrorsList"></ul>
+      </div>
+
       <!-- Listado de Prórrogas -->
       <div id="prorrogasTableContainer" style="display:none; margin-bottom: 20px;">
         <div class="table-container">
@@ -600,27 +652,27 @@ ob_start();
       <div class="cc-grid cc-grid--2">
         <!-- Fila 1 -->
         <div class="cc-field">
-          <label>Fecha de Solicitud</label>
+          <label>Fecha de Solicitud <span class="cc-required">*</span></label>
           <input type="date" data-bind="prorroga.fecha_solicitud">
         </div>
         <div class="cc-field">
-          <label>Nro de Resolución</label>
+          <label>Nro de Resolución <span class="cc-required">*</span></label>
           <input type="text" data-bind="prorroga.nro_resolucion" placeholder="Nro de Resolución">
         </div>
 
         <!-- Fila 2 -->
         <div class="cc-field">
-          <label>Fecha de Resolución</label>
+          <label>Fecha de Resolución <span class="cc-required">*</span></label>
           <input type="date" data-bind="prorroga.fecha_resolucion">
         </div>
         <div class="cc-field">
-          <label>Plazo Otorgado (días)</label>
+          <label>Plazo Otorgado (días) <span class="cc-required">*</span></label>
           <input type="number" data-bind="prorroga.plazo_dias" placeholder="Ej: 30" min="1">
         </div>
 
         <!-- Fila 3 -->
         <div class="cc-field">
-          <label>Fecha de Vencimiento</label>
+          <label>Fecha de Vencimiento <span class="cc-required">*</span></label>
           <input type="date" data-bind="prorroga.fecha_vencimiento">
         </div>
         <div></div>
@@ -655,65 +707,84 @@ ob_start();
     </div>
     <div class="cc-card__body cc-card__collapse">
 
+      <!-- Inline validation errors -->
+      <div class="cc-inline-errors" id="representanteErrors">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="representanteErrorsTitle">Error de validación:</span>
+        </p>
+        <ul class="cc-inline-errors__list" id="representanteErrorsList"></ul>
+      </div>
+
+      <!-- Search bar for existing persona -->
+      <div class="cc-search-persona">
+        <label class="cc-search-persona__label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Buscar Persona Existente
+        </label>
+        <input type="text" id="inputBuscarRepresentante" placeholder="Escriba cédula, RIF o nombre para buscar..." autocomplete="off">
+      </div>
+
       <div class="cc-grid cc-grid--3">
         <!-- Nombres y Apellidos -->
         <div class="cc-field cc-span-1">
-          <label>Nombres</label>
+          <label>Nombres <span class="cc-required">*</span></label>
           <input type="text" data-bind="representante.nombres" placeholder="Ej: Juan Carlos">
         </div>
         <div class="cc-field cc-span-1">
-          <label>Apellidos</label>
+          <label>Apellidos <span class="cc-required">*</span></label>
           <input type="text" data-bind="representante.apellidos" placeholder="Ej: Pérez Gómez">
         </div>
 
         <!-- Cédula -->
         <div class="cc-field cc-span-1" id="wrap-rep-cedula">
-          <label>Cédula</label>
+          <label>Cédula <span class="cc-required">*</span></label>
           <div style="display: flex; gap: 8px;">
             <select data-bind="representante.letra_cedula" id="sel-rep-letra" style="width: 70px;">
               <option value="V">V</option>
               <option value="E">E</option>
             </select>
             <input type="text" data-bind="representante.cedula" id="inp-rep-cedula" placeholder="Ej: 12345678"
-              style="flex: 1;">
+              style="flex: 1;" autocomplete="off">
           </div>
         </div>
 
-        <!-- RIF -->
-        <div class="cc-field cc-span-1" id="wrap-rep-rif">
-          <label>RIF</label>
-          <div style="display: flex; gap: 8px;">
-            <select data-bind="representante.letra_rif" id="sel-rep-letra-rif" style="width: 70px;">
-              <option value="V">V</option>
-              <option value="J">J</option>
-              <option value="E">E</option>
-              <option value="G">G</option>
-            </select>
-            <input type="text" data-bind="representante.rif_personal" id="inp-rep-rif" placeholder="Ej: 123456789"
-              style="flex: 1;">
-          </div>
-        </div>
-
-
-        <!-- Sexo y Fecha de Nacimiento -->
+        <!-- Sexo -->
         <div class="cc-field cc-span-1">
-          <label>Sexo</label>
+          <label>Sexo <span class="cc-required">*</span></label>
           <select data-bind="representante.sexo">
             <option value="">Seleccione...</option>
             <option value="M">Masculino</option>
             <option value="F">Femenino</option>
           </select>
         </div>
+
+        <!-- Fecha de Nacimiento -->
         <div class="cc-field cc-span-1">
-          <label>Fecha de Nacimiento</label>
+          <label>Fecha de Nacimiento <span class="cc-required">*</span></label>
           <input type="date" data-bind="representante.fecha_nacimiento">
+        </div>
+
+        <!-- RIF -->
+        <div class="cc-field cc-span-1" id="wrap-rep-rif">
+          <label>RIF <span class="cc-required">*</span></label>
+          <div style="display: flex; gap: 8px;">
+            <select data-bind="representante.letra_rif" id="sel-rep-letra-rif" style="width: 70px;">
+              <option value="V">V</option>
+              <option value="J">J</option>
+            </select>
+            <input type="text" data-bind="representante.rif_personal" id="inp-rep-rif" placeholder="Ej: 123456789"
+              style="flex: 1;" autocomplete="off">
+          </div>
         </div>
       </div>
 
       <!-- Footer Buttons -->
       <div class="cc-mt cc-text-right">
         <button type="button" class="btn btn-secondary btn--sm"
-          onclick="const r = document.ccHelpers; if(r) { document.querySelector('[data-bind=\'representante.apellidos\']').value=''; document.querySelector('[data-bind=\'representante.nombres\']').value=''; document.querySelector('[data-bind=\'representante.cedula\']').value=''; document.querySelector('[data-bind=\'representante.rif_personal\']').value=''; }">
+          onclick="CC.clearRepresentante()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round">
             <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -1471,6 +1542,12 @@ ob_start();
     </div>
     <div class="cc-modal__footer">
       <button class="btn btn-ghost" onclick="CC.closeModal()">Cancelar</button>
+      <button class="btn btn-secondary btn--sm" id="modalClearBtn" style="display:none;" onclick="CC.clearModalFields()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        Limpiar Campos
+      </button>
       <button class="btn btn-primary" id="modalSaveBtn" onclick="CC.saveModal()">Agregar</button>
     </div>
   </div>

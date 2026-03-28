@@ -18,10 +18,6 @@
         return document.querySelector(selector);
     }
 
-    function showToast(msg) {
-        alert(msg);
-    }
-
     // ── Persistencia con backend ──
     function guardarBorradorBackend() {
         if (!window.simIntentoId) return;
@@ -85,42 +81,87 @@
         return opt ? opt.textContent.trim() : selectEl.value;
     }
 
-    // ── Guardar relación ──
+    // ══════════════════════════════════════════════════════
+    //  Validación onblur — cédula / RIF
+    //  Se dispara al salir del campo, igual que el SENIAT
+    // ══════════════════════════════════════════════════════
+    function validarDocumento() {
+        var cedulaEl = el.cedula;
+        if (!cedulaEl) return true;
+        var val = cedulaEl.value.trim();
+        if (!val) return true; // vacío se valida en submit
+
+        var tipodocumento = getRadioValue('tipodocumento');
+
+        if (tipodocumento === 'C') {
+            // Cédula: V o E seguido de hasta 8 dígitos
+            if (!/^[vVeE]\d{1,8}$/.test(val)) {
+                alert('Cedula Inválida. El formato de cédula debe ser vV, eE seguido de ocho dígitos numéricos, ej.: V12345678');
+                return false;
+            }
+        } else {
+            // RIF: J, V, G, E, P, C seguido de 9 dígitos
+            if (!/^[jJvVgGeEpPcC]\d{9}$/.test(val)) {
+                alert('el formato del RIF debe ser vV, eE, pP, jJ, gG, cC, seguido de nueve dígitos numéricos');
+                return false;
+            }
+        }
+
+        // Normalizar a mayúsculas
+        cedulaEl.value = val.toUpperCase();
+        return true;
+    }
+
+    // ══════════════════════════════════════════════════════
+    //  Guardar relación (al hacer click en Guardar)
+    // ══════════════════════════════════════════════════════
     function saveRelacion() {
+        // Prevent double-click silently
+        if (window._savingRelacion) return;
+
         const apellidoForm = el.apellido ? el.apellido.value.trim().toUpperCase() : '';
         const nombreForm = el.nombre ? el.nombre.value.trim().toUpperCase() : '';
         const tipodocumento = getRadioValue('tipodocumento');
-        const cedula = el.cedula ? el.cedula.value.trim().toUpperCase() : '';
+        var cedula = el.cedula ? el.cedula.value.trim().toUpperCase() : '';
         const parentescoVal = el.parentesco ? el.parentesco.value : '';
         const parentescoText = getSelectText(el.parentesco);
         const pasaporte = el.pasaporte ? el.pasaporte.value.trim().toUpperCase() : '';
 
-        // ── Validaciones (todos obligatorios, sin avisos) ──
-        if (!apellidoForm || !nombreForm) return;
-        if (!cedula && !pasaporte) return;
-        if (!parentescoVal) return;
+        // ── Validar formato cédula/RIF si tiene valor ──
+        if (cedula && !validarDocumento()) return;
+
+        // ── Validaciones de campos obligatorios (solo al Guardar) ──
+        var errors = [];
+        if (!apellidoForm) errors.push('Debe ingresar información en el campo Apellidos.');
+        if (!nombreForm) errors.push('Debe ingresar información en el campo Nombres.');
+        if (!cedula && !pasaporte) errors.push('Debe ingresar Cédula/RIF o Pasaporte.');
+        if (!parentescoVal) errors.push('Debe ingresar información en el campo Parentesco.');
+
+        if (errors.length > 0) {
+            alert(errors.join('\n'));
+            return;
+        }
 
         // ── Determinar parámetros de búsqueda ──
-        // Prioridad: cédula/rif sobre pasaporte
         var searchParams = new URLSearchParams();
 
         if (cedula) {
-            // Si hay cédula o RIF, priorizar sobre pasaporte
             if (tipodocumento === 'C') {
-                searchParams.set('tipo', 'V');
-                searchParams.set('cedula', cedula);
+                // Extraer solo dígitos para la búsqueda API
+                var cedulaDigits = cedula.replace(/^[VE]/i, '');
+                searchParams.set('tipo', cedula.charAt(0).toUpperCase());
+                searchParams.set('cedula', cedulaDigits);
             } else {
-                // RIF
                 searchParams.set('rif', cedula);
             }
             searchParams.set('pasaporte', '');
         } else {
-            // Solo pasaporte
             searchParams.set('cedula', '');
             searchParams.set('rif', '');
             searchParams.set('pasaporte', pasaporte);
         }
 
+        window._savingRelacion = true;
         var apiUrl = (window.simBaseUrl || '') + '/api/buscar-persona?' + searchParams.toString();
 
         fetch(apiUrl, {
@@ -134,40 +175,30 @@
             var rifPersonal = '';
 
             if (data.success && data.data) {
-                // Match en la DB: usar nombres de la base de datos
                 apellido = (data.data.apellidos || '').toUpperCase();
                 nombre = (data.data.nombres || '').toUpperCase();
                 rifPersonal = (data.data.rif_personal || '').toUpperCase();
-            } else {
-                // Sin match: usar los nombres del formulario (ya validados arriba)
             }
 
-            // ── Validación especial: REPRESENTANTE DE LA SUCESION debe tener RIF ──
+            // ── REPRESENTANTE debe tener RIF ──
             var esRepresentante = parentescoVal === '50';
             if (esRepresentante) {
-                // El RIF puede venir de la DB o del formulario (si tipodocumento es RIF)
                 var rifFinal = rifPersonal || (tipodocumento === 'R' ? cedula : '');
                 if (!rifFinal) {
-                    showToast('El Representante de la Sucesión debe tener RIF.');
+                    alert('El Representante de la Sucesión debe tener RIF.');
                     return;
                 }
             }
 
-            // Construir idDocumento — siempre priorizar RIF de la DB
+            // Construir idDocumento — la cédula/RIF ya incluye la letra
             var idDocumentoText = '';
             if (rifPersonal) {
-                // La DB tiene RIF: usarlo siempre
                 idDocumentoText = rifPersonal;
             } else if (cedula) {
-                if (tipodocumento === 'C') {
-                    idDocumentoText = 'V' + cedula;
-                } else {
-                    idDocumentoText = cedula; // RIF del formulario
-                }
+                idDocumentoText = cedula; // ya tiene V27836650 o J123456789
             } else {
                 idDocumentoText = pasaporte;
             }
-            // Pasaporte solo se guarda si es el único documento ingresado
             var pasaporteFinal = (!cedula && !esRepresentante) ? pasaporte : '';
 
             var rel = {
@@ -180,12 +211,15 @@
                 pasaporte: pasaporteFinal,
                 idDocumento: idDocumentoText
             };
-            // ── Verificar duplicados por documento ──
+
+            // ── Verificar duplicados (mismo documento Y mismo parentesco) ──
+            // Una misma persona puede ser Representante (50) y Heredero (51)
             var duplicado = relaciones.some(function (r) {
-                return r.idDocumento && r.idDocumento === idDocumentoText;
+                return r.idDocumento && r.idDocumento === idDocumentoText
+                    && r.parentesco === parentescoVal;
             });
             if (duplicado) {
-                showToast('Ya existe una relación con ese documento.');
+                alert('Ya existe una relación con ese documento y parentesco.');
                 return;
             }
 
@@ -198,7 +232,10 @@
         })
         .catch(function (error) {
             console.error('Error al buscar persona:', error);
-            showToast('Error al buscar persona en la base de datos.');
+            alert('Error al buscar persona en la base de datos.');
+        })
+        .finally(function () {
+            window._savingRelacion = false;
         });
     }
 
@@ -209,14 +246,11 @@
 
         const tbody = existingTable.querySelector('tbody') || existingTable;
 
-        // Eliminar filas de datos previas (estáticas y dinámicas)
         const oldRows = tbody.querySelectorAll('tr.letrasLista, tr.rel-empty');
         oldRows.forEach(row => row.remove());
 
-        // Fila del header
         const headerRow = tbody.querySelector('tr:first-child');
 
-        // Mostrar/ocultar botón Remover según haya relaciones
         const btnRemover = $('#remover');
         if (btnRemover) btnRemover.style.display = relaciones.length > 0 ? '' : 'none';
 
@@ -232,7 +266,6 @@
             return;
         }
 
-        // Crear fragmento con todas las filas
         const fragment = document.createDocumentFragment();
         relaciones.forEach((rel, i) => {
             const row = document.createElement('tr');
@@ -262,8 +295,6 @@
     }
 
     // ── Sincronizar opciones de parentesco ──
-    // Si ya existe un REPRESENTANTE DE LA SUCESION en la lista,
-    // ocultar esa opción del select para que no se pueda agregar otro.
     function syncParentescoOptions() {
         const selectEl = el.parentesco;
         if (!selectEl) return;
@@ -275,7 +306,6 @@
         if (tieneRepresentante) {
             opt50.disabled = true;
             opt50.style.display = 'none';
-            // Si estaba seleccionado, resetear
             if (selectEl.value === '50') selectEl.value = '';
         } else {
             opt50.disabled = false;
@@ -288,7 +318,6 @@
         const checks = document.querySelectorAll('.rel-check:checked');
         if (checks.length === 0) return;
 
-        // Obtener índices en orden descendente para no alterar los índices al eliminar
         const indices = Array.from(checks).map(c => parseInt(c.dataset.index)).sort((a, b) => b - a);
         indices.forEach(i => relaciones.splice(i, 1));
 
@@ -306,11 +335,7 @@
         if (el.pasaporte) el.pasaporte.value = '';
 
         el.tipodocumentoRadios.forEach(r => {
-            if (r.value === 'C') {
-                r.checked = true;
-            } else {
-                r.checked = false;
-            }
+            r.checked = (r.value === 'C');
         });
     }
 
@@ -349,6 +374,23 @@
                 clearForm();
             });
         }
+
+        // ── Validación onblur en campo cédula/RIF (estilo SENIAT original) ──
+        var cedulaField = el.cedula;
+        if (cedulaField) {
+            cedulaField.addEventListener('blur', function () {
+                validarDocumento();
+            });
+        }
+
+        // Re-validar al cambiar tipo doc (Cédula ↔ RIF) si ya tiene valor
+        el.tipodocumentoRadios.forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                if (el.cedula && el.cedula.value.trim()) {
+                    validarDocumento();
+                }
+            });
+        });
     }
 
     // ── Inicialización ──

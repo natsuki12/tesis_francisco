@@ -6,6 +6,7 @@ $activePage = 'simulador';
 
 // ── Decodificar borrador ANTES del HTML para usarlo en condicionales ──
 $intentoId = $intento['id'] ?? null;
+$modalidad = $_SESSION['sim_modalidad'] ?? 'Practica_Libre';
 $borrador = null;
 if ($intento && !empty($intento['borrador_json'])) {
     $borrador = json_decode($intento['borrador_json'], true);
@@ -374,16 +375,22 @@ ob_start();
 
 <!-- ── Modal: Información del proceso de validación ── -->
 <?php if ($datosCompletos): ?>
+<?php if ($modalidad === 'Evaluacion'): ?>
+<dialog id="validarInscripcionModal" class="modal-base" data-no-backdrop-close>
+<?php else: ?>
 <dialog id="validarInscripcionModal" class="modal-base">
+<?php endif; ?>
     <div class="modal-base__container" style="max-width:560px;">
         <div class="modal-base__header">
             <h3 class="modal-base__title">
                 <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:6px; color:var(--blue-600);">
                     <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
                 </svg>
-                Información sobre el proceso
+                <?= ($modalidad === 'Evaluacion') ? 'Confirmación de envío' : 'Información sobre el proceso' ?>
             </h3>
-            <button class="modal-base__close" onclick="window.modalManager.close('validarInscripcionModal')">✕</button>
+            <?php if ($modalidad !== 'Evaluacion'): ?>
+                <button class="modal-base__close" onclick="window.modalManager.close('validarInscripcionModal')">✕</button>
+            <?php endif; ?>
         </div>
         <div class="modal-base__body" style="line-height:1.7; font-size:.9375rem; color:var(--gray-600);">
             <p style="margin:0 0 16px;">
@@ -392,25 +399,61 @@ ob_start();
             <p style="margin:0 0 16px;">
                 En el proceso real ante el <strong>SENIAT</strong>, una vez completados los datos de inscripción, el contribuyente debe imprimir la planilla generada y presentarla en la <strong>Unidad/Sector/Gerencia Regional de Tributos Internos</strong> correspondiente a su domicilio fiscal para la validación y creación formal del RIF Sucesoral.
             </p>
-            <p style="margin:0 0 16px;">
-                Para fines educativos, este sistema <strong>generará el RIF de manera automática</strong> al validar que los datos ingresados coincidan con los de su asignación. Recibirá en su correo electrónico registrado los resultados:
-            </p>
-            <ul style="margin:0 0 16px; padding-left:20px; color:var(--gray-600);">
-                <li style="margin-bottom:6px;">En caso de ser <strong style="color:var(--green-600);">correctos</strong>: el RIF Sucesoral generado junto con las instrucciones correspondientes.</li>
-                <li>En caso de presentar <strong style="color:var(--red-500);">inconsistencias</strong>: se le notificarán las observaciones para que pueda corregir los datos.</li>
-            </ul>
-            <div style="background:var(--amber-50); border:1px solid var(--amber-200); border-radius:8px; padding:12px 16px; margin-top:4px;">
-                <p style="margin:0; font-size:.875rem; color:var(--amber-700);">
-                    <strong>📌 Nota sobre el proceso real:</strong> El SENIAT requiere el uso de un correo electrónico exclusivo para el RIF Sucesoral, se recomienda la creación de uno para uso exclusivo de la sucesión, ya que el sistema no admite direcciones de correo previamente registradas. Para efectos prácticos de esta simulación, se utilizará su correo institucional registrado.
+            <?php if ($modalidad === 'Evaluacion'): ?>
+                <p style="margin:0 0 16px;">
+                    Al confirmar, su inscripción será <strong>enviada al profesor para revisión</strong>. El profesor comparará los datos ingresados con los del caso asignado y decidirá si aprueba la generación del RIF Sucesoral.
                 </p>
-            </div>
+                <div style="background:var(--blue-50); border:1px solid var(--blue-200); border-radius:8px; padding:12px 16px; margin-top:4px;">
+                    <p style="margin:0; font-size:.875rem; color:var(--blue-700);">
+                        <strong>📋 Modo Evaluación:</strong> El RIF Sucesoral no se genera automáticamente. Su profesor revisará los datos y aprobará o rechazará la inscripción.
+                    </p>
+                </div>
+            <?php else: ?>
+                <p style="margin:0 0 16px;">
+                    Para fines educativos, este sistema <strong>generará el RIF de manera automática</strong> al validar que los datos ingresados coincidan con los de su asignación. Recibirá en su correo electrónico registrado los resultados:
+                </p>
+                <ul style="margin:0 0 16px; padding-left:20px; color:var(--gray-600);">
+                    <li style="margin-bottom:6px;">En caso de ser <strong style="color:var(--green-600);">correctos</strong>: el RIF Sucesoral generado junto con las instrucciones correspondientes.</li>
+                    <li>En caso de presentar <strong style="color:var(--red-500);">inconsistencias</strong>: se le notificarán las observaciones para que pueda corregir los datos.</li>
+                </ul>
+                <div style="background:var(--amber-50); border:1px solid var(--amber-200); border-radius:8px; padding:12px 16px; margin-top:4px;">
+                    <p style="margin:0; font-size:.875rem; color:var(--amber-700);">
+                        <strong>📌 Nota sobre el proceso real:</strong> El SENIAT requiere el uso de un correo electrónico exclusivo para el RIF Sucesoral, se recomienda la creación de uno para uso exclusivo de la sucesión, ya que el sistema no admite direcciones de correo previamente registradas. Para efectos prácticos de esta simulación, se utilizará su correo institucional registrado.
+                    </p>
+                </div>
+            <?php endif; ?>
         </div>
         <div class="modal-base__footer">
-            <button class="modal-btn modal-btn-cancel" onclick="window.modalManager.close('validarInscripcionModal')">
-                Cancelar
-            </button>
+            <?php if ($modalidad === 'Evaluacion'): ?>
+                <button class="modal-btn modal-btn-cancel" onclick="window.location.href='<?= base_url('/simulador/inscripcion-rif/datos-basicos') ?>'">
+                    Cancelar y revisar datos
+                </button>
+            <?php else: ?>
+                <button class="modal-btn modal-btn-cancel" onclick="window.modalManager.close('validarInscripcionModal')">
+                    Cancelar
+                </button>
+            <?php endif; ?>
             <button class="modal-btn modal-btn-primary" id="btnConfirmarValidacion">
-                Confirmar y validar
+                <?= ($modalidad === 'Evaluacion') ? 'Confirmar y enviar al profesor' : 'Confirmar y validar' ?>
+            </button>
+        </div>
+    </div>
+</dialog>
+<?php endif; ?>
+
+<!-- ── Modal: Resultado de la validación (errores o éxito) ── -->
+<?php if ($datosCompletos): ?>
+<dialog id="resultadoValidacionModal" class="modal-base">
+    <div class="modal-base__container" style="max-width:620px;">
+        <div class="modal-base__header" id="resultadoModalHeader">
+            <h3 class="modal-base__title" id="resultadoModalTitle"></h3>
+            <button class="modal-base__close" onclick="window.modalManager.close('resultadoValidacionModal')">✕</button>
+        </div>
+        <div class="modal-base__body" id="resultadoModalBody" style="max-height:60vh; overflow-y:auto; line-height:1.7; font-size:.9375rem; color:var(--gray-600);">
+        </div>
+        <div class="modal-base__footer">
+            <button class="modal-btn modal-btn-primary" onclick="window.modalManager.close('resultadoValidacionModal')">
+                Entendido
             </button>
         </div>
     </div>
@@ -425,7 +468,7 @@ ob_start();
         var yaValidado = params.get('validado') === '1';
 
         if (!yaValidado) {
-            // Auto-abrir modal al cargar
+            // Auto-abrir modal informativo al cargar
             var checkModal = setInterval(function() {
                 if (window.modalManager) {
                     clearInterval(checkModal);
@@ -433,23 +476,6 @@ ob_start();
                 }
             }, 100);
         } else {
-            var emailEnviado = params.get('email') === '1';
-            var resultado = params.get('resultado'); // 'ok' o 'errores'
-
-            if (resultado === 'ok') {
-                if (emailEnviado) {
-                    showGlobalToast('Validación exitosa. Se ha enviado el RIF Sucesoral a su correo.', 'success');
-                } else {
-                    showGlobalToast('Validación exitosa, pero no se pudo enviar el correo. Contacte al administrador.', 'info');
-                }
-            } else {
-                if (emailEnviado) {
-                    showGlobalToast('Se encontraron discrepancias. Revise su correo para más detalles.', 'error');
-                } else {
-                    showGlobalToast('Se encontraron discrepancias, pero no se pudo enviar el correo. Contacte al administrador.', 'error');
-                }
-            }
-
             // Limpiar params de la URL sin recargar
             history.replaceState(null, '', window.location.pathname);
         }
@@ -478,7 +504,6 @@ ob_start();
                 })
                 .then(function(r) {
                     if (!r.ok && r.status !== 200) {
-                        // Intentar obtener JSON de error del servidor
                         return r.json().catch(function() {
                             throw new Error('El servidor respondió con código ' + r.status);
                         });
@@ -486,17 +511,20 @@ ob_start();
                     return r.json();
                 })
                 .then(function(data) {
-                    // Redirigir al index SENIAT con los parámetros de resultado
-                    var baseUrl = window.simBaseUrl || '';
-                    var params = 'validado=1';
-                    params += '&email=' + (data.email_enviado ? '1' : '0');
-                    params += '&resultado=' + (data.ok ? 'ok' : 'errores');
+                    // Cerrar modal informativo
+                    if (window.modalManager) {
+                        window.modalManager.close('validarInscripcionModal');
+                    }
+
                     if (data.ok) {
-                        // Éxito: ir al portal SENIAT principal
-                        window.location.href = baseUrl + '/simulador?' + params;
+                        // Evaluación: redirigir a mis-asignaciones directamente
+                        if (data.pendiente_rif) {
+                            window.location.href = (window.simBaseUrl || '') + '/mis-asignaciones';
+                            return;
+                        }
+                        mostrarModalExito(data);
                     } else {
-                        // Errores: quedarse en validar_inscripcion para que corrija
-                        window.location.href = window.location.pathname + '?' + params;
+                        mostrarModalErrores(data);
                     }
                 })
                 .catch(function(error) {
@@ -509,41 +537,135 @@ ob_start();
         }
     });
 
-    // ── Toast global (usa los estilos de toast.css ya incluido en el layout) ──
-    function showGlobalToast(message, type) {
-        type = type || 'success';
-        var container = document.getElementById('cc-toast-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'cc-toast-container';
-            document.body.appendChild(container);
+    // ══════════════════════════════════════════════════════
+    //  Modal de ÉXITO
+    // ══════════════════════════════════════════════════════
+    function mostrarModalExito(data) {
+        var title = document.getElementById('resultadoModalTitle');
+        var body = document.getElementById('resultadoModalBody');
+
+        // Modo evaluación: pendiente de aprobación del profesor
+        if (data.pendiente_rif) {
+            title.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:6px; color:var(--blue-600);"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Inscripción Enviada';
+
+            body.innerHTML =
+                '<div style="text-align:center; padding:16px 0;">' +
+                    '<div style="font-size:3rem; margin-bottom:12px;">📋</div>' +
+                    '<p style="margin:0 0 8px; font-size:1.1rem; font-weight:600; color:var(--gray-700);">Pendiente de aprobación</p>' +
+                    '<p style="margin:0; color:var(--gray-500); font-size:.9375rem;">' +
+                        escapeHtml(data.mensaje || 'Su inscripción ha sido enviada al profesor para revisión.') +
+                    '</p>' +
+                '</div>' +
+                '<div style="background:var(--blue-50); border:1px solid var(--blue-200); border-radius:8px; padding:12px 16px; margin-top:16px;">' +
+                    '<p style="margin:0; font-size:.875rem; color:var(--blue-700);">' +
+                        '<strong>📋 Modo Evaluación:</strong> El profesor revisará y comparará los datos ingresados con los del caso. Una vez aprobado, se generará su RIF Sucesoral.' +
+                    '</p>' +
+                '</div>';
+        } else {
+            // Práctica libre/guiada: mostrar RIF generado
+            title.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:6px; color:var(--green-600);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Validación Exitosa';
+
+            var rif = data.rif_sucesoral || 'N/A';
+            var emailMsg = data.email_enviado
+                ? '<p style="margin:16px 0 0; font-size:.875rem; color:var(--green-700);">✉️ También se ha enviado esta información a su <strong>correo electrónico</strong> registrado.</p>'
+                : '';
+
+            body.innerHTML =
+                '<div style="text-align:center; padding:16px 0;">' +
+                    '<p style="margin:0 0 8px; color:var(--gray-500); font-size:.875rem;">Su RIF Sucesoral generado es:</p>' +
+                    '<div style="font-size:2rem; font-weight:700; letter-spacing:4px; color:var(--blue-600); background:var(--blue-50); border-radius:12px; padding:20px; margin:0 auto; display:inline-block;">' +
+                        escapeHtml(rif) +
+                    '</div>' +
+                    emailMsg +
+                '</div>' +
+                '<div style="background:var(--amber-50); border:1px solid var(--amber-200); border-radius:8px; padding:12px 16px; margin-top:20px;">' +
+                    '<p style="margin:0; font-size:.875rem; color:var(--amber-700);">' +
+                        '<strong>📌 Nota:</strong> En el proceso real ante el SENIAT, debe presentar la planilla impresa ante la unidad correspondiente a su domicilio fiscal.' +
+                    '</p>' +
+                '</div>';
         }
 
-        var icons = {
-            success: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
-            error: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
-            info: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
-        };
+        // Abrir modal — botón "Entendido" redirige al portal
+        var checkModal = setInterval(function() {
+            if (window.modalManager) {
+                clearInterval(checkModal);
+                var btnEntendido = document.querySelector('#resultadoValidacionModal .modal-btn-primary');
+                if (btnEntendido) {
+                    btnEntendido.onclick = function() {
+                        window.location.href = (window.simBaseUrl || '') + '/simulador?validado=1';
+                    };
+                }
+                window.modalManager.open('resultadoValidacionModal');
+            }
+        }, 50);
+    }
 
-        var toast = document.createElement('div');
-        toast.className = 'cc-toast cc-toast--' + type;
-        toast.innerHTML =
-            '<span class="cc-toast__icon">' + (icons[type] || icons.info) + '</span>' +
-            '<span class="cc-toast__msg">' + message + '</span>' +
-            '<button class="cc-toast__close">✕</button>';
+    // ══════════════════════════════════════════════════════
+    //  Modal de ERRORES (Discrepancias)
+    // ══════════════════════════════════════════════════════
+    function mostrarModalErrores(data) {
+        var title = document.getElementById('resultadoModalTitle');
+        var body = document.getElementById('resultadoModalBody');
+        var btnConfirmar = document.getElementById('btnConfirmarValidacion');
 
-        var closeBtn = toast.querySelector('.cc-toast__close');
-        closeBtn.addEventListener('click', function() {
-            toast.classList.add('cc-toast--exit');
-            setTimeout(function() { toast.remove(); }, 300);
+        // Re-habilitar botón para que pueda reintentar
+        if (btnConfirmar) {
+            btnConfirmar.disabled = false;
+            btnConfirmar.textContent = 'Confirmar y validar';
+        }
+
+        title.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:6px; color:var(--red-500);"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Discrepancias Detectadas';
+
+        var errores = data.errores || {};
+        var secciones = [
+            { key: 'causante',    titulo: 'Datos del Causante',  icono: '👤' },
+            { key: 'relaciones',  titulo: 'Relaciones',          icono: '👥' },
+            { key: 'direcciones', titulo: 'Direcciones',         icono: '📍' },
+            { key: 'general',     titulo: 'General',             icono: '🔍' }
+        ];
+
+        var html = '<p style="margin:0 0 16px; color:var(--gray-500);">Se encontraron diferencias entre los datos ingresados y el caso asignado:</p>';
+        var totalErrores = 0;
+
+        secciones.forEach(function(sec) {
+            var items = errores[sec.key];
+            if (!items || items.length === 0) return;
+            totalErrores += items.length;
+
+            html += '<div style="margin-bottom:16px;">';
+            html += '<h4 style="font-size:.875rem; color:var(--gray-700); margin:0 0 8px; border-bottom:1px solid var(--gray-200); padding-bottom:6px;">' +
+                        sec.icono + ' ' + sec.titulo +
+                    '</h4>';
+            html += '<ul style="margin:0; padding-left:20px; font-size:.8125rem; line-height:1.8;">';
+
+            items.forEach(function(err) {
+                html += '<li style="color:var(--red-600);">' + escapeHtml(err) + '</li>';
+            });
+
+            html += '</ul></div>';
         });
 
-        container.appendChild(toast);
+        html += '<div style="background:var(--red-50); border:1px solid var(--red-200); border-radius:8px; padding:10px 14px; font-size:.8125rem; color:var(--red-700);">' +
+                    '<strong>Total de discrepancias:</strong> ' + totalErrores +
+                    ' — Corrija los datos en las secciones correspondientes e intente nuevamente.' +
+                '</div>';
 
-        setTimeout(function() {
-            toast.classList.add('cc-toast--exit');
-            setTimeout(function() { toast.remove(); }, 300);
-        }, 5000);
+        body.innerHTML = html;
+
+        // Abrir modal
+        var checkModal = setInterval(function() {
+            if (window.modalManager) {
+                clearInterval(checkModal);
+                window.modalManager.open('resultadoValidacionModal');
+            }
+        }, 50);
+    }
+
+    // ── Utilidad para escapar HTML ──
+    function escapeHtml(text) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(text));
+        return div.innerHTML;
     }
 </script>
 <?php endif; ?>
@@ -553,6 +675,7 @@ ob_start();
     window.simIntentoId = <?= json_encode($intentoId) ?>;
     window.simBorrador = <?= json_encode($borrador) ?>;
     window.simBaseUrl = <?= json_encode(rtrim(base_url(''), '/')) ?>;
+    window.simModalidad = <?= json_encode($modalidad) ?>;
 </script>
 
 <?php

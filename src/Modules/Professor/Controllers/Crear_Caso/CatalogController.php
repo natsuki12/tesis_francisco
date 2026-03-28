@@ -139,15 +139,16 @@ class CatalogController
         $cedula = trim($_GET['cedula'] ?? '');
         $pasaporte = trim($_GET['pasaporte'] ?? '');
         $rif = trim($_GET['rif'] ?? '');
+        $personaId = (int) ($_GET['persona_id'] ?? 0);
 
-        if (empty($cedula) && empty($pasaporte) && empty($rif)) {
+        if (empty($cedula) && empty($pasaporte) && empty($rif) && $personaId === 0) {
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'Documento requerido']);
             exit;
         }
 
         $model = new CatalogModel();
-        $result = $model->getPersonaByDocumento($tipo, $cedula, $pasaporte, $rif);
+        $result = $model->getPersonaByDocumento($tipo, $cedula, $pasaporte, $rif, $personaId);
 
         if ($result) {
             $this->jsonResponse($result);
@@ -156,5 +157,17 @@ class CatalogController
             echo json_encode(['success' => false, 'message' => 'Persona no encontrada']);
             exit;
         }
+    }
+
+    public function searchPersonas()
+    {
+        $q             = trim($_GET['q'] ?? '');
+        $campo         = in_array($_GET['campo'] ?? '', ['cedula', 'rif']) ? $_GET['campo'] : 'cedula';
+        $tipo          = trim($_GET['tipo'] ?? '');
+        $sinCedula     = ($_GET['sin_cedula'] ?? '') === '1';
+        $conDocumentos = ($_GET['con_documentos'] ?? '') === '1';
+
+        $model = new CatalogModel();
+        $this->jsonResponse($model->searchPersonas($q, $campo, $tipo, $sinCedula, $conDocumentos));
     }
 }

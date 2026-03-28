@@ -79,7 +79,7 @@ ob_start();
         <circle cx="11" cy="11" r="8" />
         <path d="m21 21-4.35-4.35" />
       </svg>
-      <input type="text" id="search-casos" placeholder="Buscar por causante, cédula o N° de caso...">
+      <input type="text" data-search-for="tbl-casos" placeholder="Buscar por causante, cédula o N° de caso...">
     </div>
 
     <button class="filter-chip active" data-filter="Todos">
@@ -94,32 +94,23 @@ ob_start();
   </div>
 
   <div class="toolbar-right">
-    <button class="btn btn-secondary btn-sm" disabled style="opacity:0.5;cursor:not-allowed;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-        <polyline points="7 10 12 15 17 10" />
-        <line x1="12" y1="15" x2="12" y2="3" />
-      </svg>
-      Exportar
-    </button>
+    Mostrar <select data-perpage-for="tbl-casos" class="per-page-select"><option value="10" selected>10</option><option value="25">25</option><option value="50">50</option></select> filas
   </div>
 </div>
 
 <!-- Data Table -->
 <div class="table-container">
-  <table class="data-table">
+  <table class="data-table" id="tbl-casos" data-per-page="10">
     <thead>
       <tr>
         <th class="checkbox-cell"><input type="checkbox" class="custom-check" id="check-all"></th>
-        <th class="sortable" data-sort="id">N° Caso</th>
-        <th class="sortable" data-sort="titulo">Nombre Caso</th>
-        <th class="sortable" data-sort="causante">Causante</th>
+        <th class="sortable" data-col="1">N° Caso</th>
+        <th class="sortable" data-col="2">Nombre Caso</th>
+        <th class="sortable" data-col="3">Causante</th>
         <th>Herederos</th>
-        <th class="sortable" data-sort="patrimonio">Patrimonio Neto</th>
-
-        <th class="sortable" data-sort="estado">Estado</th>
-        <th class="sortable" data-sort="fecha">Fecha</th>
+        <th class="sortable" data-col="5">Patrimonio Neto</th>
+        <th class="sortable" data-col="6">Estado</th>
+        <th class="sortable" data-col="7">Fecha</th>
         <th></th>
       </tr>
     </thead>
@@ -177,11 +168,12 @@ ob_start();
           else
             $dateRelative = "hace {$daysDiff} días";
           ?>
-          <tr data-estado="<?= htmlspecialchars($caso['estado']) ?>" data-id="<?= $caso['id'] ?>"
-            data-titulo="<?= htmlspecialchars(strtolower($caso['titulo'] ?? '')) ?>"
-            data-causante="<?= htmlspecialchars(strtolower($fullName)) ?>"
-            data-cedula="<?= htmlspecialchars($caso['causante_cedula'] ?? '') ?>" data-fecha="<?= $caso['created_at'] ?>"
-            data-patrimonio="<?= $patrimonioRaw ?>">
+          <?php
+            $searchStr = strtolower($caseId . ' ' . ($caso['titulo'] ?? '') . ' ' . $fullName . ' ' . ($caso['causante_cedula'] ?? '') . ' ' . $caso['estado']);
+          ?>
+          <tr data-search="<?= htmlspecialchars($searchStr) ?>"
+            data-estado="<?= htmlspecialchars($caso['estado']) ?>" data-id="<?= $caso['id'] ?>"
+            data-href="<?= base_url('/casos-sucesorales/' . $caso['id']) ?>" class="row-clickable">
             <td class="checkbox-cell"><input type="checkbox" class="custom-check row-check"></td>
             <td><a href="<?= base_url('/casos-sucesorales/' . $caso['id']) ?>" class="case-id"
                 style="text-decoration: none; color: inherit;"><?= htmlspecialchars($caseId) ?></a></td>
@@ -262,27 +254,12 @@ ob_start();
 
     </tbody>
   </table>
+</div>
 
-  <!-- Table Footer -->
-  <div class="table-footer">
-    <div class="table-footer-info">
-      Mostrando <strong><?= count($casos) ?></strong> casos
-    </div>
-    <div class="pagination">
-      <button disabled>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
-      </button>
-      <button class="active">1</button>
-      <button>2</button>
-      <button>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
-      </button>
-    </div>
-  </div>
+<!-- Table Footer -->
+<div class="table-footer" data-footer-for="tbl-casos">
+  <div class="table-footer-info"></div>
+  <div class="pagination"></div>
 </div>
 
 
@@ -292,24 +269,10 @@ ob_start();
     const params = new URLSearchParams(window.location.search);
     if (params.get('borrador') !== 'ok') return;
     history.replaceState(null, '', window.location.pathname);
-
-    const toast = document.createElement('div');
-    toast.textContent = '✅ Borrador guardado exitosamente.';
-    Object.assign(toast.style, {
-      position: 'fixed', top: '24px', right: '24px', zIndex: '9999',
-      padding: '14px 28px', borderRadius: '10px',
-      background: '#059669', color: '#fff',
-      fontSize: '14px', fontWeight: '500',
-      boxShadow: '0 8px 24px rgba(5,150,105,.35)',
-      opacity: '0', transform: 'translateY(-12px)',
-      transition: 'opacity .3s, transform .3s'
-    });
-    document.body.appendChild(toast);
-    requestAnimationFrame(() => { toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; });
+    // Wait for utils.js module to load and set window.showToast
     setTimeout(() => {
-      toast.style.opacity = '0'; toast.style.transform = 'translateY(-12px)';
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
+      if (window.showToast) window.showToast('Borrador guardado exitosamente.', 'success');
+    }, 100);
   })();
 </script>
 
@@ -627,16 +590,15 @@ ob_start();
     const tbody = document.getElementById('casos-tbody');
     if (!tbody) return;
 
-    // ========== TOAST ==========
-    function showToast(msg, type) {
-      const t = document.createElement('div');
-      t.style.cssText = 'position:fixed;top:24px;right:24px;z-index:11000;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.15);transform:translateY(-12px);opacity:0;transition:all .3s ease;';
-      t.style.background = type === 'error' ? '#dc2626' : '#16a34a';
-      t.textContent = msg;
-      document.body.appendChild(t);
-      requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateY(0)'; });
-      setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(-12px)'; setTimeout(() => t.remove(), 300); }, 3000);
-    }
+    // ========== TOAST (use global window.showToast from utils.js) ==========
+
+    // ========== CLICKABLE ROWS ==========
+    tbody.addEventListener('click', e => {
+      // Skip clicks on interactive elements
+      if (e.target.closest('a, button, input, .row-actions')) return;
+      const row = e.target.closest('tr.row-clickable');
+      if (row && row.dataset.href) window.location.href = row.dataset.href;
+    });
 
     // ========== CONFIRM MODAL ==========
     const confirmOverlay = document.getElementById('modal-confirm');
@@ -784,99 +746,28 @@ ob_start();
       modal.style.display = 'none'; currentCasoId = null;
     });
 
-    // ========== TABLE: SEARCH, FILTER, SORT, PAGINATION ==========
-    const searchInput = document.getElementById('search-casos');
+    // ========== FILTER CHIPS → DataTableManager ==========
     const chips = document.querySelectorAll('.filter-chip[data-filter]');
     const checkAll = document.getElementById('check-all');
-    const footerInfo = document.querySelector('.table-footer-info');
-    const paginationEl = document.querySelector('.pagination');
-    const PER_PAGE = 10;
-    let activeFilter = 'Todos', searchTerm = '', sortKey = null, sortDir = 1, currentPage = 1;
 
-    function getVisible() {
-      return Array.from(tbody.querySelectorAll('tr[data-estado]')).filter(r => {
-        const e = r.dataset.estado;
-        if (e === 'Eliminado') return false;
-        if (activeFilter !== 'Todos' && e !== activeFilter) return false;
-        if (!searchTerm) return true;
-        return r.dataset.causante.includes(searchTerm) || r.dataset.cedula.includes(searchTerm) || r.dataset.titulo.includes(searchTerm) || r.dataset.id.includes(searchTerm);
-      });
-    }
-
-    function sortRows(rows) {
-      if (!sortKey) return rows;
-      return rows.slice().sort((a, b) => {
-        let va, vb;
-        switch (sortKey) {
-          case 'id': va = +a.dataset.id; vb = +b.dataset.id; break;
-          case 'titulo': va = a.dataset.titulo; vb = b.dataset.titulo; break;
-          case 'causante': va = a.dataset.causante; vb = b.dataset.causante; break;
-          case 'estado': va = a.dataset.estado; vb = b.dataset.estado; break;
-          case 'fecha': va = a.dataset.fecha; vb = b.dataset.fecha; break;
-          case 'patrimonio': va = +a.dataset.patrimonio; vb = +b.dataset.patrimonio; break;
-          default: return 0;
-        }
-        return va < vb ? -sortDir : va > vb ? sortDir : 0;
-      });
-    }
-
-    function render() {
-      const visible = sortRows(getVisible());
-      const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
-      if (currentPage > totalPages) currentPage = totalPages;
-      const start = (currentPage - 1) * PER_PAGE;
-      const pageRows = visible.slice(start, start + PER_PAGE);
-
-      // Reorder DOM to match sort order
-      visible.forEach(r => tbody.appendChild(r));
-
-      Array.from(tbody.querySelectorAll('tr[data-estado]')).forEach(r => r.style.display = 'none');
-      pageRows.forEach(r => r.style.display = '');
-
-      if (footerInfo) footerInfo.innerHTML = 'Mostrando <strong>' + pageRows.length + '</strong> de <strong>' + visible.length + '</strong> casos';
-
-      if (paginationEl) {
-        paginationEl.innerHTML = '';
-        const prev = document.createElement('button');
-        prev.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>';
-        prev.disabled = currentPage === 1;
-        prev.addEventListener('click', () => { currentPage--; render(); });
-        paginationEl.appendChild(prev);
-        for (let i = 1; i <= totalPages; i++) {
-          const b = document.createElement('button');
-          b.textContent = i;
-          if (i === currentPage) b.classList.add('active');
-          b.addEventListener('click', () => { currentPage = i; render(); });
-          paginationEl.appendChild(b);
-        }
-        const next = document.createElement('button');
-        next.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>';
-        next.disabled = currentPage === totalPages;
-        next.addEventListener('click', () => { currentPage++; render(); });
-        paginationEl.appendChild(next);
-      }
-      if (checkAll) checkAll.checked = false;
-      updateBulkBar();
-    }
-
-    searchInput.addEventListener('input', () => { searchTerm = searchInput.value.toLowerCase().trim(); currentPage = 1; render(); });
     chips.forEach(chip => {
       chip.addEventListener('click', () => {
         chips.forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
-        activeFilter = chip.dataset.filter; currentPage = 1; render();
+        const f = chip.dataset.filter;
+        window.DataTableManager.setClientFilter('tbl-casos',
+          f !== 'Todos'
+            ? function(row) { return row.dataset.estado === f; }
+            : null
+        );
       });
     });
-    document.querySelectorAll('th.sortable[data-sort]').forEach(th => {
-      th.style.cursor = 'pointer';
-      th.addEventListener('click', () => {
-        const key = th.dataset.sort;
-        if (sortKey === key) sortDir *= -1; else { sortKey = key; sortDir = 1; }
-        document.querySelectorAll('th.sortable[data-sort]').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
-        th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
-        render();
-      });
-    });
+
+    function render() {
+      // Alias for bulk actions that call render()
+      if (checkAll) checkAll.checked = false;
+      updateBulkBar();
+    }
 
     // ========== BULK ACTIONS ==========
     const bulkBar = document.getElementById('bulk-bar');
@@ -943,7 +834,7 @@ ob_start();
       } catch (err) { showToast('Error de conexión.', 'error'); }
     });
 
-    render();
+    // Initial render handled by global DataTableManager
   })();
 </script>
 

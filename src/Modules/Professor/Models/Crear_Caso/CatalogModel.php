@@ -182,13 +182,13 @@ class CatalogModel
         return $stmt->fetchAll();
     }
 
-    public function getPersonaByDocumento(string $tipoCedula, string $cedula, string $pasaporte, string $rif)
+    public function getPersonaByDocumento(string $tipoCedula, string $cedula, string $pasaporte, string $rif, int $personaId = 0)
     {
         $db = DB::connect();
 
         $sql = "SELECT p.id as persona_id, p.tipo_cedula, p.nacionalidad, p.cedula, p.pasaporte, p.rif_personal, 
                        p.nombres, p.apellidos, p.fecha_nacimiento, p.estado_civil, p.sexo, 
-                       a.fecha_fallecimiento,
+                       a.fecha_fallecimiento, a.numero_acta, a.year_acta, a.parroquia_registro AS parroquia_registro_id,
                        df.fecha_cierre_fiscal, df.domiciliado_pais
                 FROM sim_personas p
                 LEFT JOIN sim_actas_defunciones a ON a.sim_persona_id = p.id
@@ -196,6 +196,11 @@ class CatalogModel
                 WHERE 1=0";
 
         $params = [];
+
+        if ($personaId > 0) {
+            $sql .= " OR p.id = :persona_id";
+            $params['persona_id'] = $personaId;
+        }
 
         if ($cedula !== '') {
             if ($tipoCedula !== '') {
@@ -224,5 +229,52 @@ class CatalogModel
         $stmt->execute($params);
 
         return $stmt->fetch() ?: null;
+    }
+
+    /**
+     * Búsqueda parcial de personas para dropdown autocomplete.
+     * Si $query está vacío retorna todas; si tiene contenido, filtra con LIKE.
+     */
+    public function searchPersonas(string $query, string $campo = 'cedula', string $tipo = '', bool $sinCedula = false, bool $conDocumentos = false): array
+    {
+        $db = DB::connect();
+
+        $select = "SELECT p.id AS persona_id, p.tipo_cedula, p.cedula, p.rif_personal,
+                          p.nombres, p.apellidos";
+        $from   = " FROM sim_personas p";
+        $where  = " WHERE 1=1";
+        $params = [];
+
+        // Filtrar por tipo de cédula si se proporcionó (include NULLs and No_Aplica always)
+        if ($tipo !== '') {
+            $where .= " AND (p.tipo_cedula = :tipo OR p.tipo_cedula IS NULL OR p.tipo_cedula = 'No_Aplica')";
+            $params['tipo'] = $tipo;
+        }
+
+        // Only personas WITHOUT cédula (for Sin Cédula cases)
+        if ($sinCedula) {
+            $where .= " AND (p.cedula IS NULL OR p.cedula = '' OR p.tipo_cedula = 'No_Aplica')";
+        }
+
+        // Only personas WITH both cédula and RIF (for representante)
+        if ($conDocumentos) {
+            $where .= " AND p.cedula IS NOT NULL AND p.cedula != '' AND p.rif_personal IS NOT NULL AND p.rif_personal != ''";
+        }
+
+        // Filtrar con LIKE si hay query — buscar en cedula, rif, nombres y apellidos
+        if ($query !== '') {
+            $where .= " AND (p.cedula LIKE :q OR p.rif_personal LIKE :q2 OR p.nombres LIKE :q3 OR p.apellidos LIKE :q4)";
+            $likeVal = '%' . $query . '%';
+            $params['q']  = $likeVal;
+            $params['q2'] = $likeVal;
+            $params['q3'] = $likeVal;
+            $params['q4'] = $likeVal;
+        }
+
+        $sql = $select . $from . $where . " ORDER BY p.cedula ASC LIMIT 50";
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
     }
 }

@@ -65,6 +65,8 @@ $inmueblesGuardados = $borradorData['bienes_inmuebles'] ?? [];
                     </div>
                 </div>
 
+                <!-- Datos del Tribunal (shown when Bien Litigioso = Si) -->
+                <?php include __DIR__ . '/../bienes_muebles/_datos_tribunal.php'; ?>
                 <!-- Descripción -->
                 <div _ngcontent-pgi-c71 class="row py-3">
                     <div _ngcontent-pgi-c71 class=col-sm-12>
@@ -326,7 +328,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const vdecVal = parseFloat((document.getElementById('vdec')?.value || '0').replace(/\./g, '').replace(',', '.'));
         const valoresOk = vorVal >= 0 && vdecVal >= 0;
 
-        btn.disabled = !(allFilled && porcOk && valoresOk);
+        let valid = true;
+        // If bien litigioso = Si, tribunal fields are also required
+        var bl = document.getElementById('bl');
+        if (bl && bl.value === 'true') {
+            ['litigioNroExpediente', 'litigioTribunalCausa', 'litigioPartesJuicio', 'litigioEstadoJuicio'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (!el || !el.value || el.value.trim() === '') valid = false;
+            });
+        }
+
+        btn.disabled = !(allFilled && porcOk && valoresOk && valid);
     }
 
     checkboxes.forEach(cb => {
@@ -339,6 +351,18 @@ document.addEventListener('DOMContentLoaded', function() {
         field.addEventListener('input', validateForm);
         field.addEventListener('change', validateForm);
     });
+
+    // Also listen on tribunal fields + bien litigioso select
+    ['bl', 'litigioNroExpediente', 'litigioTribunalCausa', 'litigioPartesJuicio', 'litigioEstadoJuicio'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', validateForm);
+            el.addEventListener('change', validateForm);
+        }
+    });
+
+    // ═══ Toggle Datos del Tribunal (global) ═══
+    initTribunalToggle();
 
     // ═══ Render table ═══
     function renderTable() {
@@ -403,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        return {
+        var data = {
             tipo_bien_inmueble_id: checkedIds,
             tipo_bien_nombres: checkedNames.join(', '),
             vivienda_principal: document.getElementById('vp').value,
@@ -427,6 +451,8 @@ document.addEventListener('DOMContentLoaded', function() {
             valor_original: document.getElementById('vor').value,
             valor_declarado: document.getElementById('vdec').value,
         };
+        Object.assign(data, getTribunalData());
+        return data;
     }
 
     // ═══ Reset form ═══
@@ -439,6 +465,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('vp').value = 'false';
         document.getElementById('bl').value = 'false';
         document.getElementById('des').value = '0,01';
+        resetTribunal();
         editIndex = null;
         btn.textContent = 'Guardar ';
         const icon = document.createElement('i');
@@ -478,6 +505,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('lfol').value = item.folio_real_anio || '';
         document.getElementById('vor').value = item.valor_original || '0,00';
         document.getElementById('vdec').value = item.valor_declarado || '0,00';
+
+        setTribunalData(item);
 
         btn.textContent = 'Actualizar ';
         const icon = document.createElement('i');

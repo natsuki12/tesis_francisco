@@ -644,12 +644,19 @@ $router->get('/simulador/sucesion/declaracion_reverso', function () use ($requir
 });
 
 // ── PDF Comparación (Declaración) ──
-$router->get('/simulador/sucesion/declaracion_pdf', function () use ($requireAuth, $requireSimSession, $requireSeniatLogin) {
+$router->get('/simulador/sucesion/declaracion_pdf', function () use ($requireAuth, $requireRole) {
     $requireAuth();
-    $requireSimSession();
-    $requireSeniatLogin();
+    $requireRole(3);
     $ctrl = new \App\Modules\Simulator\Controllers\PdfReportController();
     return $ctrl->generar();
+});
+
+// ── PDF Planilla FORMA DS-99032 ──
+$router->get('/simulador/sucesion/planilla_pdf', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    $ctrl = new \App\Modules\Simulator\Controllers\PdfReportController();
+    return $ctrl->generarPlanilla();
 });
 
 $router->get('/simulador/sucesion/principal', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
@@ -663,7 +670,7 @@ $router->get('/simulador/servicios_declaracion/sistemas', function () use ($app,
     $requireAuth();
     $requireSimSession();
     $requireSeniatLogin();
-    return $app->view('simulator/seniat_actual/acceder_sistemas');
+    return (new \App\Modules\Simulator\Controllers\SeniatAuthController())->accederSistemas($app);
 });
 
 $router->get('/simulador/servicios_declaracion/dashboard', function () use ($app, $requireAuth, $requireSimSession, $requireSeniatLogin) {
@@ -691,6 +698,11 @@ $router->get('/casos-sucesorales/{id}', function ($id) use ($app, $requireAuth, 
     $requireRole(2);
     return (new CasosController())->gestionar((int)$id);
 });
+$router->get('/casos-sucesorales/{id}/pdf', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new CasosController())->descargarPdf((int)$id);
+});
 $router->get('/crear-caso', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
@@ -701,57 +713,13 @@ $router->get('/crear-caso', function () use ($app, $requireAuth, $requireRole) {
 $router->get('/entregas', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
+    $model = new \App\Modules\Professor\Models\EntregasModel();
+    $profesorId = $model->getProfesorId((int) $_SESSION['user_id']);
+    $entregas = $profesorId ? $model->getEntregas($profesorId) : [];
+    $stats = $profesorId ? $model->getStats($profesorId) : ['pendientes' => 0, 'en_progreso' => 0, 'calificadas' => 0, 'total' => 0];
     return $app->view('professor/entregas', [
-    'entregas' => [
-    [
-    'id' => 101,
-    'estudiante_nombres' => 'Ana María',
-    'estudiante_apellidos' => 'Martínez López',
-    'estudiante_cedula' => '28456789',
-    'estudiante_nacionalidad' => 'V',
-    'seccion' => '4to A',
-    'caso_titulo' => 'Sucesión González Méndez',
-    'asignacion_nombre' => 'Evaluación parcial 1',
-    'intento_actual' => 2,
-    'intento_max' => 3,
-    'created_at' => '2026-03-07 14:20:00',
-    'estado' => 'Enviado',
-    ],
-    [
-    'id' => 102,
-    'estudiante_nombres' => 'Pedro José',
-    'estudiante_apellidos' => 'López Ramírez',
-    'estudiante_cedula' => '27123456',
-    'estudiante_nacionalidad' => 'V',
-    'seccion' => '4to A',
-    'caso_titulo' => 'Sucesión González Méndez',
-    'asignacion_nombre' => 'Evaluación parcial 1',
-    'intento_actual' => 1,
-    'intento_max' => 3,
-    'created_at' => '2026-03-08 10:15:00',
-    'estado' => 'Calificado',
-    ],
-    [
-    'id' => 103,
-    'estudiante_nombres' => 'María José',
-    'estudiante_apellidos' => 'García Herrera',
-    'estudiante_cedula' => '29876543',
-    'estudiante_nacionalidad' => 'V',
-    'seccion' => '4to B',
-    'caso_titulo' => 'Sucesión Pérez Alvarado',
-    'asignacion_nombre' => 'Evaluación parcial 2',
-    'intento_actual' => 1,
-    'intento_max' => 3,
-    'created_at' => '2026-03-09 09:30:00',
-    'estado' => 'En Progreso',
-    ],
-    ],
-    'stats' => [
-    'pendientes' => 1,
-    'en_progreso' => 1,
-    'calificadas' => 1,
-    'total' => 3,
-    ],
+        'entregas' => $entregas,
+        'stats' => $stats,
     ]);
 });
 
@@ -774,38 +742,60 @@ $router->get('/generacion-rs', function () use ($app, $requireAuth, $requireRole
 });
 
 // Mis Estudiantes (Profesor)
-$router->get('/mis-estudiantes', function () use ($app, $requireAuth, $requireRole) {
+$router->get('/mis-estudiantes', function () use ($requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
-    return $app->view('professor/mis_estudiantes');
+    (new \App\Modules\Professor\Controllers\MisEstudiantesController())->index();
 });
 
-$router->get('/mis-estudiantes/{id}', function ($id) use ($app, $requireAuth, $requireRole) {
+$router->get('/mis-estudiantes/{id}', function ($id) use ($requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
-    return $app->view('professor/detalle_estudiante');
+    (new \App\Modules\Professor\Controllers\MisEstudiantesController())->show((int) $id);
 });
 
 // Calificaciones (Profesor)
-$router->get('/calificaciones', function () use ($app, $requireAuth, $requireRole) {
+$router->get('/calificaciones', function () use ($requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
-    return $app->view('professor/calificaciones');
+    (new \App\Modules\Professor\Controllers\CalificacionesController())->index();
 });
 
-// Historial (Profesor)
-$router->get('/historial', function () use ($app, $requireAuth, $requireRole) {
+// Calificaciones API (Profesor - sábana de notas AJAX)
+$router->get('/calificaciones/api', function () use ($requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
-    return $app->view('professor/historial');
+    (new \App\Modules\Professor\Controllers\CalificacionesController())->apiNotas();
+});
+
+// Historial de Actividad (Profesor)
+$router->get('/historial', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new \App\Modules\Professor\Controllers\HistorialController())->index();
+});
+
+// Historial API (Profesor - server-side DataTable)
+$router->get('/historial/api', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new \App\Modules\Professor\Controllers\HistorialController())->apiList();
 });
 
 // Detalle de Intento (Profesor)
-$router->get('/entregas/{id}', function ($id) use ($app, $requireAuth, $requireRole) {
+$router->get('/entregas/{id}', function ($id) use ($requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
-    return $app->view('professor/detalle_intento');
+    (new \App\Modules\Professor\Controllers\EntregasDetalleController())->detalle((int) $id);
 });
+
+// Calificar Intento (Profesor - POST)
+$router->post('/entregas/{id}/calificar', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new \App\Modules\Professor\Controllers\EntregasDetalleController())->calificar((int) $id);
+});
+
 
 // ═══════════════════════════════════════════════════
 // RUTAS ESTUDIANTE (role 3)
@@ -825,11 +815,14 @@ $router->get('/mis-asignaciones/{id}', function ($id) use ($app, $requireAuth, $
     return (new \App\Modules\Student\Controllers\AsignacionesEstudianteController())->show((int)$id, $app);
 });
 
-// Historial / Planillas (Estudiante)
-$router->get('/historial-planillas', function () use ($app, $requireAuth, $requireRole) {
+// Mis Entregas (Estudiante)
+$router->get('/mis-entregas', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(3);
-    return $app->view('student/historial_st');
+    $model = new \App\Modules\Student\Models\StudentAssignmentModel();
+    $estudianteId = $model->getEstudianteId((int) $_SESSION['user_id']);
+    $entregas = $estudianteId ? $model->getHistorialPlanillas($estudianteId) : [];
+    return $app->view('student/historial_st', ['entregas' => $entregas]);
 });
 
 // Mis Calificaciones (Estudiante)
@@ -860,6 +853,13 @@ $router->post('/api/intentos/iniciar', function () use ($requireAuth, $requireRo
     $requireRole(3);
     $ctrl = new \App\Modules\Simulator\Controllers\IntentosController();
     $ctrl->iniciar();
+});
+
+// Declarar (persistir borrador en tablas normalizadas + enviar)
+$router->post('/api/intentos/declarar', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    (new \App\Modules\Simulator\Controllers\IntentosController())->declarar();
 });
 
 // ── API: Herederos Premuertos CRUD ──
@@ -1331,6 +1331,8 @@ $router->post('/api/intentos/{id}/enviar', function ($id) use ($requireAuth, $re
     (new \App\Modules\Simulator\Controllers\IntentosController())->enviar((int)$id);
 });
 
+
+
 // Cancelar intento
 $router->post('/api/intentos/{id}/cancelar', function ($id) use ($requireAuth, $requireRole) {
     $requireAuth();
@@ -1349,6 +1351,13 @@ $router->post('/api/casos', function () use ($requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
     return (new CasosController())->store();
+});
+
+// API: Verificar título duplicado
+$router->get('/api/casos/check-titulo', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    return (new CasosController())->checkTitulo();
 });
 
 // API: Obtener JSON de un caso para edición
@@ -1444,3 +1453,4 @@ $router->get('/api/secciones-profesor', [CatalogController::class , 'getSeccione
 $router->get('/api/estudiantes-profesor', [CatalogController::class , 'getEstudiantesProfesor']);
 $router->get('/api/buscar-empresa-rif', [CatalogController::class , 'buscarEmpresaPorRif']);
 $router->get('/api/buscar-persona', [CatalogController::class , 'buscarPersonaPorCedula']);
+$router->get('/api/buscar-personas', [CatalogController::class , 'searchPersonas']);

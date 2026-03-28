@@ -10,6 +10,31 @@ $activePage = 'entregas';
 // 2. CSS específico
 $extraCss = '<link rel="stylesheet" href="' . asset('css/professor/entregas.css') . '">';
 
+// $entregas y $stats vienen del route (EntregasModel)
+
+// ── Helpers ────────────────────────────────────────────────
+function mapEstadoEntrega(string $dbEstado): string
+{
+    return match ($dbEstado) {
+        'Enviado' => 'Enviado',
+        'Aprobado' => 'Aprobado',
+        'Rechazado' => 'No Aprobado',
+        'En_Progreso' => 'En Progreso',
+        default => ucfirst(str_replace('_', ' ', $dbEstado)),
+    };
+}
+
+function getStatusClassEntrega(string $label): string
+{
+    return match ($label) {
+        'Enviado' => 'status-info',
+        'Aprobado' => 'status-active',
+        'No Aprobado' => 'status-danger',
+        'En Progreso' => 'status-warning',
+        default => 'status-draft',
+    };
+}
+
 ob_start();
 ?>
 
@@ -33,23 +58,8 @@ ob_start();
                 </svg>
             </div>
         </div>
-        <div class="stat-value">
+        <div class="stat-value" id="stat-pendientes">
             <?= $stats['pendientes'] ?? 0 ?>
-        </div>
-    </div>
-
-    <div class="stat-card stat-card--vertical animate-in">
-        <div class="stat-card-top">
-            <span class="stat-label">En Progreso</span>
-            <div class="stat-icon blue">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                    <path
-                        d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.49 8.49l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.49-8.49l2.83-2.83" />
-                </svg>
-            </div>
-        </div>
-        <div class="stat-value">
-            <?= $stats['en_progreso'] ?? 0 ?>
         </div>
     </div>
 
@@ -63,7 +73,7 @@ ob_start();
                 </svg>
             </div>
         </div>
-        <div class="stat-value">
+        <div class="stat-value" id="stat-calificadas">
             <?= $stats['calificadas'] ?? 0 ?>
         </div>
     </div>
@@ -79,7 +89,7 @@ ob_start();
                 </svg>
             </div>
         </div>
-        <div class="stat-value">
+        <div class="stat-value" id="stat-total">
             <?= $stats['total'] ?? 0 ?>
         </div>
     </div>
@@ -93,204 +103,185 @@ ob_start();
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.35-4.35" />
             </svg>
-            <input type="text" id="search-entregas" placeholder="Buscar estudiante...">
+            <input type="text" data-search-for="tbl-entregas-prof" placeholder="Buscar estudiante o caso...">
         </div>
 
-        <div class="filter-dropdown" id="filter-seccion">
-            <button class="filter-btn">
-                Sección
-                <svg viewBox="0 0 24 24" width="14" height="14">
-                    <path d="M7 10l5 5 5-5z" fill="currentColor" />
-                </svg>
-            </button>
-        </div>
+        <select class="toolbar-select" id="filter-estado-prof">
+            <option value="">Todos los estados</option>
+            <option value="Enviado">Enviado</option>
+            <option value="Aprobado">Aprobado</option>
+            <option value="No Aprobado">No Aprobado</option>
+        </select>
 
-        <div class="filter-dropdown" id="filter-caso">
-            <button class="filter-btn">
-                Caso
-                <svg viewBox="0 0 24 24" width="14" height="14">
-                    <path d="M7 10l5 5 5-5z" fill="currentColor" />
-                </svg>
-            </button>
-        </div>
+        <select class="toolbar-select" id="filter-caso-prof">
+            <option value="">Todos los casos</option>
+            <?php
+            $casosUnicos = array_unique(array_column($entregas, 'caso_titulo'));
+            foreach ($casosUnicos as $caso): ?>
+                <option value="<?= htmlspecialchars($caso) ?>"><?= htmlspecialchars($caso) ?></option>
+            <?php endforeach; ?>
+        </select>
 
-        <div class="filter-dropdown" id="filter-asignacion">
-            <button class="filter-btn">
-                Asignación
-                <svg viewBox="0 0 24 24" width="14" height="14">
-                    <path d="M7 10l5 5 5-5z" fill="currentColor" />
-                </svg>
-            </button>
-        </div>
-
-        <div class="filter-dropdown" id="filter-estado">
-            <button class="filter-btn">
-                Estado
-                <svg viewBox="0 0 24 24" width="14" height="14">
-                    <path d="M7 10l5 5 5-5z" fill="currentColor" />
-                </svg>
-            </button>
-        </div>
-
-        <div class="filter-dropdown" id="filter-fecha">
-            <button class="filter-btn">
-                Fecha
-                <svg viewBox="0 0 24 24" width="14" height="14">
-                    <path d="M7 10l5 5 5-5z" fill="currentColor" />
-                </svg>
-            </button>
-        </div>
+        <select class="toolbar-select" id="filter-seccion-prof">
+            <option value="">Todas las secciones</option>
+            <?php
+            $seccionesUnicas = array_unique(array_filter(array_column($entregas, 'seccion')));
+            sort($seccionesUnicas);
+            foreach ($seccionesUnicas as $sec): ?>
+                <option value="<?= htmlspecialchars($sec) ?>"><?= htmlspecialchars($sec) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="toolbar-right">
+        Mostrar <select data-perpage-for="tbl-entregas-prof" class="per-page-select"><option value="10" selected>10</option><option value="25">25</option><option value="50">50</option></select> filas
     </div>
 </div>
 
 <!-- Data Table -->
 <div class="table-container animate-in">
-    <table class="data-table">
+    <table class="data-table" id="tbl-entregas-prof" data-per-page="10">
         <thead>
             <tr>
-                <th class="sortable" data-sort="estudiante">Estudiante</th>
-                <th class="sortable" data-sort="seccion">Sección</th>
-                <th class="sortable" data-sort="caso">Caso</th>
-                <th class="sortable" data-sort="asignacion">Asignación</th>
-                <th class="sortable" data-sort="intento">Intento</th>
-                <th class="sortable" data-sort="fecha">Fecha</th>
-                <th class="sortable" data-sort="estado">Estado</th>
+                <th class="sortable" data-col="0">Estudiante</th>
+                <th class="sortable" data-col="1">Sección</th>
+                <th class="sortable" data-col="2">Caso</th>
+                <th class="sortable" data-col="3">Intento</th>
+                <th class="sortable" data-col="4">Fecha Envío</th>
+                <th>Estado</th>
+                <th>Nota</th>
+                <th>Observación</th>
                 <th>Acción</th>
             </tr>
         </thead>
-        <tbody id="entregas-tbody">
-            <?php if (empty($entregas)): ?>
-                <tr>
-                    <td colspan="8" class="empty-cell">
-                        <div class="empty-state empty-state--blue">
-                            <div class="empty-state-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round">
-                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-                                </svg>
+        <tbody>
+            <?php foreach ($entregas as $entrega):
+                $nombres = $entrega['estudiante_nombres'] ?? 'Sin nombre';
+                $apellidos = $entrega['estudiante_apellidos'] ?? '';
+                $fullName = trim("{$nombres} {$apellidos}");
+
+                // Iniciales para avatar
+                preg_match_all('/\b\w/u', $fullName, $matches);
+                $iniciales = mb_strtoupper(implode('', array_slice($matches[0], 0, 2)));
+
+                $cedula = $entrega['estudiante_cedula']
+                    ? ($entrega['estudiante_nacionalidad'] ?? 'V') . '-' . number_format((float) $entrega['estudiante_cedula'], 0, ',', '.')
+                    : 'S/C';
+
+                // Color avatar
+                $avatarColors = ['avatar--blue', 'avatar--green', 'avatar--amber', 'avatar--purple', 'avatar--red'];
+                $colorIdx = crc32($iniciales) % count($avatarColors);
+                $avatarClass = $avatarColors[abs($colorIdx)];
+
+                $estadoLabel = mapEstadoEntrega($entrega['estado']);
+                $statusClass = getStatusClassEntrega($estadoLabel);
+
+                $fechaEnvio = $entrega['fecha_envio'] ? date('d/m/Y H:i', strtotime($entrega['fecha_envio'])) : '—';
+
+                $intentoActual = $entrega['intento_actual'] ?? 1;
+                $intentoMax = $entrega['intento_max'] ?? 0;
+
+                $searchStr = strtolower(
+                    $fullName . ' ' . $cedula . ' ' .
+                    ($entrega['caso_titulo'] ?? '') . ' ' .
+                    ($entrega['seccion'] ?? '') . ' ' .
+                    $estadoLabel
+                );
+            ?>
+                <tr data-search="<?= htmlspecialchars($searchStr) ?>"
+                    data-estado="<?= htmlspecialchars($estadoLabel) ?>"
+                    data-caso="<?= htmlspecialchars($entrega['caso_titulo'] ?? '') ?>"
+                    data-seccion="<?= htmlspecialchars($entrega['seccion'] ?? '') ?>">
+                    <td>
+                        <div class="estudiante-cell">
+                            <div class="estudiante-avatar <?= $avatarClass ?>">
+                                <?= htmlspecialchars($iniciales) ?>
                             </div>
-                            <h3>Sin entregas aún</h3>
-                            <p>Cuando tus estudiantes envíen sus intentos, aparecerán aquí para su revisión.</p>
+                            <div class="estudiante-info">
+                                <div class="estudiante-name">
+                                    <?= htmlspecialchars($fullName) ?>
+                                </div>
+                                <div class="estudiante-ci">
+                                    <?= htmlspecialchars($cedula) ?>
+                                </div>
+                            </div>
                         </div>
                     </td>
+                    <td><?= htmlspecialchars($entrega['seccion'] ?? '—') ?></td>
+                    <td><span class="caso-tag"><?= htmlspecialchars($entrega['caso_titulo'] ?? '—') ?></span></td>
+                    <td>
+                        <span class="intento-display">
+                            <?= $intentoActual ?><?= $intentoMax > 0 ? " de {$intentoMax}" : '' ?>
+                        </span>
+                    </td>
+                    <td><?= $fechaEnvio ?></td>
+                    <td>
+                        <span class="status-badge <?= $statusClass ?>">
+                            <?= htmlspecialchars($estadoLabel) ?>
+                        </span>
+                    </td>
+                    <td>
+                        <?php if ($estadoLabel === 'Enviado'): ?>
+                            <span style="color: var(--amber-500); font-size: var(--text-xs); font-weight: 500;">Por calificar</span>
+                        <?php elseif ($estadoLabel === 'En Progreso'): ?>
+                            <span style="color: var(--gray-400); font-size: var(--text-xs);">En progreso</span>
+                        <?php else: ?>
+                            <span style="color: var(--gray-400);">—</span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <span style="color: var(--gray-400);">—</span>
+                    </td>
+                    <td>
+                        <a href="<?= base_url('/entregas/' . $entrega['intento_id']) ?>" class="ver-link">
+                            Ver
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+                                stroke-width="2.5" stroke-linecap="round">
+                                <path d="M5 12h14" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg>
+                        </a>
+                    </td>
                 </tr>
-            <?php else: ?>
-                <?php foreach ($entregas as $entrega):
-                    // Datos del estudiante
-                    $nombres = $entrega['estudiante_nombres'] ?? 'Sin nombre';
-                    $apellidos = $entrega['estudiante_apellidos'] ?? '';
-                    $fullName = trim("{$nombres} {$apellidos}");
-
-                    // Iniciales para avatar
-                    preg_match_all('/\b\w/u', $fullName, $matches);
-                    $iniciales = mb_strtoupper(implode('', array_slice($matches[0], 0, 2)));
-
-                    $cedula = $entrega['estudiante_cedula']
-                        ? ($entrega['estudiante_nacionalidad'] ?? 'V') . '-' . number_format((float) $entrega['estudiante_cedula'], 0, ',', '.')
-                        : 'S/C';
-
-                    // Color aleatorio basado en iniciales
-                    $avatarColors = ['avatar--blue', 'avatar--green', 'avatar--amber', 'avatar--purple', 'avatar--red'];
-                    $colorIdx = crc32($iniciales) % count($avatarColors);
-                    $avatarClass = $avatarColors[abs($colorIdx)];
-
-                    // Estado badge
-                    $estadoEntrega = $entrega['estado'] ?? 'Enviado';
-                    $statusClass = match ($estadoEntrega) {
-                        'Enviado' => 'status-enviado',
-                        'En Progreso' => 'status-progreso',
-                        'Calificado' => 'status-calificado',
-                        default => 'status-enviado'
-                    };
-
-                    // Fecha
-                    $timestamp = strtotime($entrega['created_at'] ?? 'now');
-                    $dateFormatted = date('d/m/Y', $timestamp);
-
-                    // Intento
-                    $intentoActual = $entrega['intento_actual'] ?? 1;
-                    $intentoMax = $entrega['intento_max'] ?? 3;
-                    ?>
-                    <tr data-estado="<?= htmlspecialchars($estadoEntrega) ?>" data-id="<?= $entrega['id'] ?? '' ?>"
-                        data-estudiante="<?= htmlspecialchars(strtolower($fullName)) ?>"
-                        data-seccion="<?= htmlspecialchars($entrega['seccion'] ?? '') ?>"
-                        data-caso="<?= htmlspecialchars($entrega['caso_titulo'] ?? '') ?>">
-                        <td>
-                            <div class="estudiante-cell">
-                                <div class="estudiante-avatar <?= $avatarClass ?>">
-                                    <?= htmlspecialchars($iniciales) ?>
-                                </div>
-                                <div class="estudiante-info">
-                                    <div class="estudiante-name">
-                                        <?= htmlspecialchars($fullName) ?>
-                                    </div>
-                                    <div class="estudiante-ci">
-                                        <?= htmlspecialchars($cedula) ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <?= htmlspecialchars($entrega['seccion'] ?? '—') ?>
-                        </td>
-                        <td><span class="caso-tag">
-                                <?= htmlspecialchars($entrega['caso_titulo'] ?? '—') ?>
-                            </span></td>
-                        <td><span class="asignacion-tag">
-                                <?= htmlspecialchars($entrega['asignacion_nombre'] ?? '—') ?>
-                            </span></td>
-                        <td><span class="intento-display">
-                                <?= $intentoActual ?> de
-                                <?= $intentoMax ?>
-                            </span></td>
-                        <td>
-                            <?= $dateFormatted ?>
-                        </td>
-                        <td><span class="status-badge <?= $statusClass ?>">
-                                <?= htmlspecialchars($estadoEntrega) ?>
-                            </span></td>
-                        <td>
-                            <a href="<?= base_url('/entregas/' . ($entrega['id'] ?? '')) ?>" class="ver-link">
-                                Ver
-                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                                    stroke-width="2.5" stroke-linecap="round">
-                                    <path d="M5 12h14" />
-                                    <polyline points="12 5 19 12 12 19" />
-                                </svg>
-                            </a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
+            <?php endforeach; ?>
         </tbody>
     </table>
-
-    <!-- Table Footer -->
-    <div class="table-footer">
-        <div class="table-footer-info">
-            Mostrando <strong>
-                <?= count($entregas ?? []) ?>
-            </strong> de <strong>
-                <?= $stats['total'] ?? 0 ?>
-            </strong> entregas
-        </div>
-        <div class="pagination">
-            <button disabled>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                    <polyline points="15 18 9 12 15 6" />
-                </svg>
-            </button>
-            <button class="active">1</button>
-            <button>2</button>
-            <button>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                    <polyline points="9 18 15 12 9 6" />
-                </svg>
-            </button>
-        </div>
-    </div>
 </div>
+
+<!-- Table Footer -->
+<div class="table-footer" data-footer-for="tbl-entregas-prof">
+    <div class="table-footer-info"></div>
+    <div class="pagination"></div>
+</div>
+
+<!-- Filter JS -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var filterEstado = document.getElementById('filter-estado-prof');
+    var filterCaso = document.getElementById('filter-caso-prof');
+    var filterSeccion = document.getElementById('filter-seccion-prof');
+
+    function applyFilters() {
+        var estado = filterEstado ? filterEstado.value : '';
+        var caso = filterCaso ? filterCaso.value : '';
+        var seccion = filterSeccion ? filterSeccion.value : '';
+
+        window.DataTableManager.setClientFilter('tbl-entregas-prof',
+            (estado || caso || seccion)
+                ? function(row) {
+                    if (estado && row.dataset.estado !== estado) return false;
+                    if (caso && row.dataset.caso !== caso) return false;
+                    if (seccion && row.dataset.seccion !== seccion) return false;
+                    return true;
+                }
+                : null
+        );
+    }
+
+    if (filterEstado) filterEstado.addEventListener('change', applyFilters);
+    if (filterCaso) filterCaso.addEventListener('change', applyFilters);
+    if (filterSeccion) filterSeccion.addEventListener('change', applyFilters);
+});
+</script>
 
 <?php
 $content = ob_get_clean();

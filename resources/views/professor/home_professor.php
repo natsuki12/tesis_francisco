@@ -198,43 +198,63 @@ ob_start();
   <div class="panel">
     <div class="panel-header">
       <h3>Actividad reciente</h3>
-      <a href="#">Ver todo</a>
+      <a href="<?= base_url('/historial') ?>">Ver todo</a>
     </div>
-    <div class="activity-item">
-      <div class="activity-dot green"></div>
-      <div>
-        <div class="activity-text"><strong>César González</strong> completó su declaración sucesoral.</div>
-        <div class="activity-time">Hace 25 minutos</div>
+    <?php
+      $recentActivity = $recentActivity ?? [];
+      if (empty($recentActivity)):
+    ?>
+      <div style="text-align:center; padding: 2rem; color: var(--gray-400); font-size: var(--text-md);">
+        No hay actividad registrada aún.
       </div>
-    </div>
-    <div class="activity-item">
-      <div class="activity-dot blue"></div>
-      <div>
-        <div class="activity-text"><strong>María López</strong> inició una nueva declaración (Forma 32).</div>
-        <div class="activity-time">Hace 1 hora</div>
-      </div>
-    </div>
-    <div class="activity-item">
-      <div class="activity-dot amber"></div>
-      <div>
-        <div class="activity-text"><strong>Andrés Rodríguez</strong> tiene 3 errores en el cálculo de cuota parte.</div>
-        <div class="activity-time">Hace 2 horas</div>
-      </div>
-    </div>
-    <div class="activity-item">
-      <div class="activity-dot green"></div>
-      <div>
-        <div class="activity-text"><strong>Laura Pérez</strong> completó el módulo de datos del causante.</div>
-        <div class="activity-time">Hace 3 horas</div>
-      </div>
-    </div>
-    <div class="activity-item">
-      <div class="activity-dot blue"></div>
-      <div>
-        <div class="activity-text"><strong>José Mendoza</strong> se registró en la plataforma.</div>
-        <div class="activity-time">Ayer, 4:30 PM</div>
-      </div>
-    </div>
+    <?php else: ?>
+      <?php foreach ($recentActivity as $act):
+        // Dot color by event type
+        $dotColor = match ($act['tipo'] ?? '') {
+          'intento_calificado' => 'green',
+          'intento_enviado'    => 'blue',
+          'asignacion_creada'  => 'amber',
+          'caso_creado'        => 'purple',
+          'intento_iniciado'   => 'blue',
+          default              => 'blue',
+        };
+
+        // Relative time
+        $ts = strtotime($act['fecha'] ?? 'now');
+        $diff = time() - $ts;
+        if ($diff < 60) {
+          $rel = 'Hace unos segundos';
+        } elseif ($diff < 3600) {
+          $mins = (int) floor($diff / 60);
+          $rel = "Hace {$mins} min";
+        } elseif ($diff < 86400) {
+          $hrs = (int) floor($diff / 3600);
+          $rel = "Hace {$hrs}h";
+        } elseif ($diff < 172800) {
+          $rel = 'Ayer, ' . date('g:i A', $ts);
+        } else {
+          $rel = date('d/m/Y, g:i A', $ts);
+        }
+
+        // Activity text
+        $nombre = htmlspecialchars($act['estudiante'] ?? '');
+        $detalle = htmlspecialchars($act['detalle'] ?? '');
+      ?>
+        <div class="activity-item">
+          <div class="activity-dot <?= $dotColor ?>"></div>
+          <div>
+            <div class="activity-text">
+              <?php if ($nombre): ?>
+                <strong><?= $nombre ?></strong> — <?= $detalle ?>
+              <?php else: ?>
+                <?= $detalle ?>
+              <?php endif; ?>
+            </div>
+            <div class="activity-time"><?= $rel ?></div>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    <?php endif; ?>
   </div>
 
 </div>

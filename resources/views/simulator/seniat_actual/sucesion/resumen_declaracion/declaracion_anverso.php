@@ -32,14 +32,8 @@ $fmt = $d['fmt'] ?? function (float $v) { return number_format($v, 2, ',', '.');
 $herederos = $d['herederos'] ?? [];
 ?>
 
-<!-- Alerta tipo declaración -->
-<div class="row">
-    <div class="col-sm-12">
-        <div role="alert" class="row alert alert-sm alert-info">
-            <div class="text-center fw-bold"> SU DECLARACIÓN ES TIPO SUSTITUTIVA</div>
-        </div>
-    </div>
-</div>
+
+
 
 <div class="shadow-lg p-3 mb-5 bg-body rounded lenletratablaResumen">
     <div>
@@ -50,7 +44,7 @@ $herederos = $d['herederos'] ?? [];
                     <i class="bi bi-arrow-bar-left"></i> Anverso
                 </button>
                 &nbsp;
-                <button type="button" class="btn btn-sm btn-danger" id="btnDeclararAnverso" onclick="window.modalManager.open('modal-declarar')">
+                <button type="button" class="btn btn-sm btn-danger" id="btnDeclararAnverso" onclick="window.modalManager.open('modal-aviso-seniat')">
                     <i class="bi-check-circle"></i> Declarar
                 </button>
                 &nbsp;&nbsp;
@@ -461,8 +455,36 @@ $herederos = $d['herederos'] ?? [];
     </div>
 </div>
 
+<!-- ═══ Modal Aviso SENIAT (paso 1) ═══ -->
+<dialog class="modal-base" id="modal-aviso-seniat">
+    <div class="modal-base__container" style="max-width: 460px;">
+        <div class="modal-base__header" style="background: #f8f9fa; border-bottom: 1px solid #dee2e6; padding: 12px 16px;">
+            <h2 class="modal-base__title" style="font-size: 16px; font-weight: 600; color: #333;">Aviso</h2>
+            <button class="modal-base__close" onclick="window.modalManager.close('modal-aviso-seniat')" style="font-size: 18px; color: #666;">&times;</button>
+        </div>
+        <div class="modal-base__body" style="padding: 20px;">
+            <p style="font-size: 14px; color: #333; margin: 0 0 16px;">
+                Su monto a pagar es <strong><?= $d['linea_14'] ?? '0,00' ?></strong>
+            </p>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                <label style="font-size: 13px; color: #555; white-space: nowrap;">Seleccione la cantidad de porciones</label>
+                <select id="selectPorciones" style="padding: 6px 10px; border: 1px solid #ced4da; border-radius: 4px; font-size: 13px; min-width: 80px; background: #fff;">
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <p style="font-size: 14px; color: #333; margin: 0;">
+                Si está seguro presione Declarar?
+            </p>
+        </div>
+        <div class="modal-base__footer" style="padding: 12px 16px; border-top: 1px solid #dee2e6; text-align: right;">
+            <button class="modal-btn modal-btn-cancel" onclick="window.modalManager.close('modal-aviso-seniat')" style="margin-right: 8px;">Cancelar</button>
+            <button class="modal-btn modal-btn-primary" id="btnAvisoDeclararAnverso" style="background-color: #2c3e6b; border-color: #2c3e6b;">Declarar</button>
+        </div>
+    </div>
+</dialog>
+
 <!-- ═══ Modal Confirmación Declarar (SPDSS) ═══ -->
-<dialog class="modal-base" id="modal-declarar">
+<dialog class="modal-base" id="modal-declarar" data-no-backdrop-close>
     <div class="modal-base__container" style="max-width: 480px;">
         <div class="modal-base__header">
             <h2 class="modal-base__title">Confirmar Declaración</h2>
@@ -489,17 +511,99 @@ $herederos = $d['herederos'] ?? [];
     </div>
 </dialog>
 
+<!-- ═══ Modal Finalización ═══ -->
+<dialog class="modal-base" id="modal-finalizacion" data-no-backdrop-close>
+    <div class="modal-base__container" style="max-width: 500px;">
+        <div class="modal-base__header">
+            <h2 class="modal-base__title">Simulación Finalizada</h2>
+        </div>
+        <div class="modal-base__body" style="text-align: center; padding: 24px;">
+            <div style="margin-bottom: 16px;">
+                <i class="bi bi-check-circle-fill" style="font-size: 48px; color: #28a745;"></i>
+            </div>
+            <p style="font-size: 16px; color: #333; margin: 0 0 20px; font-weight: 600;">
+                Ha finalizado la simulación del proceso de declaración sucesoral.
+            </p>
+            <p style="font-size: 14px; color: #555; margin: 0 0 16px;">
+                A continuación puede descargar los documentos generados:
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; margin-bottom: 8px;">
+                <a href="<?= base_url('/simulador/sucesion/planilla_pdf') ?>" target="_blank"
+                   style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; color: #2c3e6b; text-decoration: none; font-size: 14px; font-weight: 500; width: 280px; justify-content: center;"
+                   onmouseover="this.style.background='#e9ecef'" onmouseout="this.style.background='#f8f9fa'">
+                    <i class="bi bi-file-earmark-pdf-fill" style="font-size: 18px; color: #dc3545;"></i>
+                    Planilla FORMA DS-99032
+                </a>
+                <a href="<?= base_url('/simulador/sucesion/declaracion_pdf') ?>" target="_blank"
+                   style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; color: #2c3e6b; text-decoration: none; font-size: 14px; font-weight: 500; width: 280px; justify-content: center;"
+                   onmouseover="this.style.background='#e9ecef'" onmouseout="this.style.background='#f8f9fa'">
+                    <i class="bi bi-file-earmark-pdf-fill" style="font-size: 18px; color: #dc3545;"></i>
+                    Resumen de la Asignación
+                </a>
+            </div>
+        </div>
+        <div class="modal-base__footer" style="justify-content: center;">
+            <button class="modal-btn modal-btn-primary" onclick="window.modalManager.close('modal-finalizacion')">Continuar</button>
+        </div>
+    </div>
+</dialog>
+
 <?php
 $content = ob_get_clean();
-$pdfUrl = base_url('/simulador/sucesion/declaracion_pdf');
 $content .= '
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    // Aviso SENIAT → abre SPDSS modal
+    var btnAviso = document.getElementById("btnAvisoDeclararAnverso");
+    if (btnAviso) {
+        btnAviso.addEventListener("click", function() {
+            window.modalManager.close("modal-aviso-seniat");
+            setTimeout(function() { window.modalManager.open("modal-declarar"); }, 300);
+        });
+    }
+
+    // SPDSS confirmar → AJAX declarar → abrir modal finalización
     var btn = document.getElementById("btnConfirmarDeclaracion");
     if (btn) {
         btn.addEventListener("click", function() {
-            window.open("' . $pdfUrl . '", "_blank");
-            window.modalManager.close("modal-declarar");
+            var originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = \'<svg width="18" height="18" viewBox="0 0 24 24" style="animation:button-spin .8s linear infinite"><circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.4)" stroke-width="3" fill="none"/><path d="M12 2a10 10 0 0 1 10 10" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/></svg> Procesando...\';
+
+            fetch("' . base_url('/api/intentos/declarar') . '", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: "{}"
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.ok) {
+                    // Guardar asignacion_id para el redirect de "Continuar"
+                    window.__asignacionId = data.asignacion_id;
+                    window.modalManager.close("modal-declarar");
+                    setTimeout(function() { window.modalManager.open("modal-finalizacion"); }, 300);
+                } else {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    alert(data.error || "Error al procesar la declaración.");
+                }
+            })
+            .catch(function(err) {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                console.error(err);
+                alert("Error de conexión al procesar la declaración.");
+            });
+        });
+    }
+
+    // Continuar → redirigir al detalle de la asignación
+    var btnContinuar = document.querySelector("#modal-finalizacion .modal-btn-primary");
+    if (btnContinuar) {
+        btnContinuar.addEventListener("click", function(e) {
+            e.preventDefault();
+            var id = window.__asignacionId || "";
+            window.location.href = "' . base_url('/mis-asignaciones/') . '" + id;
         });
     }
 });

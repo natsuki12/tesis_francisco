@@ -61,20 +61,36 @@ const MODAL_CONFIGS = {
     saveLabel: (edit) => edit !== null ? 'Guardar Cambios' : 'Agregar',
     wide: false,
     build: (form) => `
+      <div class="cc-search-persona" style="margin-bottom:16px;">
+        <label class="cc-search-persona__label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Buscar Persona Existente
+        </label>
+        <input type="text" id="inputBuscarHeredero" placeholder="Escriba cédula, RIF o nombre para buscar..." autocomplete="off">
+      </div>
+      <div class="cc-inline-errors" id="modalHerederoErrors" style="margin-bottom:12px;">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Error de validación</span>
+        </p>
+        <ul class="cc-inline-errors__list" id="modalHerederoErrorsList"></ul>
+      </div>
       <div class="cc-grid cc-grid--2">
         <input type="hidden" data-modal="persona_id" value="${form.persona_id || ''}">
-        <div class="cc-field"><label>Nombres</label>
+        <div class="cc-field"><label>Nombres <span class="cc-required">*</span></label>
           <input type="text" data-modal="nombres" value="${form.nombres || ''}" placeholder="Nombres" maxlength="98"></div>
-        <div class="cc-field"><label>Apellidos</label>
+        <div class="cc-field"><label>Apellidos <span class="cc-required">*</span></label>
           <input type="text" data-modal="apellidos" value="${form.apellidos || ''}" placeholder="Apellidos" maxlength="98"></div>
-        <div class="cc-field" style="grid-column: 1 / -1;"><label>TIPO DE DOCUMENTO</label>
+        <div class="cc-field" style="grid-column: 1 / -1;"><label>TIPO DE DOCUMENTO <span class="cc-required">*</span></label>
           <div class="cc-radio-group cc-radio-group--inline" style="display:flex;gap:1.5rem; margin-top:0.25rem;">
             <label class="cc-radio"><input type="radio" name="doc_heredero" value="Cédula" data-modal="tipo_documento" ${form.tipo_documento === 'Cédula' || !form.tipo_documento ? 'checked' : ''}> CÉDULA</label>
             <label class="cc-radio"><input type="radio" name="doc_heredero" value="RIF" data-modal="tipo_documento" ${form.tipo_documento === 'RIF' ? 'checked' : ''}> RIF</label>
             <label class="cc-radio"><input type="radio" name="doc_heredero" value="Pasaporte" data-modal="tipo_documento" ${form.tipo_documento === 'Pasaporte' ? 'checked' : ''}> PASAPORTE</label>
           </div>
         </div>
-        <div class="cc-field cc-field--doc" id="wrap-her1-cedula"><label id="lblDocHer1">CÉDULA</label>
+        <div class="cc-field cc-field--doc" id="wrap-her1-cedula"><label id="lblDocHer1">CÉDULA <span class="cc-required">*</span></label>
           <div class="cc-doc-wrapper" style="display:flex; gap:0.5rem">
             <select data-modal="letra_cedula" id="sel-her1-letra" style="width:70px;">
               <option value="V" ${form.letra_cedula === 'V' || !form.letra_cedula ? 'selected' : ''}>V</option>
@@ -85,35 +101,27 @@ const MODAL_CONFIGS = {
             <input type="text" data-modal="cedula" id="inputCedHer1" value="${form.cedula || ''}" placeholder="Ej: 12345678" style="flex:1;" maxlength="20" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
           </div>
         </div>
-        <div class="cc-field" id="wrap-her1-pasaporte" style="display:none;"><label>PASAPORTE</label>
+        <div class="cc-field" id="wrap-her1-pasaporte" style="display:none;"><label>PASAPORTE <span class="cc-required">*</span></label>
           <input type="text" data-modal="pasaporte" id="inputPasaHer1" value="${form.pasaporte || ''}" placeholder="" maxlength="20" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
-        <div class="cc-field"><label>Fecha de Nacimiento</label>
+        <div class="cc-field"><label>Fecha de Nacimiento <span class="cc-required">*</span></label>
           <input type="date" data-modal="fecha_nacimiento" value="${form.fecha_nacimiento || ''}"></div>
-        <div class="cc-field"><label>Sexo</label>
+        <div class="cc-field"><label>Sexo <span class="cc-required">*</span></label>
           <select data-modal="sexo">
             <option value="">Seleccione...</option>
             <option value="M" ${form.sexo === 'M' ? 'selected' : ''}>Masculino</option>
             <option value="F" ${form.sexo === 'F' ? 'selected' : ''}>Femenino</option>
           </select></div>
-        <div class="cc-field"><label>Estado Civil</label>
-          <select data-modal="estado_civil">
-            <option value="">Seleccione...</option>
-            <option value="Soltero" ${form.estado_civil === 'Soltero' ? 'selected' : ''}>Soltero/a</option>
-            <option value="Casado" ${form.estado_civil === 'Casado' ? 'selected' : ''}>Casado/a</option>
-            <option value="Viudo" ${form.estado_civil === 'Viudo' ? 'selected' : ''}>Viudo/a</option>
-            <option value="Divorciado" ${form.estado_civil === 'Divorciado' ? 'selected' : ''}>Divorciado/a</option>
-            <option value="Concubinato" ${form.estado_civil === 'Concubinato' ? 'selected' : ''}>Concubinato</option>
-          </select></div>
-        <div class="cc-field"><label>Carácter</label>
+
+        <div class="cc-field"><label>Carácter <span class="cc-required">*</span></label>
           <select data-modal="caracter">
             <option value="HEREDERO" selected>Heredero</option>
           </select></div>
-        <div class="cc-field"><label>Parentesco</label>
+        <div class="cc-field"><label>Parentesco <span class="cc-required">*</span></label>
           <select data-modal="parentesco_id">
             <option value="">Seleccione...</option>
-            ${getCatalogs().parentescos.map(p => `<option value="${p.parentesco_id}" ${form.parentesco_id == p.parentesco_id ? 'selected' : ''}>${p.nombre}</option>`).join('')}
+            ${getCatalogs().parentescos.filter(p => p.nombre.toLowerCase() !== 'sin definir').map(p => `<option value="${p.parentesco_id}" ${form.parentesco_id == p.parentesco_id ? 'selected' : ''}>${p.nombre}</option>`).join('')}
           </select></div>
-        <div class="cc-field"><label>Premuerto</label>
+        <div class="cc-field"><label>Premuerto <span class="cc-required">*</span></label>
           <select data-modal="premuerto" id="modalHerederoPremuerto">
             <option value="NO" ${form.premuerto !== 'SI' ? 'selected' : ''}>No</option>
             <option value="SI" ${form.premuerto === 'SI' ? 'selected' : ''}>Sí</option>
@@ -139,11 +147,19 @@ const MODAL_CONFIGS = {
         const causanteCed = (caseData.causante.tipo_cedula || '') + caseData.causante.cedula;
         if (fullCed === causanteCed) return "La cédula del heredero no puede ser igual a la del causante.";
       }
+      // persona_id no puede ser el causante
+      if (form.persona_id && caseData.causante.persona_id && String(form.persona_id) === String(caseData.causante.persona_id)) {
+        return "El heredero no puede ser el mismo causante.";
+      }
+      // Si es el representante, no puede ser premuerto
+      if (form.persona_id && caseData.representante.persona_id && String(form.persona_id) === String(caseData.representante.persona_id) && form.premuerto === 'SI') {
+        return "El representante no puede ser marcado como premuerto.";
+      }
       // Duplicados por persona_id (misma persona desde BD, sin importar si se buscó por cédula o RIF)
       if (form.persona_id) {
-        const dupById = caseData.herederos.some((h, i) => i !== UIState.editIndex && h.persona_id && h.persona_id === form.persona_id);
+        const dupById = caseData.herederos.some((h, i) => i !== UIState.editIndex && h.persona_id && String(h.persona_id) === String(form.persona_id));
         if (dupById) return "Ya existe un heredero con esta persona (misma cédula/RIF en la base de datos).";
-        const dupByIdHP = caseData.herederos_premuertos.some(h => h.persona_id && h.persona_id === form.persona_id);
+        const dupByIdHP = caseData.herederos_premuertos.some(h => h.persona_id && String(h.persona_id) === String(form.persona_id));
         if (dupByIdHP) return "Ya existe un heredero del premuerto que es la misma persona.";
       }
       // Cédula compuesta no puede estar repetida entre herederos
@@ -179,20 +195,36 @@ const MODAL_CONFIGS = {
     saveLabel: (edit) => edit !== null ? 'Guardar Cambios' : 'Agregar',
     wide: false,
     build: (form) => `
+      <div class="cc-search-persona" style="margin-bottom:16px;">
+        <label class="cc-search-persona__label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          Buscar Persona Existente
+        </label>
+        <input type="text" id="inputBuscarHeredero" placeholder="Escriba cédula, RIF o nombre para buscar..." autocomplete="off">
+      </div>
+      <div class="cc-inline-errors" id="modalHerederoErrors" style="margin-bottom:12px;">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Error de validación</span>
+        </p>
+        <ul class="cc-inline-errors__list" id="modalHerederoErrorsList"></ul>
+      </div>
       <div class="cc-grid cc-grid--2">
         <input type="hidden" data-modal="persona_id" value="${form.persona_id || ''}">
-        <div class="cc-field"><label>Nombres</label>
+        <div class="cc-field"><label>Nombres <span class="cc-required">*</span></label>
           <input type="text" data-modal="nombres" value="${form.nombres || ''}" placeholder="Nombres" maxlength="98"></div>
-        <div class="cc-field"><label>Apellidos</label>
+        <div class="cc-field"><label>Apellidos <span class="cc-required">*</span></label>
           <input type="text" data-modal="apellidos" value="${form.apellidos || ''}" placeholder="Apellidos" maxlength="98"></div>
-        <div class="cc-field" style="grid-column: 1 / -1;"><label>TIPO DE DOCUMENTO</label>
+        <div class="cc-field" style="grid-column: 1 / -1;"><label>TIPO DE DOCUMENTO <span class="cc-required">*</span></label>
           <div class="cc-radio-group cc-radio-group--inline" style="display:flex;gap:1.5rem; margin-top:0.25rem;">
             <label class="cc-radio"><input type="radio" name="doc_heredero2" value="Cédula" data-modal="tipo_documento" ${form.tipo_documento === 'Cédula' || !form.tipo_documento ? 'checked' : ''}> CÉDULA</label>
             <label class="cc-radio"><input type="radio" name="doc_heredero2" value="RIF" data-modal="tipo_documento" ${form.tipo_documento === 'RIF' ? 'checked' : ''}> RIF</label>
             <label class="cc-radio"><input type="radio" name="doc_heredero2" value="Pasaporte" data-modal="tipo_documento" ${form.tipo_documento === 'Pasaporte' ? 'checked' : ''}> PASAPORTE</label>
           </div>
         </div>
-        <div class="cc-field cc-field--doc" id="wrap-her2-cedula"><label id="lblDocHer2">CÉDULA</label>
+        <div class="cc-field cc-field--doc" id="wrap-her2-cedula"><label id="lblDocHer2">CÉDULA <span class="cc-required">*</span></label>
           <div class="cc-doc-wrapper" style="display:flex; gap:0.5rem">
             <select data-modal="letra_cedula" id="sel-her2-letra" style="width:70px;">
               <option value="V" ${form.letra_cedula === 'V' || !form.letra_cedula ? 'selected' : ''}>V</option>
@@ -203,36 +235,28 @@ const MODAL_CONFIGS = {
             <input type="text" data-modal="cedula" id="inputCedHer2" value="${form.cedula || ''}" placeholder="Ej: 12345678" style="flex:1;" maxlength="20" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
           </div>
         </div>
-        <div class="cc-field" id="wrap-her2-pasaporte" style="display:none;"><label>PASAPORTE</label>
+        <div class="cc-field" id="wrap-her2-pasaporte" style="display:none;"><label>PASAPORTE <span class="cc-required">*</span></label>
           <input type="text" data-modal="pasaporte" id="inputPasaHer2" value="${form.pasaporte || ''}" placeholder="" maxlength="20" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
-        <div class="cc-field"><label>Fecha de Nacimiento</label>
+        <div class="cc-field"><label>Fecha de Nacimiento <span class="cc-required">*</span></label>
           <input type="date" data-modal="fecha_nacimiento" value="${form.fecha_nacimiento || ''}"></div>
-        <div class="cc-field"><label>Sexo</label>
+        <div class="cc-field"><label>Sexo <span class="cc-required">*</span></label>
           <select data-modal="sexo">
             <option value="">Seleccione...</option>
             <option value="M" ${form.sexo === 'M' ? 'selected' : ''}>Masculino</option>
             <option value="F" ${form.sexo === 'F' ? 'selected' : ''}>Femenino</option>
           </select></div>
-        <div class="cc-field"><label>Estado Civil</label>
-          <select data-modal="estado_civil">
-            <option value="">Seleccione...</option>
-            <option value="Soltero" ${form.estado_civil === 'Soltero' ? 'selected' : ''}>Soltero/a</option>
-            <option value="Casado" ${form.estado_civil === 'Casado' ? 'selected' : ''}>Casado/a</option>
-            <option value="Viudo" ${form.estado_civil === 'Viudo' ? 'selected' : ''}>Viudo/a</option>
-            <option value="Divorciado" ${form.estado_civil === 'Divorciado' ? 'selected' : ''}>Divorciado/a</option>
-            <option value="Concubinato" ${form.estado_civil === 'Concubinato' ? 'selected' : ''}>Concubinato</option>
-          </select></div>
-        <div class="cc-field"><label>Carácter</label>
+
+        <div class="cc-field"><label>Carácter <span class="cc-required">*</span></label>
           <select data-modal="caracter">
             <option value="HEREDERO" selected>Heredero</option>
           </select></div>
-        <div class="cc-field"><label>Parentesco</label>
+        <div class="cc-field"><label>Parentesco <span class="cc-required">*</span></label>
           <select data-modal="parentesco_id">
             <option value="">Seleccione...</option>
-            ${getCatalogs().parentescos.map(p => `<option value="${p.parentesco_id}" ${form.parentesco_id == p.parentesco_id ? 'selected' : ''}>${p.nombre}</option>`).join('')}
+            ${getCatalogs().parentescos.filter(p => p.nombre.toLowerCase() !== 'sin definir').map(p => `<option value="${p.parentesco_id}" ${form.parentesco_id == p.parentesco_id ? 'selected' : ''}>${p.nombre}</option>`).join('')}
           </select></div>
 
-        <div class="cc-field"><label>Representa a:</label>
+        <div class="cc-field"><label>Representa a: <span class="cc-required">*</span></label>
           <select data-modal="premuerto_padre_id">
             <option value="">No aplica...</option>
             ${caseData.herederos.map((h, i) => {
@@ -260,11 +284,19 @@ const MODAL_CONFIGS = {
         const causanteCed = (caseData.causante.tipo_cedula || '') + caseData.causante.cedula;
         if (fullCed === causanteCed) return "La cédula del heredero del premuerto no puede ser igual a la del causante.";
       }
+      // No puede ser el causante
+      if (form.persona_id && caseData.causante.persona_id && String(form.persona_id) === String(caseData.causante.persona_id)) {
+        return "El heredero del premuerto no puede ser el mismo causante.";
+      }
+      // No puede ser el representante
+      if (form.persona_id && caseData.representante.persona_id && String(form.persona_id) === String(caseData.representante.persona_id)) {
+        return "El heredero del premuerto no puede ser el mismo representante.";
+      }
       // Duplicados por persona_id
       if (form.persona_id) {
-        const dupById = caseData.herederos.some(h => h.persona_id && h.persona_id === form.persona_id);
+        const dupById = caseData.herederos.some(h => h.persona_id && String(h.persona_id) === String(form.persona_id));
         if (dupById) return "Ya existe un heredero que es la misma persona.";
-        const dupByIdHP = caseData.herederos_premuertos.some((h, i) => i !== UIState.editIndex && h.persona_id && h.persona_id === form.persona_id);
+        const dupByIdHP = caseData.herederos_premuertos.some((h, i) => i !== UIState.editIndex && h.persona_id && String(h.persona_id) === String(form.persona_id));
         if (dupByIdHP) return "Ya existe un heredero del premuerto que es la misma persona.";
       }
       // Cédula compuesta no puede estar repetida entre herederos/premuertos
@@ -962,11 +994,11 @@ export function openModal(type, editIdx) {
   if (type === 'heredero' && UIState.editIndex !== null) {
     formData = { ...caseData.herederos[UIState.editIndex] };
   } else if (type === 'heredero') {
-    formData = { tipo_cedula: 'V', caracter: 'HEREDERO', premuerto: 'NO', parentesco_id: '', sexo: '', estado_civil: '' };
+    formData = { tipo_cedula: 'V', caracter: 'HEREDERO', premuerto: 'NO', parentesco_id: '', sexo: '' };
   } else if (type === 'heredero_premuerto' && UIState.editIndex !== null) {
     formData = { ...caseData.herederos_premuertos[UIState.editIndex] };
   } else if (type === 'heredero_premuerto') {
-    formData = { tipo_cedula: 'V', caracter: 'HEREDERO', premuerto: 'NO', parentesco_id: '', sexo: '', estado_civil: '', premuerto_padre_id: '' };
+    formData = { tipo_cedula: 'V', caracter: 'HEREDERO', premuerto: 'NO', parentesco_id: '', sexo: '', premuerto_padre_id: '' };
   } else if (type === 'inmueble' && UIState.editIndex !== null) {
     formData = { ...caseData.bienes_inmuebles[UIState.editIndex] };
   } else if (type === 'inmueble') {
@@ -994,6 +1026,12 @@ export function openModal(type, editIdx) {
   bodyEl.innerHTML = config.build(formData);
   // Wide modal
   modal.classList.toggle('cc-modal--wide', !!config.wide);
+
+  // Show/hide Limpiar Campos button (only for heredero modals)
+  const clearBtn = document.getElementById('modalClearBtn');
+  if (clearBtn) {
+    clearBtn.style.display = (type === 'heredero' || type === 'heredero_premuerto') ? '' : 'none';
+  }
 
   // Bind tipo selectors for inmueble
   if (type === 'inmueble') {
@@ -1087,7 +1125,7 @@ export function openModal(type, editIdx) {
 
       // Fallback: si tiene persona_id pero no _locked_fields, inferir de campos con valor
       if (lockedFields.length === 0 && item?.persona_id) {
-        const inferrable = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil'];
+        const inferrable = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo'];
         lockedFields = inferrable.filter(f => item[f] && String(item[f]).trim());
         // fecha_fallecimiento solo si viene explícitamente en _locked_fields (no inferir)
         item._locked_fields = lockedFields;
@@ -1199,6 +1237,10 @@ export function openModal(type, editIdx) {
         if (elPid) elPid.value = '';
         // Reset locked fields tracker
         if (elLocked) elLocked.value = '[]';
+
+        // Clear search bar
+        const inputBuscar = bodyEl.querySelector('#inputBuscarHeredero');
+        if (inputBuscar) inputBuscar.value = '';
       };
 
       const fetchPersona = async () => {
@@ -1243,6 +1285,7 @@ export function openModal(type, editIdx) {
             // ... (Restante de validación remains unchanged, we will edit the end of the block only)
             let isSamePerson = false;
             if (caseData.causante) {
+              // Compare by cédula
               if (checkedRadio === 'RIF') {
                 if (data.rif_personal && caseData.causante.rif_personal && data.rif_personal === caseData.causante.rif_personal) isSamePerson = true;
                 if (caseData.causante.cedula && data.rif_personal && (caseData.causante.tipo_cedula + caseData.causante.cedula) === data.rif_personal) isSamePerson = true;
@@ -1251,11 +1294,24 @@ export function openModal(type, editIdx) {
               } else {
                 if (caseData.causante.cedula && data.cedula && data.cedula === caseData.causante.cedula && data.tipo_cedula === caseData.causante.tipo_cedula) isSamePerson = true;
               }
-              if (data.persona_id && caseData.causante.persona_id && data.persona_id === caseData.causante.persona_id) isSamePerson = true;
+              if (data.persona_id && caseData.causante.persona_id && String(data.persona_id) === String(caseData.causante.persona_id)) isSamePerson = true;
             }
 
-            if (isSamePerson) {
-              showToast('El heredero no puede ser el mismo causante.', 'error');
+            // Also check representante (only block for heredero_premuerto, regular heredero can be representante)
+            let isSameRepresentante = false;
+            if (type === 'heredero_premuerto' && caseData.representante && data.persona_id && caseData.representante.persona_id && String(data.persona_id) === String(caseData.representante.persona_id)) {
+              isSameRepresentante = true;
+            }
+
+            if (isSamePerson || isSameRepresentante) {
+              const errContainer = document.getElementById('modalHerederoErrors');
+              const errList = document.getElementById('modalHerederoErrorsList');
+              const msg = isSamePerson ? 'El heredero no puede ser el mismo causante.' : 'El heredero del premuerto no puede ser el mismo representante.';
+              if (errContainer && errList) {
+                errList.innerHTML = `<li>${msg}</li>`;
+                errContainer.classList.add('is-visible');
+                errContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+              }
               inputCed.value = '';
               inputPasa.value = '';
               handleDocInput();
@@ -1283,9 +1339,7 @@ export function openModal(type, editIdx) {
 
             if (data.sexo) fillIfExist('[data-modal="sexo"]', data.sexo, 'sexo');
 
-            if (data.estado_civil) {
-              fillIfExist('[data-modal="estado_civil"]', data.estado_civil, 'estado_civil');
-            }
+
 
             // Fill persona_id if provided by the DB
             if (data.persona_id) {
@@ -1332,6 +1386,176 @@ export function openModal(type, editIdx) {
       inputPasa.addEventListener('input', fetchPersona);
 
       handleDocInput();
+
+      // ── Search bar AutocompleteDropdown ──
+      const inputBuscarHer = bodyEl.querySelector('#inputBuscarHeredero');
+      if (inputBuscarHer && typeof AutocompleteDropdown !== 'undefined') {
+        new AutocompleteDropdown({
+          input: inputBuscarHer,
+          debounceMs: 300,
+          minLength: 0,
+          fetchFn: async (query, signal) => {
+            const baseUrl2 = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+            const params = new URLSearchParams({ campo: 'cedula' });
+            if (query) params.set('q', query);
+            const resp = await fetch(`${baseUrl2}/api/buscar-personas?${params}`, { signal });
+            const json = await resp.json();
+            return json.success ? json.data : [];
+          },
+          onSelect: async (item) => {
+            const baseUrl2 = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+            try {
+              const resp = await fetch(`${baseUrl2}/api/buscar-persona?persona_id=${item.persona_id}`);
+              const json = await resp.json();
+              if (!json.success || !json.data) return;
+              const data = json.data;
+
+              // Validate not same as causante
+              let isSameCausante = false;
+              if (caseData.causante) {
+                if (data.persona_id && caseData.causante.persona_id && String(data.persona_id) === String(caseData.causante.persona_id)) isSameCausante = true;
+                if (data.cedula && caseData.causante.cedula && data.cedula === caseData.causante.cedula && data.tipo_cedula === caseData.causante.tipo_cedula) isSameCausante = true;
+                if (data.rif_personal && caseData.causante.rif_personal && data.rif_personal === caseData.causante.rif_personal) isSameCausante = true;
+              }
+
+              // Validate not same as representante (only for heredero_premuerto)
+              let isSameRep = false;
+              if (type === 'heredero_premuerto' && caseData.representante && data.persona_id && caseData.representante.persona_id && String(data.persona_id) === String(caseData.representante.persona_id)) {
+                isSameRep = true;
+              }
+
+              if (isSameCausante || isSameRep) {
+                const errContainer = document.getElementById('modalHerederoErrors');
+                const errList = document.getElementById('modalHerederoErrorsList');
+                const msg = isSameCausante ? 'El heredero no puede ser el mismo causante.' : 'El heredero del premuerto no puede ser el mismo representante.';
+                if (errContainer && errList) {
+                  errList.innerHTML = `<li>${msg}</li>`;
+                  errContainer.classList.add('is-visible');
+                  errContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+                inputBuscarHer.value = '';
+                inputBuscarHer.blur();
+                return;
+              }
+
+              // Validate not duplicate heredero/premuerto (same + cross collection)
+              if (data.persona_id) {
+                const dupHeredero = caseData.herederos.some((h, i) => {
+                  if (type === 'heredero' && i === UIState.editIndex) return false;
+                  return h.persona_id && String(h.persona_id) === String(data.persona_id);
+                });
+                if (dupHeredero) {
+                  const errContainer = document.getElementById('modalHerederoErrors');
+                  const errList = document.getElementById('modalHerederoErrorsList');
+                  if (errContainer && errList) {
+                    errList.innerHTML = `<li>Ya existe un heredero con esta persona.</li>`;
+                    errContainer.classList.add('is-visible');
+                    errContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                  }
+                  inputBuscarHer.value = '';
+                  inputBuscarHer.blur();
+                  return;
+                }
+                const dupPremuerto = caseData.herederos_premuertos.some((h, i) => {
+                  if (type === 'heredero_premuerto' && i === UIState.editIndex) return false;
+                  return h.persona_id && String(h.persona_id) === String(data.persona_id);
+                });
+                if (dupPremuerto) {
+                  const errContainer = document.getElementById('modalHerederoErrors');
+                  const errList = document.getElementById('modalHerederoErrorsList');
+                  if (errContainer && errList) {
+                    errList.innerHTML = `<li>Ya existe un heredero del premuerto con esta persona.</li>`;
+                    errContainer.classList.add('is-visible');
+                    errContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                  }
+                  inputBuscarHer.value = '';
+                  inputBuscarHer.blur();
+                  return;
+                }
+              }
+
+              // Clear previous data and fill
+              clearPersonaData();
+
+              const lockedFromDb = [];
+              const fillIfExist2 = (sel, val, fieldName) => {
+                const el = bodyEl.querySelector(sel);
+                if (el && val) {
+                  el.value = val;
+                  el.disabled = true;
+                  el.style.backgroundColor = 'var(--cc-slate-50, #f8fafc)';
+                  if (fieldName) lockedFromDb.push(fieldName);
+                }
+              };
+
+              fillIfExist2('[data-modal="nombres"]', data.nombres, 'nombres');
+              fillIfExist2('[data-modal="apellidos"]', data.apellidos, 'apellidos');
+              fillIfExist2('[data-modal="fecha_nacimiento"]', data.fecha_nacimiento, 'fecha_nacimiento');
+              if (data.sexo) fillIfExist2('[data-modal="sexo"]', data.sexo, 'sexo');
+
+
+              if (data.persona_id) {
+                const elPid = bodyEl.querySelector('[data-modal="persona_id"]');
+                if (elPid) elPid.value = data.persona_id;
+              }
+
+              // Fill cédula/RIF from DB
+              if (data.cedula && data.tipo_cedula) {
+                if (inputCed) inputCed.value = data.cedula;
+                if (selectLetra) {
+                  syncLetraOptions(data.tipo_cedula === 'J' ? 'RIF' : 'Cédula');
+                  selectLetra.value = data.tipo_cedula;
+                }
+                // Set radio to correct type
+                const radioVal = data.tipo_cedula === 'J' ? 'RIF' : 'Cédula';
+                radiosDoc.forEach(r => { r.checked = r.value === radioVal; });
+                if (lblDoc) lblDoc.innerHTML = radioVal === 'RIF' ? 'RIF' : 'CÉDULA';
+                if (wrapCedula) wrapCedula.style.display = '';
+                if (wrapPasaporte) wrapPasaporte.style.display = 'none';
+                inputCed.disabled = true;
+                inputCed.style.backgroundColor = 'var(--cc-slate-50, #f8fafc)';
+                if (selectLetra) { selectLetra.disabled = true; selectLetra.style.backgroundColor = 'var(--cc-slate-50, #f8fafc)'; }
+                lockedFromDb.push('cedula');
+                radiosDoc.forEach(r => r.disabled = true);
+              }
+
+              // Store fecha_fallecimiento from DB
+              if (data.fecha_fallecimiento && bodyEl._setDbFechaFallecimiento) {
+                bodyEl._setDbFechaFallecimiento(data.fecha_fallecimiento);
+                if (premuertoSelect && premuertoSelect.value === 'SI') {
+                  fillIfExist2('[data-modal="fecha_fallecimiento"]', data.fecha_fallecimiento, 'fecha_fallecimiento');
+                }
+              }
+
+              // Save locked fields
+              let elLocked = bodyEl.querySelector('[data-modal="_locked_fields"]');
+              if (!elLocked) {
+                elLocked = document.createElement('input');
+                elLocked.type = 'hidden';
+                elLocked.dataset.modal = '_locked_fields';
+                bodyEl.appendChild(elLocked);
+              }
+              elLocked.value = JSON.stringify(lockedFromDb);
+
+              // Update search bar display
+              inputBuscarHer.value = `${data.nombres || ''} ${data.apellidos || ''} — ${data.cedula || 'S/C'}`.trim();
+
+              showToast('Datos del heredero autocompletados', 'success');
+            } catch (err) {
+              console.error('Error fetching heredero by ID:', err);
+            }
+          }
+        });
+
+        // If editing, show name in search bar
+        if (UIState.editIndex !== null) {
+          const collection = type === 'heredero' ? caseData.herederos : caseData.herederos_premuertos;
+          const item = collection[UIState.editIndex];
+          if (item && item.persona_id) {
+            inputBuscarHer.value = `${item.nombres || ''} ${item.apellidos || ''} — ${item.cedula || 'S/C'}`.trim();
+          }
+        }
+      }
 
       // Inicializar UI basada en form data si se edita
       const checkedRadioInit = Array.from(radiosDoc).find(r => r.checked);
@@ -1557,6 +1781,59 @@ export function openModal(type, editIdx) {
   overlay.classList.add('is-open');
 }
 
+export function clearModalFields() {
+  const bodyEl = $('#modalBody');
+  if (!bodyEl) return;
+
+  // Clear search bar
+  const inputBuscar = bodyEl.querySelector('#inputBuscarHeredero');
+  if (inputBuscar) inputBuscar.value = '';
+
+  // Clear persona_id and _locked_fields
+  const elPid = bodyEl.querySelector('[data-modal="persona_id"]');
+  if (elPid) elPid.value = '';
+  const elLocked = bodyEl.querySelector('[data-modal="_locked_fields"]');
+  if (elLocked) elLocked.value = '[]';
+
+  // Clear and unlock all data-modal fields
+  bodyEl.querySelectorAll('[data-modal]').forEach(el => {
+    const field = el.dataset.modal;
+    if (field === 'persona_id' || field === '_locked_fields') return;
+
+    if (el.type === 'radio') {
+      // Reset radios: check first one (Cédula) by default
+      el.disabled = false;
+      el.checked = el.value === 'Cédula';
+    } else if (el.tagName === 'SELECT') {
+      // Reset selects to first option, special defaults
+      if (field === 'caracter') { el.value = 'HEREDERO'; }
+      else if (field === 'premuerto') { el.value = 'NO'; }
+      else if (field === 'letra_cedula') { el.value = 'V'; }
+      else { el.selectedIndex = 0; }
+      el.disabled = false;
+      el.style.backgroundColor = '';
+    } else {
+      el.value = '';
+      el.disabled = false;
+      el.style.backgroundColor = '';
+    }
+  });
+
+  // Reset document type UI (show cédula, hide pasaporte)
+  const wrapCed = bodyEl.querySelector('[id^="wrap-her"][id$="-cedula"]');
+  const wrapPasa = bodyEl.querySelector('[id^="wrap-her"][id$="-pasaporte"]');
+  if (wrapCed) wrapCed.style.display = '';
+  if (wrapPasa) wrapPasa.style.display = 'none';
+
+  // Hide fecha fallecimiento
+  const bloqueFall = bodyEl.querySelector('#bloqueFallecimiento') || bodyEl.querySelector('#bloqueFallecimiento2');
+  if (bloqueFall) bloqueFall.style.display = 'none';
+
+  // Reset label
+  const lblDoc = bodyEl.querySelector('.cc-field--doc label');
+  if (lblDoc) lblDoc.innerHTML = 'CÉDULA';
+}
+
 export function closeModal() {
   $('#genericModal').classList.remove('is-open');
   UIState.currentModalType = null;
@@ -1568,10 +1845,33 @@ export async function saveModal() {
   if (!config) return;
   const form = config.collect();
 
+  // Clear previous inline errors
+  const errContainer = document.getElementById('modalHerederoErrors');
+  const errList = document.getElementById('modalHerederoErrorsList');
+  if (errContainer) errContainer.classList.remove('is-visible');
+
   if (config.validate) {
     const error = config.validate(form);
     if (error) {
-      showToast(error);
+      // Show inline for heredero modals
+      if ((UIState.currentModalType === 'heredero' || UIState.currentModalType === 'heredero_premuerto') && errContainer && errList) {
+        errList.innerHTML = `<li>${error}</li>`;
+        errContainer.classList.add('is-visible');
+        errContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // Auto-clear on next input
+        const bodyEl = $('#modalBody');
+        if (bodyEl) {
+          const clearHandler = () => {
+            errContainer.classList.remove('is-visible');
+            bodyEl.removeEventListener('input', clearHandler);
+            bodyEl.removeEventListener('change', clearHandler);
+          };
+          bodyEl.addEventListener('input', clearHandler, { once: true });
+          bodyEl.addEventListener('change', clearHandler, { once: true });
+        }
+      } else {
+        showToast(error);
+      }
       return;
     }
   }

@@ -1,0 +1,162 @@
+/* ───────────────────────────────────────────────────
+   Autocomplete Dropdown — reusable component
+   ─────────────────────────────────────────────────── */
+
+.ac-wrapper {
+    position: relative;
+}
+
+/* ── Dropdown panel ── */
+.ac-dropdown {
+    position: fixed;
+    z-index: 9999;
+    margin-top: 4px;
+    max-height: 220px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid var(--gray-200, #e2e8f0);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .12), 0 2px 6px rgba(0, 0, 0, .06);
+    display: none;
+    /* hide by default */
+}
+
+.ac-dropdown.is-open {
+    display: block;
+    animation: acSlideIn .15s ease-out;
+}
+
+@keyframes acSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Individual item ── */
+.ac-dropdown__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background .12s;
+    border-bottom: 1px solid var(--gray-100, #f1f5f9);
+    font-size: 13.5px;
+    color: var(--gray-700, #334155);
+}
+
+.ac-dropdown__item:last-child {
+    border-bottom: none;
+}
+
+.ac-dropdown__item:hover,
+.ac-dropdown__item.is-highlighted {
+    background: var(--blue-50, #eff6ff);
+}
+
+.ac-dropdown__item.is-highlighted {
+    outline: 2px solid var(--blue-400, #60a5fa);
+    outline-offset: -2px;
+    border-radius: 4px;
+}
+
+/* Badge for tipo_cedula */
+.ac-dropdown__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    background: var(--blue-100, #dbeafe);
+    color: var(--blue-700, #1d4ed8);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ac-dropdown__badge--muted {
+    background: var(--gray-100, #f1f5f9);
+    color: var(--gray-500, #64748b);
+}
+
+/* Cedula number */
+.ac-dropdown__cedula {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--gray-800, #1e293b);
+    min-width: 80px;
+}
+
+/* Separator dash */
+.ac-dropdown__sep {
+    color: var(--gray-300, #cbd5e1);
+    flex-shrink: 0;
+}
+
+/* Person name */
+.ac-dropdown__name {
+    color: var(--gray-500, #64748b);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Empty / Loading states ── */
+.ac-dropdown__empty,
+.ac-dropdown__loading {
+    padding: 16px 14px;
+    text-align: center;
+    color: var(--gray-400, #94a3b8);
+    font-size: 13px;
+}
+
+.ac-dropdown__loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.ac-dropdown__spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--gray-200, #e2e8f0);
+    border-top-color: var(--blue-500, #3b82f6);
+    border-radius: 50%;
+    animation: acSpin .6s linear infinite;
+}
+
+@keyframes acSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Scrollbar styling ── */
+.ac-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ac-dropdown::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ac-dropdown::-webkit-scrollbar-thumb {
+    background: var(--gray-300, #cbd5e1);
+    border-radius: 3px;
+}
+
+.ac-dropdown::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-400, #94a3b8);
+}

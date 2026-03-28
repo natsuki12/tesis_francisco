@@ -1,0 +1,84 @@
+====================================================================
+  PLAN: Hacer funcional /generacion-rs (Bandeja RIF Sucesoral)
+  Fecha: 27/03/2026
+====================================================================
+
+CONTEXTO
+--------
+La vista ya existe (professor/generacion_rs.php) con UI completa
+(tabla, stat cards, 3 modals) pero usa datos PLACEHOLDER hardcoded
+y alerts() en vez de lógica real.
+
+sim_intentos ya tiene: nota_numerica, nota_cualitativa, observacion
+→ NO se necesita ALTER TABLE.
+
+
+FLUJO PROPUESTO
+---------------
+Estudiante en modo Evaluación:
+  1. Llena formulario completo (Forma 32)
+  2. Click "Validar Inscripción" → estado = Pendiente_RIF
+  3. Sesión del simulador se limpia, redirige a /mis-asignaciones
+
+Profesor en /generacion-rs:
+  - Ve lista de intentos en Pendiente_RIF
+  - APROBAR → estado = Aprobado, genera RIF, asigna nota
+  - RECHAZAR → estado = Rechazado, nota (0-9 o Reprobado) + observación
+
+
+ARCHIVOS A CREAR
+----------------
+[NEW] src/Modules/Professor/Models/GeneracionRsModel.php
+  - getSolicitudes(profesorId)  → intentos filtrados por profesor
+  - getStats(profesorId)        → conteo pendientes/aprobadas/rechazadas
+  - aprobar(intentoId, profesorId, ...) → UPDATE estado + genera RIF
+  - rechazar(intentoId, profesorId, tipo, nota, observacion) → UPDATE estado + nota
+
+[NEW] src/Modules/Professor/Controllers/GeneracionRsController.php
+  - index()          → pasa datos a la vista
+  - aprobar(id)      → endpoint POST JSON
+  - rechazar(id)     → endpoint POST JSON
+
+
+ARCHIVOS A MODIFICAR
+--------------------
+[MOD] routes/web.php
+  - Reemplazar closure inline por controller
+  - Agregar rutas API: POST /api/generacion-rs/{id}/aprobar
+                        POST /api/generacion-rs/{id}/rechazar
+
+[MOD] resources/views/professor/generacion_rs.php
+  - Quitar $solicitudes hardcoded (líneas 12-97)
+  - JS: fetch() real en vez de alert()
+  - Modal rechazar: selector tipo calificación + nota + observación
+  - Filtros: adaptar a DataTableManager global
+
+
+====================================================================
+  PREGUNTAS PENDIENTES (resolver antes de implementar)
+====================================================================
+
+1. FILTRO DE MODALIDAD EN getSolicitudes
+   El query filtra por estado IN ('Pendiente_RIF', 'Aprobado', 'Rechazado'),
+   pero Aprobado/Rechazado se usan en TODOS los modos (Práctica, Evaluación).
+   → ¿Filtrar también por cfg.modalidad = 'Evaluacion'?
+   → ¿O solo mostrar Pendiente_RIF como cola activa y Aprobados/Rechazados
+     como historial separado?
+
+2. NOTA AL APROBAR
+   El plan dice nota_cualitativa='Aprobado', pero cada config tiene
+   tipo_calificacion (numerica o aprobado_reprobado).
+   → Si es numérica, ¿el profesor da nota 10-20 al aprobar?
+   → ¿O solo al rechazar se asigna nota?
+
+3. GENERACIÓN DEL RIF AL APROBAR
+   El generador actual está en IntentosController::validarRs() y depende
+   de la sesión del estudiante.
+   → Hay que extraer la lógica de generación de RIF a un servicio
+     reutilizable que funcione sin sesión del estudiante
+   → Necesita: borrador_json del intento + datos del caso
+
+4. ¿DÓNDE VE EL ESTUDIANTE SU RIF DESPUÉS DE APROBACIÓN?
+   La sesión se limpió al enviar Pendiente_RIF.
+   → ¿Mostrar RIF en /mis-entregas? ¿En detalle de asignación?
+   → ¿Notificar por correo?

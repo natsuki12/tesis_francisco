@@ -269,9 +269,10 @@ class AsignacionesModel
     public function getEstudiantesDisponibles(int $casoId, int $profesorId): array
     {
         $sql = "SELECT est.id AS estudiante_id, per.nombres, per.apellidos, per.cedula,
-                       sec.nombre AS seccion_nombre
+                       sec.nombre AS seccion_nombre, u.email
                 FROM estudiantes est
                 JOIN personas per ON est.persona_id = per.id
+                JOIN users u ON u.persona_id = est.persona_id
                 JOIN inscripciones ins ON ins.estudiante_id = est.id
                 JOIN secciones sec ON ins.seccion_id = sec.id
                 WHERE sec.profesor_id = :prof_id

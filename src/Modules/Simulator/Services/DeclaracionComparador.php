@@ -50,8 +50,8 @@ class DeclaracionComparador
     {
         $intento = $this->getIntentoConCaso($intentoId, $estudianteId);
         if (!$intento) {
-            return ['datos_caso' => [], 'secciones' => [], 'autoliquidacion' => [],
-                    'herederos_calculo' => [], 'score' => ['correctos' => 0, 'total' => 0, 'porcentaje' => 0]];
+            return ['datos_caso' => [], 'secciones' => [], 'resumen_secciones' => [], 'autoliquidacion' => [],
+                    'herederos_calculo' => [], 'score' => ['correctas' => 0, 'con_errores' => 0, 'omitidas' => 0, 'de_mas' => 0, 'total_esperado' => 0, 'porcentaje' => 0]];
         }
 
         $borrador = json_decode($intento['borrador_json'] ?: '{}', true) ?: [];
@@ -255,7 +255,7 @@ class DeclaracionComparador
         // Legacy fallback
         if (empty($herederosB)) {
             foreach (($borrador['relaciones'] ?? []) as $rel) {
-                $pt = strtoupper($rel['parentescoText'] ?? '');
+                $pt = mb_strtoupper($rel['parentescoText'] ?? '');
                 if ($pt !== 'REPRESENTANTE DE LA SUCESION') {
                     $herederosB[] = $rel;
                 }
@@ -284,17 +284,17 @@ class DeclaracionComparador
                     $dbUsados[] = $j;
                     $campos = [];
 
-                    $nB = strtoupper(trim(($hB['apellidos'] ?? $hB['apellido'] ?? '') . ' ' . ($hB['nombres'] ?? $hB['nombre'] ?? '')));
-                    $nDb = strtoupper(trim(($hDb['apellidos'] ?? '') . ' ' . ($hDb['nombres'] ?? '')));
+                    $nB = mb_strtoupper(trim(($hB['apellidos'] ?? $hB['apellido'] ?? '') . ' ' . ($hB['nombres'] ?? $hB['nombre'] ?? '')));
+                    $nDb = mb_strtoupper(trim(($hDb['apellidos'] ?? '') . ' ' . ($hDb['nombres'] ?? '')));
                     $campos[] = ['campo' => 'Nombre', 'borrador' => $nB, 'esperado' => $nDb, 'correcto' => $nB === $nDb];
 
                     $docDbDisplay = $hDb['rif_personal'] ?: ($hDb['tipo_cedula'] . $hDb['cedula']);
-                    $campos[] = ['campo' => 'Documento', 'borrador' => strtoupper($docB), 'esperado' => strtoupper($docDbDisplay), 'correcto' => true];
+                    $campos[] = ['campo' => 'Documento', 'borrador' => mb_strtoupper($docB), 'esperado' => mb_strtoupper($docDbDisplay), 'correcto' => true];
 
                     // Parentesco — resolver parentesco_id del borrador
                     $parIdB = (int)($hB['parentesco_id'] ?? 0);
-                    $parB = strtoupper(trim($parentescoCatalog[$parIdB] ?? ''));
-                    $parDb = strtoupper(trim($hDb['parentesco_nombre'] ?? ''));
+                    $parB = mb_strtoupper(trim($parentescoCatalog[$parIdB] ?? ''));
+                    $parDb = mb_strtoupper(trim($hDb['parentesco_nombre'] ?? ''));
                     $campos[] = ['campo' => 'Parentesco', 'borrador' => $parB ?: '—', 'esperado' => $parDb ?: '—',
                                  'correcto' => ($parB === $parDb) || ($parB === '' && $parDb === '')];
 
@@ -325,10 +325,10 @@ class DeclaracionComparador
             }
 
             if (!$matched) {
-                $nB = strtoupper(trim(($hB['apellidos'] ?? $hB['apellido'] ?? '') . ' ' . ($hB['nombres'] ?? $hB['nombre'] ?? '')));
-                $docB = strtoupper(trim($hB['idDocumento'] ?? $hB['cedula'] ?? ''));
+                $nB = mb_strtoupper(trim(($hB['apellidos'] ?? $hB['apellido'] ?? '') . ' ' . ($hB['nombres'] ?? $hB['nombre'] ?? '')));
+                $docB = mb_strtoupper(trim($hB['idDocumento'] ?? $hB['cedula'] ?? ''));
                 $parIdB = (int)($hB['parentesco_id'] ?? 0);
-                $parB = strtoupper(trim($parentescoCatalog[$parIdB] ?? ''));
+                $parB = mb_strtoupper(trim($parentescoCatalog[$parIdB] ?? ''));
                 $pmB = in_array(strtolower($hB['premuerto'] ?? ''), ['true', 'si', '1'], true) ? 'SI' : 'NO';
                 $fnB = $this->normFecha($hB['fecha_nacimiento'] ?? '');
                 $campos = [
@@ -345,14 +345,14 @@ class DeclaracionComparador
         // DB herederos not matched — show full expected fields
         foreach ($herederosDb as $j => $hDb) {
             if (!in_array($j, $dbUsados)) {
-                $nDb = strtoupper(trim(($hDb['apellidos'] ?? '') . ' ' . ($hDb['nombres'] ?? '')));
+                $nDb = mb_strtoupper(trim(($hDb['apellidos'] ?? '') . ' ' . ($hDb['nombres'] ?? '')));
                 $docDb = $hDb['rif_personal'] ?: ($hDb['tipo_cedula'] . $hDb['cedula']);
-                $parDb = strtoupper(trim($hDb['parentesco_nombre'] ?? ''));
+                $parDb = mb_strtoupper(trim($hDb['parentesco_nombre'] ?? ''));
                 $fnDb = $this->normFecha($hDb['fecha_nacimiento'] ?? '');
                 $pmDb = ((int)($hDb['es_premuerto'] ?? 0)) === 1 ? 'SI' : 'NO';
                 $campos = [
                     ['campo' => 'Nombre', 'borrador' => '—', 'esperado' => $nDb, 'correcto' => false, 'tipo' => 'omitido'],
-                    ['campo' => 'Documento', 'borrador' => '—', 'esperado' => strtoupper($docDb), 'correcto' => false, 'tipo' => 'omitido'],
+                    ['campo' => 'Documento', 'borrador' => '—', 'esperado' => mb_strtoupper($docDb), 'correcto' => false, 'tipo' => 'omitido'],
                     ['campo' => 'Parentesco', 'borrador' => '—', 'esperado' => $parDb ?: '—', 'correcto' => false, 'tipo' => 'omitido'],
                     ['campo' => 'Premuerto', 'borrador' => '—', 'esperado' => $pmDb, 'correcto' => false, 'tipo' => 'omitido'],
                     ['campo' => 'Fecha Nacimiento', 'borrador' => '—', 'esperado' => $fnDb ?: '—', 'correcto' => false, 'tipo' => 'omitido'],
@@ -380,7 +380,7 @@ class DeclaracionComparador
         foreach ($relaciones as $rel) {
             $ced = trim($rel['cedula'] ?? '');
             if ($ced !== '') {
-                $relNombrePorCedula[$ced] = strtoupper(trim(($rel['apellido'] ?? '') . ' ' . ($rel['nombre'] ?? '')));
+                $relNombrePorCedula[$ced] = mb_strtoupper(trim(($rel['apellido'] ?? '') . ' ' . ($rel['nombre'] ?? '')));
             }
         }
 
@@ -406,17 +406,17 @@ class DeclaracionComparador
                     $dbUsados[] = $j;
                     $campos = [];
 
-                    $nB = strtoupper(trim(($hB['apellido'] ?? $hB['apellidos'] ?? '') . ' ' . ($hB['nombre'] ?? $hB['nombres'] ?? '')));
-                    $nDb = strtoupper(trim(($hDb['apellidos'] ?? '') . ' ' . ($hDb['nombres'] ?? '')));
+                    $nB = mb_strtoupper(trim(($hB['apellido'] ?? $hB['apellidos'] ?? '') . ' ' . ($hB['nombre'] ?? $hB['nombres'] ?? '')));
+                    $nDb = mb_strtoupper(trim(($hDb['apellidos'] ?? '') . ' ' . ($hDb['nombres'] ?? '')));
                     $campos[] = ['campo' => 'Nombre', 'borrador' => $nB, 'esperado' => $nDb, 'correcto' => $nB === $nDb];
 
                     $docDbDisplay = $hDb['rif_personal'] ?: ($hDb['tipo_cedula'] . $hDb['cedula']);
-                    $campos[] = ['campo' => 'Documento', 'borrador' => strtoupper($docB), 'esperado' => strtoupper($docDbDisplay), 'correcto' => true];
+                    $campos[] = ['campo' => 'Documento', 'borrador' => mb_strtoupper($docB), 'esperado' => mb_strtoupper($docDbDisplay), 'correcto' => true];
 
                     // Parentesco
                     $parIdB = (int)($hB['parentesco_id'] ?? 0);
-                    $parB = strtoupper(trim($parentescoCatalog[$parIdB] ?? ''));
-                    $parDb = strtoupper(trim($hDb['parentesco_nombre'] ?? ''));
+                    $parB = mb_strtoupper(trim($parentescoCatalog[$parIdB] ?? ''));
+                    $parDb = mb_strtoupper(trim($hDb['parentesco_nombre'] ?? ''));
                     $campos[] = ['campo' => 'Parentesco', 'borrador' => $parB ?: '—', 'esperado' => $parDb ?: '—',
                                  'correcto' => ($parB === $parDb) || ($parB === '' && $parDb === '')];
 
@@ -431,9 +431,9 @@ class DeclaracionComparador
                     $reprB = $relNombrePorCedula[$padreIdB] ?? ($padreIdB ? "CED: {$padreIdB}" : '');
                     $reprDb = '';
                     if (!empty($hDb['padre_nombres']) || !empty($hDb['padre_apellidos'])) {
-                        $reprDb = strtoupper(trim(($hDb['padre_apellidos'] ?? '') . ' ' . ($hDb['padre_nombres'] ?? '')));
+                        $reprDb = mb_strtoupper(trim(($hDb['padre_apellidos'] ?? '') . ' ' . ($hDb['padre_nombres'] ?? '')));
                     }
-                    $reprB = strtoupper($reprB);
+                    $reprB = mb_strtoupper($reprB);
                     $campos[] = ['campo' => 'Representa a', 'borrador' => $reprB ?: '—', 'esperado' => $reprDb ?: '—',
                                  'correcto' => ($reprB === $reprDb) || ($reprB === '' && $reprDb === '')];
 
@@ -443,13 +443,13 @@ class DeclaracionComparador
             }
 
             if (!$matched) {
-                $nB = strtoupper(trim(($hB['apellido'] ?? $hB['apellidos'] ?? '') . ' ' . ($hB['nombre'] ?? $hB['nombres'] ?? '')));
-                $docB = strtoupper(trim($hB['idDocumento'] ?? $hB['cedula'] ?? ''));
+                $nB = mb_strtoupper(trim(($hB['apellido'] ?? $hB['apellidos'] ?? '') . ' ' . ($hB['nombre'] ?? $hB['nombres'] ?? '')));
+                $docB = mb_strtoupper(trim($hB['idDocumento'] ?? $hB['cedula'] ?? ''));
                 $parIdB = (int)($hB['parentesco_id'] ?? 0);
-                $parB = strtoupper(trim($parentescoCatalog[$parIdB] ?? ''));
+                $parB = mb_strtoupper(trim($parentescoCatalog[$parIdB] ?? ''));
                 $fnB = $this->normFecha($hB['fecha_nacimiento'] ?? '');
                 $padreIdB = trim($hB['premuerto_padre_id'] ?? '');
-                $reprB = strtoupper($relNombrePorCedula[$padreIdB] ?? ($padreIdB ? "CED: {$padreIdB}" : ''));
+                $reprB = mb_strtoupper($relNombrePorCedula[$padreIdB] ?? ($padreIdB ? "CED: {$padreIdB}" : ''));
                 $campos = [
                     ['campo' => 'Nombre', 'borrador' => $nB ?: '—', 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
                     ['campo' => 'Documento', 'borrador' => $docB ?: '—', 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
@@ -464,17 +464,17 @@ class DeclaracionComparador
         // Faltantes — show full expected fields
         foreach ($herederosDb as $j => $hDb) {
             if (!in_array($j, $dbUsados)) {
-                $nDb = strtoupper(trim(($hDb['apellidos'] ?? '') . ' ' . ($hDb['nombres'] ?? '')));
+                $nDb = mb_strtoupper(trim(($hDb['apellidos'] ?? '') . ' ' . ($hDb['nombres'] ?? '')));
                 $docDb = $hDb['rif_personal'] ?: ($hDb['tipo_cedula'] . $hDb['cedula']);
-                $parDb = strtoupper(trim($hDb['parentesco_nombre'] ?? ''));
+                $parDb = mb_strtoupper(trim($hDb['parentesco_nombre'] ?? ''));
                 $fnDb = $this->normFecha($hDb['fecha_nacimiento'] ?? '');
                 $reprDb = '';
                 if (!empty($hDb['padre_nombres']) || !empty($hDb['padre_apellidos'])) {
-                    $reprDb = strtoupper(trim(($hDb['padre_apellidos'] ?? '') . ' ' . ($hDb['padre_nombres'] ?? '')));
+                    $reprDb = mb_strtoupper(trim(($hDb['padre_apellidos'] ?? '') . ' ' . ($hDb['padre_nombres'] ?? '')));
                 }
                 $campos = [
                     ['campo' => 'Nombre', 'borrador' => '—', 'esperado' => $nDb, 'correcto' => false, 'tipo' => 'omitido'],
-                    ['campo' => 'Documento', 'borrador' => '—', 'esperado' => strtoupper($docDb), 'correcto' => false, 'tipo' => 'omitido'],
+                    ['campo' => 'Documento', 'borrador' => '—', 'esperado' => mb_strtoupper($docDb), 'correcto' => false, 'tipo' => 'omitido'],
                     ['campo' => 'Parentesco', 'borrador' => '—', 'esperado' => $parDb ?: '—', 'correcto' => false, 'tipo' => 'omitido'],
                     ['campo' => 'Fecha Nacimiento', 'borrador' => '—', 'esperado' => $fnDb ?: '—', 'correcto' => false, 'tipo' => 'omitido'],
                     ['campo' => 'Representa a', 'borrador' => '—', 'esperado' => $reprDb ?: '—', 'correcto' => false, 'tipo' => 'omitido'],
@@ -547,14 +547,14 @@ class DeclaracionComparador
         $dbUsados = [];
         $bSinMatch = [];
         foreach ($itemsB as $i => $bI) {
-            $nroB = strtoupper(trim($bI['nro_resolucion'] ?? ''));
+            $nroB = mb_strtoupper(trim($bI['nro_resolucion'] ?? ''));
             $fsolB = $this->normFecha($bI['fecha_solicitud'] ?? '');
 
             $bestJ = -1; $bestScore = 0;
             foreach ($itemsDb as $j => $dbI) {
                 if (in_array($j, $dbUsados)) continue;
                 $score = 0;
-                $nroDb = strtoupper(trim($dbI['nro_resolucion'] ?? ''));
+                $nroDb = mb_strtoupper(trim($dbI['nro_resolucion'] ?? ''));
                 $fsolDb = $this->normFecha($dbI['fecha_solicitud'] ?? '');
                 if ($nroB !== '' && $nroDb !== '' && $nroB === $nroDb) $score += 2;
                 if ($fsolB !== '' && $fsolDb !== '' && $fsolB === $fsolDb) $score += 1;
@@ -594,7 +594,7 @@ class DeclaracionComparador
             $desc = trim($bI['nro_resolucion'] ?? '');
             $campos = [
                 ['campo' => 'Fecha Solicitud', 'borrador' => $this->normFecha($bI['fecha_solicitud'] ?? ''), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
-                ['campo' => 'Nro. Resolución', 'borrador' => strtoupper(trim($bI['nro_resolucion'] ?? '')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
+                ['campo' => 'Nro. Resolución', 'borrador' => mb_strtoupper(trim($bI['nro_resolucion'] ?? '')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
                 ['campo' => 'Fecha Resolución', 'borrador' => $this->normFecha($bI['fecha_resolucion'] ?? ''), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
                 ['campo' => 'Plazo Otorgado (Días)', 'borrador' => trim($bI['plazo_dias'] ?? ''), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
                 ['campo' => 'Fecha Vencimiento', 'borrador' => $this->normFecha($bI['fecha_vencimiento'] ?? ''), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
@@ -609,7 +609,7 @@ class DeclaracionComparador
             $desc = trim($dbI['nro_resolucion'] ?? '');
             $campos = [
                 ['campo' => 'Fecha Solicitud', 'borrador' => '—', 'esperado' => $this->normFecha($dbI['fecha_solicitud'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'],
-                ['campo' => 'Nro. Resolución', 'borrador' => '—', 'esperado' => strtoupper(trim($dbI['nro_resolucion'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'],
+                ['campo' => 'Nro. Resolución', 'borrador' => '—', 'esperado' => mb_strtoupper(trim($dbI['nro_resolucion'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'],
                 ['campo' => 'Fecha Resolución', 'borrador' => '—', 'esperado' => $this->normFecha($dbI['fecha_resolucion'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'],
                 ['campo' => 'Plazo Otorgado (Días)', 'borrador' => '—', 'esperado' => (string)($dbI['plazo_otorgado_dias'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'],
                 ['campo' => 'Fecha Vencimiento', 'borrador' => '—', 'esperado' => $this->normFecha($dbI['fecha_vencimiento'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'],
@@ -627,7 +627,7 @@ class DeclaracionComparador
     {
         $campos = [];
         $campos[] = $this->cmpTexto('Fecha Solicitud', $this->normFecha($bI['fecha_solicitud'] ?? ''), $this->normFecha($dbI['fecha_solicitud'] ?? ''));
-        $campos[] = $this->cmpTexto('Nro. Resolución', strtoupper(trim($bI['nro_resolucion'] ?? '')), strtoupper(trim($dbI['nro_resolucion'] ?? '')));
+        $campos[] = $this->cmpTexto('Nro. Resolución', mb_strtoupper(trim($bI['nro_resolucion'] ?? '')), mb_strtoupper(trim($dbI['nro_resolucion'] ?? '')));
         $campos[] = $this->cmpTexto('Fecha Resolución', $this->normFecha($bI['fecha_resolucion'] ?? ''), $this->normFecha($dbI['fecha_resolucion'] ?? ''));
         // Borrador usa 'plazo_dias', DB usa 'plazo_otorgado_dias'
         $campos[] = $this->cmpTexto('Plazo Otorgado (Días)', trim($bI['plazo_dias'] ?? ''), (string)($dbI['plazo_otorgado_dias'] ?? ''));
@@ -642,7 +642,7 @@ class DeclaracionComparador
     private function compararTipoHerencia(array $borrador, int $casoId): array
     {
         $grupos = [];
-        $tiposB = $borrador['tipo_herencia'] ?? [];
+        $tiposB = $borrador['tipos_herencia']['items'] ?? $borrador['tipo_herencia'] ?? [];
         $tiposDb = $this->getTiposHerenciaDelCaso($casoId);
 
         if (empty($tiposB) && empty($tiposDb)) return $grupos;
@@ -661,8 +661,8 @@ class DeclaracionComparador
             $campos[] = ['campo' => 'Tipo', 'borrador' => $nombre, 'esperado' => $nombre, 'correcto' => true];
 
             if (!empty($dbI['subtipo_testamento'])) {
-                $sB = strtoupper(trim($bI['subtipo_testamento'] ?? ''));
-                $sDb = strtoupper(trim($dbI['subtipo_testamento']));
+                $sB = mb_strtoupper(trim($bI['subtipo_testamento'] ?? ''));
+                $sDb = mb_strtoupper(trim($dbI['subtipo_testamento']));
                 $campos[] = $this->cmpTexto('Subtipo Testamento', $sB, $sDb);
             }
             if (!empty($dbI['fecha_testamento'])) {
@@ -686,7 +686,7 @@ class DeclaracionComparador
                 ['campo' => 'Tipo de Herencia', 'borrador' => '—', 'esperado' => $nombre, 'correcto' => false, 'tipo' => 'omitido'],
             ];
             if (!empty($dbI['subtipo_testamento'])) {
-                $campos[] = ['campo' => 'Subtipo Testamento', 'borrador' => '—', 'esperado' => strtoupper(trim($dbI['subtipo_testamento'])), 'correcto' => false, 'tipo' => 'omitido'];
+                $campos[] = ['campo' => 'Subtipo Testamento', 'borrador' => '—', 'esperado' => mb_strtoupper(trim($dbI['subtipo_testamento'])), 'correcto' => false, 'tipo' => 'omitido'];
             }
             if (!empty($dbI['fecha_testamento'])) {
                 $campos[] = ['campo' => 'Fecha Testamento', 'borrador' => '—', 'esperado' => $this->normFecha($dbI['fecha_testamento']), 'correcto' => false, 'tipo' => 'omitido'];
@@ -701,7 +701,7 @@ class DeclaracionComparador
                 ['campo' => 'Tipo', 'borrador' => $nombre, 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
             ];
             if (!empty($bI['subtipo_testamento'])) {
-                $campos[] = ['campo' => 'Subtipo Testamento', 'borrador' => strtoupper(trim($bI['subtipo_testamento'])), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'];
+                $campos[] = ['campo' => 'Subtipo Testamento', 'borrador' => mb_strtoupper(trim($bI['subtipo_testamento'])), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'];
             }
             if (!empty($bI['fecha_testamento'])) {
                 $campos[] = ['campo' => 'Fecha Testamento', 'borrador' => $this->normFecha($bI['fecha_testamento']), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'];
@@ -737,6 +737,13 @@ class DeclaracionComparador
         $grupos = [];
         $itemsB = $borrador['bienes_inmuebles'] ?? [];
         $itemsDb = $this->fetchRows('sim_caso_bienes_inmuebles', $casoId);
+
+        // Enrich DB rows with tipo_bien_nombre from M2M table
+        $tipoNombresMap = $this->getTipoBienInmuebleNames($casoId);
+        foreach ($itemsDb as &$dbRow) {
+            $dbRow['tipo_bien_nombre'] = $tipoNombresMap[(int)($dbRow['id'] ?? 0)] ?? '';
+        }
+        unset($dbRow);
 
         if (empty($itemsB) && empty($itemsDb)) return $grupos;
 
@@ -798,7 +805,7 @@ class DeclaracionComparador
             $campos = [
                 ['campo' => 'Valor Declarado', 'borrador' => $this->fmtBs($this->parseDecimal($bI['valor_declarado'] ?? '0')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
                 ['campo' => 'Porcentaje', 'borrador' => number_format($this->parseDecimal($bI['porcentaje'] ?? '0'), 2, ',', '.'), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
-                ['campo' => 'Descripción', 'borrador' => strtoupper(trim($bI['descripcion'] ?? '')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
+                ['campo' => 'Descripción', 'borrador' => mb_strtoupper(trim($bI['descripcion'] ?? '')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
             ];
             $vpB = ($bI['vivienda_principal'] ?? 'false') === 'true' ? 'SI' : 'NO';
             $campos[] = ['campo' => 'Vivienda Principal', 'borrador' => $vpB, 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'];
@@ -825,6 +832,11 @@ class DeclaracionComparador
     private function camposBienInmueble(array $bI, array $dbI, array $litDbMap): array
     {
         $campos = [];
+        // Tipo de bien inmueble
+        $tipoB = mb_strtoupper(trim($bI['tipo_bien_nombres'] ?? ''));
+        $tipoDb = mb_strtoupper(trim($dbI['tipo_bien_nombre'] ?? ''));
+        $campos[] = $this->cmpTexto('Tipo de Bien', $tipoB, $tipoDb);
+
         $campos[] = $this->cmpDec('Valor Declarado', $this->parseDecimal($bI['valor_declarado'] ?? '0'), (float)($dbI['valor_declarado'] ?? 0));
         $campos[] = $this->cmpDec('Porcentaje', $this->parseDecimal($bI['porcentaje'] ?? '0'), (float)($dbI['porcentaje'] ?? 0));
         $campos[] = $this->cmpTexto('Descripción', $this->normDesc($bI['descripcion'] ?? ''), $this->normDesc($dbI['descripcion'] ?? ''));
@@ -851,9 +863,13 @@ class DeclaracionComparador
         $campos[] = $this->cmpTexto('Libro', trim($bI['libro'] ?? ''), trim($dbI['libro'] ?? ''));
         $campos[] = $this->cmpTexto('Protocolo', trim($bI['protocolo'] ?? ''), trim($dbI['protocolo'] ?? ''));
         $campos[] = $this->cmpTexto('Trimestre', trim($bI['trimestre'] ?? ''), trim($dbI['trimestre'] ?? ''));
+        $campos[] = $this->cmpTexto('Asiento Registral', trim($bI['asiento_registral'] ?? ''), trim($dbI['asiento_registral'] ?? ''));
+        $campos[] = $this->cmpTexto('Matrícula', trim($bI['matricula'] ?? ''), trim($dbI['matricula'] ?? ''));
+        $campos[] = $this->cmpTexto('Folio Real', trim($bI['folio_real_anio'] ?? ''), trim($dbI['folio_real_anio'] ?? ''));
         $campos[] = $this->cmpTexto('Fecha Registro', $this->normFecha($bI['fecha_registro'] ?? ''), $this->normFecha($dbI['fecha_registro'] ?? ''));
         $campos[] = $this->cmpDec('Superficie Construida', $this->parseDecimal($bI['superficie_construida'] ?? '0'), (float)($dbI['superficie_construida'] ?? 0));
         $campos[] = $this->cmpDec('Superficie No Construida', $this->parseDecimal($bI['superficie_no_construida'] ?? '0'), (float)($dbI['superficie_no_construida'] ?? 0));
+        $campos[] = $this->cmpDec('Área Superficie', $this->parseDecimal($bI['area_superficie'] ?? '0'), (float)($dbI['area_superficie'] ?? 0));
         $campos[] = $this->cmpDec('Valor Original', $this->parseDecimal($bI['valor_original'] ?? '0'), (float)($dbI['valor_original'] ?? 0));
 
         return $campos;
@@ -865,9 +881,10 @@ class DeclaracionComparador
     private function camposBienInmuebleFaltante(array $dbI, array $litDbMap): array
     {
         $campos = [];
+        $campos[] = ['campo' => 'Tipo de Bien', 'borrador' => '—', 'esperado' => mb_strtoupper(trim($dbI['tipo_bien_nombre'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'];
         $campos[] = ['campo' => 'Valor Declarado', 'borrador' => '—', 'esperado' => $this->fmtBs((float)($dbI['valor_declarado'] ?? 0)), 'correcto' => false, 'tipo' => 'omitido'];
         $campos[] = ['campo' => 'Porcentaje', 'borrador' => '—', 'esperado' => number_format((float)($dbI['porcentaje'] ?? 0), 2, ',', '.'), 'correcto' => false, 'tipo' => 'omitido'];
-        $campos[] = ['campo' => 'Descripción', 'borrador' => '—', 'esperado' => strtoupper(trim($dbI['descripcion'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'];
+        $campos[] = ['campo' => 'Descripción', 'borrador' => '—', 'esperado' => mb_strtoupper(trim($dbI['descripcion'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'];
 
         $vpDb = ((int)($dbI['es_vivienda_principal'] ?? 0)) === 1 ? 'SI' : 'NO';
         $campos[] = ['campo' => 'Vivienda Principal', 'borrador' => '—', 'esperado' => $vpDb, 'correcto' => false, 'tipo' => 'omitido'];
@@ -886,7 +903,16 @@ class DeclaracionComparador
 
         $campos[] = ['campo' => 'Oficina Registro', 'borrador' => '—', 'esperado' => trim($dbI['oficina_registro'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'];
         $campos[] = ['campo' => 'Nro Registro', 'borrador' => '—', 'esperado' => trim($dbI['nro_registro'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'];
+        $campos[] = ['campo' => 'Libro', 'borrador' => '—', 'esperado' => trim($dbI['libro'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'];
+        $campos[] = ['campo' => 'Protocolo', 'borrador' => '—', 'esperado' => trim($dbI['protocolo'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'];
+        $campos[] = ['campo' => 'Trimestre', 'borrador' => '—', 'esperado' => trim($dbI['trimestre'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'];
+        $campos[] = ['campo' => 'Asiento Registral', 'borrador' => '—', 'esperado' => trim($dbI['asiento_registral'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'];
+        $campos[] = ['campo' => 'Matrícula', 'borrador' => '—', 'esperado' => trim($dbI['matricula'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'];
+        $campos[] = ['campo' => 'Folio Real', 'borrador' => '—', 'esperado' => trim($dbI['folio_real_anio'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'];
         $campos[] = ['campo' => 'Fecha Registro', 'borrador' => '—', 'esperado' => $this->normFecha($dbI['fecha_registro'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'];
+        $campos[] = ['campo' => 'Superficie Construida', 'borrador' => '—', 'esperado' => number_format((float)($dbI['superficie_construida'] ?? 0), 2, ',', '.'), 'correcto' => false, 'tipo' => 'omitido'];
+        $campos[] = ['campo' => 'Superficie No Construida', 'borrador' => '—', 'esperado' => number_format((float)($dbI['superficie_no_construida'] ?? 0), 2, ',', '.'), 'correcto' => false, 'tipo' => 'omitido'];
+        $campos[] = ['campo' => 'Área Superficie', 'borrador' => '—', 'esperado' => number_format((float)($dbI['area_superficie'] ?? 0), 2, ',', '.'), 'correcto' => false, 'tipo' => 'omitido'];
         $campos[] = ['campo' => 'Valor Original', 'borrador' => '—', 'esperado' => $this->fmtBs((float)($dbI['valor_original'] ?? 0)), 'correcto' => false, 'tipo' => 'omitido'];
 
         return $campos;
@@ -1043,6 +1069,130 @@ class DeclaracionComparador
             $campos[] = $this->cmpTexto('Estado del Juicio', trim($bI['estado_juicio'] ?? ''), trim($litData['estado_juicio'] ?? ''));
         }
 
+        // ── Campos específicos por categoría (tablas hijo) ──
+        $childCampos = $this->camposMuebleHijo($bI, $dbI, $catId);
+        $campos = array_merge($campos, $childCampos);
+
+        return $campos;
+    }
+
+    /**
+     * Compare category-specific child-table fields for a matched pair of bienes muebles.
+     */
+    private function camposMuebleHijo(array $bI, array $dbI, int $catId): array
+    {
+        $campos = [];
+        $dbBienId = (int)($dbI['id'] ?? 0);
+        if ($dbBienId === 0) return $campos;
+
+        switch ($catId) {
+            case 1: // Banco
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_banco', $dbBienId);
+                if ($hijo) {
+                    $bancoNombreDb = $this->resolveNombreCatalogo('sim_cat_bancos', (int)($hijo['banco_id'] ?? 0));
+                    $bancoNombreB = trim($bI['banco_nombre'] ?? '');
+                    $campos[] = $this->cmpTexto('Banco', $bancoNombreB, $bancoNombreDb);
+                    $campos[] = $this->cmpTexto('Número de Cuenta', trim($bI['numero_cuenta'] ?? ''), trim($hijo['numero_cuenta'] ?? ''));
+                }
+                break;
+
+            case 2: // Seguro
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_seguro', $dbBienId);
+                if ($hijo) {
+                    $empresaNombreDb = $this->resolveEmpresaNombre((int)($hijo['empresa_id'] ?? 0));
+                    $empresaNombreB = trim($bI['razon_social'] ?? '');
+                    $campos[] = $this->cmpTexto('Empresa', $empresaNombreB, $empresaNombreDb);
+                    $campos[] = $this->cmpTexto('Número de Prima', trim($bI['numero_prima'] ?? ''), trim($hijo['numero_prima'] ?? ''));
+                }
+                break;
+
+            case 3: // Transporte
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_transporte', $dbBienId);
+                if ($hijo) {
+                    $campos[] = $this->cmpTexto('Año', trim($bI['anio'] ?? ''), trim($hijo['anio'] ?? ''));
+                    $campos[] = $this->cmpTexto('Marca', trim($bI['marca'] ?? ''), trim($hijo['marca'] ?? ''));
+                    $campos[] = $this->cmpTexto('Modelo', trim($bI['modelo'] ?? ''), trim($hijo['modelo'] ?? ''));
+                    $serialB = trim($bI['serial'] ?? $bI['serial_placa'] ?? '');
+                    $serialDb = trim($hijo['serial_placa'] ?? '');
+                    $campos[] = $this->cmpTexto('Serial/Placa', $serialB, $serialDb);
+                }
+                break;
+
+            case 4: // Opciones de Compra
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_opciones_compra', $dbBienId);
+                if ($hijo) {
+                    $campos[] = $this->cmpTexto('Nombre Oferente', trim($bI['nombre_oferente'] ?? ''), trim($hijo['nombre_oferente'] ?? ''));
+                }
+                break;
+
+            case 5: // Cuentas y Efectos por Cobrar
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_cuentas_cobrar', $dbBienId);
+                if ($hijo) {
+                    $campos[] = $this->cmpTexto('RIF/Cédula', trim($bI['rif_cedula'] ?? ''), trim($hijo['rif_cedula'] ?? ''));
+                    $campos[] = $this->cmpTexto('Apellidos/Nombres', trim($bI['nombre_apellido'] ?? ''), trim($hijo['apellidos_nombres'] ?? ''));
+                }
+                break;
+
+            case 6: // Semovientes
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_semovientes', $dbBienId);
+                if ($hijo) {
+                    $tipoSemDb = $this->resolveNombreCatalogo('sim_cat_tipos_semoviente', (int)($hijo['tipo_semoviente_id'] ?? 0));
+                    $tipoSemB = trim($bI['tipo_semoviente_nombre'] ?? '');
+                    $campos[] = $this->cmpTexto('Tipo Semoviente', $tipoSemB, $tipoSemDb);
+                    $cantB = trim($bI['cantidad'] ?? '');
+                    $cantDb = trim($hijo['cantidad'] ?? '');
+                    $campos[] = $this->cmpTexto('Cantidad', $cantB, $cantDb);
+                }
+                break;
+
+            case 7: // Bonos
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_bonos', $dbBienId);
+                if ($hijo) {
+                    $campos[] = $this->cmpTexto('Tipo de Bonos', trim($bI['tipo_bonos'] ?? ''), trim($hijo['tipo_bonos'] ?? ''));
+                    $campos[] = $this->cmpTexto('Número de Bonos', trim($bI['numero_bonos'] ?? ''), trim($hijo['numero_bonos'] ?? ''));
+                    $campos[] = $this->cmpTexto('Número de Serie', trim($bI['numero_serie'] ?? ''), trim($hijo['numero_serie'] ?? ''));
+                }
+                break;
+
+            case 8: // Acciones
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_acciones', $dbBienId);
+                if ($hijo) {
+                    $empresaNombreDb = $this->resolveEmpresaNombre((int)($hijo['empresa_id'] ?? 0));
+                    $empresaNombreB = trim($bI['razon_social'] ?? '');
+                    $campos[] = $this->cmpTexto('Empresa', $empresaNombreB, $empresaNombreDb);
+                }
+                break;
+
+            case 9: // Prestaciones Sociales
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_prestaciones', $dbBienId);
+                if ($hijo) {
+                    $empresaNombreDb = $this->resolveEmpresaNombre((int)($hijo['empresa_id'] ?? 0));
+                    $empresaNombreB = trim($bI['razon_social'] ?? '');
+                    $campos[] = $this->cmpTexto('Empresa', $empresaNombreB, $empresaNombreDb);
+                    $poseeB = in_array(strtolower($bI['posee_banco'] ?? ''), ['true', 'si', '1'], true) ? 'SI' : 'NO';
+                    $poseeDb = (int)($hijo['posee_banco'] ?? 0) === 1 ? 'SI' : 'NO';
+                    $campos[] = ['campo' => 'Posee Banco', 'borrador' => $poseeB, 'esperado' => $poseeDb, 'correcto' => $poseeB === $poseeDb];
+                    if ($poseeDb === 'SI' || $poseeB === 'SI') {
+                        $bancoNombreDb = $this->resolveNombreCatalogo('sim_cat_bancos', (int)($hijo['banco_id'] ?? 0));
+                        $bancoNombreB = trim($bI['nombre_banco'] ?? '');
+                        $campos[] = $this->cmpTexto('Banco', $bancoNombreB, $bancoNombreDb);
+                        $campos[] = $this->cmpTexto('Número de Cuenta', trim($bI['numero_cuenta'] ?? ''), trim($hijo['numero_cuenta'] ?? ''));
+                    }
+                }
+                break;
+
+            case 10: // Caja de Ahorro
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_caja_ahorro', $dbBienId);
+                if ($hijo) {
+                    $empresaNombreDb = $this->resolveEmpresaNombre((int)($hijo['empresa_id'] ?? 0));
+                    $empresaNombreB = trim($bI['razon_social'] ?? '');
+                    $campos[] = $this->cmpTexto('Empresa', $empresaNombreB, $empresaNombreDb);
+                }
+                break;
+
+            // 11 (Plantaciones), 12 (Otros): solo campos base
+        }
+
         return $campos;
     }
 
@@ -1085,7 +1235,7 @@ class DeclaracionComparador
 
         $campos[] = ['campo' => 'Valor Declarado', 'borrador' => $this->fmtBs($this->parseDecimal($bI['valor_declarado'] ?? '0')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'];
         $campos[] = ['campo' => 'Porcentaje', 'borrador' => number_format($this->parseDecimal($bI['porcentaje'] ?? '0'), 2, ',', '.'), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'];
-        $campos[] = ['campo' => 'Descripción', 'borrador' => strtoupper(trim($bI['descripcion'] ?? '')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'];
+        $campos[] = ['campo' => 'Descripción', 'borrador' => mb_strtoupper(trim($bI['descripcion'] ?? '')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'];
 
         $litB = in_array(strtolower($bI['bien_litigioso'] ?? ''), ['true', 'si', '1'], true) ? 'SI' : 'NO';
         $campos[] = ['campo' => 'Bien Litigioso', 'borrador' => $litB, 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'];
@@ -1097,6 +1247,31 @@ class DeclaracionComparador
             $campos[] = ['campo' => 'Estado del Juicio', 'borrador' => trim($bI['estado_juicio'] ?? ''), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'];
         }
 
+        // Campos específicos por categoría
+        $childCampos = $this->camposMuebleHijoSobrante($bI, $catId);
+        $campos = array_merge($campos, $childCampos);
+
+        return $campos;
+    }
+
+    /**
+     * Build child-table sobrante fields for a sobrante bien mueble.
+     */
+    private function camposMuebleHijoSobrante(array $bI, int $catId): array
+    {
+        $campos = [];
+        $mk = fn(string $campo, string $val) => ['campo' => $campo, 'borrador' => mb_strtoupper(trim($val)) ?: '—', 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'];
+
+        switch ($catId) {
+            case 1: $campos[] = $mk('Banco', $bI['banco_nombre'] ?? ''); $campos[] = $mk('Número de Cuenta', $bI['numero_cuenta'] ?? ''); break;
+            case 2: $campos[] = $mk('Empresa', $bI['razon_social'] ?? ''); $campos[] = $mk('Número de Prima', $bI['numero_prima'] ?? ''); break;
+            case 3: $campos[] = $mk('Año', $bI['anio'] ?? ''); $campos[] = $mk('Marca', $bI['marca'] ?? ''); $campos[] = $mk('Modelo', $bI['modelo'] ?? ''); $campos[] = $mk('Serial/Placa', $bI['serial'] ?? $bI['serial_placa'] ?? ''); break;
+            case 4: $campos[] = $mk('Nombre Oferente', $bI['nombre_oferente'] ?? ''); break;
+            case 5: $campos[] = $mk('RIF/Cédula', $bI['rif_cedula'] ?? ''); $campos[] = $mk('Apellidos/Nombres', $bI['nombre_apellido'] ?? ''); break;
+            case 6: $campos[] = $mk('Tipo Semoviente', $bI['tipo_semoviente_nombre'] ?? ''); $campos[] = $mk('Cantidad', $bI['cantidad'] ?? ''); break;
+            case 7: $campos[] = $mk('Tipo de Bonos', $bI['tipo_bonos'] ?? ''); $campos[] = $mk('Número de Bonos', $bI['numero_bonos'] ?? ''); $campos[] = $mk('Número de Serie', $bI['numero_serie'] ?? ''); break;
+            case 8: case 9: case 10: $campos[] = $mk('Empresa', $bI['razon_social'] ?? ''); break;
+        }
         return $campos;
     }
 
@@ -1115,7 +1290,7 @@ class DeclaracionComparador
         }
         $campos[] = ['campo' => 'Valor Declarado', 'borrador' => '—', 'esperado' => $this->fmtBs((float)($dbI['valor_declarado'] ?? 0)), 'correcto' => false, 'tipo' => 'omitido'];
         $campos[] = ['campo' => 'Porcentaje', 'borrador' => '—', 'esperado' => number_format((float)($dbI['porcentaje'] ?? 0), 2, ',', '.'), 'correcto' => false, 'tipo' => 'omitido'];
-        $campos[] = ['campo' => 'Descripción', 'borrador' => '—', 'esperado' => strtoupper(trim($dbI['descripcion'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'];
+        $campos[] = ['campo' => 'Descripción', 'borrador' => '—', 'esperado' => mb_strtoupper(trim($dbI['descripcion'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'];
 
         $litDb = ((int)($dbI['es_bien_litigioso'] ?? 0)) === 1 ? 'SI' : 'NO';
         $campos[] = ['campo' => 'Bien Litigioso', 'borrador' => '—', 'esperado' => $litDb, 'correcto' => false, 'tipo' => 'omitido'];
@@ -1129,6 +1304,84 @@ class DeclaracionComparador
             $campos[] = ['campo' => 'Estado del Juicio', 'borrador' => '—', 'esperado' => trim($litData['estado_juicio'] ?? ''), 'correcto' => false, 'tipo' => 'omitido'];
         }
 
+        // Campos específicos por categoría
+        $childCampos = $this->camposMuebleHijoFaltante($dbI, $catId);
+        $campos = array_merge($campos, $childCampos);
+
+        return $campos;
+    }
+
+    /**
+     * Build child-table omitted fields for a faltante bien mueble.
+     */
+    private function camposMuebleHijoFaltante(array $dbI, int $catId): array
+    {
+        $campos = [];
+        $dbBienId = (int)($dbI['id'] ?? 0);
+        if ($dbBienId === 0) return $campos;
+        $mk = fn(string $campo, string $val) => ['campo' => $campo, 'borrador' => '—', 'esperado' => mb_strtoupper(trim($val)) ?: '—', 'correcto' => false, 'tipo' => 'omitido'];
+
+        switch ($catId) {
+            case 1:
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_banco', $dbBienId);
+                if ($hijo) {
+                    $campos[] = $mk('Banco', $this->resolveNombreCatalogo('sim_cat_bancos', (int)($hijo['banco_id'] ?? 0)));
+                    $campos[] = $mk('Número de Cuenta', $hijo['numero_cuenta'] ?? '');
+                } break;
+            case 2:
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_seguro', $dbBienId);
+                if ($hijo) {
+                    $campos[] = $mk('Empresa', $this->resolveEmpresaNombre((int)($hijo['empresa_id'] ?? 0)));
+                    $campos[] = $mk('Número de Prima', $hijo['numero_prima'] ?? '');
+                } break;
+            case 3:
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_transporte', $dbBienId);
+                if ($hijo) {
+                    $campos[] = $mk('Año', $hijo['anio'] ?? '');
+                    $campos[] = $mk('Marca', $hijo['marca'] ?? '');
+                    $campos[] = $mk('Modelo', $hijo['modelo'] ?? '');
+                    $campos[] = $mk('Serial/Placa', $hijo['serial_placa'] ?? '');
+                } break;
+            case 4:
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_opciones_compra', $dbBienId);
+                if ($hijo) { $campos[] = $mk('Nombre Oferente', $hijo['nombre_oferente'] ?? ''); } break;
+            case 5:
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_cuentas_cobrar', $dbBienId);
+                if ($hijo) {
+                    $campos[] = $mk('RIF/Cédula', $hijo['rif_cedula'] ?? '');
+                    $campos[] = $mk('Apellidos/Nombres', $hijo['apellidos_nombres'] ?? '');
+                } break;
+            case 6:
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_semovientes', $dbBienId);
+                if ($hijo) {
+                    $campos[] = $mk('Tipo Semoviente', $this->resolveNombreCatalogo('sim_cat_tipos_semoviente', (int)($hijo['tipo_semoviente_id'] ?? 0)));
+                    $campos[] = $mk('Cantidad', (string)($hijo['cantidad'] ?? ''));
+                } break;
+            case 7:
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_bonos', $dbBienId);
+                if ($hijo) {
+                    $campos[] = $mk('Tipo de Bonos', $hijo['tipo_bonos'] ?? '');
+                    $campos[] = $mk('Número de Bonos', $hijo['numero_bonos'] ?? '');
+                    $campos[] = $mk('Número de Serie', $hijo['numero_serie'] ?? '');
+                } break;
+            case 8:
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_acciones', $dbBienId);
+                if ($hijo) { $campos[] = $mk('Empresa', $this->resolveEmpresaNombre((int)($hijo['empresa_id'] ?? 0))); } break;
+            case 9:
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_prestaciones', $dbBienId);
+                if ($hijo) {
+                    $campos[] = $mk('Empresa', $this->resolveEmpresaNombre((int)($hijo['empresa_id'] ?? 0)));
+                    $poseeDb = (int)($hijo['posee_banco'] ?? 0) === 1 ? 'SI' : 'NO';
+                    $campos[] = ['campo' => 'Posee Banco', 'borrador' => '—', 'esperado' => $poseeDb, 'correcto' => false, 'tipo' => 'omitido'];
+                    if ($poseeDb === 'SI') {
+                        $campos[] = $mk('Banco', $this->resolveNombreCatalogo('sim_cat_bancos', (int)($hijo['banco_id'] ?? 0)));
+                        $campos[] = $mk('Número de Cuenta', $hijo['numero_cuenta'] ?? '');
+                    }
+                } break;
+            case 10:
+                $hijo = $this->fetchMuebleChildRow('sim_caso_bm_caja_ahorro', $dbBienId);
+                if ($hijo) { $campos[] = $mk('Empresa', $this->resolveEmpresaNombre((int)($hijo['empresa_id'] ?? 0))); } break;
+        }
         return $campos;
     }
 
@@ -1233,7 +1486,7 @@ class DeclaracionComparador
         $dbUsados = [];
         $bSinMatch = [];
         foreach ($itemsB as $i => $bI) {
-            $tipoB  = strtoupper(trim($bI['tipo'] ?? ''));
+            $tipoB  = mb_strtoupper(trim($bI['tipo'] ?? ''));
             $descB  = $this->normDesc($bI['descripcion'] ?? '');
             $valorB = $this->parseDecimal($bI['valor_declarado'] ?? '0');
 
@@ -1241,7 +1494,7 @@ class DeclaracionComparador
             foreach ($itemsDb as $j => $dbI) {
                 if (in_array($j, $dbUsados)) continue;
                 $score = 0;
-                $tipoDb  = strtoupper(trim($dbI['tipo'] ?? ''));
+                $tipoDb  = mb_strtoupper(trim($dbI['tipo'] ?? ''));
                 $descDb  = $this->normDesc($dbI['descripcion'] ?? '');
                 $valorDb = (float)($dbI['valor_declarado'] ?? 0);
                 if ($tipoB !== '' && $tipoDb !== '' && $tipoB === $tipoDb) $score += 3;
@@ -1254,7 +1507,7 @@ class DeclaracionComparador
                 $dbUsados[] = $bestJ;
                 $dbI = $itemsDb[$bestJ];
                 $campos = [];
-                $campos[] = $this->cmpTexto('Tipo', $tipoB, strtoupper(trim($dbI['tipo'] ?? '')));
+                $campos[] = $this->cmpTexto('Tipo', $tipoB, mb_strtoupper(trim($dbI['tipo'] ?? '')));
                 $campos[] = $this->cmpTexto('Descripción', $this->normDesc($bI['descripcion'] ?? ''), $this->normDesc($dbI['descripcion'] ?? ''));
                 $campos[] = $this->cmpDec('Valor Declarado', $valorB, (float)($dbI['valor_declarado'] ?? 0));
                 $desc = mb_substr(trim($dbI['descripcion'] ?? $dbI['tipo'] ?? ''), 0, 40);
@@ -1274,7 +1527,7 @@ class DeclaracionComparador
             $i = $bSinMatch[$k]; $j = $dbSinMatch[$k];
             $bI = $itemsB[$i]; $dbI = $itemsDb[$j];
             $campos = [];
-            $campos[] = $this->cmpTexto('Tipo', strtoupper(trim($bI['tipo'] ?? '')), strtoupper(trim($dbI['tipo'] ?? '')));
+            $campos[] = $this->cmpTexto('Tipo', mb_strtoupper(trim($bI['tipo'] ?? '')), mb_strtoupper(trim($dbI['tipo'] ?? '')));
             $campos[] = $this->cmpTexto('Descripción', $this->normDesc($bI['descripcion'] ?? ''), $this->normDesc($dbI['descripcion'] ?? ''));
             $campos[] = $this->cmpDec('Valor Declarado', $this->parseDecimal($bI['valor_declarado'] ?? '0'), (float)($dbI['valor_declarado'] ?? 0));
             $desc = mb_substr(trim($dbI['descripcion'] ?? $dbI['tipo'] ?? ''), 0, 40);
@@ -1287,8 +1540,8 @@ class DeclaracionComparador
             $bI = $itemsB[$i];
             $desc = mb_substr(trim($bI['descripcion'] ?? ''), 0, 40);
             $campos = [
-                ['campo' => 'Tipo', 'borrador' => strtoupper(trim($bI['tipo'] ?? '')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
-                ['campo' => 'Descripción', 'borrador' => strtoupper(trim($bI['descripcion'] ?? '')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
+                ['campo' => 'Tipo', 'borrador' => mb_strtoupper(trim($bI['tipo'] ?? '')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
+                ['campo' => 'Descripción', 'borrador' => mb_strtoupper(trim($bI['descripcion'] ?? '')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
                 ['campo' => 'Valor Declarado', 'borrador' => $this->fmtBs($this->parseDecimal($bI['valor_declarado'] ?? '0')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
             ];
             $grupos[] = ['label' => "De más: {$desc}", 'campos' => $campos];
@@ -1300,8 +1553,8 @@ class DeclaracionComparador
             $dbI = $itemsDb[$j];
             $desc = mb_substr(trim($dbI['descripcion'] ?? $dbI['tipo'] ?? ''), 0, 40);
             $campos = [
-                ['campo' => 'Tipo', 'borrador' => '—', 'esperado' => strtoupper(trim($dbI['tipo'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'],
-                ['campo' => 'Descripción', 'borrador' => '—', 'esperado' => strtoupper(trim($dbI['descripcion'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'],
+                ['campo' => 'Tipo', 'borrador' => '—', 'esperado' => mb_strtoupper(trim($dbI['tipo'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'],
+                ['campo' => 'Descripción', 'borrador' => '—', 'esperado' => mb_strtoupper(trim($dbI['descripcion'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'],
                 ['campo' => 'Valor Declarado', 'borrador' => '—', 'esperado' => $this->fmtBs((float)($dbI['valor_declarado'] ?? 0)), 'correcto' => false, 'tipo' => 'omitido'],
             ];
             $grupos[] = ['label' => "Omitido: {$desc}", 'campos' => $campos];
@@ -1380,7 +1633,7 @@ class DeclaracionComparador
             $campos = [
                 ['campo' => 'Valor Declarado', 'borrador' => $this->fmtBs($this->parseDecimal($bI['valor_declarado'] ?? '0')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
                 ['campo' => 'Porcentaje', 'borrador' => number_format($this->parseDecimal($bI['porcentaje'] ?? '0'), 2, ',', '.'), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
-                ['campo' => 'Descripción', 'borrador' => strtoupper(trim($bI['descripcion'] ?? '')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
+                ['campo' => 'Descripción', 'borrador' => mb_strtoupper(trim($bI['descripcion'] ?? '')), 'esperado' => '—', 'correcto' => false, 'tipo' => 'sobrante'],
             ];
             $grupos[] = ['label' => "De más: {$desc}", 'campos' => $campos];
         }
@@ -1393,7 +1646,7 @@ class DeclaracionComparador
             $campos = [
                 ['campo' => 'Valor Declarado', 'borrador' => '—', 'esperado' => $this->fmtBs((float)($dbI['valor_declarado'] ?? 0)), 'correcto' => false, 'tipo' => 'omitido'],
                 ['campo' => 'Porcentaje', 'borrador' => '—', 'esperado' => number_format((float)($dbI['porcentaje'] ?? 0), 2, ',', '.'), 'correcto' => false, 'tipo' => 'omitido'],
-                ['campo' => 'Descripción', 'borrador' => '—', 'esperado' => strtoupper(trim($dbI['descripcion'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'],
+                ['campo' => 'Descripción', 'borrador' => '—', 'esperado' => mb_strtoupper(trim($dbI['descripcion'] ?? '')), 'correcto' => false, 'tipo' => 'omitido'],
             ];
             $grupos[] = ['label' => "Omitido: {$desc}", 'campos' => $campos];
         }
@@ -1510,11 +1763,45 @@ class DeclaracionComparador
         $parentescoCat = $this->getParentescoCatalog();
         $gruposTarifa  = $this->getGruposTarifa();
 
+        // ═══ Build document-based lookup for DB herederos → index in tributoDb ═══
+        // Normalize cedula: strip hyphens, spaces; store with and without prefix
+        $dbDocMap = [];
+        foreach ($herederosDb as $j => $hDb) {
+            $tipo = mb_strtoupper(trim($hDb['tipo_cedula'] ?? ''));
+            $ced  = preg_replace('/[\s\-]/', '', trim($hDb['cedula'] ?? ''));
+            if ($tipo !== '' && $ced !== '') $dbDocMap[$tipo . $ced] = $j;
+            if ($ced !== '') $dbDocMap[$ced] = $j;
+        }
+
+        /**
+         * Normaliza el documento del borrador para buscar en el mapa DB.
+         * Intenta: con prefijo, sin prefijo, solo dígitos.
+         */
+        $findDbIndex = function (string $rawDoc) use ($dbDocMap): ?int {
+            $doc = mb_strtoupper(preg_replace('/[\s\-]/', '', trim($rawDoc)));
+            if ($doc !== '' && isset($dbDocMap[$doc])) return $dbDocMap[$doc];
+            // Sin prefijo (V/E/P)
+            $sinPrefijo = preg_replace('/^[VEP]/i', '', $doc);
+            if ($sinPrefijo !== '' && isset($dbDocMap[$sinPrefijo])) return $dbDocMap[$sinPrefijo];
+            return null;
+        };
+
         $result = [];
         foreach ($herederosB as $i => $h) {
-            $calcB  = $tributoB['herederos'][$i]  ?? [];
-            $calcDb = $tributoDb['herederos'][$i] ?? [];
+            $calcB = $tributoB['herederos'][$i] ?? [];
 
+            // ── Match DB heredero por documento (con fallback seguro) ──
+            $matchedDbIdx = $findDbIndex($h['cedula'] ?? '');
+            // Validar que el índice está en rango
+            if ($matchedDbIdx === null || !isset($herederosDb[$matchedDbIdx])) {
+                $matchedDbIdx = isset($herederosDb[$i]) ? $i : null;
+            }
+
+            $calcDb = ($matchedDbIdx !== null)
+                ? ($tributoDb['herederos'][$matchedDbIdx] ?? [])
+                : [];
+
+            // ── Campos de comparación ──
             $campos = [];
             $campos[] = ['campo' => 'Cuota Parte (UT)',
                          'borrador' => $this->fmtBs($calcB['cuota_parte_ut'] ?? 0),
@@ -1529,49 +1816,56 @@ class DeclaracionComparador
             $campos[] = $this->cmpDec('Reducción (Bs)', $calcB['reduccion'] ?? 0, $calcDb['reduccion'] ?? 0);
             $campos[] = $this->cmpDec('Impuesto a Pagar (Bs)', $calcB['impuesto_a_pagar'] ?? 0, $calcDb['impuesto_a_pagar'] ?? 0);
 
+            // ── Verificar si hay al menos un campo incorrecto ──
+            $hayErrorEnCampos = false;
+            foreach ($campos as $c) {
+                if (!$c['correcto']) { $hayErrorEnCampos = true; break; }
+            }
+
             $pid = (int) ($h['parentesco_id'] ?? 0);
             $parNombreB = $parentescoCat[$pid] ?? 'Desconocido';
 
-            // ── Notas diagnósticas por escenario ──
+            // ── Notas diagnósticas (SOLO si hay campos incorrectos o datos inconsistentes) ──
             $notas = [];
-            $parIdB  = $pid;
-            $parIdDb = (int) ($herederosDb[$i]['parentesco_id'] ?? 0);
-            $parNombreDb = $parentescoCat[$parIdDb] ?? 'Desconocido';
-            $parentescoOk = ($parIdB === $parIdDb);
 
-            $grupoDb = $gruposTarifa[$parIdDb] ?? 4;
+            if ($matchedDbIdx !== null) {
+                $parIdB  = $pid;
+                $parIdDb = (int) ($herederosDb[$matchedDbIdx]['parentesco_id'] ?? 0);
+                $parNombreDb = $parentescoCat[$parIdDb] ?? 'Desconocido';
+                $parentescoOk = ($parIdB === $parIdDb);
 
-            $cuotaB  = (float) ($calcB['cuota_parte_ut'] ?? 0);
-            $cuotaDb = (float) ($calcDb['cuota_parte_ut'] ?? 0);
-            $cuotaOk = abs($cuotaB - $cuotaDb) < 0.01;
+                $grupoDb = $gruposTarifa[$parIdDb] ?? 4;
+                $cuotaDb = (float) ($calcDb['cuota_parte_ut'] ?? 0);
+                $cuotaB  = (float) ($calcB['cuota_parte_ut'] ?? 0);
+                $cuotaOk = abs($cuotaB - $cuotaDb) < 0.01;
+                $impB    = (float) ($calcB['impuesto_a_pagar'] ?? 0);
+                $exentoDb = ($grupoDb === 1 && $cuotaDb <= 75.0);
 
-            $exentoDb = ($grupoDb === 1 && $cuotaDb <= 75.0);
-            $impB     = (float) ($calcB['impuesto_a_pagar'] ?? 0);
+                // Nota de parentesco: solo si realmente difiere Y causa errores visibles
+                if (!$parentescoOk && $hayErrorEnCampos) {
+                    if ($pNDb <= 0) {
+                        $notas[] = "El parentesco declarado ({$parNombreB}) no coincide con el correcto ({$parNombreDb}). "
+                                 . "Además, el Patrimonio Neto Hereditario correcto es ≤ 0, "
+                                 . "por lo que no hay impuesto a determinar independientemente del parentesco.";
+                    } else {
+                        $notas[] = "El parentesco declarado ({$parNombreB}) no coincide con el correcto ({$parNombreDb}). "
+                                 . "Esto afecta el grupo de tarifa aplicable y por tanto el porcentaje, sustraendo e impuesto calculado.";
+                    }
+                }
 
-            // Escenario B: PN ≤ 0 + parentesco incorrecto
-            if ($pNDb <= 0 && !$parentescoOk) {
-                $notas[] = "El parentesco declarado ({$parNombreB}) no coincide con el correcto ({$parNombreDb}). "
-                         . "Además, el Patrimonio Neto Hereditario correcto es ≤ 0, "
-                         . "por lo que no hay impuesto a determinar independientemente del parentesco.";
-            }
-            // Escenario D: PN > 0 + parentesco incorrecto
-            elseif ($pNDb > 0 && !$parentescoOk) {
-                $notas[] = "El parentesco declarado ({$parNombreB}) no coincide con el correcto ({$parNombreDb}). "
-                         . "Esto afecta el grupo de tarifa aplicable y por tanto el porcentaje, sustraendo e impuesto calculado.";
-            }
+                // Nota de cuota parte: solo si PN > 0, parentesco OK, y cuota difiere
+                if ($pNDb > 0 && $parentescoOk && !$cuotaOk) {
+                    $notas[] = "La Cuota Parte difiere porque el Patrimonio Neto Hereditario declarado "
+                             . "({$this->fmtBs($pNB)} Bs) no coincide con el correcto ({$this->fmtBs($pNDb)} Bs), "
+                             . "o porque la cantidad de herederos declarada ({$numHB}) no coincide con la correcta ({$numHDb}).";
+                }
 
-            // Escenario E: PN > 0 + parentesco OK + cuota incorrecta
-            if ($pNDb > 0 && $parentescoOk && !$cuotaOk) {
-                $notas[] = "La Cuota Parte difiere porque el Patrimonio Neto Hereditario declarado "
-                         . "({$this->fmtBs($pNB)} Bs) no coincide con el correcto ({$this->fmtBs($pNDb)} Bs), "
-                         . "o porque la cantidad de herederos declarada ({$numHB}) no coincide con la correcta ({$numHDb}).";
-            }
-
-            // Escenario F: Heredero exento Art. 9 pero estudiante calculó impuesto
-            if ($exentoDb && $impB > 0.01) {
-                $notas[] = "Este heredero está exento según el Art. 9 de la Ley "
-                         . "(Cuota Parte ≤ 75 UT y parentesco de primer grado). "
-                         . "Impuesto correcto: 0,00 Bs.";
+                // Nota Art. 9: heredero exento pero estudiante calculó impuesto > 0
+                if ($exentoDb && $impB > 0.01) {
+                    $notas[] = "Este heredero está exento según el Art. 9 de la Ley "
+                             . "(Cuota Parte ≤ 75 UT y parentesco de primer grado). "
+                             . "Impuesto correcto: 0,00 Bs.";
+                }
             }
 
             $result[] = [
@@ -1591,8 +1885,9 @@ class DeclaracionComparador
     private function getHerederosDbForCalc(int $casoId): array
     {
         $stmt = $this->db->prepare("
-            SELECT cp.parentesco_id
+            SELECT cp.parentesco_id, p.tipo_cedula, p.cedula
             FROM sim_caso_participantes cp
+            INNER JOIN sim_personas p ON cp.persona_id = p.id
             WHERE cp.caso_estudio_id = :id AND cp.premuerto_padre_id IS NULL
             ORDER BY cp.id ASC
         ");
@@ -1655,7 +1950,7 @@ class DeclaracionComparador
 
     private function cmpTexto(string $campo, string $borrador, string $esperado): array
     {
-        $b = strtoupper(trim($borrador)); $e = strtoupper(trim($esperado));
+        $b = mb_strtoupper(trim($borrador)); $e = mb_strtoupper(trim($esperado));
         return ['campo' => $campo, 'borrador' => $b ?: '—', 'esperado' => $e ?: '—',
                 'correcto' => ($b === $e) || ($b === '' && $e === '')];
     }
@@ -1758,6 +2053,30 @@ class DeclaracionComparador
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Fetch tipo_bien_inmueble names from M2M table, indexed by bien_inmueble_id.
+     */
+    private function getTipoBienInmuebleNames(int $casoId): array
+    {
+        $sql = "
+            SELECT rel.bien_inmueble_id,
+                   GROUP_CONCAT(tbi.nombre ORDER BY tbi.nombre SEPARATOR ', ') AS tipo_nombre
+            FROM sim_caso_bien_inmueble_tipo_rel rel
+            INNER JOIN sim_cat_tipos_bien_inmueble tbi ON rel.tipo_bien_inmueble_id = tbi.id
+            INNER JOIN sim_caso_bienes_inmuebles bi ON rel.bien_inmueble_id = bi.id
+            WHERE bi.caso_estudio_id = :caso_id AND bi.deleted_at IS NULL
+            GROUP BY rel.bien_inmueble_id
+        ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':caso_id', $casoId, PDO::PARAM_INT);
+        $stmt->execute();
+        $map = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $map[(int)$row['bien_inmueble_id']] = $row['tipo_nombre'];
+        }
+        return $map;
+    }
+
     private function calcDesgravamenesDb(int $casoId): float
     {
         $total = 0.0;
@@ -1779,5 +2098,66 @@ class DeclaracionComparador
         $total += (float)$stmt->fetchColumn();
 
         return $total;
+    }
+
+    // ════════════════════════════════════════════════════════
+    //  HELPERS: CHILD TABLE FETCH & NAME RESOLUTION
+    // ════════════════════════════════════════════════════════
+
+    /**
+     * Fetch a single child row from a mueble child table by bien_mueble_id.
+     */
+    private function fetchMuebleChildRow(string $table, int $bienMuebleId): ?array
+    {
+        $allowed = [
+            'sim_caso_bm_banco', 'sim_caso_bm_seguro', 'sim_caso_bm_transporte',
+            'sim_caso_bm_opciones_compra', 'sim_caso_bm_cuentas_cobrar', 'sim_caso_bm_semovientes',
+            'sim_caso_bm_bonos', 'sim_caso_bm_acciones', 'sim_caso_bm_prestaciones',
+            'sim_caso_bm_caja_ahorro',
+        ];
+        if (!in_array($table, $allowed)) return null;
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM {$table} WHERE bien_mueble_id = :id LIMIT 1");
+            $stmt->bindValue(':id', $bienMuebleId, PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row ?: null;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Resolve a catalogue ID to its name. Works for sim_cat_bancos, sim_cat_tipos_semoviente, etc.
+     */
+    private function resolveNombreCatalogo(string $table, int $id): string
+    {
+        if ($id <= 0) return '';
+        $allowed = ['sim_cat_bancos', 'sim_cat_tipos_semoviente'];
+        if (!in_array($table, $allowed)) return '';
+        try {
+            $stmt = $this->db->prepare("SELECT nombre FROM {$table} WHERE id = :id LIMIT 1");
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return (string)($stmt->fetchColumn() ?: '');
+        } catch (\Throwable $e) {
+            return '';
+        }
+    }
+
+    /**
+     * Resolve an empresa ID to its razon_social from sim_empresas.
+     */
+    private function resolveEmpresaNombre(int $id): string
+    {
+        if ($id <= 0) return '';
+        try {
+            $stmt = $this->db->prepare("SELECT razon_social FROM sim_empresas WHERE id = :id LIMIT 1");
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return (string)($stmt->fetchColumn() ?: '');
+        } catch (\Throwable $e) {
+            return '';
+        }
     }
 }

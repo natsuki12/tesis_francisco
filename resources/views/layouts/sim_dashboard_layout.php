@@ -34,13 +34,32 @@ foreach ($pageJs as $js) {
 $pageContent = $content ?? '';
 $blueNavText = $blueNavText ?? '';
 
+// ─── Auto-resolve nombre del causante si no fue pasado ─────────────
+if (empty($nombreCausante) && !empty($_SESSION['sim_asignacion_id'])) {
+    try {
+        $attemptModel = new \App\Modules\Student\Models\StudentAttemptModel();
+        $intento = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+        if ($intento && !empty($intento['borrador_json'])) {
+            $borrador = json_decode($intento['borrador_json'], true);
+            $db = $borrador['datos_basicos'] ?? [];
+            $apellidos = trim($db['apellidos'] ?? '');
+            $nombres = trim($db['nombres'] ?? '');
+            if ($apellidos || $nombres) {
+                $nombreCausante = mb_strtoupper(trim($apellidos . ' ' . $nombres));
+            }
+        }
+    } catch (\Throwable $e) {
+        error_log('[sim_dashboard_layout] Error obteniendo causante: ' . $e->getMessage());
+    }
+}
+
 // ─── Buffer the entire SENIAT content inside seniat-wrapper ────────
 ob_start();
 ?>
 <div class="seniat-wrapper">
 
 <!-- ═══ SENIAT Header: banner + grey bar + blue bar ═══ -->
-<app-root _nghost-pgi-c36 ng-version=12.2.17><router-outlet _ngcontent-pgi-c36></router-outlet><app-inicio _nghost-pgi-c62><div _ngcontent-pgi-c62 class=container><div _ngcontent-pgi-c62 class="row align-items-center"><app-headersuc _ngcontent-pgi-c62 style=padding:0 _nghost-pgi-c59><img _ngcontent-pgi-c59 id=banner src="<?= base_url('/assets/img/simulator/seniat_actual/sucesion/banco/logo_banco.png') ?>" width=100%></app-headersuc></div><div _ngcontent-pgi-c62 class="row align-items-center" style=color:#fff;background-color:#d7d7d7><div _ngcontent-pgi-c62 class="bg-light clearfix"><div _ngcontent-pgi-c62 class=float-start><span _ngcontent-pgi-c62 style=color:black>RAMON ERNESTO BAUZA MARIN</span></div><div _ngcontent-pgi-c62 class=float-end><div style="position:relative;display:inline-block" id="hamburgerWrap"><a href="#" role="button" aria-expanded="false" class="nav-link dropdown-toggle link-secondary" id="hamburgerBtn" onclick="event.preventDefault();var m=document.getElementById('hamburgerMenu');m.classList.toggle('show')"><i class="bi bi-list"></i></a><ul class="dropdown-menu" id="hamburgerMenu" style="right:0;left:auto;min-width:180px"><li style="text-align:center"><a class="dropdown-item" href="<?= base_url('/simulador/servicios_declaracion/logout') ?>" style="color:#212529;text-decoration:none;font:13px Arial,Helvetica,sans-serif;padding:8px 16px">Cerrar sesion</a></li></ul></div><ul _ngcontent-pgi-c62 class="dropdown-menu sf-hidden"></ul></div></div></div><div _ngcontent-pgi-c62 class="row bg-color"><div _ngcontent-pgi-c62 class=col-sm-12 style=text-align:center;color:white><span _ngcontent-pgi-c62 style=width:100vh><?= $blueNavText ?: '&nbsp;' ?></span></div></div>
+<app-root _nghost-pgi-c36 ng-version=12.2.17><router-outlet _ngcontent-pgi-c36></router-outlet><app-inicio _nghost-pgi-c62><div _ngcontent-pgi-c62 class=container><div _ngcontent-pgi-c62 class="row align-items-center"><app-headersuc _ngcontent-pgi-c62 style=padding:0 _nghost-pgi-c59><img _ngcontent-pgi-c59 id=banner src="<?= base_url('/assets/img/simulator/seniat_actual/sucesion/banco/logo_banco.png') ?>" width=100%></app-headersuc></div><div _ngcontent-pgi-c62 class="row align-items-center" style=color:#fff;background-color:#d7d7d7><div _ngcontent-pgi-c62 class="bg-light clearfix"><div _ngcontent-pgi-c62 class=float-start><span _ngcontent-pgi-c62 style=color:black><span _ngcontent-pgi-c62 style=color:black><?= htmlspecialchars($nombreCausante ?? '') ?></span></span></div><div _ngcontent-pgi-c62 class=float-end><div style="position:relative;display:inline-block" id="hamburgerWrap"><a href="#" role="button" aria-expanded="false" class="nav-link dropdown-toggle link-secondary" id="hamburgerBtn" onclick="event.preventDefault();var m=document.getElementById('hamburgerMenu');m.classList.toggle('show')"><i class="bi bi-list"></i></a><ul class="dropdown-menu" id="hamburgerMenu" style="right:0;left:auto;min-width:180px"><li style="text-align:center"><a class="dropdown-item" href="<?= base_url('/simulador/servicios_declaracion/logout') ?>" style="color:#212529;text-decoration:none;font:13px Arial,Helvetica,sans-serif;padding:8px 16px">Cerrar sesion</a></li></ul></div><ul _ngcontent-pgi-c62 class="dropdown-menu sf-hidden"></ul></div></div></div><div _ngcontent-pgi-c62 class="row bg-color"><div _ngcontent-pgi-c62 class=col-sm-12 style=text-align:center;color:white><span _ngcontent-pgi-c62 style=width:100vh><?= $blueNavText ?: '&nbsp;' ?></span></div></div>
 
 <!-- ═══ Sidebar + Content Row ═══ -->
 <div _ngcontent-pgi-c62 class=row><div _ngcontent-pgi-c62 class="col-sm-2 px-sm-2" style=background-color:#c1bdbb><app-menusuc _ngcontent-pgi-c62 _nghost-pgi-c61><div _ngcontent-pgi-c61 id=wrapper class=d-flex><div _ngcontent-pgi-c61 id=sidebar-wrapper class="bg-light border-right show"><div _ngcontent-pgi-c61 class=sidebar-heading><div _ngcontent-pgi-c61 style=text-align:center><span _ngcontent-pgi-c61 style=font-size:1em;align-items:center><a _ngcontent-pgi-c61 href="<?= base_url('/simulador/servicios_declaracion/sistemas') ?>" style=cursor:pointer;text-decoration:none;color:inherit><i _ngcontent-pgi-c61 class="bi bi-arrow-left"></i>&nbsp; Inicio</a></span></div></div><div _ngcontent-pgi-c61>

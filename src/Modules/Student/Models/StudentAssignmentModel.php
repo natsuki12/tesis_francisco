@@ -278,5 +278,41 @@ class StudentAssignmentModel
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row ?: null;
     }
+
+    /**
+     * Obtiene el historial de planillas del estudiante —
+     * todos los intentos enviados/calificados con sus datos de caso.
+     */
+    public function getHistorialPlanillas(int $estudianteId): array
+    {
+        $sql = "
+            SELECT
+                i.id                AS intento_id,
+                i.numero_intento    AS numero,
+                i.estado,
+                i.submitted_at      AS fecha_envio,
+                i.reviewed_at       AS fecha_revision,
+
+                ce.titulo           AS caso_titulo,
+                a.id                AS asignacion_id,
+                cfg.modalidad
+
+            FROM sim_intentos i
+            INNER JOIN sim_caso_asignaciones a   ON a.id  = i.asignacion_id
+            INNER JOIN sim_caso_configs cfg       ON cfg.id = a.config_id
+            INNER JOIN sim_casos_estudios ce      ON ce.id  = cfg.caso_id
+
+            WHERE a.estudiante_id = :est_id
+              AND i.estado != 'En_Progreso'
+              AND i.estado != 'Cancelado'
+            ORDER BY i.submitted_at DESC
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':est_id', $estudianteId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
 }
 

@@ -259,6 +259,9 @@ export function initAddressListeners() {
 export function saveDireccion() {
     const d = caseData.domicilio_causante;
 
+    // Clear previous errors
+    clearDireccionErrors();
+
     // Forzar mayúsculas en campos de texto
     const uppercaseFields = ['nombre_vialidad', 'nro_nivel', 'nombre_sector', 'telefono_fijo', 'telefono_celular', 'fax', 'punto_referencia'];
     uppercaseFields.forEach(f => {
@@ -282,52 +285,104 @@ export function saveDireccion() {
     const tipoInmChecked = document.querySelector('input[name="tipo_inmueble"]:checked');
     d.tipo_inmueble = tipoInmChecked ? tipoInmChecked.value : d.tipo_inmueble;
 
+    // ── Collect all errors ──
+    const errors = [];
+    const errorFields = []; // selectors of fields with errors
+
+    // Inmueble description/number
     if (!desc && !num && d.tipo_inmueble) {
-        showToast('Debe ingresar el nombre/descripción o el piso/nro/nivel del inmueble.');
-        return;
+        errors.push('Nombre/descripción o piso/nro del inmueble');
+        if (elDesc) errorFields.push('#input_desc_inmueble');
+        if (elNum) errorFields.push('#input_piso_nivel');
     }
 
-    // Validar piso/nro obligatorio para Edificios y Centros Comerciales
-    if (d.tipo_inmueble === 'Edificio') {
-        if (!num) { showToast('El piso es obligatorio para Edificios.'); return; }
-    } else if (d.tipo_inmueble === 'Centro_Comercial') {
-        if (!num) { showToast('El nivel es obligatorio para Centros Comerciales.'); return; }
+    // Piso obligatorio para Edificios/CC
+    if (d.tipo_inmueble === 'Edificio' && !num) {
+        errors.push('Piso (obligatorio para Edificios)');
+        errorFields.push('#input_piso_nivel');
+    } else if (d.tipo_inmueble === 'Centro_Comercial' && !num) {
+        errors.push('Nivel (obligatorio para Centros Comerciales)');
+        errorFields.push('#input_piso_nivel');
     }
 
-    // Guardar campos normalizados (separados)
+    // Guardar campos normalizados
     d.nombre_inmueble = desc || 'NO APLICA';
     d.nro_inmueble = num || null;
 
-    if (!d.tipo_direccion || !d.tipo_vialidad || !d.tipo_inmueble || !d.nombre_vialidad ||
-        !d.nombre_inmueble || !d.tipo_sector || !d.nombre_sector ||
-        !d.estado || !d.municipio || !d.parroquia || !d.ciudad || !d.codigo_postal_id) {
-        showToast('Complete todos los campos base requeridos (incluyendo Código Postal).');
-        return;
-    }
+    // Campos base requeridos
+    const requiredBase = [
+        { key: 'tipo_vialidad', label: 'Tipo de Vialidad', radio: 'tipo_vialidad' },
+        { key: 'nombre_vialidad', label: 'Nombre de Vialidad' },
+        { key: 'tipo_inmueble', label: 'Tipo de Inmueble', radio: 'tipo_inmueble' },
+        { key: 'nombre_inmueble', label: 'Nombre del Inmueble' },
+        { key: 'tipo_sector', label: 'Tipo de Sector', radio: 'tipo_sector' },
+        { key: 'nombre_sector', label: 'Nombre del Sector' },
+        { key: 'estado', label: 'Estado' },
+        { key: 'municipio', label: 'Municipio' },
+        { key: 'parroquia', label: 'Parroquia' },
+        { key: 'ciudad', label: 'Ciudad' },
+        { key: 'codigo_postal_id', label: 'Código Postal' },
+    ];
 
+    requiredBase.forEach(({ key, label, radio }) => {
+        const val = d[key];
+        if (!val || val === 'NO APLICA' && key === 'nombre_inmueble' && !desc) {
+            // Skip nombre_inmueble check if already handled above
+            if (key === 'nombre_inmueble') return;
+            errors.push(label);
+            if (radio) {
+                // Mark radio group parent
+                const radioEl = document.querySelector(`input[name="${radio}"]`);
+                if (radioEl) {
+                    const td = radioEl.closest('.cc-addr-td');
+                    if (td) td.classList.add('cc-addr-td--error');
+                }
+            } else {
+                errorFields.push(`[data-bind="domicilio_causante.${key}"]`);
+            }
+        }
+    });
+
+    // Nivel/piso para Edificio y CC
     if (d.tipo_inmueble === 'Edificio' || d.tipo_inmueble === 'Centro_Comercial') {
-        if (!d.tipo_nivel || !d.nro_nivel) {
-            showToast(`Complete el tipo de nivel y el número de local/apto/oficina para ${d.tipo_inmueble.replace('_', ' ')}.`);
-            return;
+        if (!d.tipo_nivel) {
+            errors.push(`Tipo de nivel (${d.tipo_inmueble.replace('_', ' ')})`);
+            const radioEl = document.querySelector('input[name="tipo_nivel"]');
+            if (radioEl) {
+                const td = radioEl.closest('.cc-addr-td');
+                if (td) td.classList.add('cc-addr-td--error');
+            }
+        }
+        if (!d.nro_nivel) {
+            errors.push(`Nro de local/apto/oficina (${d.tipo_inmueble.replace('_', ' ')})`);
+            errorFields.push('[data-bind="domicilio_causante.nro_nivel"]');
         }
     }
 
+    // Teléfonos
     if (!d.telefono_fijo && !d.telefono_celular) {
-        showToast('Debe ingresar al menos un teléfono (fijo o celular).');
-        return;
+        errors.push('Al menos un teléfono (fijo o celular)');
+        errorFields.push('[data-bind="domicilio_causante.telefono_fijo"]');
+        errorFields.push('[data-bind="domicilio_causante.telefono_celular"]');
     }
 
     const phoneRegex = /^0\d{3}-\d{7}$/;
     if (d.telefono_fijo && !phoneRegex.test(d.telefono_fijo)) {
-        showToast('El teléfono fijo debe tener el formato 0XXX-XXXXXXX');
-        return;
+        errors.push('Teléfono fijo: formato 0XXX-XXXXXXX');
+        errorFields.push('[data-bind="domicilio_causante.telefono_fijo"]');
     }
     if (d.telefono_celular && !phoneRegex.test(d.telefono_celular)) {
-        showToast('El teléfono celular debe tener el formato 0XXX-XXXXXXX');
-        return;
+        errors.push('Teléfono celular: formato 0XXX-XXXXXXX');
+        errorFields.push('[data-bind="domicilio_causante.telefono_celular"]');
     }
     if (d.fax && !phoneRegex.test(d.fax)) {
-        showToast('El fax debe tener el formato 0XXX-XXXXXXX');
+        errors.push('Fax: formato 0XXX-XXXXXXX');
+        errorFields.push('[data-bind="domicilio_causante.fax"]');
+    }
+
+    // ── Show errors if any ──
+    if (errors.length > 0) {
+        showDireccionErrors(errors, errorFields);
         return;
     }
 
@@ -347,6 +402,51 @@ export function saveDireccion() {
 
     clearDireccionForm();
     renderDirecciones();
+}
+
+function showDireccionErrors(errors, fieldSelectors) {
+    const container = document.getElementById('direccionErrors');
+    const list = document.getElementById('direccionErrorsList');
+    if (!container || !list) return;
+
+    list.innerHTML = errors.map(e => `<li>${e}</li>`).join('');
+    container.classList.add('is-visible');
+
+    // Scroll to error banner
+    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Highlight fields
+    fieldSelectors.forEach(sel => {
+        const el = document.querySelector(sel);
+        if (el) {
+            const field = el.closest('.cc-field') || el.closest('.cc-addr-td');
+            if (field) {
+                if (field.classList.contains('cc-addr-td')) {
+                    field.classList.add('cc-addr-td--error');
+                } else {
+                    field.classList.add('cc-field--error');
+                }
+            }
+        }
+    });
+
+    // Auto-clear errors on next input/change
+    const clearHandler = () => {
+        clearDireccionErrors();
+        document.removeEventListener('input', clearHandler);
+        document.removeEventListener('change', clearHandler);
+    };
+    document.addEventListener('input', clearHandler, { once: true });
+    document.addEventListener('change', clearHandler, { once: true });
+}
+
+function clearDireccionErrors() {
+    const container = document.getElementById('direccionErrors');
+    if (container) container.classList.remove('is-visible');
+
+    // Remove field highlights
+    document.querySelectorAll('.cc-field--error').forEach(el => el.classList.remove('cc-field--error'));
+    document.querySelectorAll('.cc-addr-td--error').forEach(el => el.classList.remove('cc-addr-td--error'));
 }
 
 export function renderDirecciones() {

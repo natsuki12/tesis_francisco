@@ -77,7 +77,7 @@ import { fetchEstados, initAddressListeners, saveDireccion, renderDirecciones, e
 import { initStepperClicks, setStep, nextStep, prevStep } from './navigation.js';
 
 import { initCatalogos, getCatalogs } from '../../global/catalogos.js';
-import { openModal, closeModal, saveModal, removeItem, removeMueble } from './modal.js';
+import { openModal, closeModal, saveModal, clearModalFields, removeItem, removeMueble } from './modal.js';
 import { saveProrroga, renderProrrogas, deleteProrroga, editProrroga } from './prorroga.js';
 import { renderInventario, viewLitigioso } from './inventario.js';
 
@@ -439,7 +439,11 @@ function initFieldConstraints() {
 // ====================================================================
 
 function validateBeforePublish() {
-    const errors = [];
+    const errors = [];         // Global errors (popup)
+    const causanteErrs = [];   // Inline in causante card
+    const causanteFields = []; // data-bind selectors for red borders
+    const repErrors = [];      // Inline in representante card
+    const repFields = [];      // data-bind selectors for red borders
     const c = caseData;
 
     // Helpers
@@ -452,119 +456,120 @@ function validateBeforePublish() {
     };
     const isValidName = (v) => /[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]/.test(v);
 
-    // Sección 1: Caso
-    if (!c.caso.titulo?.trim()) errors.push('Título del caso');
-    if ((c.caso.titulo || '').length > 148) errors.push('El título no puede exceder 148 caracteres');
-    if (!c.caso.descripcion?.trim()) errors.push('Descripción del caso');
-    if ((c.caso.descripcion || '').length > 998) errors.push('La descripción no puede exceder 998 caracteres');
-    if (!c.caso.tipo_sucesion) errors.push('Tipo de sucesión');
+    // Sección 1: Caso (global)
+    const casoErrs = [];
+    if (!c.caso.titulo?.trim()) casoErrs.push('Título del caso');
+    if ((c.caso.titulo || '').length > 148) casoErrs.push('El título no puede exceder 148 caracteres');
+    if (!c.caso.descripcion?.trim()) casoErrs.push('Descripción del caso');
+    if ((c.caso.descripcion || '').length > 998) casoErrs.push('La descripción no puede exceder 998 caracteres');
+    if (!c.caso.tipo_sucesion) casoErrs.push('Tipo de sucesión');
 
-    // Causante
-    if (!c.causante.nombres?.trim()) errors.push('Causante: Nombres');
-    else if (!isValidName(c.causante.nombres)) errors.push('Causante: Nombres no puede contener solo espacios o números');
-    if (!c.causante.apellidos?.trim()) errors.push('Causante: Apellidos');
-    else if (!isValidName(c.causante.apellidos)) errors.push('Causante: Apellidos no puede contener solo espacios o números');
-    if (!c.causante.sexo) errors.push('Causante: Sexo');
-    if (!c.causante.estado_civil) errors.push('Causante: Estado civil');
-    if (!c.causante.fecha_nacimiento) errors.push('Causante: Fecha de nacimiento');
-    if (!c.causante.fecha_fallecimiento) errors.push('Causante: Fecha de fallecimiento');
-    // #13 — Fallecimiento > nacimiento
+    // Causante (inline)
+    if (!c.causante.nombres?.trim()) { causanteErrs.push('Nombres'); causanteFields.push('[data-bind="causante.nombres"]'); }
+    else if (!isValidName(c.causante.nombres)) causanteErrs.push('Nombres no puede contener solo espacios o números');
+    if (!c.causante.apellidos?.trim()) { causanteErrs.push('Apellidos'); causanteFields.push('[data-bind="causante.apellidos"]'); }
+    else if (!isValidName(c.causante.apellidos)) causanteErrs.push('Apellidos no puede contener solo espacios o números');
+    if (!c.causante.sexo) { causanteErrs.push('Sexo'); causanteFields.push('[data-bind="causante.sexo"]'); }
+    if (!c.causante.estado_civil) { causanteErrs.push('Estado civil'); causanteFields.push('[data-bind="causante.estado_civil"]'); }
+    if (!c.causante.fecha_nacimiento) { causanteErrs.push('Fecha de nacimiento'); causanteFields.push('[data-bind="causante.fecha_nacimiento"]'); }
+    if (!c.causante.fecha_fallecimiento) { causanteErrs.push('Fecha de fallecimiento'); causanteFields.push('[data-bind="causante.fecha_fallecimiento"]'); }
     if (c.causante.fecha_nacimiento && c.causante.fecha_fallecimiento
         && c.causante.fecha_fallecimiento <= c.causante.fecha_nacimiento)
-        errors.push('Causante: La fecha de fallecimiento debe ser posterior a la de nacimiento');
-    // #14 — Edad razonable (0–130)
+        causanteErrs.push('La fecha de fallecimiento debe ser posterior a la de nacimiento');
     if (c.causante.fecha_nacimiento && c.causante.fecha_fallecimiento
         && c.causante.fecha_fallecimiento > c.causante.fecha_nacimiento) {
         const edad = calcAge(c.causante.fecha_nacimiento, c.causante.fecha_fallecimiento);
-        if (edad < 0 || edad > 130) errors.push('Causante: La edad resultante no es razonable (0–130 años)');
+        if (edad < 0 || edad > 130) causanteErrs.push('La edad resultante no es razonable (0–130 años)');
     }
-    // Cédula según tipo sucesión
-    if (c.caso.tipo_sucesion === 'Con Cédula' && !c.causante.cedula?.trim())
-        errors.push('Causante: Cédula (requerida para sucesión Con Cédula)');
+    if (!c.causante.nacionalidad) { causanteErrs.push('Nacionalidad'); causanteFields.push('[data-bind="causante.nacionalidad"]'); }
+    if (c.caso.tipo_sucesion === 'Con Cédula' && !c.causante.cedula?.trim()) {
+        causanteErrs.push('Cédula (requerida para sucesión Con Cédula)');
+        causanteFields.push('[data-bind="causante.cedula"]');
+    }
     if (c.caso.tipo_sucesion === 'Sin Cédula' && c.causante.cedula?.trim())
-        errors.push('Causante: En sucesión Sin Cédula, el campo de cédula debe estar vacío');
+        causanteErrs.push('En sucesión Sin Cédula, el campo de cédula debe estar vacío');
 
-    // Acta de defunción (obligatoria solo para sucesión Sin Cédula)
+    // Acta de defunción (inline in causante card)
     if (c.caso.tipo_sucesion === 'Sin Cédula') {
-        if (!c.acta_defuncion.numero_acta?.trim()) errors.push('Acta de Defunción: Número de acta');
-        if (!c.acta_defuncion.year_acta) errors.push('Acta de Defunción: Año del acta');
-        else if (parseInt(c.acta_defuncion.year_acta) < 1900) errors.push('Acta de Defunción: El año debe ser ≥ 1900');
-        if (!c.acta_defuncion.parroquia_registro_id) errors.push('Acta de Defunción: Parroquia de registro');
+        if (!c.acta_defuncion.numero_acta?.trim()) { causanteErrs.push('Número de acta de defunción'); causanteFields.push('[data-bind="acta_defuncion.numero_acta"]'); }
+        if (!c.acta_defuncion.year_acta) { causanteErrs.push('Año del acta de defunción'); causanteFields.push('[data-bind="acta_defuncion.year_acta"]'); }
+        else if (parseInt(c.acta_defuncion.year_acta) < 1900) causanteErrs.push('El año del acta debe ser ≥ 1900');
+        if (!c.acta_defuncion.parroquia_registro_id) { causanteErrs.push('Parroquia de registro'); causanteFields.push('[data-bind="acta_defuncion.parroquia_registro_id"]'); }
     }
 
-    // Datos fiscales
-    if (!c.datos_fiscales_causante.fecha_cierre_fiscal) errors.push('Datos fiscales: Fecha de cierre fiscal');
-    // #21 — Cierre fiscal ≥ fallecimiento
+    // Datos fiscales (inline in causante card)
+    if (!c.datos_fiscales_causante.fecha_cierre_fiscal) { causanteErrs.push('Fecha de cierre fiscal'); causanteFields.push('#input_fecha_cierre_fiscal'); }
     if (c.datos_fiscales_causante.fecha_cierre_fiscal && c.causante.fecha_fallecimiento
         && c.datos_fiscales_causante.fecha_cierre_fiscal < c.causante.fecha_fallecimiento)
-        errors.push('Datos fiscales: La fecha de cierre fiscal debe ser posterior o igual a la de fallecimiento');
+        causanteErrs.push('La fecha de cierre fiscal debe ser posterior o igual a la de fallecimiento');
 
-    // Herencia
+    // Herencia (global)
+    const herenciaErrs = [];
     if (!c.herencia.tipos.length) {
-        errors.push('Al menos un tipo de herencia');
+        herenciaErrs.push('Al menos un tipo de herencia');
     } else {
         const cats = getCatalogs();
         c.herencia.tipos.forEach(t => {
             const tipo = (cats.tiposHerencia || []).find(th => th.id == t.tipo_herencia_id);
             const nombre = tipo?.nombre?.toLowerCase() || '';
             if (nombre.includes('testamento')) {
-                if (!t.subtipo_testamento) errors.push('Herencia Testamentaria: Subtipo');
-                if (!t.fecha_testamento) errors.push('Herencia Testamentaria: Fecha del testamento');
-                // Fecha del testamento no puede ser posterior al fallecimiento
+                if (!t.subtipo_testamento) herenciaErrs.push('Herencia Testamentaria: Subtipo');
+                if (!t.fecha_testamento) herenciaErrs.push('Herencia Testamentaria: Fecha del testamento');
                 if (t.fecha_testamento && c.causante.fecha_fallecimiento
                     && t.fecha_testamento > c.causante.fecha_fallecimiento)
-                    errors.push('Herencia Testamentaria: La fecha del testamento no puede ser posterior a la fecha de fallecimiento del causante');
+                    herenciaErrs.push('Herencia Testamentaria: La fecha del testamento no puede ser posterior a la fecha de fallecimiento del causante');
             }
             if (nombre.includes('inventario')) {
-                if (!t.fecha_conclusion_inventario) errors.push('Beneficio de Inventario: Fecha de conclusión');
+                if (!t.fecha_conclusion_inventario) herenciaErrs.push('Beneficio de Inventario: Fecha de conclusión');
             }
         });
     }
 
-    // Representante
-    if (!c.representante.nombres?.trim()) errors.push('Representante: Nombres');
-    else if (!isValidName(c.representante.nombres)) errors.push('Representante: Nombres no puede contener solo espacios o números');
-    if (!c.representante.apellidos?.trim()) errors.push('Representante: Apellidos');
-    else if (!isValidName(c.representante.apellidos)) errors.push('Representante: Apellidos no puede contener solo espacios o números');
-    if (!c.representante.cedula?.trim()) errors.push('Representante: Cédula');
-    if (!c.representante.rif_personal?.trim()) errors.push('Representante: RIF');
-    if (!c.representante.sexo) errors.push('Representante: Sexo');
-
-    if (!c.representante.fecha_nacimiento) errors.push('Representante: Fecha de nacimiento');
-    // #33 — Representante ≥ 18
+    // Representante (inline)
+    if (!c.representante.nombres?.trim()) { repErrors.push('Nombres'); repFields.push('[data-bind="representante.nombres"]'); }
+    else if (!isValidName(c.representante.nombres)) repErrors.push('Nombres no puede contener solo espacios o números');
+    if (!c.representante.apellidos?.trim()) { repErrors.push('Apellidos'); repFields.push('[data-bind="representante.apellidos"]'); }
+    else if (!isValidName(c.representante.apellidos)) repErrors.push('Apellidos no puede contener solo espacios o números');
+    if (!c.representante.cedula?.trim()) { repErrors.push('Cédula'); repFields.push('[data-bind="representante.cedula"]'); }
+    if (!c.representante.rif_personal?.trim()) { repErrors.push('RIF'); repFields.push('[data-bind="representante.rif_personal"]'); }
+    if (!c.representante.sexo) { repErrors.push('Sexo'); repFields.push('[data-bind="representante.sexo"]'); }
+    if (!c.representante.fecha_nacimiento) { repErrors.push('Fecha de nacimiento'); repFields.push('[data-bind="representante.fecha_nacimiento"]'); }
     if (c.representante.fecha_nacimiento) {
         const edad = calcAge(c.representante.fecha_nacimiento);
-        if (edad < 18) errors.push('Representante: Debe ser mayor de 18 años');
+        if (edad < 18) repErrors.push('Debe ser mayor de 18 años');
     }
 
-    // #18/#19 — Cédulas cruzadas
-    const cedCausante = (c.causante.cedula || '').trim();
-    const cedRep = (c.representante.cedula || '').trim();
-    if (cedCausante && cedRep && cedCausante === cedRep)
-        errors.push('La cédula del representante no puede ser igual a la del causante');
+    // Cédulas cruzadas
+    const crossErrs = [];
+    const fullCedCausante = ((c.causante.tipo_cedula || '') + (c.causante.cedula || '')).trim();
+    const fullCedRep = ((c.representante.letra_cedula || '') + (c.representante.cedula || '')).trim();
+    if (fullCedCausante && fullCedRep && fullCedCausante === fullCedRep)
+        crossErrs.push('La cédula del representante no puede ser igual a la del causante');
 
-    // Domicilio fiscal — debe haber al menos una dirección guardada
+    // Domicilio fiscal
+    const domicilioErrs = [];
     if (!c.direcciones_causante || c.direcciones_causante.length === 0)
-        errors.push('Debe agregar al menos una dirección de domicilio fiscal del causante');
+        domicilioErrs.push('Debe agregar al menos una dirección de domicilio fiscal del causante');
 
-    // Herederos + Premuertos — cédulas cruzadas
-    if (!c.herederos.length) errors.push('Al menos un heredero');
+    // Herederos + Premuertos
+    const herederoErrs = [];
+    if (!c.herederos.length) herederoErrs.push('Al menos un heredero');
     const allCedulas = [];
     c.herederos.forEach((h, i) => {
-        const ced = (h.cedula || '').trim();
-        if (ced && allCedulas.includes(ced)) errors.push(`Heredero #${i + 1}: Cédula duplicada`);
-        if (ced) allCedulas.push(ced);
-        if (cedCausante && ced && ced === cedCausante) errors.push(`Heredero #${i + 1}: Cédula igual a la del causante`);
+        const fullCed = ((h.letra_cedula || '') + (h.cedula || '')).trim();
+        if (fullCed && allCedulas.includes(fullCed)) herederoErrs.push(`Heredero #${i + 1}: Cédula duplicada`);
+        if (fullCed) allCedulas.push(fullCed);
+        if (fullCedCausante && fullCed && fullCed === fullCedCausante) herederoErrs.push(`Heredero #${i + 1}: Cédula igual a la del causante`);
         if (h.fecha_nacimiento) {
             const edad = calcAge(h.fecha_nacimiento);
-            if (edad < 0 || edad > 150) errors.push(`Heredero #${i + 1}: Fecha de nacimiento no resulta en una edad razonable`);
+            if (edad < 0 || edad > 150) herederoErrs.push(`Heredero #${i + 1}: Fecha de nacimiento no resulta en una edad razonable`);
         }
     });
     (c.herederos_premuertos || []).forEach((hp, i) => {
-        const ced = (hp.cedula || '').trim();
-        if (cedCausante && ced && ced === cedCausante) errors.push(`Heredero premuerto #${i + 1}: Cédula igual a la del causante`);
-        if (ced && allCedulas.includes(ced)) errors.push(`Heredero premuerto #${i + 1}: Cédula duplicada con un heredero`);
-        if (ced) allCedulas.push(ced);
+        const fullCed = ((hp.letra_cedula || '') + (hp.cedula || '')).trim();
+        if (fullCedCausante && fullCed && fullCed === fullCedCausante) herederoErrs.push(`Heredero premuerto #${i + 1}: Cédula igual a la del causante`);
+        if (fullCed && allCedulas.includes(fullCed)) herederoErrs.push(`Heredero premuerto #${i + 1}: Cédula duplicada con un heredero`);
+        if (fullCed) allCedulas.push(fullCed);
     });
 
     // Validar que cada heredero premuerto tenga al menos un heredero del premuerto
@@ -573,19 +578,36 @@ function validateBeforePublish() {
             const uid = h._uid || '';
             const tieneSubHerederos = (c.herederos_premuertos || []).some(hp => hp.premuerto_padre_id === uid);
             if (!tieneSubHerederos) {
-                errors.push(`Heredero #${i + 1} (${h.nombres || ''} ${h.apellidos || ''}): Está marcado como premuerto pero no tiene herederos del premuerto asignados`);
+                herederoErrs.push(`Heredero #${i + 1} (${h.nombres || ''} ${h.apellidos || ''}): Está marcado como premuerto pero no tiene herederos del premuerto asignados`);
             }
         }
     });
 
     // Bienes
+    const bienesErrs = [];
     const tieneInmuebles = c.bienes_inmuebles.length > 0;
     const tieneMuebles = Object.values(c.bienes_muebles).some(arr => Array.isArray(arr) && arr.length > 0);
-    if (!tieneInmuebles && !tieneMuebles) errors.push('Al menos un bien (inmueble o mueble)');
+    if (!tieneInmuebles && !tieneMuebles) bienesErrs.push('Al menos un bien (inmueble o mueble)');
 
+    // ── Ensamblar errors[] en orden del formulario ──
+    // 1. Caso
+    errors.push(...casoErrs);
+    // 2. Herencia
+    errors.push(...herenciaErrs);
+    // 3. Causante (resumen)
+    if (causanteErrs.length > 0) errors.push('Falta completar los datos del causante');
+    // 4. Domicilio fiscal
+    errors.push(...domicilioErrs);
+    // 5. Representante (resumen)
+    if (repErrors.length > 0) errors.push('Falta completar los datos del representante');
+    // 6. Herederos
+    errors.push(...herederoErrs);
+    // 7. Cédulas cruzadas
+    errors.push(...crossErrs);
+    // 8. Bienes
+    errors.push(...bienesErrs);
 
-
-    return errors;
+    return { errors, causanteErrs, causanteFields, repErrors, repFields };
 }
 
 /**
@@ -653,17 +675,56 @@ function showValidationPopup(errors, title = 'No se puede publicar') {
 // Asignamos callbacks globales para el HTML onClick
 window.CC = {
     nextStep, prevStep, setStep,
-    openModal, closeModal, saveModal,
+    openModal, closeModal, saveModal, clearModalFields,
     removeItem, removeMueble, viewLitigioso,
     saveDireccion, editDireccion, deleteDireccion,
     saveProrroga, deleteProrroga, editProrroga,
-    publish: () => {
-        const errors = validateBeforePublish();
-        if (errors.length > 0) {
-            showValidationPopup(errors);
+    publish: async () => {
+        const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+
+        const result = validateBeforePublish();
+
+        // Pre-check: título duplicado contra BD (inject at top of errors)
+        const titulo = (caseData.caso.titulo || '').trim();
+        if (titulo) {
+            try {
+                const params = new URLSearchParams({ titulo });
+                if (caseData.caso_id) params.append('caso_id', caseData.caso_id);
+                const res = await fetch(baseUrl + '/api/casos/check-titulo?' + params);
+                const json = await res.json();
+                if (json.exists) {
+                    result.errors.unshift('Ya existe un caso con este título. Elige otro.');
+                }
+            } catch (e) {
+                // Si falla el check, continuamos — el backend validará de todas formas
+            }
+        }
+
+        const hasErrors = result.errors.length > 0 || result.causanteErrs.length > 0 || result.repErrors.length > 0;
+
+        // Clear previous inline errors
+        if (CC.clearCausanteErrors) CC.clearCausanteErrors();
+        if (CC.clearRepErrors) CC.clearRepErrors();
+
+        if (!hasErrors) {
+            submitCase('Publicado');
             return;
         }
-        submitCase('Publicado');
+
+        // Show inline errors for causante
+        if (result.causanteErrs.length > 0 && CC.showCausanteError) {
+            CC.showCausanteError(result.causanteErrs, result.causanteFields);
+        }
+
+        // Show inline errors for representante
+        if (result.repErrors.length > 0 && CC.showRepError) {
+            CC.showRepError(result.repErrors, result.repFields);
+        }
+
+        // Show popup for global errors (caso, herencia, bienes, etc.)
+        if (result.errors.length > 0) {
+            showValidationPopup(result.errors);
+        }
     }
 };
 
@@ -671,158 +732,287 @@ window.CC = {
 document.ccHelpers = { $, show: (el) => { if (el) el.style.display = ''; }, hide: (el) => { if (el) el.style.display = 'none'; } };
 
 function initCausanteAutocomplete() {
+    const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+    const lockStyle = 'var(--cc-slate-50, #f8fafc)';
+
+    const inputBuscar = document.getElementById('inputBuscarCausante');
     const inputCedulaCausante = $('[data-bind="causante.cedula"]');
     const selectTipoCedulaCausante = $('[data-bind="causante.tipo_cedula"]');
 
-    if (inputCedulaCausante && selectTipoCedulaCausante) {
-        // Función auxiliar para vaciar y habilitar solo los campos que fueron auto-rellenados desde la BD
-        const clearAndEnableAll = () => {
-            const lockedFields = caseData.causante._locked_fields || [];
-            lockedFields.forEach(f => {
-                if (caseData.causante[f] !== undefined) {
-                    caseData.causante[f] = '';
-                }
-                const el = $(`[data-bind="causante.${f}"]`);
-                if (el) {
-                    el.value = '';
-                    el.disabled = false;
-                    el.style.backgroundColor = '';
-                }
-            });
-            // Also clear persona_id since the person was unlinked
-            caseData.causante.persona_id = '';
-            const elPid = $('[data-bind="causante.persona_id"]');
-            if (elPid) { elPid.value = ''; }
-            caseData.causante._locked_fields = [];
+    // All lockable fields for causante
+    const allCausanteFields = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'nacionalidad', 'fecha_fallecimiento'];
 
-            // Clear datos fiscales that were auto-filled
-            caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
-            const cierreEl = $('#input_fecha_cierre_fiscal');
-            if (cierreEl) { cierreEl.value = ''; cierreEl.disabled = false; cierreEl.style.backgroundColor = ''; }
-        };
+    // Fill & disable a field only if value is present, else enable it
+    const fillIfPresent = (field, value) => {
+        const sel = `[data-bind="causante.${field}"]`;
+        const el = $(sel);
+        if (!el) return false;
+        if (value !== null && value !== undefined && value !== '') {
+            caseData.causante[field] = value;
+            el.value = value;
+            el.disabled = true;
+            el.style.backgroundColor = lockStyle;
+            return true;
+        } else {
+            caseData.causante[field] = '';
+            el.value = '';
+            el.disabled = false;
+            el.style.backgroundColor = '';
+            return false;
+        }
+    };
 
-        const fetchCausante = async () => {
-            const cedula = inputCedulaCausante.value.trim();
-            const tipo = selectTipoCedulaCausante.value;
+    // Clear all causante data and unlock
+    const clearCausante = () => {
+        allCausanteFields.forEach(f => {
+            caseData.causante[f] = '';
+            const el = $(`[data-bind="causante.${f}"]`);
+            if (el) { el.value = ''; el.disabled = false; el.style.backgroundColor = ''; }
+        });
+        caseData.causante.persona_id = '';
+        caseData.causante._locked_fields = [];
 
-            if (!cedula || cedula.length < 6 || caseData.caso.tipo_sucesion !== 'Con Cédula') {
-                if (cedula.length === 0 && caseData.causante.nombres) {
-                    clearAndEnableAll();
+        // Only clear cédula fields if in "Con Cédula" mode
+        if (caseData.caso.tipo_sucesion !== 'Sin Cédula') {
+            caseData.causante.cedula = '';
+            caseData.causante.tipo_cedula = '';
+            if (inputCedulaCausante) { inputCedulaCausante.value = ''; inputCedulaCausante.disabled = false; inputCedulaCausante.style.backgroundColor = ''; }
+            if (selectTipoCedulaCausante) { selectTipoCedulaCausante.value = ''; selectTipoCedulaCausante.disabled = false; selectTipoCedulaCausante.style.backgroundColor = ''; }
+        }
+
+        // Clear acta de defunción fields
+        caseData.acta_defuncion = caseData.acta_defuncion || {};
+        caseData.acta_defuncion.numero_acta = '';
+        caseData.acta_defuncion.year_acta = '';
+        caseData.acta_defuncion.parroquia_registro_id = '';
+        const actaFields = ['acta_defuncion.numero_acta', 'acta_defuncion.year_acta', 'acta_defuncion.parroquia_registro_id'];
+        actaFields.forEach(f => {
+            const el = $(`[data-bind="${f}"]`);
+            if (el) { el.value = ''; el.disabled = false; el.style.backgroundColor = ''; }
+        });
+
+        // Clear datos fiscales
+        caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
+        const cierreEl = $('#input_fecha_cierre_fiscal');
+        if (cierreEl) { cierreEl.value = ''; cierreEl.disabled = false; cierreEl.style.backgroundColor = ''; }
+
+        caseData.datos_fiscales_causante.domiciliado_pais = '1';
+        const domPaisEl = $('[data-bind="datos_fiscales_causante.domiciliado_pais"]');
+        if (domPaisEl) { domPaisEl.value = '1'; domPaisEl.disabled = true; domPaisEl.style.backgroundColor = lockStyle; }
+
+        // Clear search input
+        if (inputBuscar) inputBuscar.value = '';
+
+        // Clear inline errors
+        clearCausanteErrors();
+    };
+
+    // Handle selected persona data
+    const handleCausanteData = (data) => {
+        // Clear previous state
+        clearCausante();
+
+        // Store persona_id
+        caseData.causante.persona_id = data.persona_id;
+
+        // Fill tipo_cedula and cedula (only in Con Cédula mode)
+        if (caseData.caso.tipo_sucesion !== 'Sin Cédula') {
+            if (data.tipo_cedula && data.tipo_cedula !== 'No_Aplica') {
+                caseData.causante.tipo_cedula = data.tipo_cedula;
+                if (selectTipoCedulaCausante) {
+                    selectTipoCedulaCausante.value = data.tipo_cedula;
+                    selectTipoCedulaCausante.disabled = true;
+                    selectTipoCedulaCausante.style.backgroundColor = lockStyle;
                 }
-                return;
             }
-
-            if (!tipo) {
-                if (caseData.causante.nombres) {
-                    clearAndEnableAll();
+            if (data.cedula) {
+                caseData.causante.cedula = data.cedula;
+                if (inputCedulaCausante) {
+                    inputCedulaCausante.value = data.cedula;
+                    inputCedulaCausante.disabled = true;
+                    inputCedulaCausante.style.backgroundColor = lockStyle;
                 }
-                return;
             }
+        }
 
-            try {
-                const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
-                const resp = await fetch(`${baseUrl}/api/buscar-persona?tipo=${tipo}&cedula=${cedula}`);
+        // Fill personal data — only lock non-empty fields
+        const locked = [];
+        allCausanteFields.forEach(f => {
+            if (fillIfPresent(f, data[f])) locked.push(f);
+        });
+
+        // Datos fiscales
+        if (data.fecha_cierre_fiscal) {
+            caseData.datos_fiscales_causante.fecha_cierre_fiscal = data.fecha_cierre_fiscal;
+            const el = $('#input_fecha_cierre_fiscal');
+            if (el) { el.value = data.fecha_cierre_fiscal; el.disabled = true; el.style.backgroundColor = lockStyle; }
+        }
+        if (data.domiciliado_pais !== null && data.domiciliado_pais !== undefined) {
+            caseData.datos_fiscales_causante.domiciliado_pais = data.domiciliado_pais;
+            const el = $('[data-bind="datos_fiscales_causante.domiciliado_pais"]');
+            if (el) { el.value = data.domiciliado_pais; el.disabled = true; el.style.backgroundColor = lockStyle; }
+        }
+
+        // Acta de defunción (only for Sin Cédula cases)
+        if (caseData.caso.tipo_sucesion === 'Sin Cédula') {
+            if (data.numero_acta) {
+                caseData.acta_defuncion = caseData.acta_defuncion || {};
+                caseData.acta_defuncion.numero_acta = data.numero_acta;
+                const el = $('[data-bind="acta_defuncion.numero_acta"]');
+                if (el) { el.value = data.numero_acta; el.disabled = true; el.style.backgroundColor = lockStyle; }
+            }
+            if (data.year_acta) {
+                caseData.acta_defuncion = caseData.acta_defuncion || {};
+                caseData.acta_defuncion.year_acta = data.year_acta;
+                const el = $('[data-bind="acta_defuncion.year_acta"]');
+                if (el) { el.value = data.year_acta; el.disabled = true; el.style.backgroundColor = lockStyle; }
+            }
+            if (data.parroquia_registro_id) {
+                caseData.acta_defuncion = caseData.acta_defuncion || {};
+                caseData.acta_defuncion.parroquia_registro_id = data.parroquia_registro_id;
+                const el = $('[data-bind="acta_defuncion.parroquia_registro_id"]');
+                if (el) { el.value = data.parroquia_registro_id; el.disabled = true; el.style.backgroundColor = lockStyle; }
+            }
+        }
+
+        caseData.causante._locked_fields = locked;
+
+        // Update search input to show who was selected
+        if (inputBuscar) {
+            inputBuscar.value = `${data.nombres || ''} ${data.apellidos || ''} — ${data.cedula || 'S/C'}`.trim();
+        }
+
+        showToast('Datos del causante autocompletados', 'success');
+        renderHerenciaCheckboxes();
+    };
+
+    // Expose clear function
+    window.CC.clearCausante = clearCausante;
+
+    // ── AutocompleteDropdown on search bar ──
+    let lastSinCedula = caseData.caso.tipo_sucesion === 'Sin Cédula';
+    let causanteDropdown = null;
+
+    if (inputBuscar && typeof AutocompleteDropdown !== 'undefined') {
+        causanteDropdown = new AutocompleteDropdown({
+            input: inputBuscar,
+            debounceMs: 300,
+            minLength: 0,
+
+            fetchFn: async (query, signal) => {
+                // Invalidate cache if tipo_sucesion changed
+                const currentSinCedula = caseData.caso.tipo_sucesion === 'Sin Cédula';
+                if (currentSinCedula !== lastSinCedula) {
+                    causanteDropdown._cache.clear();
+                    lastSinCedula = currentSinCedula;
+                }
+
+                const params = new URLSearchParams({ campo: 'cedula' });
+                if (query) params.set('q', query);
+                if (currentSinCedula) params.set('sin_cedula', '1');
+                const resp = await fetch(`${baseUrl}/api/buscar-personas?${params}`, { signal });
                 const json = await resp.json();
+                return json.success ? json.data : [];
+            },
 
-                if (json.success && json.data) {
-                    const data = json.data;
-
-                    // Clear previously locked fields before filling new person's data
-                    // (handles switching from person A to person B without clearing cedula)
-                    (caseData.causante._locked_fields || []).forEach(f => {
-                        const el = $(`[data-bind="causante.${f}"]`);
-                        if (el) { el.value = ''; el.disabled = false; el.style.backgroundColor = ''; }
-                    });
-                    caseData.causante._locked_fields = [];
-                    // Also clear datos fiscales that may have been auto-filled
-                    const cierreEl = $('#input_fecha_cierre_fiscal');
-                    if (cierreEl) { cierreEl.value = ''; cierreEl.disabled = false; cierreEl.style.backgroundColor = ''; }
-                    caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
-                    const domPaisEl = $('[data-bind="datos_fiscales_causante.domiciliado_pais"]');
-                    if (domPaisEl) { domPaisEl.value = ''; domPaisEl.disabled = false; domPaisEl.style.backgroundColor = ''; }
-                    caseData.datos_fiscales_causante.domiciliado_pais = '';
-
-                    // Update state
-                    if (!tipo && data.tipo_cedula) {
-                        caseData.causante.tipo_cedula = data.tipo_cedula;
-                        if (selectTipoCedulaCausante) selectTipoCedulaCausante.value = data.tipo_cedula;
+            onSelect: async (item) => {
+                try {
+                    // Always fetch full details by persona_id
+                    const resp = await fetch(`${baseUrl}/api/buscar-persona?persona_id=${item.persona_id}`);
+                    const json = await resp.json();
+                    if (json.success && json.data) {
+                        handleCausanteData(json.data);
                     }
-
-                    caseData.causante.persona_id = data.persona_id; // Store ID for cross-validation
-                    caseData.causante.nombres = data.nombres;
-                    caseData.causante.apellidos = data.apellidos;
-                    caseData.causante.fecha_nacimiento = data.fecha_nacimiento;
-                    caseData.causante.sexo = data.sexo;
-
-                    const estadoCivilVacio = !data.estado_civil;
-                    if (estadoCivilVacio) {
-                        caseData.causante.estado_civil = '';
-                    } else {
-                        caseData.causante.estado_civil = data.estado_civil;
-                    }
-
-                    caseData.causante.nacionalidad = data.nacionalidad;
-                    if (data.fecha_fallecimiento) {
-                        caseData.causante.fecha_fallecimiento = data.fecha_fallecimiento;
-                    }
-
-                    // Función auxiliar para asignar valor y deshabilitar
-                    const fillAndDisable = (selector, value, forceEnable = false) => {
-                        const el = $(selector);
-                        if (!el) return;
-                        if (forceEnable) {
-                            el.value = '';
-                            el.disabled = false;
-                            el.style.backgroundColor = '';
-                        } else if (value !== undefined && value !== null) {
-                            el.value = value;
-                            el.disabled = true;
-                            // Add a subtle style to indicate it's auto-filled and locked
-                            el.style.backgroundColor = 'var(--cc-slate-50, #f8fafc)';
-                        }
-                    };
-
-                    // Update DOM directly since bindInputs runs once
-                    fillAndDisable('[data-bind="causante.nombres"]', data.nombres);
-                    fillAndDisable('[data-bind="causante.apellidos"]', data.apellidos);
-                    fillAndDisable('[data-bind="causante.fecha_nacimiento"]', data.fecha_nacimiento);
-                    fillAndDisable('[data-bind="causante.sexo"]', data.sexo);
-
-                    fillAndDisable('[data-bind="causante.estado_civil"]', data.estado_civil, estadoCivilVacio);
-
-                    fillAndDisable('[data-bind="causante.nacionalidad"]', data.nacionalidad);
-                    if (data.fecha_fallecimiento) {
-                        fillAndDisable('[data-bind="causante.fecha_fallecimiento"]', data.fecha_fallecimiento);
-                    }
-
-                    // Populate datos fiscales if available from DB
-                    if (data.fecha_cierre_fiscal) {
-                        caseData.datos_fiscales_causante.fecha_cierre_fiscal = data.fecha_cierre_fiscal;
-                        fillAndDisable('#input_fecha_cierre_fiscal', data.fecha_cierre_fiscal);
-                    }
-                    if (data.domiciliado_pais !== null && data.domiciliado_pais !== undefined) {
-                        caseData.datos_fiscales_causante.domiciliado_pais = data.domiciliado_pais;
-                        fillAndDisable('[data-bind="datos_fiscales_causante.domiciliado_pais"]', data.domiciliado_pais);
-                    }
-
-                    showToast('Datos del causante autocompletados', 'success');
-                    // Guardar cuáles campos específicos se deshabilitaron
-                    const lockedFields = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'nacionalidad', 'fecha_fallecimiento']
-                        .filter(f => data[f] && !(f === 'estado_civil' && estadoCivilVacio));
-                    caseData.causante._locked_fields = lockedFields;
-                    // Re-renderizar herencia para actualizar max de fecha_testamento
-                    renderHerenciaCheckboxes();
-                } else {
-                    // Si consultamos y no existe, limpiamos en caso de que hubiese otra antes
-                    clearAndEnableAll();
+                } catch (err) {
+                    console.error('Error fetching causante by ID:', err);
                 }
-            } catch (err) {
-                console.error("Error buscando persona", err);
             }
-        };
+        });
+    }
 
-        inputCedulaCausante.addEventListener('input', fetchCausante);
-        selectTipoCedulaCausante.addEventListener('change', fetchCausante);
+    // ── Clear causante when tipo_sucesion changes ──
+    document.querySelectorAll('[data-bind="caso.tipo_sucesion"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            clearCausante();
+            // Invalidate dropdown cache so results match the new mode
+            if (causanteDropdown) {
+                causanteDropdown._cache.clear();
+                lastSinCedula = caseData.caso.tipo_sucesion === 'Sin Cédula';
+            }
+        });
+    });
+
+    // ── Inline error helpers for causante card ──
+    const showCausanteError = (msgs, fieldSelectors = []) => {
+        const container = document.getElementById('causanteErrors');
+        const list = document.getElementById('causanteErrorsList');
+        if (!container || !list) return;
+        const arr = Array.isArray(msgs) ? msgs : [msgs];
+        list.innerHTML = arr.map(m => `<li>${m}</li>`).join('');
+        container.classList.add('is-visible');
+        container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        fieldSelectors.forEach(sel => {
+            const el = document.querySelector(sel);
+            if (el) {
+                const field = el.closest('.cc-field');
+                if (field) field.classList.add('cc-field--error');
+            }
+        });
+
+        // Auto-clear on input within causante card only
+        const card = container.closest('.cc-card');
+        if (card) {
+            const clearHandler = () => {
+                clearCausanteErrors();
+                card.removeEventListener('input', clearHandler);
+                card.removeEventListener('change', clearHandler);
+            };
+            card.addEventListener('input', clearHandler, { once: true });
+            card.addEventListener('change', clearHandler, { once: true });
+        }
+    };
+
+    const clearCausanteErrors = () => {
+        const container = document.getElementById('causanteErrors');
+        if (container) container.classList.remove('is-visible');
+        const card = document.querySelector('[data-bind="causante.nombres"]')?.closest('.cc-card');
+        if (card) card.querySelectorAll('.cc-field--error').forEach(el => el.classList.remove('cc-field--error'));
+    };
+
+    // Expose error functions for publish-time validation
+    window.CC.showCausanteError = showCausanteError;
+    window.CC.clearCausanteErrors = clearCausanteErrors;
+
+    // ── Cédula uniqueness validation on blur + tipo change ──
+    const checkCedulaUniqueness = async () => {
+        // Skip if persona was loaded via search bar (field is disabled)
+        if (!inputCedulaCausante || inputCedulaCausante.disabled) return;
+
+        const cedula = inputCedulaCausante.value.trim();
+        const tipo = selectTipoCedulaCausante ? selectTipoCedulaCausante.value : '';
+        if (!cedula || cedula.length < 6 || !tipo) return;
+
+        try {
+            const resp = await fetch(`${baseUrl}/api/buscar-persona?tipo=${tipo}&cedula=${cedula}`);
+            const json = await resp.json();
+            if (json.success && json.data) {
+                showCausanteError(
+                    'Esta cédula ya existe en la base de datos. Use la barra de búsqueda para cargar esta persona.',
+                    ['[data-bind="causante.cedula"]']
+                );
+                inputCedulaCausante.value = '';
+                caseData.causante.cedula = '';
+                inputCedulaCausante.focus();
+            }
+        } catch (e) { /* ignore */ }
+    };
+
+    if (inputCedulaCausante) {
+        inputCedulaCausante.addEventListener('blur', checkCedulaUniqueness);
+    }
+    if (selectTipoCedulaCausante) {
+        selectTipoCedulaCausante.addEventListener('change', checkCedulaUniqueness);
     }
 }
 
@@ -831,10 +1021,12 @@ function initRepresentanteAutocomplete() {
     const selectLetraRep = $('[data-bind="representante.letra_cedula"]');
     const inputRifRep = $('[data-bind="representante.rif_personal"]');
     const selectLetraRif = $('[data-bind="representante.letra_rif"]');
+    const inputBuscarRep = document.getElementById('inputBuscarRepresentante');
 
-    // Track which field was used to search ('cedula' | 'rif' | null)
+    // Track which field was used to search ('cedula' | 'rif' | 'search' | null)
     let searchOrigin = null;
 
+    const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
     const lockStyle = 'var(--cc-slate-50, #f8fafc)';
 
     // Lock a set of elements (input + select)
@@ -849,29 +1041,38 @@ function initRepresentanteAutocomplete() {
         });
     };
 
+    const allPersonalFields = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'nacionalidad'];
+
     const clearAndEnableAll = () => {
         const prevOrigin = searchOrigin;
         searchOrigin = null;
-        const lockedFields = caseData.representante._locked_fields || [];
-        lockedFields.forEach(f => {
-            if (caseData.representante[f] !== undefined) {
-                caseData.representante[f] = '';
-            }
+
+        // Clear ALL personal data fields (locked + manually filled)
+        allPersonalFields.forEach(f => {
+            caseData.representante[f] = '';
             const el = $(`[data-bind="representante.${f}"]`);
             if (el) { el.value = ''; el.disabled = false; el.style.backgroundColor = ''; }
         });
         caseData.representante.persona_id = '';
         caseData.representante._locked_fields = [];
 
-        // Clear the auto-filled document field (the one that was NOT the origin)
-        if (prevOrigin === 'cedula') {
-            // RIF was auto-filled from DB → clear it
+        // Clear the cross-filled document field
+        if (prevOrigin === 'search') {
+            // From search bar: clear both
+            caseData.representante.cedula = '';
+            caseData.representante.letra_cedula = 'V';
+            caseData.representante.rif_personal = '';
+            caseData.representante.letra_rif = 'V';
+            if (inputCedulaRep) inputCedulaRep.value = '';
+            if (selectLetraRep) selectLetraRep.value = 'V';
+            if (inputRifRep) inputRifRep.value = '';
+            if (selectLetraRif) selectLetraRif.value = 'V';
+        } else if (prevOrigin === 'cedula') {
             caseData.representante.rif_personal = '';
             caseData.representante.letra_rif = 'V';
             if (inputRifRep) inputRifRep.value = '';
             if (selectLetraRif) selectLetraRif.value = 'V';
         } else if (prevOrigin === 'rif') {
-            // Cédula was auto-filled from DB → clear it
             caseData.representante.cedula = '';
             caseData.representante.letra_cedula = 'V';
             if (inputCedulaRep) inputCedulaRep.value = '';
@@ -880,6 +1081,12 @@ function initRepresentanteAutocomplete() {
 
         // Unlock both document fields
         unlockEls(inputCedulaRep, selectLetraRep, inputRifRep, selectLetraRif);
+
+        // Clear search bar
+        if (inputBuscarRep) inputBuscarRep.value = '';
+
+        // Clear inline errors
+        clearRepErrors();
     };
 
     const fillAndDisable = (selector, value, forceEnable = false) => {
@@ -892,22 +1099,67 @@ function initRepresentanteAutocomplete() {
         }
     };
 
+    // ── Inline error helpers for representante card ──
+    const showRepError = (msgs, fieldSelectors = []) => {
+        const container = document.getElementById('representanteErrors');
+        const list = document.getElementById('representanteErrorsList');
+        if (!container || !list) return;
+        const arr = Array.isArray(msgs) ? msgs : [msgs];
+        list.innerHTML = arr.map(m => `<li>${m}</li>`).join('');
+        container.classList.add('is-visible');
+        container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        const selArr = Array.isArray(fieldSelectors) ? fieldSelectors : [fieldSelectors].filter(Boolean);
+        selArr.forEach(sel => {
+            const el = document.querySelector(sel);
+            if (el) {
+                const field = el.closest('.cc-field');
+                if (field) field.classList.add('cc-field--error');
+            }
+        });
+        // Auto-clear on input within representante card only
+        const card = container.closest('.cc-card');
+        if (card) {
+            const clearHandler = () => {
+                clearRepErrors();
+                card.removeEventListener('input', clearHandler);
+                card.removeEventListener('change', clearHandler);
+            };
+            card.addEventListener('input', clearHandler, { once: true });
+            card.addEventListener('change', clearHandler, { once: true });
+        }
+    };
+
+    const clearRepErrors = () => {
+        const container = document.getElementById('representanteErrors');
+        if (container) container.classList.remove('is-visible');
+        const card = document.querySelector('[data-bind="representante.nombres"]')?.closest('.cc-card');
+        if (card) card.querySelectorAll('.cc-field--error').forEach(el => el.classList.remove('cc-field--error'));
+    };
+
     // Shared handler for API response
     const handlePersonaData = (data, origin) => {
         // Validar que no sea el mismo causante
         let isSamePerson = false;
         if (caseData.causante) {
+            // Compare by cédula compuesta
             if (caseData.causante.cedula && data.cedula && data.cedula === caseData.causante.cedula && data.tipo_cedula === caseData.causante.tipo_cedula) {
                 isSamePerson = true;
             }
-            if (data.persona_id && caseData.causante.persona_id && data.persona_id === caseData.causante.persona_id) {
+            // Compare by RIF
+            if (data.rif_personal && caseData.causante.rif_personal && data.rif_personal === caseData.causante.rif_personal) {
+                isSamePerson = true;
+            }
+            // Compare by persona_id
+            if (data.persona_id && caseData.causante.persona_id && String(data.persona_id) === String(caseData.causante.persona_id)) {
                 isSamePerson = true;
             }
         }
 
         if (isSamePerson) {
-            showToast('El representante no puede ser el mismo causante.', 'error');
+            // Clear fields first, THEN show the error (clearAndEnableAll calls clearRepErrors)
             clearAndEnableAll();
+            showRepError('El representante no puede ser el mismo causante.');
             return;
         }
 
@@ -920,24 +1172,41 @@ function initRepresentanteAutocomplete() {
         });
         caseData.representante._locked_fields = [];
 
-        // Populate personal data
+        // Populate personal data — only fill and lock if DB has a value
         caseData.representante.persona_id = data.persona_id;
-        caseData.representante.nombres = data.nombres;
-        caseData.representante.apellidos = data.apellidos;
-        caseData.representante.fecha_nacimiento = data.fecha_nacimiento;
-        caseData.representante.sexo = data.sexo;
 
-        const estadoCivilVacio = !data.estado_civil;
-        if (estadoCivilVacio) {
-            caseData.representante.estado_civil = '';
-        } else {
-            caseData.representante.estado_civil = data.estado_civil;
-        }
-        caseData.representante.nacionalidad = data.nacionalidad;
+        // Helper: fill & lock only if value exists, otherwise leave editable
+        const fillIfPresent = (field, value) => {
+            const sel = `[data-bind="representante.${field}"]`;
+            if (value !== null && value !== undefined && value !== '') {
+                caseData.representante[field] = value;
+                fillAndDisable(sel, value);
+                return true; // was locked
+            } else {
+                caseData.representante[field] = '';
+                fillAndDisable(sel, null, true); // forceEnable
+                return false; // left editable
+            }
+        };
 
-        // Cross-fill: populate the OTHER document field and lock it
-        if (origin === 'cedula') {
-            // User searched by cédula → auto-fill and lock RIF
+        const locked = [];
+        if (fillIfPresent('nombres', data.nombres)) locked.push('nombres');
+        if (fillIfPresent('apellidos', data.apellidos)) locked.push('apellidos');
+        if (fillIfPresent('fecha_nacimiento', data.fecha_nacimiento)) locked.push('fecha_nacimiento');
+        if (fillIfPresent('sexo', data.sexo)) locked.push('sexo');
+        if (fillIfPresent('estado_civil', data.estado_civil)) locked.push('estado_civil');
+        if (fillIfPresent('nacionalidad', data.nacionalidad)) locked.push('nacionalidad');
+
+        // Cross-fill: populate the OTHER document field and lock it ONLY if data exists
+        if (origin === 'search') {
+            // From search bar: fill and lock BOTH cédula and RIF
+            if (data.cedula && data.tipo_cedula) {
+                caseData.representante.letra_cedula = data.tipo_cedula;
+                caseData.representante.cedula = data.cedula;
+                if (selectLetraRep) selectLetraRep.value = data.tipo_cedula;
+                if (inputCedulaRep) inputCedulaRep.value = data.cedula;
+                lockEls(inputCedulaRep, selectLetraRep);
+            }
             if (data.rif_personal) {
                 const rifLetra = data.rif_personal.charAt(0);
                 const rifNumero = data.rif_personal.substring(1);
@@ -945,62 +1214,61 @@ function initRepresentanteAutocomplete() {
                 caseData.representante.rif_personal = rifNumero;
                 if (selectLetraRif) selectLetraRif.value = rifLetra;
                 if (inputRifRep) inputRifRep.value = rifNumero;
+                lockEls(inputRifRep, selectLetraRif);
             }
-            lockEls(inputRifRep, selectLetraRif);
+        } else if (origin === 'cedula') {
+            if (data.rif_personal) {
+                const rifLetra = data.rif_personal.charAt(0);
+                const rifNumero = data.rif_personal.substring(1);
+                caseData.representante.letra_rif = rifLetra;
+                caseData.representante.rif_personal = rifNumero;
+                if (selectLetraRif) selectLetraRif.value = rifLetra;
+                if (inputRifRep) inputRifRep.value = rifNumero;
+                lockEls(inputRifRep, selectLetraRif);
+            }
             // Keep cédula fields editable (origin)
             unlockEls(inputCedulaRep, selectLetraRep);
         } else if (origin === 'rif') {
-            // User searched by RIF → auto-fill and lock Cédula
             if (data.cedula && data.tipo_cedula) {
                 caseData.representante.letra_cedula = data.tipo_cedula;
                 caseData.representante.cedula = data.cedula;
                 if (selectLetraRep) selectLetraRep.value = data.tipo_cedula;
                 if (inputCedulaRep) inputCedulaRep.value = data.cedula;
+                lockEls(inputCedulaRep, selectLetraRep);
             }
-            lockEls(inputCedulaRep, selectLetraRep);
             // Keep RIF fields editable (origin)
             unlockEls(inputRifRep, selectLetraRif);
         }
 
-        // Lock personal data fields
-        fillAndDisable('[data-bind="representante.nombres"]', data.nombres);
-        fillAndDisable('[data-bind="representante.apellidos"]', data.apellidos);
-        fillAndDisable('[data-bind="representante.fecha_nacimiento"]', data.fecha_nacimiento);
-        fillAndDisable('[data-bind="representante.sexo"]', data.sexo);
-
-        fillAndDisable('[data-bind="representante.estado_civil"]', data.estado_civil, estadoCivilVacio);
-        fillAndDisable('[data-bind="representante.nacionalidad"]', data.nacionalidad);
+        // Update search bar display
+        if (inputBuscarRep && origin === 'search') {
+            inputBuscarRep.value = `${data.nombres || ''} ${data.apellidos || ''} — ${data.cedula || 'S/C'}`.trim();
+        }
 
         showToast('Datos del representante autocompletados', 'success');
-        const lockedFieldsRep = ['nombres', 'apellidos', 'fecha_nacimiento', 'sexo', 'estado_civil', 'nacionalidad']
-            .filter(f => data[f] && !(f === 'estado_civil' && estadoCivilVacio));
-        caseData.representante._locked_fields = lockedFieldsRep;
+        caseData.representante._locked_fields = locked;
     };
 
     // Search by Cédula
     const fetchByCedula = async () => {
-        // If RIF was the origin, ignore cédula input (it's locked anyway)
-        if (searchOrigin === 'rif') return;
+        // If loaded via RIF or search bar, ignore cédula input
+        if (searchOrigin === 'rif' || searchOrigin === 'search') return;
 
-        const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
         const cedula = inputCedulaRep ? inputCedulaRep.value.trim() : '';
         const tipo = selectLetraRep ? selectLetraRep.value : '';
 
         if (!cedula || cedula.length < 6) {
-            if (cedula.length === 0 && caseData.representante.nombres) clearAndEnableAll();
+            if (cedula.length === 0 && searchOrigin === 'cedula') clearAndEnableAll();
             return;
         }
-        if (!tipo) {
-            if (caseData.representante.nombres) clearAndEnableAll();
-            return;
-        }
+        if (!tipo) return;
 
         try {
             const resp = await fetch(`${baseUrl}/api/buscar-persona?tipo=${tipo}&cedula=${cedula}`);
             const json = await resp.json();
             if (json.success && json.data) {
                 handlePersonaData(json.data, 'cedula');
-            } else {
+            } else if (searchOrigin === 'cedula') {
                 clearAndEnableAll();
             }
         } catch (err) {
@@ -1010,15 +1278,14 @@ function initRepresentanteAutocomplete() {
 
     // Search by RIF
     const fetchByRif = async () => {
-        // If cédula was the origin, ignore RIF input (it's locked anyway)
-        if (searchOrigin === 'cedula') return;
+        // If loaded via cédula or search bar, ignore RIF input
+        if (searchOrigin === 'cedula' || searchOrigin === 'search') return;
 
-        const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
         const rifNumero = inputRifRep ? inputRifRep.value.trim() : '';
         const rifLetra = selectLetraRif ? selectLetraRif.value : '';
 
         if (!rifNumero || rifNumero.length < 5) {
-            if (rifNumero.length === 0 && caseData.representante.nombres) clearAndEnableAll();
+            if (rifNumero.length === 0 && searchOrigin === 'rif') clearAndEnableAll();
             return;
         }
 
@@ -1029,7 +1296,7 @@ function initRepresentanteAutocomplete() {
             const json = await resp.json();
             if (json.success && json.data) {
                 handlePersonaData(json.data, 'rif');
-            } else {
+            } else if (searchOrigin === 'rif') {
                 clearAndEnableAll();
             }
         } catch (err) {
@@ -1037,7 +1304,7 @@ function initRepresentanteAutocomplete() {
         }
     };
 
-    // Cédula listeners
+    // Cédula listeners (exact-match fallback)
     if (inputCedulaRep) {
         inputCedulaRep.addEventListener('input', fetchByCedula);
     }
@@ -1045,13 +1312,207 @@ function initRepresentanteAutocomplete() {
         selectLetraRep.addEventListener('change', fetchByCedula);
     }
 
-    // RIF listeners
+    // RIF listeners (exact-match fallback)
     if (inputRifRep) {
         inputRifRep.addEventListener('input', fetchByRif);
     }
     if (selectLetraRif) {
         selectLetraRif.addEventListener('change', fetchByRif);
     }
+
+    // ── Uniqueness validation on blur ──
+    // When a persona is loaded and the OTHER document field is manually filled,
+    // check that the value doesn't belong to a different persona in the DB.
+    const validateDocUniqueness = async (field, value, currentPersonaId) => {
+        if (!value || !currentPersonaId) return true;
+        try {
+            let url;
+            if (field === 'rif') {
+                url = `${baseUrl}/api/buscar-persona?rif=${value}`;
+            } else {
+                const tipo = selectLetraRep ? selectLetraRep.value : 'V';
+                url = `${baseUrl}/api/buscar-persona?tipo=${tipo}&cedula=${value}`;
+            }
+            const resp = await fetch(url);
+            const json = await resp.json();
+            if (json.success && json.data && String(json.data.persona_id) !== String(currentPersonaId)) {
+                return false; // belongs to someone else
+            }
+        } catch (e) { /* ignore */ }
+        return true;
+    };
+
+    if (inputRifRep) {
+        inputRifRep.addEventListener('blur', async () => {
+            if (searchOrigin !== 'cedula') return;
+            const rifNumero = inputRifRep.value.trim();
+            if (!rifNumero || rifNumero.length < 5) return;
+            const letra = selectLetraRif ? selectLetraRif.value : 'V';
+            const rif = `${letra}${rifNumero}`;
+            const ok = await validateDocUniqueness('rif', rif, caseData.representante.persona_id);
+            if (!ok) {
+                showRepError('Este RIF ya pertenece a otra persona en la base de datos.', '#inp-rep-rif');
+                inputRifRep.value = '';
+                caseData.representante.rif_personal = '';
+                inputRifRep.focus();
+            }
+        });
+    }
+
+    if (inputCedulaRep) {
+        inputCedulaRep.addEventListener('blur', async () => {
+            if (searchOrigin !== 'rif') return;
+            const cedula = inputCedulaRep.value.trim();
+            if (!cedula || cedula.length < 6) return;
+            const ok = await validateDocUniqueness('cedula', cedula, caseData.representante.persona_id);
+            if (!ok) {
+                showRepError('Esta cédula ya pertenece a otra persona en la base de datos.', '#inp-rep-cedula');
+                inputCedulaRep.value = '';
+                caseData.representante.cedula = '';
+                inputCedulaRep.focus();
+            }
+        });
+    }
+
+    // ── AutocompleteDropdown integration ──
+    if (typeof AutocompleteDropdown !== 'undefined') {
+        // Dropdown for Cédula
+        let repCedulaDropdown = null;
+        if (inputCedulaRep) {
+            repCedulaDropdown = new AutocompleteDropdown({
+                input: inputCedulaRep,
+                debounceMs: 300,
+
+                fetchFn: async (query, signal) => {
+                    // Suppress if persona is loaded via RIF (cédula is being filled manually)
+                    if (searchOrigin === 'rif') return null;
+
+                    const tipo = selectLetraRep ? selectLetraRep.value : '';
+                    const params = new URLSearchParams({ campo: 'cedula' });
+                    if (query) params.set('q', query);
+                    if (tipo) params.set('tipo', tipo);
+
+                    const resp = await fetch(`${baseUrl}/api/buscar-personas?${params}`, { signal });
+                    const json = await resp.json();
+                    return json.success ? json.data : [];
+                },
+
+                onSelect: async (item) => {
+                    if (item.cedula) {
+                        if (item.tipo_cedula && item.tipo_cedula !== 'No_Aplica') {
+                            if (selectLetraRep) selectLetraRep.value = item.tipo_cedula;
+                            caseData.representante.letra_cedula = item.tipo_cedula;
+                        }
+                        inputCedulaRep.value = item.cedula;
+                        caseData.representante.cedula = item.cedula;
+                        fetchByCedula();
+                    } else {
+                        // S/C persona → fetch by persona_id
+                        try {
+                            const resp = await fetch(`${baseUrl}/api/buscar-persona?persona_id=${item.persona_id}`);
+                            const json = await resp.json();
+                            if (json.success && json.data) {
+                                handlePersonaData(json.data, 'cedula');
+                            }
+                        } catch (err) {
+                            console.error('Error fetching persona by ID:', err);
+                        }
+                    }
+                }
+            });
+
+            if (selectLetraRep) {
+                selectLetraRep.addEventListener('change', () => {
+                    if (repCedulaDropdown) repCedulaDropdown._cache.clear();
+                });
+            }
+        }
+
+        // Dropdown for RIF
+        let repRifDropdown = null;
+        if (inputRifRep) {
+            repRifDropdown = new AutocompleteDropdown({
+                input: inputRifRep,
+                debounceMs: 300,
+
+                fetchFn: async (query, signal) => {
+                    // Suppress if persona is loaded via cédula (RIF is being filled manually)
+                    if (searchOrigin === 'cedula') return null;
+
+                    const letra = selectLetraRif ? selectLetraRif.value : '';
+                    const params = new URLSearchParams({ campo: 'rif' });
+                    if (query) params.set('q', letra + query);
+
+                    const resp = await fetch(`${baseUrl}/api/buscar-personas?${params}`, { signal });
+                    const json = await resp.json();
+                    return json.success ? json.data : [];
+                },
+
+                onSelect: async (item) => {
+                    if (item.rif_personal) {
+                        const rifLetra = item.rif_personal.charAt(0);
+                        const rifNumero = item.rif_personal.substring(1);
+                        if (selectLetraRif) selectLetraRif.value = rifLetra;
+                        caseData.representante.letra_rif = rifLetra;
+                        inputRifRep.value = rifNumero;
+                        caseData.representante.rif_personal = rifNumero;
+                        fetchByRif();
+                    } else if (item.persona_id) {
+                        // Fetch by persona_id
+                        try {
+                            const resp = await fetch(`${baseUrl}/api/buscar-persona?persona_id=${item.persona_id}`);
+                            const json = await resp.json();
+                            if (json.success && json.data) {
+                                handlePersonaData(json.data, 'rif');
+                            }
+                        } catch (err) {
+                            console.error('Error fetching persona by ID:', err);
+                        }
+                    }
+                }
+            });
+
+            if (selectLetraRif) {
+                selectLetraRif.addEventListener('change', () => {
+                    if (repRifDropdown) repRifDropdown._cache.clear();
+                });
+            }
+        }
+
+        // Dropdown for Search Bar
+        if (inputBuscarRep) {
+            new AutocompleteDropdown({
+                input: inputBuscarRep,
+                debounceMs: 300,
+                minLength: 0,
+
+                fetchFn: async (query, signal) => {
+                    const params = new URLSearchParams({ campo: 'cedula', con_documentos: '1' });
+                    if (query) params.set('q', query);
+                    const resp = await fetch(`${baseUrl}/api/buscar-personas?${params}`, { signal });
+                    const json = await resp.json();
+                    return json.success ? json.data : [];
+                },
+
+                onSelect: async (item) => {
+                    try {
+                        const resp = await fetch(`${baseUrl}/api/buscar-persona?persona_id=${item.persona_id}`);
+                        const json = await resp.json();
+                        if (json.success && json.data) {
+                            handlePersonaData(json.data, 'search');
+                        }
+                    } catch (err) {
+                        console.error('Error fetching representante by ID:', err);
+                    }
+                }
+            });
+        }
+    }
+
+    // Expose clear function for the Limpiar Campos button
+    window.CC.clearRepresentante = clearAndEnableAll;
+    window.CC.showRepError = showRepError;
+    window.CC.clearRepErrors = clearRepErrors;
 }
 
 function bindInputs() {

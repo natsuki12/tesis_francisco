@@ -210,6 +210,11 @@ class BienesInmueblesController
             'folio_real_anio'       => $input['folio_real_anio'] ?? $existing['folio_real_anio'] ?? '',
             'valor_original'        => $input['valor_original'] ?? $existing['valor_original'] ?? '0,00',
             'valor_declarado'       => $input['valor_declarado'] ?? $existing['valor_declarado'] ?? '0,00',
+            // Datos del tribunal (bien litigioso)
+            'num_expediente'        => $input['num_expediente'] ?? $existing['num_expediente'] ?? '',
+            'tribunal_causa'        => $input['tribunal_causa'] ?? $existing['tribunal_causa'] ?? '',
+            'partes_juicio'         => $input['partes_juicio'] ?? $existing['partes_juicio'] ?? '',
+            'estado_juicio'         => $input['estado_juicio'] ?? $existing['estado_juicio'] ?? '',
         ];
     }
 }

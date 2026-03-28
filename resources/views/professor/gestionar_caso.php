@@ -8,10 +8,13 @@ $pageTitle = 'Gestionar Caso — Simulador SENIAT';
 $activePage = 'casos-sucesorales';
 
 // 2. CSS específico
-$extraCss = '<link rel="stylesheet" href="' . asset('css/professor/gestionar_caso.css') . '">';
+$extraCss = '<link rel="stylesheet" href="' . asset('css/professor/gestionar_caso.css') . '">' .
+    '<link rel="stylesheet" href="' . asset('css/global/autocomplete_dropdown.css') . '">';
 
 // 3. JS específico
-$extraJs = '<script type="module" src="' . asset('js/professor/gestionar_caso/gestionar_caso.js') . '"></script>';
+$extraJs = '<script src="' . asset('js/global/autocomplete_dropdown.js') . '"></script>' .
+    '<script type="module" src="' . asset('js/professor/gestionar_caso/gestionar_caso.js') . '"></script>' .
+    '<script src="' . asset('js/professor/gestionar_caso/asignaciones.js') . '"></script>';
 
 ob_start();
 
@@ -241,10 +244,23 @@ if ($source === 'borrador') {
 
 <!-- Tabs de Navegación del Caso -->
 <div class="gc-tabs">
-    <button class="gc-tab is-active" data-tab="resumen">Resumen General</button>
-    <button class="gc-tab" data-tab="patrimonio">Inventario Patrimonial</button>
-    <button class="gc-tab" data-tab="tributo">Resumen del Tributo</button>
-    <button class="gc-tab" data-tab="asignaciones">Asignaciones</button>
+    <div style="display: flex; gap: 0; flex: 1;">
+        <button class="gc-tab is-active" data-tab="resumen">Resumen General</button>
+        <button class="gc-tab" data-tab="patrimonio">Inventario Patrimonial</button>
+        <button class="gc-tab" data-tab="tributo">Resumen del Tributo</button>
+        <button class="gc-tab" data-tab="asignaciones">Asignaciones</button>
+    </div>
+    <button type="button" class="btn btn-secondary" title="Exportar este caso como archivo PDF"
+        style="margin-left: auto; padding: 6px 14px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; white-space: nowrap;"
+        onclick="window.open('<?= base_url('/casos-sucesorales/' . $casoId . '/pdf') ?>', 'pdfPreview', 'width=900,height=700,scrollbars=yes,resizable=yes,menubar=no,toolbar=no,location=no');">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Exportar como PDF
+    </button>
 </div>
 
 <!-- Contenedor Principal -->
@@ -1455,6 +1471,84 @@ if ($source === 'borrador') {
                 </div>
             </div>
         <?php endif; ?>
+
+        <!-- Desgravámenes -->
+        <?php
+        // Collect items that qualify as desgravámenes
+        $desgravamenesItems = [];
+        // 1. Inmuebles: Vivienda principal
+        foreach ($bienesInmuebles as $bi) {
+            $esVivP = ($bi['es_vivienda_principal'] ?? $bi['vivienda_principal'] ?? 0);
+            if ($esVivP == 1 || $esVivP === 'Si' || $esVivP === 'true') {
+                $desgravamenesItems[] = [
+                    'concepto' => 'Vivienda Principal',
+                    'detalle' => $bi['tipo_bien_nombres'] ?? $bi['tipo_bien_nombre'] ?? ($bi['descripcion'] ?? 'Inmueble'),
+                    'valor' => (float)($bi['valor_declarado'] ?? 0),
+                ];
+            }
+        }
+        // 2. Muebles: Seguros montepío / seguro de vida
+        foreach ($bienesMuebles as $bm) {
+            $catN = strtolower($bm['categoria_nombre'] ?? $bm['categoria'] ?? '');
+            $tipoN = strtolower($bm['tipo_nombre'] ?? '');
+            if (strpos($catN, 'seguro') !== false &&
+                (strpos($tipoN, 'montep') !== false || strpos($tipoN, 'seguro de vida') !== false)) {
+                $desgravamenesItems[] = [
+                    'concepto' => 'Seguro (' . ($bm['tipo_nombre'] ?? 'Seguro') . ')',
+                    'detalle' => $bm['descripcion'] ?? '—',
+                    'valor' => (float)($bm['valor_declarado'] ?? 0),
+                ];
+            }
+            // 3. Prestaciones sociales sin banco
+            if (strpos($catN, 'prestacion') !== false && empty($bm['banco_id'])) {
+                $desgravamenesItems[] = [
+                    'concepto' => 'Prestaciones Sociales',
+                    'detalle' => $bm['descripcion'] ?? '—',
+                    'valor' => (float)($bm['valor_declarado'] ?? 0),
+                ];
+            }
+        }
+        $totalDesgItems = 0;
+        foreach ($desgravamenesItems as $dg) $totalDesgItems += $dg['valor'];
+        ?>
+        <div class="gc-card">
+            <div class="gc-card-header" style="display: flex; align-items: center; gap: 8px;">
+                <h3>Desgravámenes</h3>
+                <span style="background: var(--green-50, #f0fdf4); color: var(--green-700, #15803d); padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">
+                    <?= formatBs($totalDesgItems) ?>
+                </span>
+            </div>
+            <div class="gc-card-body gc-table-wrapper">
+                <?php if (empty($desgravamenesItems)): ?>
+                    <p class="gc-empty-text">No hay bienes que califiquen como desgravámenes.</p>
+                <?php else: ?>
+                    <table class="gc-table">
+                        <thead>
+                            <tr>
+                                <th>Concepto</th>
+                                <th>Detalle</th>
+                                <th>Valor Declarado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($desgravamenesItems as $dg): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($dg['concepto']) ?></td>
+                                    <td><?= htmlspecialchars($dg['detalle']) ?></td>
+                                    <td class="gc-money"><?= formatBs($dg['valor']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                        <tfoot>
+                            <tr style="font-weight: 600; background: var(--green-50, #f0fdf4);">
+                                <td colspan="2" style="text-align: right;">Total Desgravámenes</td>
+                                <td class="gc-money" style="color: var(--green-700, #15803d);"><?= formatBs($totalDesgItems) ?></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
 
     <!-- ========================================= -->
@@ -1988,8 +2082,7 @@ if ($source === 'borrador') {
                     <label>Estudiantes</label>
                     <div class="gc-student-search">
                         <input type="text" id="studentSearch" class="gc-input"
-                            placeholder="Buscar por nombre o cédula...">
-                        <div id="studentResults" class="gc-student-results" style="display:none"></div>
+                            placeholder="Buscar por nombre, cédula o correo...">
                     </div>
                     <div id="selectedStudents" class="gc-selected-students"></div>
                 </div>
@@ -2148,7 +2241,7 @@ if ($source === 'borrador') {
   }
 })();
 </script>
-<script src="<?= base_url('assets/js/professor/gestionar_caso/asignaciones.js') ?>"></script>
+
 
 <?php
 $content = ob_get_clean();

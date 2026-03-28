@@ -214,7 +214,7 @@ ob_start();
             <button onclick="document.getElementById('avisoModal').style.display='none'"
               class="btn btn-sm btn-outline-secondary">Cancelar</button>
             <button onclick="window.location.href='<?= base_url('/simulador/sucesion/herencia') ?>'"
-              class="btn btn-sm btn-danger">Aceptar</button>
+              class="btn btn-sm btn-primary">Aceptar</button>
           </div>
         </div>
       </div>

@@ -359,8 +359,8 @@ ob_start();
 
                                                 <input type=text name=fechaCierreFiscal maxlength=10 value="<?= $fechaCierreValue ?>"
                                                     style=font-family:Verdana;font-size:10;width:80%;height:18
-                                                    id=fechaCierreFiscal onblur="ValidDate(this)"
-                                                    onchange="ValidDate(this)" onkeypress="FormatoFecha(this);">
+                                                    id=fechaCierreFiscal onblur="ValidDateCierre(this)"
+                                                    onchange="ValidDateCierre(this)" onkeypress="FormatoFecha(this);">
 
 
                                                 <a href=# id=bFechaCF><img id=p_calendFC name=p_calendFC
@@ -472,6 +472,9 @@ ob_start();
                 form.addEventListener('submit', function (e) {
                     e.preventDefault();
 
+                    // Prevent double-click silently — must be first check
+                    if (window._savingDatosBasicos) return;
+
                     // --- Validación ---
                     var errors = [];
 
@@ -543,6 +546,8 @@ ob_start();
                         return;
                     }
 
+                    window._savingDatosBasicos = true;
+
                     var apiUrl = (window.simBaseUrl || '') + '/api/intentos/' + window.simIntentoId + '/guardar';
 
                     fetch(apiUrl, {
@@ -561,12 +566,14 @@ ob_start();
                         if (data.ok) {
                             window.simBorrador = borrador;
                         } else {
-                            alert('Error al guardar los datos.');
+                            console.warn('Guardar retornó ok=false:', data);
                         }
                     })
                     .catch(function (error) {
                         console.error('Error:', error);
-                        alert('Ocurrió un error de red al intentar guardar.');
+                    })
+                    .finally(function () {
+                        window._savingDatosBasicos = false;
                     });
                 });
             });

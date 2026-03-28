@@ -1,6 +1,6 @@
 127.0.0.1/information_schema/KEY_COLUMN_USAGE/		http://localhost/phpmyadmin/index.php?route=/database/sql&db=spdss
 
-   Mostrando filas 0 - 130 (total de 131, La consulta tardó 0,0013 segundos.)
+   Mostrando filas 0 - 131 (total de 132, La consulta tardó 0,0014 segundos.)
 
 
 SELECT 
@@ -27,6 +27,7 @@ estudiantes	carrera_id	fk_estudiantes_carreras	carreras	id
 estudiantes	persona_id	fk_estudiantes_personas	personas	id	
 inscripciones	estudiante_id	fk_inscripcion_estudiante	estudiantes	id	
 inscripciones	seccion_id	fk_inscripcion_seccion	secciones	id	
+mail_queue	usuario_id	fk_mail_usuario	users	id	
 materias	carrera_id	fk_materias_carreras	carreras	id	
 municipios	estado_id	fk_municipio_estado	estados	id	
 parroquias	municipio_id	fk_parroquias_municipio	municipios	id	
@@ -118,8 +119,8 @@ sim_intento_bm_prestaciones	empresa_id	fk_ibmp_empresa	sim_empresas	id
 sim_intento_bm_seguro	bien_mueble_id	fk_ibms_bien	sim_intento_bienes_muebles	id	
 sim_intento_bm_seguro	empresa_id	fk_ibms_empresa	sim_empresas	id	
 sim_intento_bm_semovientes	bien_mueble_id	fk_ibmsem_bien	sim_intento_bienes_muebles	id	
-sim_intento_bm_semovientes	tipo_semoviente_id	fk_ibmsem_tipo	sim_cat_tipos_semoviente	id	
 
+sim_intento_bm_semovientes	tipo_semoviente_id	fk_ibmsem_tipo	sim_cat_tipos_semoviente	id	
 sim_intento_bm_transporte	bien_mueble_id	fk_ibmt_bien	sim_intento_bienes_muebles	id	
 sim_intento_calculo_manual	intento_id	fk_icm_intento	sim_intentos	id	
 sim_intento_calculo_manual	relacion_id	fk_icm_relacion	sim_intento_relaciones	id	

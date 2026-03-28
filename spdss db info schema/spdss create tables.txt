@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-03-2026 a las 07:30:28
+-- Tiempo de generación: 28-03-2026 a las 00:35:28
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -352,7 +352,161 @@ INSERT INTO `bitacora_eventos` (`id`, `user_id`, `attempted_email`, `tipo_evento
 (303, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 05:34:17'),
 (304, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 05:34:59'),
 (305, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 05:50:19'),
-(306, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-23_02-29-18.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 06:29:19');
+(306, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-23_02-29-18.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 06:29:19'),
+(307, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 06:42:11'),
+(308, NULL, 'admin@unimar.edu.ve', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 06:42:19'),
+(309, NULL, 'admin@admin.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 06:42:34'),
+(310, NULL, 'admin@unimar.edu.ve', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 06:42:38'),
+(311, 6, 'fran.ard20@gmail.com', 10, 'usuarios', 'users', 7, 'Profesor creado: Yemnel Torcat (V-14043424)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 07:03:25'),
+(312, NULL, 'fran.ard20@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 07:05:31'),
+(313, NULL, NULL, 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-23 07:12:24'),
+(314, NULL, 'fran.ard20@gmail.com', 6, 'autenticacion', 'users', 7, 'Primer login: perfil completado y contraseña cambiada', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 07:15:13'),
+(315, NULL, 'fran.ard20@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 07:15:36'),
+(316, 6, 'superadmin@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 07:57:46'),
+(317, 3, 'cardierv@gmail.com', 9, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 07:58:01'),
+(318, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 07:58:01'),
+(319, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 07:59:45'),
+(320, 1, 'fadr2001@gmail.com', 9, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-24 22:14:02'),
+(321, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-24 22:14:02'),
+(322, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-24 22:58:25'),
+(323, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-24 23:28:00'),
+(324, 6, 'superadmin@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-24 23:39:17'),
+(325, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-24 23:40:54'),
+(326, NULL, 'superadmin@unimar.edu.ve', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-24 23:41:04'),
+(327, 6, 'superadmin@unimar.edu.ve', 9, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-24 23:41:10'),
+(328, 6, 'superadmin@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-24 23:41:10'),
+(329, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:08:15'),
+(330, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:11:03'),
+(331, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:11:06'),
+(332, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:11:09'),
+(333, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:11:11'),
+(334, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:12:35'),
+(335, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:12:43'),
+(336, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:13:11'),
+(337, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:14:08'),
+(338, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:14:12'),
+(339, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:14:38'),
+(340, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:16:29'),
+(341, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:16:30'),
+(342, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:16:35'),
+(343, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:16:57'),
+(344, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:16:59'),
+(345, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:17:04'),
+(346, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:17:07'),
+(347, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:17:10'),
+(348, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:43:41'),
+(349, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:43:43'),
+(350, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:43:47'),
+(351, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requen (V-31120479)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:50:10'),
+(352, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requena (V-31120479)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:50:15'),
+(353, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:50:18'),
+(354, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:50:19'),
+(355, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:53:21'),
+(356, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:53:23'),
+(357, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:53:25'),
+(358, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requenax (V-31120479)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:53:30'),
+(359, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requenax (V-11171152)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:54:06'),
+(360, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requena (V-11171152)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:56:05'),
+(361, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requena (V-11171154)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 00:56:18'),
+(362, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requena (V-11171154)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:03:53'),
+(363, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requena (V-11445578)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:04:56'),
+(364, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requena (V-11445578)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:11:18'),
+(365, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requena (V-11445578)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:12:30'),
+(366, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requena (V-11445578)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:13:06'),
+(367, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requenas (V-11445578)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:34:50'),
+(368, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:35:25'),
+(369, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:35:27'),
+(370, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:35:31'),
+(371, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:35:34'),
+(372, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:35:37'),
+(373, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requena (V-11445578)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:35:57'),
+(374, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:36:00'),
+(375, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:36:23'),
+(376, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requena (V-11445578)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:36:25'),
+(377, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requena (V-11445578)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:37:44'),
+(378, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:37:48'),
+(379, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:37:51'),
+(380, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:37:52'),
+(381, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:37:54'),
+(382, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:37:55'),
+(383, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:37:58'),
+(384, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:37:59'),
+(385, 6, 'superadmin@unimar.edu.ve', 11, 'usuarios', 'users', 1, 'Se editaron los datos del Profesor: Cesar Requenas (V-11445578)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 01:38:08'),
+(386, 1, 'fadr2001@gmail.com', 4, 'autenticacion', NULL, NULL, 'Usuario con status: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 16:44:53'),
+(387, NULL, 'superadmin@unimar.edu.ve', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 16:45:19'),
+(388, 6, 'superadmin@unimar.edu.ve', 9, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 16:45:26'),
+(389, 6, 'superadmin@unimar.edu.ve', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 16:45:26'),
+(390, 6, 'fran.ard20@gmail.com', 10, 'usuarios', 'users', 7, 'Profesor creado: Francisco Alejandro (V-27836652)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 21:15:31'),
+(391, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 1, 'Estado cambiado a: active', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 21:16:29'),
+(392, NULL, 'fran.ard20@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 21:16:48'),
+(393, NULL, 'fran.ard20@gmail.com', 6, 'autenticacion', 'users', 7, 'Primer login: perfil completado y contraseña cambiada', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 21:17:07'),
+(394, NULL, 'fran.ard20@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 21:17:44'),
+(395, 6, 'superadmin@unimar.edu.ve', 13, 'usuarios', 'users', 7, 'Estado cambiado a: inactive', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 21:17:51'),
+(396, 6, 'fran.ard20@gmail.com', 10, 'usuarios', 'users', 8, 'Profesor creado: Francisco Alejandro (V-27836652)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 21:20:47'),
+(397, 6, 'fran.ard20@gmail.com', 10, 'usuarios', 'users', 9, 'Profesor creado: Francisco Alejandro (V-27836652)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 21:51:07'),
+(398, 6, 'fadr20501@gmail.com', 34, 'usuarios', 'users', 7, 'Estudiante creado: Francisco Alejandro (V-27836659)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 22:34:02'),
+(399, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo automático: auto_2026-03-25_19-09-33.sql', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 23:09:34'),
+(400, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-25_19-41-52.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 23:41:53'),
+(401, 6, 'superadmin@unimar.edu.ve', 31, 'sistema', 'configs_globales', NULL, 'Auto: Sí, Frecuencia: diario, Hora: 19:03, Retención: 14', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 23:42:14'),
+(402, 6, 'superadmin@unimar.edu.ve', 31, 'sistema', 'configs_globales', NULL, 'Auto: Sí, Frecuencia: diario, Hora: 19:43, Retención: 14', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 23:42:25'),
+(403, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-25_19-53-43.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 23:53:44'),
+(404, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-25_19-58-26.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 23:58:27'),
+(405, 6, 'superadmin@unimar.edu.ve', 32, 'sistema', NULL, NULL, 'Eliminado: manual_2026-03-23_00-44-22.sql', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 23:58:34'),
+(406, 6, 'superadmin@unimar.edu.ve', 32, 'sistema', NULL, NULL, 'Eliminado: manual_2026-03-23_01-24-43.sql', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-25 23:58:36'),
+(407, 6, 'superadmin@unimar.edu.ve', 32, 'sistema', NULL, NULL, 'Eliminado: auto_2026-03-25_19-09-33.sql', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 00:03:58'),
+(408, 6, 'superadmin@unimar.edu.ve', 31, 'sistema', 'configs_globales', NULL, 'Auto: Sí, Frecuencia: diario, Hora: 20:05, Retención: 14', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 00:04:07'),
+(409, 6, 'superadmin@unimar.edu.ve', 31, 'sistema', 'configs_globales', NULL, 'Auto: Sí, Frecuencia: diario, Hora: 20:11, Retención: 14', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 00:10:29'),
+(410, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo automático: auto_2026-03-25_20-11-08.sql', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 00:11:08'),
+(411, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-25_20-24-04.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 00:24:04'),
+(412, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-25_20-24-08.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 00:24:08'),
+(413, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-25_20-24-11.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 00:24:11'),
+(414, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-25_20-24-14.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 00:24:14'),
+(415, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-25_20-24-17.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 00:24:18'),
+(416, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-25_20-24-21.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 00:24:21'),
+(417, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-25_20-24-26.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 00:24:26'),
+(418, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Restauración de BD desde: manual_2026-03-25_20-28-35.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 01:11:56'),
+(419, 6, 'superadmin@unimar.edu.ve', 30, 'sistema', NULL, NULL, 'Respaldo manual: manual_2026-03-25_22-09-10.sql (0.6 MB)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 02:09:11'),
+(421, 6, 'superadmin@unimar.edu.ve', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 03:38:00'),
+(422, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 03:38:07'),
+(423, 1, 'fadr2001@gmail.com', 9, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 20:28:06'),
+(424, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-26 20:28:06'),
+(425, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 04:21:20'),
+(426, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 04:21:28'),
+(427, 3, 'cardierv@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:47:41');
+INSERT INTO `bitacora_eventos` (`id`, `user_id`, `attempted_email`, `tipo_evento_id`, `modulo`, `entidad_tipo`, `entidad_id`, `detalle`, `ip_address`, `user_agent`, `created_at`) VALUES
+(428, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:47:49'),
+(429, 1, 'fadr2001@gmail.com', 16, 'casos', 'sim_casos_estudios', 13, 'Caso eliminado: prueba calculos', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:47:58'),
+(430, 1, 'fadr2001@gmail.com', 14, 'casos', 'sim_casos_estudios', 14, 'Borrador creado: p1', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:48:19'),
+(431, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 12, 'Estado cambiado a Inactivo: caso de prueba total', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:51:45'),
+(432, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 12, 'Estado cambiado a Publicado: caso de prueba total', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:51:47'),
+(433, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 12, 'Estado cambiado a Inactivo: caso de prueba total', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:51:50'),
+(434, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 12, 'Estado cambiado a Publicado: caso de prueba total', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:51:51'),
+(435, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 12, 'Estado cambiado a Inactivo: caso de prueba total', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:51:58'),
+(436, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 12, 'Estado cambiado a Publicado: caso de prueba total', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:51:59'),
+(437, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 12, 'Estado cambiado a Inactivo: caso de prueba total', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:51:59'),
+(438, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 12, 'Estado cambiado a Publicado: caso de prueba total', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:52:00'),
+(439, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 11, 'Estado cambiado a Inactivo: 3', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:52:13'),
+(440, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 11, 'Estado cambiado a Publicado: 3', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:52:13'),
+(441, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 14, 'Borrador actualizado: p1', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:52:17'),
+(442, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 14, 'Borrador actualizado: p1', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:52:20'),
+(443, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 14, 'Borrador actualizado: p1', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:52:24'),
+(444, 1, 'fadr2001@gmail.com', 15, 'casos', 'sim_casos_estudios', 14, 'Borrador publicado: caso ejemplo', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 05:57:17'),
+(445, 1, 'fadr2001@gmail.com', 19, 'asignaciones', 'sim_config_caso', 8, 'Modalidad: Practica_Libre', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 06:00:29'),
+(446, 1, 'fadr2001@gmail.com', 20, 'asignaciones', 'sim_config_caso', 8, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 06:00:41'),
+(447, 1, 'fadr2001@gmail.com', 20, 'asignaciones', 'sim_config_caso', 8, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 06:00:51'),
+(448, 1, 'fadr2001@gmail.com', 20, 'asignaciones', 'sim_config_caso', 8, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 06:01:01'),
+(449, 1, 'fadr2001@gmail.com', 20, 'asignaciones', 'sim_config_caso', 8, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 06:11:37'),
+(450, 1, 'fadr2001@gmail.com', 22, 'asignaciones', 'sim_config_caso', 8, '1 estudiante(s) asignado(s)', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 06:11:37'),
+(451, 1, 'fadr2001@gmail.com', 9, 'autenticacion', NULL, NULL, 'Sesión anterior desplazada desde otra ubicación', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 16:08:26'),
+(452, 1, 'fadr2001@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 16:08:26'),
+(453, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 14, 'Estado cambiado a Inactivo: caso ejemplo', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 16:14:45'),
+(454, 1, 'fadr2001@gmail.com', 17, 'casos', 'sim_casos_estudios', 14, 'Estado cambiado a Publicado: caso ejemplo', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 16:14:51'),
+(455, 1, 'fadr2001@gmail.com', 2, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 16:55:52'),
+(456, NULL, 'cardierv@gmail.com', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 16:56:02'),
+(457, 3, 'cardierv@gmail.com', 1, 'autenticacion', NULL, NULL, NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 16:56:08'),
+(458, 3, 'cardierv@gmail.com', 24, 'simulador', 'sim_intentos', 5, 'Intento #1', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 16:56:58'),
+(459, NULL, '29741700', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 20:20:29'),
+(460, NULL, '29741700', 3, 'autenticacion', NULL, NULL, 'Credenciales inválidas', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 20:20:43');
 
 -- --------------------------------------------------------
 
@@ -3264,11 +3418,11 @@ CREATE TABLE `configs_globales` (
 
 INSERT INTO `configs_globales` (`id`, `clave`, `valor`, `tipo`, `categoria`, `descripcion`, `created_at`, `updated_at`) VALUES
 (1, 'backup_auto_enabled', '1', 'bool', 'respaldo', 'Activar respaldo automático', '2026-03-23 04:29:13', '2026-03-23 04:45:10'),
-(2, 'backup_frecuencia', 'semanal', 'string', 'respaldo', 'Frecuencia: diario, semanal', '2026-03-23 04:29:13', '2026-03-23 04:45:10'),
-(3, 'backup_hora', '19:03', 'string', 'respaldo', 'Hora de ejecución del respaldo automático', '2026-03-23 04:29:13', '2026-03-23 04:45:10'),
+(2, 'backup_frecuencia', 'diario', 'string', 'respaldo', 'Frecuencia: diario, semanal', '2026-03-23 04:29:13', '2026-03-25 23:42:14'),
+(3, 'backup_hora', '20:11', 'string', 'respaldo', 'Hora de ejecución del respaldo automático', '2026-03-23 04:29:13', '2026-03-26 00:10:29'),
 (4, 'backup_dia', '3', 'int', 'respaldo', 'Día de ejecución para semanal (0=Domingo, 1=Lunes ... 6=Sábado)', '2026-03-23 04:29:13', '2026-03-23 04:45:10'),
-(5, 'backup_retencion', '11', 'int', 'respaldo', 'Cantidad máxima de respaldos a mantener', '2026-03-23 04:29:13', '2026-03-23 04:44:38'),
-(6, 'backup_ultimo_timestamp', '2026-03-23 02:29:19', 'string', 'respaldo', 'Fecha y hora del último respaldo ejecutado', '2026-03-23 04:29:13', '2026-03-23 06:29:19');
+(5, 'backup_retencion', '14', 'int', 'respaldo', 'Cantidad máxima de respaldos a mantener', '2026-03-23 04:29:13', '2026-03-25 23:42:14'),
+(6, 'backup_ultimo_timestamp', '2026-03-25 22:09:10', 'string', 'respaldo', 'Fecha y hora del último respaldo ejecutado', '2026-03-23 04:29:13', '2026-03-26 02:09:11');
 
 -- --------------------------------------------------------
 
@@ -3334,7 +3488,8 @@ INSERT INTO `estudiantes` (`id`, `persona_id`, `carrera_id`, `created_at`, `upda
 (1, 2, 1, '2026-02-11 04:50:54', '2026-02-11 04:50:54'),
 (2, 3, 1, '2026-02-11 05:13:38', '2026-02-11 05:13:38'),
 (3, 4, 1, '2026-02-12 18:08:20', '2026-02-12 18:08:20'),
-(4, 5, 1, '2026-02-12 18:10:33', '2026-02-12 18:10:33');
+(4, 5, 1, '2026-02-12 18:10:33', '2026-02-12 18:10:33'),
+(5, 7, 1, '2026-03-25 22:34:02', '2026-03-25 22:34:02');
 
 -- --------------------------------------------------------
 
@@ -3358,6 +3513,40 @@ INSERT INTO `inscripciones` (`id`, `estudiante_id`, `seccion_id`, `created_at`) 
 (2, 2, 1, '2026-02-11 05:13:38'),
 (3, 3, 1, '2026-02-12 18:08:20'),
 (4, 4, 1, '2026-02-12 18:10:33');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `mail_queue`
+--
+
+CREATE TABLE `mail_queue` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `usuario_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `tipo` enum('bienvenida','reset_password','rif_sucesoral') NOT NULL,
+  `destinatario` varchar(255) NOT NULL,
+  `asunto` varchar(500) NOT NULL,
+  `cuerpo` text NOT NULL,
+  `estado` enum('pendiente','enviado','fallido') NOT NULL DEFAULT 'pendiente',
+  `intentos` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `referencia_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'ID del recurso origen (token, usuario, intento)',
+  `error_msg` text DEFAULT NULL,
+  `next_retry_at` datetime DEFAULT NULL,
+  `sent_at` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `mail_queue`
+--
+
+INSERT INTO `mail_queue` (`id`, `usuario_id`, `tipo`, `destinatario`, `asunto`, `cuerpo`, `estado`, `intentos`, `referencia_id`, `error_msg`, `next_retry_at`, `sent_at`, `created_at`, `updated_at`) VALUES
+(7, NULL, 'bienvenida', 'fran.ard20@gmail.com', 'Bienvenido al SPDSS — Su cuenta ha sido creada', '\n        <div style=\'font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;\'>\n            <div style=\'background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;\'>\n                <h1 style=\'margin: 0; font-size: 24px;\'>🎓 Bienvenido al SPDSS</h1>\n                <p style=\'margin: 10px 0 0; opacity: 0.9;\'>Sistema Pedagógico de Declaración Sucesoral Simulada</p>\n            </div>\n            <div style=\'background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none;\'>\n                <p style=\'font-size: 16px;\'>Estimado/a <strong>Francisco Alejandro</strong>,</p>\n                <p>Su cuenta de profesor ha sido creada exitosamente en el SPDSS. A continuación encontrará sus datos de acceso:</p>\n                \n                <div style=\'background: #f5f5f5; border-left: 4px solid #1a237e; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;\'>\n                    <p style=\'margin: 5px 0;\'><strong>🔗 URL del sistema:</strong> <a href=\'/tesis_francisco/login\'>/tesis_francisco/login</a></p>\n                    <p style=\'margin: 5px 0;\'><strong>📧 Email:</strong> fran.ard20@gmail.com</p>\n                    <p style=\'margin: 5px 0;\'><strong>🔑 Contraseña temporal:</strong> Su número de cédula (27836652)</p>\n                </div>\n\n                <div style=\'background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;\'>\n                    <p style=\'margin: 0; font-weight: bold; color: #e65100;\'>⚠️ Importante</p>\n                    <p style=\'margin: 10px 0 0;\'>Al iniciar sesión por primera vez, el sistema le solicitará establecer una nueva contraseña segura.</p>\n                </div>\n\n                <p style=\'color: #666; font-size: 13px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;\'>\n                    Este es un correo automático del SPDSS. Si no solicitó esta cuenta, puede ignorar este mensaje.\n                </p>\n            </div>\n        </div>', 'enviado', 1, NULL, NULL, NULL, '2026-03-25 17:15:33', '2026-03-25 17:15:33', '2026-03-25 17:15:33'),
+(8, NULL, 'bienvenida', 'fran.ard20@gmail.com', 'Bienvenido al SPDSS — Su cuenta ha sido creada', '\n        <div style=\'font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;\'>\n            <div style=\'background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;\'>\n                <h1 style=\'margin: 0; font-size: 24px;\'>🎓 Bienvenido al SPDSS</h1>\n                <p style=\'margin: 10px 0 0; opacity: 0.9;\'>Sistema Pedagógico de Declaración Sucesoral Simulada</p>\n            </div>\n            <div style=\'background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none;\'>\n                <p style=\'font-size: 16px;\'>Estimado/a <strong>Francisco Alejandro</strong>,</p>\n                <p>Su cuenta de profesor ha sido creada exitosamente en el SPDSS. A continuación encontrará sus datos de acceso:</p>\n                \n                <div style=\'background: #f5f5f5; border-left: 4px solid #1a237e; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;\'>\n                    <p style=\'margin: 5px 0;\'><strong>🔗 URL del sistema:</strong> <a href=\'/tesis_francisco/login\'>/tesis_francisco/login</a></p>\n                    <p style=\'margin: 5px 0;\'><strong>📧 Email:</strong> fran.ard20@gmail.com</p>\n                    <p style=\'margin: 5px 0;\'><strong>🔑 Contraseña temporal:</strong> Su número de cédula (27836652)</p>\n                </div>\n\n                <div style=\'background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;\'>\n                    <p style=\'margin: 0; font-weight: bold; color: #e65100;\'>⚠️ Importante</p>\n                    <p style=\'margin: 10px 0 0;\'>Al iniciar sesión por primera vez, el sistema le solicitará establecer una nueva contraseña segura.</p>\n                </div>\n\n                <p style=\'color: #666; font-size: 13px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;\'>\n                    Este es un correo automático del SPDSS. Si no solicitó esta cuenta, puede ignorar este mensaje.\n                </p>\n            </div>\n        </div>', 'enviado', 1, NULL, NULL, NULL, '2026-03-25 17:25:18', '2026-03-25 17:20:47', '2026-03-25 17:26:35'),
+(9, NULL, 'bienvenida', 'fran.ard20@gmail.com', 'Bienvenido al SPDSS — Su cuenta ha sido creada', '\n        <div style=\'font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;\'>\n            <div style=\'background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;\'>\n                <h1 style=\'margin: 0; font-size: 24px;\'>🎓 Bienvenido al SPDSS</h1>\n                <p style=\'margin: 10px 0 0; opacity: 0.9;\'>Sistema Pedagógico de Declaración Sucesoral Simulada</p>\n            </div>\n            <div style=\'background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none;\'>\n                <p style=\'font-size: 16px;\'>Estimado/a <strong>Francisco Alejandro</strong>,</p>\n                <p>Su cuenta de profesor ha sido creada exitosamente en el SPDSS. A continuación encontrará sus datos de acceso:</p>\n                \n                <div style=\'background: #f5f5f5; border-left: 4px solid #1a237e; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;\'>\n                    <p style=\'margin: 5px 0;\'><strong>🔗 URL del sistema:</strong> <a href=\'/tesis_francisco/login\'>/tesis_francisco/login</a></p>\n                    <p style=\'margin: 5px 0;\'><strong>📧 Email:</strong> fran.ard20@gmail.com</p>\n                    <p style=\'margin: 5px 0;\'><strong>🔑 Contraseña temporal:</strong> Su número de cédula (27836652)</p>\n                </div>\n\n                <div style=\'background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;\'>\n                    <p style=\'margin: 0; font-weight: bold; color: #e65100;\'>⚠️ Importante</p>\n                    <p style=\'margin: 10px 0 0;\'>Al iniciar sesión por primera vez, el sistema le solicitará establecer una nueva contraseña segura.</p>\n                </div>\n\n                <p style=\'color: #666; font-size: 13px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;\'>\n                    Este es un correo automático del SPDSS. Si no solicitó esta cuenta, puede ignorar este mensaje.\n                </p>\n            </div>\n        </div>', 'enviado', 1, NULL, NULL, NULL, '2026-03-25 17:51:08', '2026-03-25 17:51:08', '2026-03-25 17:51:08'),
+(10, NULL, 'bienvenida', 'fadr20501@gmail.com', 'Bienvenido al SPDSS — Su cuenta ha sido creada', '\n        <div style=\'font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;\'>\n            <div style=\'background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;\'>\n                <h1 style=\'margin: 0; font-size: 24px;\'>🎓 Bienvenido al SPDSS</h1>\n                <p style=\'margin: 10px 0 0; opacity: 0.9;\'>Sistema Pedagógico de Declaración Sucesoral Simulada</p>\n            </div>\n            <div style=\'background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none;\'>\n                <p style=\'font-size: 16px;\'>Estimado/a <strong>Francisco Alejandro</strong>,</p>\n                <p>Su cuenta de estudiante ha sido creada exitosamente en el SPDSS. A continuación encontrará sus datos de acceso:</p>\n\n                <div style=\'background: #f5f5f5; border-left: 4px solid #1a237e; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;\'>\n                    <p style=\'margin: 5px 0;\'><strong>🔗 URL del sistema:</strong> <a href=\'/tesis_francisco/login\'>/tesis_francisco/login</a></p>\n                    <p style=\'margin: 5px 0;\'><strong>📧 Email:</strong> fadr20501@gmail.com</p>\n                    <p style=\'margin: 5px 0;\'><strong>🔑 Contraseña temporal:</strong> Su número de cédula (27836659)</p>\n                </div>\n\n                <div style=\'background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;\'>\n                    <p style=\'margin: 0; font-weight: bold; color: #e65100;\'>⚠️ Importante</p>\n                    <p style=\'margin: 10px 0 0;\'>Al iniciar sesión por primera vez, el sistema le solicitará establecer una nueva contraseña segura.</p>\n                </div>\n\n                <p style=\'color: #666; font-size: 13px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;\'>\n                    Este es un correo automático del SPDSS. Si no solicitó esta cuenta, puede ignorar este mensaje.\n                </p>\n            </div>\n        </div>', 'enviado', 1, NULL, NULL, NULL, '2026-03-25 18:34:04', '2026-03-25 18:34:04', '2026-03-25 18:34:04'),
+(11, NULL, 'rif_sucesoral', 'cardierv@gmail.com', '✅ RIF Sucesoral Generado — Caso: caso ejemplo, Intento: #5', '\n        <div style=\'font-family: \"Plus Jakarta Sans\", sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;\'>\n            <h2 style=\'color: #004085; text-align: center;\'>✅ RIF Sucesoral Generado</h2>\n            <p style=\'text-align: center; color: #555; margin-bottom: 20px;\'>Su validación fue exitosa y se ha generado el RIF Sucesoral.</p>\n\n            <div style=\'background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;\'>\n                <strong>Estudiante:</strong> Valeria<br>\n                <strong>Intento:</strong> #5<br>                <strong>Caso:</strong> caso ejemplo<br>                <strong>Fecha:</strong> 27/03/2026 14:02\n            </div>\n\n            <div style=\'background-color: #f8f9fa; padding: 15px; text-align: center; margin: 20px 0;\'>\n                <p style=\'margin: 0 0 8px; font-size: 13px; color: #555;\'>Su RIF Sucesoral es:</p>\n                <strong style=\'font-size: 32px; letter-spacing: 5px; color: #0d6efd;\'>V32614540</strong>\n            </div>\n\n            <div style=\'margin-bottom: 16px; font-size: 13px; line-height: 1.7;\'>\n                <h3 style=\'font-size: 14px; color: #004085; margin: 0 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 6px;\'>\n                    📋 Instrucciones\n                </h3>\n                <ol style=\'margin: 0; padding-left: 20px; color: #555;\'>\n                    <li style=\'margin-bottom: 6px;\'>Guarde este RIF Sucesoral para sus registros.</li>\n                    <li style=\'margin-bottom: 6px;\'>En el proceso real, debe presentar la planilla impresa ante la unidad del SENIAT correspondiente a su domicilio fiscal.</li>\n                    <li style=\'margin-bottom: 6px;\'>Para fines educativos, este RIF ha sido asignado automáticamente a su caso en el simulador.</li>\n                </ol>\n            </div>\n\n            <div style=\'background-color: #f8f9fa; padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; color: #555;\'>\n                <strong>📌 Recuerde:</strong> En el proceso real ante el SENIAT, se requiere un correo electrónico exclusivo para el RIF Sucesoral.\n                Se recomienda crear uno para uso exclusivo de la sucesión.\n            </div>\n\n            <p style=\'color: #777; font-size: 12px; text-align: center;\'>Este correo fue generado automáticamente por el Simulador SENIAT.</p>\n        </div>', 'enviado', 1, 5, NULL, NULL, '2026-03-27 14:02:12', '2026-03-27 14:02:12', '2026-03-27 14:02:12');
 
 -- --------------------------------------------------------
 
@@ -5163,8 +5352,6 @@ CREATE TABLE `personas` (
   `cedula` varchar(20) NOT NULL COMMENT 'Número de cédula sin puntos',
   `nombres` varchar(100) NOT NULL,
   `apellidos` varchar(100) NOT NULL,
-  `fecha_nacimiento` date NOT NULL,
-  `genero` enum('M','F','Otro','Prefiero no decir') DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -5173,13 +5360,14 @@ CREATE TABLE `personas` (
 -- Volcado de datos para la tabla `personas`
 --
 
-INSERT INTO `personas` (`id`, `nacionalidad`, `cedula`, `nombres`, `apellidos`, `fecha_nacimiento`, `genero`, `created_at`, `updated_at`) VALUES
-(1, 'V', '31120479', 'Cesar', 'Requena', '1991-02-27', 'M', '2026-02-11 04:30:29', '2026-02-11 04:30:29'),
-(2, 'V', '27836650', 'Francisco', 'Diaz', '2026-02-11', 'M', '2026-02-11 04:50:54', '2026-02-11 04:51:09'),
-(3, 'V', '4224014', 'Valeria', 'Cardier', '2026-02-28', '', '2026-02-11 05:13:38', '2026-02-11 05:13:38'),
-(4, 'V', '31120478', 'prueba', 'Cardier', '2001-05-29', '', '2026-02-12 18:08:20', '2026-02-12 18:08:20'),
-(5, 'V', '31860250', 'Valeria', 'Cardier', '2001-05-29', '', '2026-02-12 18:10:33', '2026-02-12 18:10:33'),
-(6, 'V', '00000000', 'Super', 'Administrador', '1990-01-01', 'Prefiero no decir', '2026-02-23 04:45:28', '2026-02-23 04:45:28');
+INSERT INTO `personas` (`id`, `nacionalidad`, `cedula`, `nombres`, `apellidos`, `created_at`, `updated_at`) VALUES
+(1, 'V', '11445578', 'Cesar', 'Requenas', '2026-02-11 04:30:29', '2026-03-25 01:38:08'),
+(2, 'V', '27836650', 'Francisco', 'Diaz', '2026-02-11 04:50:54', '2026-02-11 04:51:09'),
+(3, 'V', '4224014', 'Valeria', 'Cardier', '2026-02-11 05:13:38', '2026-02-11 05:13:38'),
+(4, 'V', '31120478', 'prueba', 'Cardier', '2026-02-12 18:08:20', '2026-02-12 18:08:20'),
+(5, 'V', '31860250', 'Valeria', 'Cardier', '2026-02-12 18:10:33', '2026-02-12 18:10:33'),
+(6, 'V', '00000000', 'Super', 'Administrador', '2026-02-23 04:45:28', '2026-02-23 04:45:28'),
+(7, 'V', '27836659', 'Francisco', 'Alejandro', '2026-03-25 22:34:02', '2026-03-25 22:34:02');
 
 -- --------------------------------------------------------
 
@@ -5190,7 +5378,7 @@ INSERT INTO `personas` (`id`, `nacionalidad`, `cedula`, `nombres`, `apellidos`, 
 CREATE TABLE `profesores` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `persona_id` bigint(20) UNSIGNED NOT NULL,
-  `titulo` varchar(20) NOT NULL,
+  `titulo` varchar(20) DEFAULT NULL,
   `firma_digital` varchar(255) DEFAULT NULL COMMENT 'Ruta de la imagen de la firma',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -5201,7 +5389,7 @@ CREATE TABLE `profesores` (
 --
 
 INSERT INTO `profesores` (`id`, `persona_id`, `titulo`, `firma_digital`, `created_at`, `updated_at`) VALUES
-(1, 1, 'ingeniero', NULL, '2026-02-11 04:34:10', '2026-02-11 04:34:10');
+(1, 1, 'profesor', NULL, '2026-02-11 04:34:10', '2026-03-25 00:54:06');
 
 -- --------------------------------------------------------
 
@@ -5235,20 +5423,22 @@ INSERT INTO `roles` (`id`, `nombre`, `descripcion`, `created_at`, `updated_at`) 
 CREATE TABLE `secciones` (
   `id` int(10) UNSIGNED NOT NULL,
   `materia_id` int(10) UNSIGNED NOT NULL,
-  `profesor_id` bigint(20) UNSIGNED NOT NULL,
+  `profesor_id` bigint(20) UNSIGNED DEFAULT NULL,
   `periodo_id` int(10) UNSIGNED NOT NULL,
   `nombre` varchar(20) NOT NULL COMMENT 'Ej: 01, Noche-A, SL01',
   `cupo_maximo` int(11) DEFAULT 40,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Volcado de datos para la tabla `secciones`
 --
 
-INSERT INTO `secciones` (`id`, `materia_id`, `profesor_id`, `periodo_id`, `nombre`, `cupo_maximo`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1, 'sucesiones onl 1', 20, '2026-02-11 04:46:12', '2026-02-11 04:46:12');
+INSERT INTO `secciones` (`id`, `materia_id`, `profesor_id`, `periodo_id`, `nombre`, `cupo_maximo`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 1, 1, 1, 'sucesiones onl 1', 20, '2026-02-11 04:46:12', '2026-02-11 04:46:12', NULL),
+(2, 1, NULL, 1, 'testing A1', 40, '2026-03-26 03:11:10', '2026-03-26 03:11:10', NULL);
 
 -- --------------------------------------------------------
 
@@ -5259,7 +5449,7 @@ INSERT INTO `secciones` (`id`, `materia_id`, `profesor_id`, `periodo_id`, `nombr
 CREATE TABLE `sim_actas_defunciones` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `sim_persona_id` bigint(20) UNSIGNED NOT NULL,
-  `fecha_fallecimiento` date NOT NULL,
+  `fecha_fallecimiento` date DEFAULT NULL,
   `numero_acta` varchar(50) DEFAULT NULL,
   `year_acta` year(4) DEFAULT NULL COMMENT 'NULL permitido para actas de premuertos',
   `parroquia_registro` varchar(100) DEFAULT NULL COMMENT 'NULL permitido para actas de premuertos donde solo se registra fecha',
@@ -5309,9 +5499,10 @@ INSERT INTO `sim_casos_estudios` (`id`, `profesor_id`, `causante_id`, `represent
 (3, 1, 1, 3, 23, 'Con_Cedula', 'ultima prueba', 'prueba real', 'Publicado', NULL, '2026-03-05 21:09:30', '2026-03-18 23:33:33'),
 (4, 1, 1, 3, 23, 'Con_Cedula', 'test prueba 2', 'prueba real 2', 'Publicado', NULL, '2026-03-07 05:22:36', '2026-03-18 23:27:23'),
 (10, 1, 1, 3, 23, 'Con_Cedula', 'caso 1', 'prueba', 'Publicado', NULL, '2026-03-07 07:12:52', '2026-03-19 00:35:16'),
-(11, 1, 8, 9, 23, 'Sin_Cedula', '3', 'Descripcion de prueba para caso sin cedula', 'Publicado', NULL, '2026-03-08 02:28:25', '2026-03-19 00:35:38'),
-(12, 1, 1, 3, 23, 'Con_Cedula', 'caso de prueba total', 'prueba real', 'Publicado', NULL, '2026-03-18 23:34:25', '2026-03-18 23:35:13'),
-(13, 1, NULL, NULL, NULL, 'Con_Cedula', 'prueba calculos', NULL, 'Borrador', '{\"caso\":{\"titulo\":\"prueba calculos\",\"descripcion\":\"prueba real\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":13,\"herencia\":{\"tipos\":[{\"tipo_herencia_id\":\"4\"},{\"tipo_herencia_id\":\"1\",\"nombre\":\"Testamento\",\"subtipo_testamento\":\"Abierto\",\"fecha_testamento\":\"2024-03-28\"}]},\"causante\":{\"tipo_cedula\":\"V\",\"sexo\":\"F\",\"estado_civil\":\"Casado\",\"nacionalidad\":190,\"cedula\":\"4079920\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"Maria\",\"apellidos\":\"Sarmiento\",\"fecha_nacimiento\":\"2001-05-29\",\"fecha_fallecimiento\":\"2024-03-28\",\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"estado_civil\",\"nacionalidad\",\"fecha_fallecimiento\"],\"persona_id\":1},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"2024-12-31\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"direcciones_causante\":[{\"tipo_direccion\":\"Domicilio_Fiscal\",\"tipo_vialidad\":\"Calle\",\"tipo_inmueble\":\"Casa\",\"nombre_vialidad\":\"ROJAS\",\"nro_inmueble\":\"CASA - NRO 35\",\"tipo_nivel\":\"\",\"tipo_sector\":\"Urbanizacion\",\"nro_nivel\":\"NO APLICA\",\"nombre_sector\":\"VILLAS DE LA ASUNCION 2\",\"estado\":\"16\",\"municipio\":\"211\",\"parroquia\":\"702\",\"ciudad\":\"211\",\"telefono_fijo\":\"\",\"telefono_celular\":\"0412-7048856\",\"fax\":\"\",\"codigo_postal_id\":\"1833\",\"punto_referencia\":\"LA ZONA EDUCATIVA\",\"desc_inmueble\":\"casa\",\"piso_nivel\":\"35\"}],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"sexo\":\"M\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"letra_rif\":\"J\",\"rif_personal\":\"37836650\",\"nacionalidad\":190,\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"nacionalidad\"],\"pasaporte\":\"\",\"persona_id\":3},\"herederos\":[{\"persona_id\":\"3\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"16\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2026-03-12\",\"_uid\":\"98114a25-469c-43ca-a48b-e78d1560064d\"},{\"persona_id\":\"4\",\"nombres\":\"valeria\",\"apellidos\":\"cardier\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"31120479\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2004-11-20\",\"sexo\":\"F\",\"estado_civil\":\"Casado\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"1\",\"premuerto\":\"NO\",\"fecha_fallecimiento\":\"\",\"_uid\":\"ca226943-ebc3-4d0f-a805-f2b6853792fa\"}],\"herederos_premuertos\":[{\"persona_id\":\"2\",\"nombres\":\"jesus\",\"apellidos\":\"estanga\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"4224014\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2000-03-01\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"8\",\"premuerto_padre_id\":\"98114a25-469c-43ca-a48b-e78d1560064d\",\"_uid\":\"e4604131-c249-4f72-af2a-12119c827c50\",\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"estado_civil\"]}],\"bienes_inmuebles\":[{\"vivienda_principal\":\"Si\",\"bien_litigioso\":\"No\",\"porcentaje\":100,\"descripcion\":\" vivienda principal\",\"linderos\":\"no se que es un lindero\",\"superficie_construida\":250,\"superficie_no_construida\":750,\"area_superficie\":1000,\"direccion\":\"calle la poza\",\"oficina_registro\":\" no tiene\",\"nro_registro\":\" 1\",\"libro\":\" 1\",\"protocolo\":\" 1\",\"fecha_registro\":\"2026-03-10\",\"trimestre\":\" 1\",\"asiento_registral\":\" 1\",\"matricula\":\" 1\",\"folio_real_anio\":\" 1\",\"valor_original\":2000,\"valor_declarado\":50000,\"tipo_bien_inmueble_id\":[\"2\",\"4\"]}],\"bienes_muebles\":{\"1\":[{\"tipo_bien_mueble_id\":\"1\",\"banco_id\":\"1\",\"numero_cuenta\":\"33333333333333333333\",\"bien_litigioso\":\"Si\",\"numero_expediente\":\"de\",\"tribunal_causa\":\"de\",\"partes_juicio\":\"de\",\"estado_juicio\":\"de\",\"porcentaje\":\"100\",\"descripcion\":\"eedd3\",\"valor_declarado\":5000}],\"2\":[{\"tipo_bien_mueble_id\":\"8\",\"rif_empresa\":\"J123456789\",\"razon_social\":\"unimar\",\"numero_prima\":\"7\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"seguro montepio\",\"valor_declarado\":2500},{\"tipo_bien_mueble_id\":\"9\",\"rif_empresa\":\"J378366509\",\"razon_social\":\"seguros vidal 2\",\"numero_prima\":\"333\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"un buen seguro\",\"valor_declarado\":1500}],\"9\":[{\"posee_banco\":\"NO\",\"banco_id\":\"\",\"numero_cuenta\":\"\",\"rif_empresa\":\"J123456789\",\"razon_social\":\"unimar\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"dddd\",\"valor_declarado\":500}],\"length\":0},\"pasivos_deuda\":[{\"tipo_pasivo_deuda_id\":\"2\",\"banco_id\":\"19\",\"porcentaje\":100,\"descripcion\":\"deuda 1\",\"valor_declarado\":250},{\"tipo_pasivo_deuda_id\":\"4\",\"porcentaje\":100,\"descripcion\":\"otros\",\"valor_declarado\":300}],\"pasivos_gastos\":[{\"tipo_pasivo_gasto_id\":\"3\",\"porcentaje\":\"100\",\"descripcion\":\"testamento\",\"valor_declarado\":250}],\"exenciones\":[{\"tipo_exencion\":\"excencion 1\",\"descripcion\":\"excencion 1\",\"valor_declarado\":250}],\"exoneraciones\":[{\"tipo_exoneracion\":\"exoneraicon 1\",\"descripcion\":\"exoneraicon 1\",\"valor_declarado\":250}],\"prorrogas\":[{\"fecha_solicitud\":\"2026-03-18\",\"nro_resolucion\":\"123456\",\"fecha_resolucion\":\"2026-03-18\",\"plazo_dias\":\"7\",\"fecha_vencimiento\":\"2026-03-25\"}],\"calculo_manual\":[{\"_uid\":\"98114a25-469c-43ca-a48b-e78d1560064d\",\"cuota_parte_ut\":233.33,\"reduccion_bs\":10},{\"_uid\":\"ca226943-ebc3-4d0f-a805-f2b6853792fa\",\"cuota_parte_ut\":233.33,\"reduccion_bs\":0}]}', '2026-03-19 00:49:36', '2026-03-22 23:42:43');
+(11, 1, 8, 9, 23, 'Sin_Cedula', '3', 'Descripcion de prueba para caso sin cedula', 'Publicado', NULL, '2026-03-08 02:28:25', '2026-03-27 05:52:13'),
+(12, 1, 1, 3, 23, 'Con_Cedula', 'caso de prueba total', 'prueba real', 'Publicado', NULL, '2026-03-18 23:34:25', '2026-03-27 05:52:00'),
+(13, 1, NULL, NULL, NULL, 'Con_Cedula', 'prueba calculos', NULL, 'Eliminado', '{\"caso\":{\"titulo\":\"prueba calculos\",\"descripcion\":\"prueba real\",\"estado\":\"Borrador\",\"tipo_sucesion\":\"Con Cédula\"},\"caso_id\":13,\"herencia\":{\"tipos\":[{\"tipo_herencia_id\":\"4\"},{\"tipo_herencia_id\":\"1\",\"nombre\":\"Testamento\",\"subtipo_testamento\":\"Abierto\",\"fecha_testamento\":\"2024-03-28\"}]},\"causante\":{\"tipo_cedula\":\"V\",\"sexo\":\"F\",\"estado_civil\":\"Casado\",\"nacionalidad\":190,\"cedula\":\"4079920\",\"pasaporte\":\"\",\"rif_personal\":\"\",\"nombres\":\"Maria\",\"apellidos\":\"Sarmiento\",\"fecha_nacimiento\":\"2001-05-29\",\"fecha_fallecimiento\":\"2024-03-28\",\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"estado_civil\",\"nacionalidad\",\"fecha_fallecimiento\"],\"persona_id\":1},\"datos_fiscales_causante\":{\"domiciliado_pais\":1,\"fecha_cierre_fiscal\":\"2024-12-31\"},\"acta_defuncion\":{\"numero_acta\":\"\",\"year_acta\":\"\",\"parroquia_registro_id\":\"\"},\"direcciones_causante\":[{\"tipo_direccion\":\"Domicilio_Fiscal\",\"tipo_vialidad\":\"Calle\",\"tipo_inmueble\":\"Casa\",\"nombre_vialidad\":\"ROJAS\",\"nro_inmueble\":\"CASA - NRO 35\",\"tipo_nivel\":\"\",\"tipo_sector\":\"Urbanizacion\",\"nro_nivel\":\"NO APLICA\",\"nombre_sector\":\"VILLAS DE LA ASUNCION 2\",\"estado\":\"16\",\"municipio\":\"211\",\"parroquia\":\"702\",\"ciudad\":\"211\",\"telefono_fijo\":\"\",\"telefono_celular\":\"0412-7048856\",\"fax\":\"\",\"codigo_postal_id\":\"1833\",\"punto_referencia\":\"LA ZONA EDUCATIVA\",\"desc_inmueble\":\"casa\",\"piso_nivel\":\"35\"}],\"representante\":{\"tipo_cedula\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"sexo\":\"M\",\"estado_civil\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"letra_rif\":\"J\",\"rif_personal\":\"37836650\",\"nacionalidad\":190,\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"nacionalidad\"],\"pasaporte\":\"\",\"persona_id\":3},\"herederos\":[{\"persona_id\":\"3\",\"nombres\":\"francisco\",\"apellidos\":\"diaz\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"27836650\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2001-05-29\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"16\",\"premuerto\":\"SI\",\"fecha_fallecimiento\":\"2026-03-12\",\"_uid\":\"98114a25-469c-43ca-a48b-e78d1560064d\"},{\"persona_id\":\"4\",\"nombres\":\"valeria\",\"apellidos\":\"cardier\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"31120479\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2004-11-20\",\"sexo\":\"F\",\"estado_civil\":\"Casado\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"1\",\"premuerto\":\"NO\",\"fecha_fallecimiento\":\"\",\"_uid\":\"ca226943-ebc3-4d0f-a805-f2b6853792fa\"}],\"herederos_premuertos\":[{\"persona_id\":\"2\",\"nombres\":\"jesus\",\"apellidos\":\"estanga\",\"tipo_documento\":\"Cédula\",\"letra_cedula\":\"V\",\"cedula\":\"4224014\",\"pasaporte\":\"\",\"fecha_nacimiento\":\"2000-03-01\",\"sexo\":\"M\",\"estado_civil\":\"Soltero\",\"caracter\":\"HEREDERO\",\"parentesco_id\":\"8\",\"premuerto_padre_id\":\"98114a25-469c-43ca-a48b-e78d1560064d\",\"_uid\":\"e4604131-c249-4f72-af2a-12119c827c50\",\"_locked_fields\":[\"nombres\",\"apellidos\",\"fecha_nacimiento\",\"sexo\",\"estado_civil\"]}],\"bienes_inmuebles\":[{\"vivienda_principal\":\"Si\",\"bien_litigioso\":\"No\",\"porcentaje\":100,\"descripcion\":\" vivienda principal\",\"linderos\":\"no se que es un lindero\",\"superficie_construida\":250,\"superficie_no_construida\":750,\"area_superficie\":1000,\"direccion\":\"calle la poza\",\"oficina_registro\":\" no tiene\",\"nro_registro\":\" 1\",\"libro\":\" 1\",\"protocolo\":\" 1\",\"fecha_registro\":\"2026-03-10\",\"trimestre\":\" 1\",\"asiento_registral\":\" 1\",\"matricula\":\" 1\",\"folio_real_anio\":\" 1\",\"valor_original\":2000,\"valor_declarado\":50000,\"tipo_bien_inmueble_id\":[\"2\",\"4\"]}],\"bienes_muebles\":{\"1\":[{\"tipo_bien_mueble_id\":\"1\",\"banco_id\":\"1\",\"numero_cuenta\":\"33333333333333333333\",\"bien_litigioso\":\"Si\",\"numero_expediente\":\"de\",\"tribunal_causa\":\"de\",\"partes_juicio\":\"de\",\"estado_juicio\":\"de\",\"porcentaje\":\"100\",\"descripcion\":\"eedd3\",\"valor_declarado\":5000}],\"2\":[{\"tipo_bien_mueble_id\":\"8\",\"rif_empresa\":\"J123456789\",\"razon_social\":\"unimar\",\"numero_prima\":\"7\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"seguro montepio\",\"valor_declarado\":2500},{\"tipo_bien_mueble_id\":\"9\",\"rif_empresa\":\"J378366509\",\"razon_social\":\"seguros vidal 2\",\"numero_prima\":\"333\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"un buen seguro\",\"valor_declarado\":1500}],\"9\":[{\"posee_banco\":\"NO\",\"banco_id\":\"\",\"numero_cuenta\":\"\",\"rif_empresa\":\"J123456789\",\"razon_social\":\"unimar\",\"bien_litigioso\":\"No\",\"porcentaje\":\"100\",\"descripcion\":\"dddd\",\"valor_declarado\":500}],\"length\":0},\"pasivos_deuda\":[{\"tipo_pasivo_deuda_id\":\"2\",\"banco_id\":\"19\",\"porcentaje\":100,\"descripcion\":\"deuda 1\",\"valor_declarado\":250},{\"tipo_pasivo_deuda_id\":\"4\",\"porcentaje\":100,\"descripcion\":\"otros\",\"valor_declarado\":300}],\"pasivos_gastos\":[{\"tipo_pasivo_gasto_id\":\"3\",\"porcentaje\":\"100\",\"descripcion\":\"testamento\",\"valor_declarado\":250}],\"exenciones\":[{\"tipo_exencion\":\"excencion 1\",\"descripcion\":\"excencion 1\",\"valor_declarado\":250}],\"exoneraciones\":[{\"tipo_exoneracion\":\"exoneraicon 1\",\"descripcion\":\"exoneraicon 1\",\"valor_declarado\":250}],\"prorrogas\":[{\"fecha_solicitud\":\"2026-03-18\",\"nro_resolucion\":\"123456\",\"fecha_resolucion\":\"2026-03-18\",\"plazo_dias\":\"7\",\"fecha_vencimiento\":\"2026-03-25\"}],\"calculo_manual\":[{\"_uid\":\"98114a25-469c-43ca-a48b-e78d1560064d\",\"cuota_parte_ut\":233.33,\"reduccion_bs\":10},{\"_uid\":\"ca226943-ebc3-4d0f-a805-f2b6853792fa\",\"cuota_parte_ut\":233.33,\"reduccion_bs\":0}]}', '2026-03-19 00:49:36', '2026-03-27 05:47:58'),
+(14, 1, 3, 5, 24, 'Con_Cedula', 'caso ejemplo', 'instrucciones del caso', 'Publicado', NULL, '2026-03-27 05:48:19', '2026-03-27 16:14:51');
 
 -- --------------------------------------------------------
 
@@ -5343,7 +5534,11 @@ INSERT INTO `sim_caso_asignaciones` (`id`, `config_id`, `estudiante_id`, `create
 (10, 7, 2, '2026-03-08 03:33:25', 'Pendiente', NULL),
 (11, 7, 3, '2026-03-08 03:33:25', 'Pendiente', NULL),
 (12, 7, 4, '2026-03-08 03:33:25', 'Pendiente', NULL),
-(13, 5, 2, '2026-03-09 23:31:03', 'Pendiente', NULL);
+(13, 5, 2, '2026-03-09 23:31:03', 'Pendiente', NULL),
+(14, 8, 3, '2026-03-27 06:00:29', 'Pendiente', NULL),
+(15, 8, 4, '2026-03-27 06:00:29', 'Pendiente', NULL),
+(16, 8, 2, '2026-03-27 06:00:29', 'Pendiente', NULL),
+(17, 8, 1, '2026-03-27 06:11:37', 'Pendiente', NULL);
 
 -- --------------------------------------------------------
 
@@ -5392,7 +5587,8 @@ INSERT INTO `sim_caso_bienes_inmuebles` (`id`, `caso_estudio_id`, `es_vivienda_p
 (6, 1, 1, 0, 100.00, ' vivienda principal', 'no se que es un lindero', 250.00, 750.00, 1000.00, 'calle la poza', ' no tiene', ' 1', ' 1', ' 1', '2026-03-10', ' 1', ' 1', ' 1', ' 1', 2000.00, 50000.00, NULL, '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
 (7, 4, 1, 0, 100.00, ' vivienda principal', 'no se que es un lindero', 250.00, 750.00, 1000.00, 'calle la poza', ' no tiene', ' 1', ' 1', ' 1', '2026-03-10', ' 1', ' 1', ' 1', ' 1', 2000.00, 50000.00, NULL, '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
 (9, 3, 1, 0, 100.00, ' vivienda principal', 'no se que es un lindero', 250.00, 750.00, 1000.00, 'calle la poza', ' no tiene', ' 1', ' 1', ' 1', '2026-03-10', ' 1', ' 1', ' 1', ' 1', 2000.00, 50000.00, NULL, '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
-(10, 12, 1, 0, 100.00, ' vivienda principal', 'no se que es un lindero', 250.00, 750.00, 1000.00, 'calle la poza', ' no tiene', ' 1', ' 1', ' 1', '2026-03-10', ' 1', ' 1', ' 1', ' 1', 2000.00, 50000.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13');
+(10, 12, 1, 0, 100.00, ' vivienda principal', 'no se que es un lindero', 250.00, 750.00, 1000.00, 'calle la poza', ' no tiene', ' 1', ' 1', ' 1', '2026-03-10', ' 1', ' 1', ' 1', ' 1', 2000.00, 50000.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13'),
+(11, 14, 1, 1, 100.00, 'hola', 'hola', 45.00, 45.00, 45.00, 'hola', 'hola', 'hola', 'hola', 'hola', '2026-03-18', 'hola', 'hola', 'hola', 'hola', 100.00, 550.00, NULL, '2026-03-27 05:57:17', '2026-03-27 05:57:17');
 
 -- --------------------------------------------------------
 
@@ -5443,7 +5639,8 @@ INSERT INTO `sim_caso_bienes_litigiosos` (`id`, `caso_estudio_id`, `bien_tipo`, 
 (23, 1, 'Mueble', 59, 'de', 'de', 'de', 'de', '2026-03-18 23:07:10', '2026-03-18 23:07:10'),
 (24, 4, 'Mueble', 63, 'de', 'de', 'de', 'de', '2026-03-18 23:27:23', '2026-03-18 23:27:23'),
 (26, 3, 'Mueble', 71, 'de', 'de', 'de', 'de', '2026-03-18 23:34:05', '2026-03-18 23:34:05'),
-(27, 12, 'Mueble', 75, 'de', 'de', 'de', 'de', '2026-03-18 23:35:13', '2026-03-18 23:35:13');
+(27, 12, 'Mueble', 75, 'de', 'de', 'de', 'de', '2026-03-18 23:35:13', '2026-03-18 23:35:13'),
+(28, 14, 'Inmueble', 11, '1', '1', '1', '1', '2026-03-27 05:57:17', '2026-03-27 05:57:17');
 
 -- --------------------------------------------------------
 
@@ -5543,7 +5740,8 @@ INSERT INTO `sim_caso_bienes_muebles` (`id`, `caso_estudio_id`, `categoria_bien_
 (75, 12, 1, 1, 1, 100.00, 'eedd3', 5000.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13'),
 (76, 12, 2, 8, 0, 100.00, 'seguro montepio', 2500.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13'),
 (77, 12, 2, 9, 0, 100.00, 'un buen seguro', 1500.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13'),
-(78, 12, 9, NULL, 0, 100.00, 'dddd', 500.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13');
+(78, 12, 9, NULL, 0, 100.00, 'dddd', 500.00, NULL, '2026-03-18 23:35:13', '2026-03-18 23:35:13'),
+(79, 14, 1, 1, 0, 100.00, 'd', 10000.00, NULL, '2026-03-27 05:57:17', '2026-03-27 05:57:17');
 
 -- --------------------------------------------------------
 
@@ -5583,7 +5781,8 @@ INSERT INTO `sim_caso_bien_inmueble_tipo_rel` (`id`, `bien_inmueble_id`, `tipo_b
 (20, 9, 2, '2026-03-18 23:34:05'),
 (21, 9, 4, '2026-03-18 23:34:05'),
 (22, 10, 2, '2026-03-18 23:35:13'),
-(23, 10, 4, '2026-03-18 23:35:13');
+(23, 10, 4, '2026-03-18 23:35:13'),
+(24, 11, 4, '2026-03-27 05:57:17');
 
 -- --------------------------------------------------------
 
@@ -5634,7 +5833,8 @@ INSERT INTO `sim_caso_bm_banco` (`id`, `bien_mueble_id`, `banco_id`, `numero_cue
 (5, 59, 1, '33333333333333333333', '2026-03-18 23:07:10'),
 (6, 63, 1, '33333333333333333333', '2026-03-18 23:27:23'),
 (8, 71, 1, '33333333333333333333', '2026-03-18 23:34:05'),
-(9, 75, 1, '33333333333333333333', '2026-03-18 23:35:13');
+(9, 75, 1, '33333333333333333333', '2026-03-18 23:35:13'),
+(10, 79, 1, '33333333333333333333', '2026-03-27 05:57:17');
 
 -- --------------------------------------------------------
 
@@ -5904,7 +6104,8 @@ CREATE TABLE `sim_caso_configs` (
 INSERT INTO `sim_caso_configs` (`id`, `caso_id`, `profesor_id`, `modalidad`, `max_intentos`, `fecha_apertura`, `fecha_limite`, `instrucciones`, `status`, `created_at`, `updated_at`) VALUES
 (5, 10, 1, 'Practica_guiada', 2, NULL, '2026-05-30 04:25:00', 'no hay instrucciones', 'Activo', '2026-03-07 07:12:52', '2026-03-09 23:59:31'),
 (6, 2, 1, 'Practica_Libre', 2, NULL, '2026-04-30 04:25:00', NULL, 'Activo', '2026-03-07 19:12:09', '2026-03-07 19:12:09'),
-(7, 11, 1, 'Evaluacion', 3, '2026-03-09 02:39:00', '2026-03-19 02:39:00', NULL, 'Activo', '2026-03-08 03:33:25', '2026-03-09 02:40:37');
+(7, 11, 1, 'Evaluacion', 3, '2026-03-09 02:39:00', '2026-03-19 02:39:00', NULL, 'Activo', '2026-03-08 03:33:25', '2026-03-09 02:40:37'),
+(8, 14, 1, 'Practica_Libre', 1, '2026-03-27 05:57:00', '2026-03-30 19:00:00', NULL, 'Activo', '2026-03-27 06:00:29', '2026-03-27 06:01:01');
 
 -- --------------------------------------------------------
 
@@ -5919,6 +6120,7 @@ CREATE TABLE `sim_caso_direcciones` (
   `tipo_vialidad` enum('Calle','Avenida','Vereda','Carretera','Esquina','Carrera') DEFAULT NULL,
   `nombre_vialidad` varchar(100) DEFAULT NULL,
   `tipo_inmueble` enum('Edificio','Centro_Comercial','Quinta','Casa','Local') DEFAULT NULL,
+  `nombre_inmueble` varchar(60) DEFAULT NULL,
   `nro_inmueble` varchar(20) DEFAULT NULL,
   `tipo_nivel` enum('Apartamento','Local','Oficina') DEFAULT NULL,
   `nro_nivel` varchar(20) DEFAULT NULL,
@@ -5939,16 +6141,17 @@ CREATE TABLE `sim_caso_direcciones` (
 -- Volcado de datos para la tabla `sim_caso_direcciones`
 --
 
-INSERT INTO `sim_caso_direcciones` (`id`, `sim_caso_estudio_id`, `tipo_direccion`, `tipo_vialidad`, `nombre_vialidad`, `tipo_inmueble`, `nro_inmueble`, `tipo_nivel`, `nro_nivel`, `tipo_sector`, `nombre_sector`, `estado_id`, `municipio_id`, `parroquia_id`, `ciudad_id`, `codigo_postal_id`, `telefono_fijo`, `telefono_celular`, `fax`, `punto_referencia`) VALUES
-(9, 10, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Edificio', 'GARAJONAY - PISO PH', 'Apartamento', 'PH2', 'Urbanizacion', 'URB PRUEBA 1', 6, 71, 244, 71, 527, NULL, '0412-7048856', NULL, 'CERCAS DE TROPIC'),
-(10, 10, 'Bodega_Almacenamiento_Deposito', 'Carretera', 'PARA POZ', 'Centro_Comercial', 'LA VELA - NIVEL 1', 'Local', 'A-05', 'Sector', 'MANEIRO', 16, 215, 713, 215, 1833, NULL, '0416-6864545', NULL, 'LA VELA'),
-(11, 2, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Edificio', 'GARAJONAY - PISO PH', 'Apartamento', 'PH2', 'Urbanizacion', 'URB PRUEBA 1', 6, 71, 244, 71, 527, NULL, '0412-7048856', NULL, 'CERCAS DE TROPIC'),
-(12, 2, 'Bodega_Almacenamiento_Deposito', 'Carretera', 'PARA POZ', 'Centro_Comercial', 'LA VELA - NIVEL 1', 'Local', 'A-05', 'Sector', 'MANEIRO', 16, 215, 713, 215, 1833, NULL, '0416-6864545', NULL, 'LA VELA'),
-(13, 11, 'Domicilio_Fiscal', 'Calle', 'LA REDONDA', 'Quinta', 'SECTOR 1 - NRO LA AS', '', 'NO APLICA', 'Zona', 'LA ARBOLEDA', 16, 210, 701, 210, 1818, '0412-7048856', NULL, NULL, 'PDP'),
-(14, 1, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'CASA - NRO 35', '', 'NO APLICA', 'Urbanizacion', 'VILLAS DE LA ASUNCION 2', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, 'LA ZONA EDUCATIVA'),
-(15, 4, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'CASA - NRO 35', '', 'NO APLICA', 'Urbanizacion', 'VILLAS DE LA ASUNCION 2', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, 'LA ZONA EDUCATIVA'),
-(17, 3, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'CASA - NRO 35', '', 'NO APLICA', 'Urbanizacion', 'VILLAS DE LA ASUNCION 2', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, 'LA ZONA EDUCATIVA'),
-(18, 12, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'CASA - NRO 35', '', 'NO APLICA', 'Urbanizacion', 'VILLAS DE LA ASUNCION 2', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, 'LA ZONA EDUCATIVA');
+INSERT INTO `sim_caso_direcciones` (`id`, `sim_caso_estudio_id`, `tipo_direccion`, `tipo_vialidad`, `nombre_vialidad`, `tipo_inmueble`, `nombre_inmueble`, `nro_inmueble`, `tipo_nivel`, `nro_nivel`, `tipo_sector`, `nombre_sector`, `estado_id`, `municipio_id`, `parroquia_id`, `ciudad_id`, `codigo_postal_id`, `telefono_fijo`, `telefono_celular`, `fax`, `punto_referencia`) VALUES
+(9, 10, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Edificio', 'GARAJONAY', 'PH', 'Apartamento', 'PH2', 'Urbanizacion', 'URB PRUEBA 1', 6, 71, 244, 71, 527, NULL, '0412-7048856', NULL, 'CERCAS DE TROPIC'),
+(10, 10, 'Bodega_Almacenamiento_Deposito', 'Carretera', 'PARA POZ', 'Centro_Comercial', 'LA VELA', '1', 'Local', 'A-05', 'Sector', 'MANEIRO', 16, 215, 713, 215, 1833, NULL, '0416-6864545', NULL, 'LA VELA'),
+(11, 2, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Edificio', 'GARAJONAY', 'PH', 'Apartamento', 'PH2', 'Urbanizacion', 'URB PRUEBA 1', 6, 71, 244, 71, 527, NULL, '0412-7048856', NULL, 'CERCAS DE TROPIC'),
+(12, 2, 'Bodega_Almacenamiento_Deposito', 'Carretera', 'PARA POZ', 'Centro_Comercial', 'LA VELA', '1', 'Local', 'A-05', 'Sector', 'MANEIRO', 16, 215, 713, 215, 1833, NULL, '0416-6864545', NULL, 'LA VELA'),
+(13, 11, 'Domicilio_Fiscal', 'Calle', 'LA REDONDA', 'Quinta', 'SECTOR 1', 'LA AS', NULL, 'NO APLICA', 'Zona', 'LA ARBOLEDA', 16, 210, 701, 210, 1818, '0412-7048856', NULL, NULL, 'PDP'),
+(14, 1, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'CASA', '35', NULL, 'NO APLICA', 'Urbanizacion', 'VILLAS DE LA ASUNCION 2', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, 'LA ZONA EDUCATIVA'),
+(15, 4, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'CASA', '35', NULL, 'NO APLICA', 'Urbanizacion', 'VILLAS DE LA ASUNCION 2', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, 'LA ZONA EDUCATIVA'),
+(17, 3, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'CASA', '35', NULL, 'NO APLICA', 'Urbanizacion', 'VILLAS DE LA ASUNCION 2', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, 'LA ZONA EDUCATIVA'),
+(18, 12, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'CASA', '35', NULL, 'NO APLICA', 'Urbanizacion', 'VILLAS DE LA ASUNCION 2', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, 'LA ZONA EDUCATIVA'),
+(19, 14, 'Domicilio_Fiscal', 'Calle', 'ROJAS', 'Casa', 'JENNY', '35', NULL, 'NO APLICA', 'Sector', 'ARISMENDI', 16, 211, 702, 211, 1833, NULL, '0412-7048856', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -6053,7 +6256,9 @@ INSERT INTO `sim_caso_participantes` (`id`, `caso_estudio_id`, `persona_id`, `ro
 (25, 3, 2, 'Heredero', 8, 0, 23),
 (26, 12, 3, 'Heredero', 16, 1, NULL),
 (27, 12, 4, 'Heredero', 1, 0, NULL),
-(28, 12, 2, 'Heredero', 8, 0, 26);
+(28, 12, 2, 'Heredero', 8, 0, 26),
+(29, 14, 4, 'Heredero', 8, 0, NULL),
+(30, 14, 9, 'Heredero', 1, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -6189,7 +6394,9 @@ INSERT INTO `sim_caso_tipoherencia_rel` (`id`, `caso_estudio_id`, `tipo_herencia
 (20, 3, 4, NULL, NULL, NULL, '2026-03-18 23:34:05'),
 (21, 3, 1, 'Abierto', '2024-03-28', NULL, '2026-03-18 23:34:05'),
 (22, 12, 4, NULL, NULL, NULL, '2026-03-18 23:35:13'),
-(23, 12, 1, 'Abierto', '2024-03-28', NULL, '2026-03-18 23:35:13');
+(23, 12, 1, 'Abierto', '2024-03-28', NULL, '2026-03-18 23:35:13'),
+(24, 14, 1, 'Abierto', '2026-03-03', NULL, '2026-03-27 05:57:17'),
+(25, 14, 3, NULL, NULL, NULL, '2026-03-27 05:57:17');
 
 -- --------------------------------------------------------
 
@@ -6727,6 +6934,7 @@ CREATE TABLE `sim_causante_datos_fiscales` (
 
 INSERT INTO `sim_causante_datos_fiscales` (`sim_persona_id`, `domiciliado_pais`, `fecha_cierre_fiscal`) VALUES
 (1, 1, '2024-12-31'),
+(3, 1, '2026-03-31'),
 (8, 1, '2026-03-05');
 
 -- --------------------------------------------------------
@@ -6789,9 +6997,10 @@ CREATE TABLE `sim_intentos` (
 
 INSERT INTO `sim_intentos` (`id`, `asignacion_id`, `numero_intento`, `estado`, `paso_actual`, `pasos_completados`, `borrador_json`, `numero_control`, `submitted_at`, `reviewed_at`, `approved_at`, `rif_sucesoral`, `password_rif`, `usuario_seniat`, `fuera_de_fecha`, `created_at`, `updated_at`) VALUES
 (1, 13, 1, 'En_Progreso', 1, '', '{\"tipo_sucesion\":\"Con_Cedula\",\"datos_basicos\":{\"cedula\":\"V4079920\",\"fecha_fallecimiento\":\"2024-03-28\",\"parroquia_acta\":null,\"numero_acta\":null,\"year_acta\":null,\"apellidos\":\"SARMIENTO\",\"nombres\":\"MARIA\",\"sexo\":\"F\",\"estado_civil\":\"CASADO\",\"domiciliado_pais\":1,\"nacionalidad\":\"190\",\"fecha_cierre_fiscal\":\"2024-12-31\",\"email_sucesion\":\"fadr2001@gmail.com\"},\"direcciones\":[{\"tipoDireccion\":\"06\",\"tipoDireccionText\":\"DOMICILIO FISCAL\",\"tipoVialidad\":\"01\",\"tipoVialidadLabel\":\"calle\",\"vialidad\":\"ROJAS 5\",\"tipoEdificacion\":\"01\",\"tipoEdificacionLabel\":\"edificio\",\"edificacion\":\"GARAJONAY\",\"piso\":\"PH\",\"tipoLocal\":\"01\",\"tipoLocalLabel\":\"apartamento\",\"local\":\"PH2\",\"tipoSector\":\"01\",\"tipoSectorLabel\":\"urbanizacion\",\"sector\":\"URB PRUEBA 1\",\"estado\":\"6\",\"estadoText\":\"Bolívar\",\"municipio\":\"71\",\"municipioText\":\"Heres\",\"parroquia\":\"244\",\"ciudad\":\"71\",\"ciudadText\":\"Ciudad Bolívar\",\"zonaPostal\":\"527\",\"telefono\":\"\",\"celular\":\"0412-7048856\",\"fax\":\"\",\"referencia\":\"\"},{\"tipoDireccion\":\"03\",\"tipoDireccionText\":\"BODEGA, ALMACENAMIENTO, DEPÓSITO\",\"tipoVialidad\":\"04\",\"tipoVialidadLabel\":\"carretera\",\"vialidad\":\"PARA POZ\",\"tipoEdificacion\":\"02\",\"tipoEdificacionLabel\":\"centro comercial\",\"edificacion\":\"LA VELA\",\"piso\":\"1\",\"tipoLocal\":\"02\",\"tipoLocalLabel\":\"local\",\"local\":\"A-05\",\"tipoSector\":\"03\",\"tipoSectorLabel\":\"sector\",\"sector\":\"MANEIRO\",\"estado\":\"16\",\"estadoText\":\"Nueva Esparta\",\"municipio\":\"215\",\"municipioText\":\"Maneiro\",\"parroquia\":\"713\",\"ciudad\":\"215\",\"ciudadText\":\"Pampatar\",\"zonaPostal\":\"1833\",\"telefono\":\"\",\"celular\":\"0416-6864545\",\"fax\":\"\",\"referencia\":\"LA VELA\"}],\"relaciones\":[{\"apellido\":\"DIAZ\",\"nombre\":\"FRANCISCO\",\"tipodocumento\":\"R\",\"cedula\":\"27836650\",\"parentesco\":\"50\",\"parentescoText\":\"REPRESENTANTE DE LA SUCESION\",\"pasaporte\":\"\",\"idDocumento\":\"J37836650\"},{\"apellido\":\"RODRIGUEZ\",\"nombre\":\"JANETSY\",\"tipodocumento\":\"C\",\"cedula\":\"11171151\",\"parentesco\":\"51\",\"parentescoText\":\"HEREDERO\",\"pasaporte\":\"\",\"idDocumento\":\"J11171151\",\"premuerto\":\"Si\",\"fecha_nacimiento\":\"2026-03-11\",\"fecha_fallecimiento\":\"2026-03-12\",\"parentesco_id\":12},{\"apellido\":\"ESTANGA\",\"nombre\":\"JESUS\",\"tipodocumento\":\"C\",\"cedula\":\"4224014\",\"parentesco\":\"51\",\"parentescoText\":\"HEREDERO\",\"pasaporte\":\"\",\"idDocumento\":\"V42240148\",\"premuerto\":\"No\",\"fecha_nacimiento\":\"2026-03-16\",\"fecha_fallecimiento\":\"\",\"parentesco_id\":1}],\"tipos_herencia\":{\"items\":[{\"tipo_herencia_id\":3,\"subtipo_testamento\":null,\"fecha_testamento\":null,\"fecha_conclusion_inventario\":null},{\"tipo_herencia_id\":4,\"subtipo_testamento\":null,\"fecha_testamento\":null,\"fecha_conclusion_inventario\":null}]},\"herederos_premuertos\":[{\"nombre\":\"Daniel\",\"apellido\":\"Diaz\",\"cedula\":\"30061516\",\"fecha_nacimiento\":\"05\\/03\\/2026\",\"parentesco_id\":1,\"premuerto_padre_id\":\"11171151\"}],\"bienes_inmuebles\":[{\"tipo_bien_inmueble_id\":[\"1\",\"2\"],\"tipo_bien_nombres\":\"Anexo, Apartamento\",\"vivienda_principal\":\"true\",\"bien_litigioso\":\"false\",\"porcentaje\":\"50,50\",\"descripcion\":\"5656\",\"linderos\":\"5656\",\"superficie_construida\":\"666.30\",\"superficie_no_construida\":\"66.30\",\"area_superficie\":\"66.30\",\"direccion\":\"la asuncion\",\"oficina_registro\":\"45\",\"nro_registro\":\"33\",\"libro\":\"055\",\"protocolo\":\"0221\",\"fecha_registro\":\"14\\/03\\/2026\",\"trimestre\":\"553\",\"asiento_registral\":\"54\",\"matricula\":\"443\",\"folio_real_anio\":\"56\",\"valor_original\":\"3\",\"valor_declarado\":\"2,20\"},{\"tipo_bien_inmueble_id\":[\"1\",\"2\",\"5\",\"6\"],\"tipo_bien_nombres\":\"Anexo, Apartamento, Construcción destinado a Explotación, Consultorio\",\"vivienda_principal\":\"false\",\"bien_litigioso\":\"false\",\"porcentaje\":\"10,50\",\"descripcion\":\"ccc\",\"linderos\":\"cc\",\"superficie_construida\":\"33.30\",\"superficie_no_construida\":\"33.30\",\"area_superficie\":\"3.30\",\"direccion\":\"3333\",\"oficina_registro\":\"33\",\"nro_registro\":\"33\",\"libro\":\"33\",\"protocolo\":\"33\",\"fecha_registro\":\"03\\/03\\/2026\",\"trimestre\":\"33\",\"asiento_registral\":\"33\",\"matricula\":\"33\",\"folio_real_anio\":\"33\",\"valor_original\":\"33,30\",\"valor_declarado\":\"333,30\"}],\"bienes_muebles_banco\":[{\"tipo_bien\":\"2\",\"tipo_bien_nombre\":\"Cajas de Ahorro\",\"banco\":\"8\",\"banco_nombre\":\"BANCO DE LA FUERZA ARMADA NACIONAL BOLIVARIANA, BANCO UNIVERSAL\",\"numero_cuenta\":\"88888888888888888888\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"90.500\",\"descripcion\":\"juju\",\"valor_declarado\":\"365\"},{\"tipo_bien\":\"5\",\"tipo_bien_nombre\":\"Inventario Caja de Seguridad\",\"banco\":\"21\",\"banco_nombre\":\"BANCO SOFITASA BANCO UNIVERSAL, C. A.\",\"numero_cuenta\":\"88888888888888888888\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"90.50\",\"descripcion\":\"5.5.5\",\"valor_declarado\":\"60\"}],\"bienes_muebles_seguro\":[{\"tipo_bien\":\"7\",\"tipo_bien_nombre\":\"Caja de Ahorro\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"numero_prima\":\"44\",\"bien_litigioso\":\"true\",\"num_expediente\":\"dd\",\"tribunal_causa\":\"dd\",\"partes_juicio\":\"dd\",\"estado_juicio\":\"dd\",\"porcentaje\":\"0,01\",\"descripcion\":\"frfr\",\"valor_declarado\":\"692.00\"}],\"bienes_muebles_transporte\":[{\"tipo_bien\":\"10\",\"tipo_bien_nombre\":\"Aéreos\",\"anio\":\"ddsd\",\"marca\":\"sdsdsd\",\"modelo\":\"sdsds\",\"serial\":\"sddsdsd\",\"bien_litigioso\":\"true\",\"num_expediente\":\"xcxc\",\"tribunal_causa\":\"xcxc\",\"partes_juicio\":\"xcxc\",\"estado_juicio\":\"xsx4\",\"porcentaje\":\"0,01\",\"descripcion\":\"sdsdsds\",\"valor_declarado\":\"13\"},{\"tipo_bien\":\"11\",\"tipo_bien_nombre\":\"Maquinaria\",\"anio\":\"3333\",\"marca\":\"toyotra\",\"modelo\":\"333333333\",\"serial\":\"333\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"33\",\"valor_declarado\":\"1.000,00\"}],\"bienes_muebles_opciones_compra\":[{\"tipo_bien\":\"13\",\"tipo_bien_nombre\":\"Opciones de Compras\",\"nombre_oferente\":\"2005\",\"bien_litigioso\":\"true\",\"num_expediente\":\"44\",\"tribunal_causa\":\"44\",\"partes_juicio\":\"44\",\"estado_juicio\":\"44\",\"porcentaje\":\"0,01\",\"descripcion\":\"ffffff\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"13\",\"tipo_bien_nombre\":\"Opciones de Compras\",\"nombre_oferente\":\"88888888888888888888\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"www\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"13\",\"tipo_bien_nombre\":\"Opciones de Compras\",\"nombre_oferente\":\"dddd\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_semovientes\":[{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Semovientes\",\"tipo_semoviente\":\"4\",\"tipo_semoviente_nombre\":\"Conejos o Liebres\",\"cantidad\":\"25\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"eee\",\"valor_declarado\":\"0\"},{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Semovientes\",\"tipo_semoviente\":\"6\",\"tipo_semoviente_nombre\":\"Ganado Caprino\",\"cantidad\":\"34\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"33\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Semovientes\",\"tipo_semoviente\":\"8\",\"tipo_semoviente_nombre\":\"Ganado Ovino\",\"cantidad\":\"4444\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fffff\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_bonos\":[{\"tipo_bien\":\"18\",\"tipo_bien_nombre\":\"Bonos\",\"tipo_bonos\":\"eee\",\"numero_bonos\":\"ee\",\"numero_serie\":\"ee\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ee\",\"valor_declarado\":\"0,00\"},{\"tipo_bien\":\"18\",\"tipo_bien_nombre\":\"Bonos\",\"tipo_bonos\":\"eee\",\"numero_bonos\":\"ee\",\"numero_serie\":\"ee\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fffff\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_acciones\":[{\"tipo_bien\":\"19\",\"tipo_bien_nombre\":\"Cotizadas en la Bolsa de Valores\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"frfr\",\"valor_declarado\":\"01\"},{\"tipo_bien\":\"45\",\"tipo_bien_nombre\":\"COTIZADAS EN LA BOLSA DE VALORES\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_prestaciones_sociales\":[{\"posee_banco\":\"true\",\"cod_banco\":\"3\",\"nombre_banco\":\"BANCO ACTIVO\",\"numero_cuenta\":\"88888888888888888888\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"Derecha\",\"valor_declarado\":\"0\"},{\"posee_banco\":\"false\",\"cod_banco\":\"\",\"nombre_banco\":\"-- Seleccione --\",\"numero_cuenta\":\"NO APLICA\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"eeeeee\",\"valor_declarado\":\"0,00\"},{\"posee_banco\":\"false\",\"cod_banco\":\"\",\"nombre_banco\":\"-- Seleccione --\",\"numero_cuenta\":\"NO APLICA\",\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_caja_ahorro\":[{\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"cool\",\"valor_declarado\":\"0,00\"},{\"rif_empresa\":\"V278366509\",\"razon_social\":\"valeria cardier\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddddd\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_plantaciones\":[{\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"},{\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ddd\",\"valor_declarado\":\"0,00\"},{\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"ffffff\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_otros\":[{\"cod_tipo_bien\":\"19\",\"nombre_tipo_bien\":\"Otros Especifique\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_bien\":\"19\",\"nombre_tipo_bien\":\"Otros Especifique\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_bien\":\"19\",\"nombre_tipo_bien\":\"Otros Especifique\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"vvvvv\",\"valor_declarado\":\"0,00\"}],\"prorrogas\":[{\"fecha_solicitud\":\"05\\/03\\/2026\",\"nro_resolucion\":\"6654\",\"fecha_resolucion\":\"04\\/03\\/2026\",\"plazo_dias\":\"35\",\"fecha_vencimiento\":\"06\\/03\\/2026\"}],\"pasivos_deuda_tdc\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"1\",\"nombre_tipo_deuda\":\"Tarjeta de Crédito\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX\",\"numero_tdc\":\"88888888888888888888\",\"porcentaje\":\"0,01\",\"descripcion\":\"e\",\"valor_declarado\":\"110,00\"}],\"pasivos_deuda_ch\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"2\",\"nombre_tipo_deuda\":\"Crédito Hipotecario\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"2\",\"nombre_tipo_deuda\":\"Crédito Hipotecario\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"20,00\"}],\"pasivos_deuda_pce\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"3\",\"nombre_tipo_deuda\":\"Préstamos, Cuentas y Efectos por Pagar\",\"cod_banco\":\"7\",\"nombre_banco\":\"BANCO DE COMERCIO EXTERIOR, C.A., BANCOEX\",\"porcentaje\":\"0,01\",\"descripcion\":\"hhgghg\",\"valor_declarado\":\"0,00\"},{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"3\",\"nombre_tipo_deuda\":\"Préstamos, Cuentas y Efectos por Pagar\",\"cod_banco\":\"4\",\"nombre_banco\":\"BANCO AGRICOLA DE VENEZUELA\",\"porcentaje\":\"0,01\",\"descripcion\":\"ccc\",\"valor_declarado\":\"0,00\"}],\"pasivos_deuda_otros\":[{\"cod_tipo_pasivo\":\"1\",\"nombre_tipo_pasivo\":\"Deudas\",\"cod_tipo_deuda\":\"4\",\"nombre_tipo_deuda\":\"Otro Especifique\",\"porcentaje\":\"0,01\",\"descripcion\":\"rrrr\",\"valor_declarado\":\"0,00\"}],\"pasivos_gastos\":[{\"cod_tipo_pasivo\":\"2\",\"nombre_tipo_pasivo\":\"Gastos\",\"cod_tipo_gasto\":\"7\",\"nombre_tipo_gasto\":\"Otros (Especifique)\",\"porcentaje\":\"0,01\",\"descripcion\":\"gggg\",\"valor_declarado\":\"01\"},{\"cod_tipo_pasivo\":\"2\",\"nombre_tipo_pasivo\":\"Gastos\",\"cod_tipo_gasto\":\"7\",\"nombre_tipo_gasto\":\"Otros (Especifique)\",\"porcentaje\":\"0,01\",\"descripcion\":\"fff\",\"valor_declarado\":\"0,00\"}],\"exenciones\":[{\"tipo\":\"trtf\",\"descripcion\":\"fff\",\"valor_declarado\":\"10,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dsd\",\"descripcion\":\"eeee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"eee\",\"descripcion\":\"ee\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"33\",\"descripcion\":\"33\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"dd\",\"descripcion\":\"dd\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"ggg\",\"descripcion\":\"gggg\",\"valor_declarado\":\"0,00\"}],\"exoneraciones\":[{\"tipo\":\"fff\",\"descripcion\":\"fffff\",\"valor_declarado\":\"0,00\"},{\"tipo\":\"ggg\",\"descripcion\":\"gggg\",\"valor_declarado\":\"0,00\"}],\"bienes_muebles_cuentas_efectos\":[{\"tipo_bien\":\"17\",\"tipo_bien_nombre\":\"Clubes\",\"rif_cedula\":\"V278366509\",\"nombre_apellido\":\"dddddddd\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"dddd\",\"valor_declarado\":\"23\"},{\"tipo_bien\":\"15\",\"tipo_bien_nombre\":\"Asociación Civil\",\"rif_cedula\":\"V278366509\",\"nombre_apellido\":\"dddddddd\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"0,01\",\"descripcion\":\"w\",\"valor_declarado\":\"0,00\"}]}', NULL, NULL, NULL, NULL, 'V-70017894-0', 'Fadr2001+', 'franciscoadr', 0, '2026-03-10 03:08:01', '2026-03-19 01:09:22'),
-(2, 6, 1, 'En_Progreso', 1, '', '{}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-10 03:54:31', '2026-03-14 03:02:11'),
+(2, 6, 1, 'En_Progreso', 0, '', '{\"tipo_sucesion\":\"Con_Cedula\",\"datos_basicos\":{\"cedula\":\"V2836650\",\"fecha_fallecimiento\":\"03\\/03\\/2026\",\"parroquia_acta\":null,\"numero_acta\":null,\"year_acta\":null}}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-10 03:54:31', '2026-03-24 23:03:20'),
 (3, 11, 1, 'En_Progreso', 1, '', '{}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-11 00:38:40', '2026-03-11 00:38:40'),
-(4, 3, 1, 'En_Progreso', 0, '', '{\"tipo_sucesion\":\"Con_Cedula\",\"datos_basicos\":{\"cedula\":\"V4079920\",\"fecha_fallecimiento\":\"28\\/03\\/2024\",\"parroquia_acta\":null,\"numero_acta\":null,\"year_acta\":null}}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-11 03:01:26', '2026-03-15 00:31:07');
+(4, 3, 1, 'En_Progreso', 0, '', '{\"tipo_sucesion\":\"Con_Cedula\",\"datos_basicos\":{\"cedula\":\"V4079920\",\"fecha_fallecimiento\":\"28\\/03\\/2024\",\"parroquia_acta\":null,\"numero_acta\":null,\"year_acta\":null}}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, '2026-03-11 03:01:26', '2026-03-15 00:31:07'),
+(5, 16, 1, 'En_Progreso', 2, '', '{\"tipo_sucesion\":\"Con_Cedula\",\"datos_basicos\":{\"cedula\":\"V27836650\",\"fecha_fallecimiento\":\"2026-03-12\",\"parroquia_acta\":null,\"numero_acta\":null,\"year_acta\":null,\"apellidos\":\"DIAZ\",\"nombres\":\"FRANCISCO\",\"sexo\":\"M\",\"estado_civil\":\"CASADO\",\"domiciliado_pais\":1,\"nacionalidad\":\"190\",\"fecha_cierre_fiscal\":\"2026-03-31\",\"email_sucesion\":\"fadr2001@gmail.com\"},\"direcciones\":[{\"tipoDireccion\":\"06\",\"tipoDireccionText\":\"DOMICILIO FISCAL\",\"tipoVialidad\":\"01\",\"tipoVialidadLabel\":\"calle\",\"vialidad\":\"ROJAS\",\"tipoEdificacion\":\"04\",\"tipoEdificacionLabel\":\"casa\",\"edificacion\":\"JENNY\",\"piso\":\"35\",\"tipoLocal\":\"\",\"tipoLocalLabel\":\"\",\"local\":\"NO APLICA\",\"tipoSector\":\"03\",\"tipoSectorLabel\":\"sector\",\"sector\":\"ARISMENDI\",\"estado\":\"16\",\"estadoText\":\"Nueva Esparta\",\"municipio\":\"211\",\"municipioText\":\"Arismendi\",\"parroquia\":\"702\",\"ciudad\":\"211\",\"ciudadText\":\"La Asunción\",\"zonaPostal\":\"1833\",\"telefono\":\"\",\"celular\":\"0412-7048856\",\"fax\":\"\",\"referencia\":\"\"}],\"relaciones\":[{\"apellido\":\"GALLETA\",\"nombre\":\"MARIA \",\"tipodocumento\":\"C\",\"cedula\":\"V40545632\",\"parentesco\":\"51\",\"parentescoText\":\"HEREDERO\",\"pasaporte\":\"\",\"idDocumento\":\"V40545632\",\"premuerto\":\"No\",\"fecha_nacimiento\":\"2008-03-06\",\"fecha_fallecimiento\":\"\",\"parentesco_id\":1},{\"apellido\":\"CARDIER\",\"nombre\":\"VALERIA\",\"tipodocumento\":\"C\",\"cedula\":\"V31120479\",\"parentesco\":\"51\",\"parentescoText\":\"HEREDERO\",\"pasaporte\":\"\",\"idDocumento\":\"V278366509\",\"premuerto\":\"No\",\"fecha_nacimiento\":\"2004-11-20\",\"fecha_fallecimiento\":\"\",\"parentesco_id\":8},{\"apellido\":\"RODRIGUEZ\",\"nombre\":\"JANETSY\",\"tipodocumento\":\"R\",\"cedula\":\"V11171151\",\"parentesco\":\"50\",\"parentescoText\":\"REPRESENTANTE DE LA SUCESION\",\"pasaporte\":\"\",\"idDocumento\":\"J11171151\"}],\"tipos_herencia\":{\"items\":[{\"tipo_herencia_id\":1,\"subtipo_testamento\":\"Abierto\",\"fecha_testamento\":\"03\\/03\\/2026\",\"fecha_conclusion_inventario\":null},{\"tipo_herencia_id\":3,\"subtipo_testamento\":null,\"fecha_testamento\":null,\"fecha_conclusion_inventario\":null}]},\"bienes_inmuebles\":[{\"tipo_bien_inmueble_id\":[\"4\"],\"tipo_bien_nombres\":\"Casa\",\"vivienda_principal\":\"true\",\"bien_litigioso\":\"true\",\"porcentaje\":\"100,00\",\"descripcion\":\"hola\",\"linderos\":\"hola\",\"superficie_construida\":\"45\",\"superficie_no_construida\":\"45\",\"area_superficie\":\" 45\",\"direccion\":\"hola\",\"oficina_registro\":\"hola\",\"nro_registro\":\"hola\",\"libro\":\"hola\",\"protocolo\":\"hola\",\"fecha_registro\":\"18\\/03\\/2026\",\"trimestre\":\"hola\",\"asiento_registral\":\"hola\",\"matricula\":\"hola\",\"folio_real_anio\":\"hola\",\"valor_original\":\"100,00\",\"valor_declarado\":\"550,00\",\"num_expediente\":\"1\",\"tribunal_causa\":\"1\",\"partes_juicio\":\"1\",\"estado_juicio\":\"1\"}],\"bienes_muebles_banco\":[{\"tipo_bien\":\"1\",\"tipo_bien_nombre\":\"Acciones\",\"banco\":\"1\",\"banco_nombre\":\"100% BANCO\",\"numero_cuenta\":\"33333333333333333333\",\"bien_litigioso\":\"false\",\"num_expediente\":\"\",\"tribunal_causa\":\"\",\"partes_juicio\":\"\",\"estado_juicio\":\"\",\"porcentaje\":\"100,00\",\"descripcion\":\"d\",\"valor_declarado\":\"10.000,00\"}]}', NULL, NULL, NULL, NULL, 'V32614540', 'Fadr2001+', 'Prueba', 0, '2026-03-27 16:56:58', '2026-03-27 19:14:52');
 
 -- --------------------------------------------------------
 
@@ -7115,7 +7324,8 @@ INSERT INTO `sim_intento_estados` (`id`, `intento_id`, `estado`, `comentario`, `
 (1, 1, 'En_Proceso', 'Intento iniciado', '2026-03-10 03:08:01'),
 (2, 2, 'En_Proceso', 'Intento iniciado', '2026-03-10 03:54:31'),
 (3, 3, 'En_Proceso', 'Intento iniciado', '2026-03-11 00:38:40'),
-(4, 4, 'En_Proceso', 'Intento iniciado', '2026-03-11 03:01:26');
+(4, 4, 'En_Proceso', 'Intento iniciado', '2026-03-11 03:01:26'),
+(5, 5, 'En_Proceso', 'Intento iniciado', '2026-03-27 16:56:58');
 
 -- --------------------------------------------------------
 
@@ -7302,7 +7512,7 @@ INSERT INTO `sim_marco_legals` (`id`, `titulo`, `tipo`, `descripcion`, `url`, `e
 
 CREATE TABLE `sim_personas` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `tipo_cedula` enum('V','E','No_Aplica') NOT NULL DEFAULT 'V',
+  `tipo_cedula` enum('V','E','No_Aplica') DEFAULT 'V',
   `nacionalidad` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Nacionalidad del causante/participante, FK a tabla paises',
   `cedula` varchar(20) DEFAULT NULL COMMENT 'NULL permitido para casos de causante sin cédula',
   `pasaporte` varchar(20) DEFAULT NULL COMMENT 'Número de pasaporte, en caso de ser necesario en la declaracion',
@@ -7310,9 +7520,9 @@ CREATE TABLE `sim_personas` (
   `nombres` varchar(100) NOT NULL,
   `apellidos` varchar(100) NOT NULL,
   `fecha_nacimiento` date DEFAULT NULL,
-  `estado_civil` enum('Soltero','Casado','Viudo','Divorciado','Concubinato','No_aplica') NOT NULL DEFAULT 'No_aplica',
-  `sexo` enum('M','F') NOT NULL,
-  `created_by` bigint(20) UNSIGNED NOT NULL COMMENT 'Profesor que registró a esta persona en la piscina de datos',
+  `estado_civil` enum('Soltero','Casado','Viudo','Divorciado','Concubinato') DEFAULT NULL,
+  `sexo` enum('M','F') DEFAULT NULL,
+  `created_by` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Profesor que registró a esta persona en la piscina de datos',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -7323,14 +7533,14 @@ CREATE TABLE `sim_personas` (
 
 INSERT INTO `sim_personas` (`id`, `tipo_cedula`, `nacionalidad`, `cedula`, `pasaporte`, `rif_personal`, `nombres`, `apellidos`, `fecha_nacimiento`, `estado_civil`, `sexo`, `created_by`, `created_at`, `updated_at`) VALUES
 (1, 'V', 190, '4079920', '0123456', 'J4079921', 'Maria', 'Sarmiento', '2001-05-29', 'Casado', 'F', 1, '2026-03-06 18:14:28', '2026-03-11 20:17:13'),
-(2, 'V', 190, '4224014', '12345678', 'v42240148', 'jesus', 'estanga', '2000-03-01', 'Soltero', 'M', 1, '2026-03-06 18:52:53', '2026-03-07 06:27:58'),
-(3, 'V', 190, '27836650', '47836650', 'J37836650', 'francisco', 'diaz', '2001-05-29', 'No_aplica', 'M', 1, '2026-03-07 03:15:53', '2026-03-15 01:05:35'),
+(2, 'V', 190, '4224014', '12345678', 'V42240148', 'jesus', 'estanga', '2000-03-01', 'Soltero', 'M', 1, '2026-03-06 18:52:53', '2026-03-27 00:31:46'),
+(3, 'V', 190, '27836650', '47836650', 'J37836650', 'francisco', 'diaz', '2001-05-29', 'Casado', 'M', 1, '2026-03-07 03:15:53', '2026-03-27 05:57:17'),
 (4, 'V', 190, '31120479', '311204790', 'V278366509', 'valeria', 'cardier', '2004-11-20', 'Casado', 'F', 1, '2026-03-07 03:34:56', '2026-03-15 04:49:29'),
 (5, 'V', 190, '11171151', '111711510', 'J11171151', 'janetsy', 'rodriguez', '1971-03-01', 'Soltero', 'M', 1, '2026-03-07 05:18:14', '2026-03-07 05:18:14'),
 (6, 'V', 190, '30061516', '30061516', 'J30061516', 'Daniel', 'Diaz', '2002-12-30', 'Concubinato', 'M', 1, '2026-03-07 05:18:14', '2026-03-07 06:30:41'),
 (7, 'V', NULL, '28555555', NULL, NULL, 'sebastian', 'astudillo', '2001-01-01', 'Soltero', 'M', 1, '2026-03-07 07:12:52', '2026-03-07 07:12:52'),
-(8, '', 190, NULL, NULL, NULL, 'jhon', 'doe', '1950-01-15', 'Soltero', 'M', 1, '2026-03-08 03:33:25', '2026-03-08 03:33:25'),
-(9, 'V', NULL, '40545632', NULL, NULL, 'maria ', 'galleta', '2008-03-06', '', 'F', 1, '2026-03-08 03:33:25', '2026-03-08 03:33:25'),
+(8, 'No_Aplica', 190, NULL, NULL, NULL, 'jhon', 'doe', '1950-01-15', 'Soltero', 'M', 1, '2026-03-08 03:33:25', '2026-03-24 22:14:40'),
+(9, 'V', NULL, '40545632', NULL, NULL, 'maria ', 'galleta', '2008-03-06', NULL, 'F', 1, '2026-03-08 03:33:25', '2026-03-24 22:44:26'),
 (10, 'V', NULL, '87654321', NULL, NULL, 'Pedro', 'Gomez', '1985-07-10', 'Soltero', 'M', 1, '2026-03-08 03:33:25', '2026-03-08 03:33:25');
 
 -- --------------------------------------------------------
@@ -7383,7 +7593,8 @@ INSERT INTO `tipos_eventos` (`id`, `codigo`, `descripcion`, `nivel_riesgo`) VALU
 (30, 'system_backup', 'Respaldo del sistema ejecutado', 'info'),
 (31, 'backup_config_changed', 'Configuración de respaldo modificada', 'info'),
 (32, 'backup_deleted', 'Respaldo eliminado', 'warning'),
-(33, 'backup_downloaded', 'Respaldo descargado', 'info');
+(33, 'backup_downloaded', 'Respaldo descargado', 'info'),
+(34, 'student_created', 'Estudiante creado en el sistema', 'info');
 
 -- --------------------------------------------------------
 
@@ -7408,7 +7619,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `persona_id`, `role_id`, `email`, `password`, `status`, `force_password_change`, `created_at`, `updated_at`) VALUES
-(1, 1, 2, 'fadr2001@gmail.com', '$2y$10$Kzl4AdugrrTAgIwZ6NDz6.TqiHejK/6/.98Tw4I0cjzfmovJRopba', 'active', 0, '2026-02-11 04:44:49', '2026-02-19 02:16:13'),
+(1, 1, 2, 'fadr2001@gmail.com', '$2y$10$Kzl4AdugrrTAgIwZ6NDz6.TqiHejK/6/.98Tw4I0cjzfmovJRopba', 'active', 0, '2026-02-11 04:44:49', '2026-03-25 21:16:29'),
 (2, 2, 3, 'fdiaz.6650@unimar.edu.ve', '$2y$10$ctwj3nxTnx.83Ax9hNT3Ye5SHMEi6ATT5LzUh.G3oIVhsWEiMqobm', 'active', 0, '2026-02-11 04:50:54', '2026-02-11 04:50:54'),
 (3, 3, 3, 'cardierv@gmail.com', '$2y$10$ZbEymi1ldw5.s46K0t4cdOOCS5EAVPntryBTZCx2ozNskNLTjpMtq', 'active', 0, '2026-02-11 05:13:38', '2026-02-11 05:13:38'),
 (4, 4, 3, 'vcardier.0479@unimar.edu.ve', '$2y$10$KRc/FlxyrUVWliVPC13RK.Vuak8bRsta4f16HeHlXBhovaT5b93r6', 'active', 0, '2026-02-12 18:08:20', '2026-02-12 18:08:20'),
@@ -7436,9 +7647,7 @@ CREATE TABLE `user_sessions` (
 --
 
 INSERT INTO `user_sessions` (`id`, `user_id`, `session_id`, `ip_address`, `user_agent`, `last_activity`, `created_at`) VALUES
-(82, 1, 'djoiaqln8ko95ubkqvkhmd80ni', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', '2026-03-22 19:42:44', '2026-03-19 20:54:51'),
-(85, 6, 'so2pctctjmq9braorul996g7l9', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-23 02:29:21', '2026-03-22 14:59:14'),
-(88, 3, 'ei5o7nejtqlce1timj2k41rjog', '172.16.20.108', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36', '2026-03-22 20:20:39', '2026-03-22 20:20:39');
+(102, 3, 'eflu9aps9l87k683c83noc6dvj', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36', '2026-03-27 19:20:54', '2026-03-27 12:56:08');
 
 --
 -- Índices para tablas volcadas
@@ -7507,6 +7716,15 @@ ALTER TABLE `inscripciones`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `unique_inscripcion` (`estudiante_id`,`seccion_id`),
   ADD KEY `fk_inscripcion_seccion` (`seccion_id`);
+
+--
+-- Indices de la tabla `mail_queue`
+--
+ALTER TABLE `mail_queue`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_estado_retry` (`estado`,`next_retry_at`),
+  ADD KEY `idx_destinatario` (`destinatario`),
+  ADD KEY `idx_usuario` (`usuario_id`);
 
 --
 -- Indices de la tabla `materias`
@@ -8177,7 +8395,7 @@ ALTER TABLE `user_sessions`
 -- AUTO_INCREMENT de la tabla `bitacora_eventos`
 --
 ALTER TABLE `bitacora_eventos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=307;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=461;
 
 --
 -- AUTO_INCREMENT de la tabla `carreras`
@@ -8213,13 +8431,19 @@ ALTER TABLE `estados`
 -- AUTO_INCREMENT de la tabla `estudiantes`
 --
 ALTER TABLE `estudiantes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `inscripciones`
 --
 ALTER TABLE `inscripciones`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `mail_queue`
+--
+ALTER TABLE `mail_queue`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `materias`
@@ -8261,7 +8485,7 @@ ALTER TABLE `periodos`
 -- AUTO_INCREMENT de la tabla `personas`
 --
 ALTER TABLE `personas`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `profesores`
@@ -8279,7 +8503,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `secciones`
 --
 ALTER TABLE `secciones`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_actas_defunciones`
@@ -8291,37 +8515,37 @@ ALTER TABLE `sim_actas_defunciones`
 -- AUTO_INCREMENT de la tabla `sim_casos_estudios`
 --
 ALTER TABLE `sim_casos_estudios`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_asignaciones`
 --
 ALTER TABLE `sim_caso_asignaciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bienes_inmuebles`
 --
 ALTER TABLE `sim_caso_bienes_inmuebles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bienes_litigiosos`
 --
 ALTER TABLE `sim_caso_bienes_litigiosos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bienes_muebles`
 --
 ALTER TABLE `sim_caso_bienes_muebles`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bien_inmueble_tipo_rel`
 --
 ALTER TABLE `sim_caso_bien_inmueble_tipo_rel`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_acciones`
@@ -8333,7 +8557,7 @@ ALTER TABLE `sim_caso_bm_acciones`
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_banco`
 --
 ALTER TABLE `sim_caso_bm_banco`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_bm_bonos`
@@ -8393,13 +8617,13 @@ ALTER TABLE `sim_caso_calculo_manual`
 -- AUTO_INCREMENT de la tabla `sim_caso_configs`
 --
 ALTER TABLE `sim_caso_configs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_direcciones`
 --
 ALTER TABLE `sim_caso_direcciones`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_caso_exenciones`
@@ -8441,7 +8665,7 @@ ALTER TABLE `sim_caso_prorrogas`
 -- AUTO_INCREMENT de la tabla `sim_caso_tipoherencia_rel`
 --
 ALTER TABLE `sim_caso_tipoherencia_rel`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_cat_bancos`
@@ -8537,7 +8761,7 @@ ALTER TABLE `sim_empresas`
 -- AUTO_INCREMENT de la tabla `sim_intentos`
 --
 ALTER TABLE `sim_intentos`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_intento_bienes_inmuebles`
@@ -8645,7 +8869,7 @@ ALTER TABLE `sim_intento_direcciones`
 -- AUTO_INCREMENT de la tabla `sim_intento_estados`
 --
 ALTER TABLE `sim_intento_estados`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `sim_intento_exenciones`
@@ -8711,19 +8935,19 @@ ALTER TABLE `sim_personas`
 -- AUTO_INCREMENT de la tabla `tipos_eventos`
 --
 ALTER TABLE `tipos_eventos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `user_sessions`
 --
 ALTER TABLE `user_sessions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- Restricciones para tablas volcadas
@@ -8761,6 +8985,12 @@ ALTER TABLE `estudiantes`
 ALTER TABLE `inscripciones`
   ADD CONSTRAINT `fk_inscripcion_estudiante` FOREIGN KEY (`estudiante_id`) REFERENCES `estudiantes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_inscripcion_seccion` FOREIGN KEY (`seccion_id`) REFERENCES `secciones` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `mail_queue`
+--
+ALTER TABLE `mail_queue`
+  ADD CONSTRAINT `fk_mail_usuario` FOREIGN KEY (`usuario_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Filtros para la tabla `materias`

@@ -61,10 +61,16 @@ class StudentAttemptModel
             return ['ok' => false, 'razon' => 'La fecha límite ha vencido.'];
         }
 
-        // 3. Verificar intento activo
+        // 3. Verificar intento activo (En_Progreso)
         $activo = $this->getIntentoActivo($asignacionId);
         if ($activo) {
             return ['ok' => false, 'razon' => 'Ya tienes un intento en progreso.', 'intento_activo' => $activo];
+        }
+
+        // 3b. Verificar si hay un intento pendiente de aprobación de RIF
+        $pendienteRif = $this->getIntentoPendienteRif($asignacionId);
+        if ($pendienteRif) {
+            return ['ok' => false, 'razon' => 'Tienes un intento pendiente de aprobación del RIF Sucesoral por parte del profesor.'];
         }
 
         // 4. Contar intentos vs max_intentos
@@ -88,6 +94,25 @@ class StudentAttemptModel
             SELECT id, numero_intento, paso_actual, pasos_completados, borrador_json, rif_sucesoral, usuario_seniat, password_rif
             FROM sim_intentos
             WHERE asignacion_id = :asig_id AND estado = 'En_Progreso'
+            LIMIT 1
+        ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':asig_id', $asignacionId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
+
+    /**
+     * Busca un intento con estado = 'Pendiente_RIF' para la asignación.
+     * Bloquea al estudiante de crear nuevos intentos mientras el profesor revisa.
+     */
+    public function getIntentoPendienteRif(int $asignacionId): ?array
+    {
+        $sql = "
+            SELECT id, numero_intento
+            FROM sim_intentos
+            WHERE asignacion_id = :asig_id AND estado = 'Pendiente_RIF'
             LIMIT 1
         ";
         $stmt = $this->db->prepare($sql);

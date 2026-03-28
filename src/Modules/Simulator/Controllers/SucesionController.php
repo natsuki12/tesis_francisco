@@ -526,6 +526,36 @@ class SucesionController
                 return $borrador->formatDecimal($v);
             };
 
+            // ── Tributo calculation (needed for Aviso modal monto a pagar) ──
+            $totalInmuebles   = $borrador->getTotalBienesInmuebles();
+            $totalMuebles     = $borrador->getTotalBienesMuebles();
+            $patrimonioBruto  = $totalInmuebles + $totalMuebles;
+            $desgravamenes    = $borrador->getTotalDesgravamenes();
+            $exenciones       = $borrador->getTotalExenciones();
+            $exoneraciones    = $borrador->getTotalExoneraciones();
+            $totalExclusiones = $desgravamenes + $exenciones + $exoneraciones;
+            $activoNeto = max(0, $patrimonioBruto - $totalExclusiones);
+            $totalPasivos   = $borrador->getTotalPasivos();
+            $patrimonioNeto = max(0, $activoNeto - $totalPasivos);
+
+            $herederos      = $borrador->getHerederosDetalle();
+            $totalHerederos = count($herederos);
+            $datosBasicos       = $borrador->getDatosBasicos();
+            $fechaFallecimiento = $datosBasicos['fecha_fallecimiento'] ?? '';
+            $utData  = \App\Core\UnidadTributariaService::obtenerPorFecha($fechaFallecimiento);
+            $utFloat = $utData ? (float) $utData['valor'] : 0.0;
+
+            $calculoManual = $borrador->getBorrador()['calculo_manual'] ?? null;
+            if ($calculoManual && !empty($calculoManual['herederos'])) {
+                $tributo = \App\Modules\Simulator\Services\TributoCalculator::calcularConOverrides(
+                    $utFloat, $herederos, $calculoManual['herederos'], \App\Core\DB::connect()
+                );
+            } else {
+                $tributo = \App\Modules\Simulator\Services\TributoCalculator::calcular(
+                    $patrimonioNeto, $totalHerederos, $utFloat, $herederos, \App\Core\DB::connect()
+                );
+            }
+
             $datos = [
                 // Secciones A–D header (same as anverso)
                 'nombre_sucesion'      => $borrador->getNombreSucesion(),
@@ -553,6 +583,8 @@ class SucesionController
                 'total_desgravamenes' => $fmt($borrador->getTotalDesgravamenes()),
                 'total_exenciones'    => $fmt($borrador->getTotalExenciones()),
                 'total_exoneraciones' => $fmt($borrador->getTotalExoneraciones()),
+                // Aviso modal
+                'linea_14'            => $fmt($tributo['total_impuesto_a_pagar']),
                 'fmt'                 => $fmt,
             ];
 

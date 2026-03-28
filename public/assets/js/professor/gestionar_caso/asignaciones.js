@@ -62,7 +62,6 @@
     const elApertura = document.getElementById('cfgFechaApertura');
     const elLimite = document.getElementById('cfgFechaLimite');
     const searchInput = document.getElementById('studentSearch');
-    const resultsDiv = document.getElementById('studentResults');
     const selectedDiv = document.getElementById('selectedStudents');
 
     let selectedStudents = [];
@@ -84,7 +83,7 @@
         selectedStudents = [];
         editRules = null;
         renderSelected();
-        resultsDiv.style.display = 'none';
+        searchInput.value = '';
         elModalidad.disabled = false;
         elIntentos.min = 0;
         elModalidad.title = '';
@@ -275,7 +274,7 @@
         }
     });
 
-    /* ========== STUDENT SEARCH ========== */
+    /* ========== STUDENT SEARCH (AutocompleteDropdown) ========== */
     async function loadAvailableStudents() {
         try {
             const res = await fetch(`${BASE}/api/casos/${CASO_ID}/estudiantes-disponibles`);
@@ -286,53 +285,49 @@
         }
     }
 
-    searchInput?.addEventListener('input', () => {
-        const q = searchInput.value.trim().toLowerCase();
-        if (q.length < 2) {
-            resultsDiv.style.display = 'none';
-            return;
-        }
-
-        const selectedIds = new Set(selectedStudents.map(s => String(s.id)));
-        const matches = availableStudents.filter(s =>
-            !selectedIds.has(String(s.estudiante_id)) &&
-            (`${s.nombres} ${s.apellidos}`.toLowerCase().includes(q) ||
-                (s.cedula || '').includes(q))
-        ).slice(0, 10);
-
-        if (matches.length === 0) {
-            resultsDiv.innerHTML = '<div class="gc-sr-empty">Sin resultados</div>';
-        } else {
-            resultsDiv.innerHTML = matches.map(s =>
-                `<div class="gc-sr-item" data-id="${s.estudiante_id}" data-nombres="${esc(s.nombres)}" data-apellidos="${esc(s.apellidos)}" data-cedula="${esc(s.cedula || '')}">
-                    <span class="gc-sr-name">${esc(s.nombres)} ${esc(s.apellidos)}</span>
-                    <span class="gc-sr-info">CI: ${esc(s.cedula || '—')} · ${esc(s.seccion_nombre || '')}</span>
-                </div>`
-            ).join('');
-        }
-        resultsDiv.style.display = 'block';
-    });
-
-    resultsDiv?.addEventListener('click', e => {
-        const item = e.target.closest('.gc-sr-item');
-        if (!item) return;
-        selectedStudents.push({
-            id: item.dataset.id,
-            nombres: item.dataset.nombres,
-            apellidos: item.dataset.apellidos,
-            cedula: item.dataset.cedula,
-            existing: false
+    if (searchInput && window.AutocompleteDropdown) {
+        new AutocompleteDropdown({
+            input: searchInput,
+            minLength: 0,
+            debounceMs: 150,
+            fetchFn: async (query) => {
+                const q = query.toLowerCase();
+                const selectedIds = new Set(selectedStudents.map(s => String(s.id)));
+                return availableStudents.filter(s =>
+                    !selectedIds.has(String(s.estudiante_id)) &&
+                    (q.length === 0 ||
+                     `${s.nombres} ${s.apellidos}`.toLowerCase().includes(q) ||
+                     (s.cedula || '').includes(q) ||
+                     (s.email || '').toLowerCase().includes(q))
+                ).slice(0, 10);
+            },
+            renderItem: (item) => {
+                const ci = item.cedula || '—';
+                const nombre = `${esc(item.nombres)} ${esc(item.apellidos)}`;
+                const email = item.email ? esc(item.email) : '';
+                const seccion = item.seccion_nombre ? esc(item.seccion_nombre) : '';
+                return `
+                    <div style="line-height:1.4;">
+                        <span class="ac-dropdown__cedula">${esc(ci)}</span>
+                        <span class="ac-dropdown__sep">—</span>
+                        <span class="ac-dropdown__name">${nombre}</span>
+                        <br>
+                        <small style="color:#64748b;">${email}${email && seccion ? ' · ' : ''}${seccion}</small>
+                    </div>`;
+            },
+            onSelect: (item) => {
+                selectedStudents.push({
+                    id: item.estudiante_id,
+                    nombres: item.nombres,
+                    apellidos: item.apellidos,
+                    cedula: item.cedula,
+                    existing: false
+                });
+                renderSelected();
+                searchInput.value = '';
+            }
         });
-        renderSelected();
-        searchInput.value = '';
-        resultsDiv.style.display = 'none';
-    });
-
-    document.addEventListener('click', e => {
-        if (!e.target.closest('.gc-student-search')) {
-            resultsDiv.style.display = 'none';
-        }
-    });
+    }
 
     function renderSelected() {
         if (!selectedDiv) return;

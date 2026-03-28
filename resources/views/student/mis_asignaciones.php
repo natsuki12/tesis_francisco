@@ -5,12 +5,10 @@ declare(strict_types=1);
 
 $pageTitle = 'Mis Asignaciones — Simulador SENIAT';
 $activePage = 'mis-asignaciones';
-$extraCss = '<link rel="stylesheet" href="' . asset('css/student/mis_asignaciones.css') . '">';
+$extraCss = '<link rel="stylesheet" href="' . asset('css/shared/data-table.css') . '">
+<link rel="stylesheet" href="' . asset('css/student/mis_asignaciones.css') . '">';
 
-// $asignaciones viene del route (StudentAssignmentModel::getAsignaciones)
-// Cada fila: asignacion_id, asignacion_estado, caso_titulo, profesor_nombre,
-//            modalidad (Practica_Libre|Evaluacion), max_intentos, fecha_limite,
-//            intentos_usados, mejor_nota, tiene_borrador, seccion_nombre, ...
+// $asignaciones viene del controller (StudentAssignmentModel::getAsignaciones)
 
 // ── Helpers ────────────────────────────────────────────────
 function getModeLabel(string $dbMode): string
@@ -38,12 +36,19 @@ function mapEstadoLabel(array $asig): string
     $estado = $asig['asignacion_estado'] ?? 'Pendiente';
     $intentos = (int) ($asig['intentos_usados'] ?? 0);
     $borrador = (int) ($asig['tiene_borrador'] ?? 0);
+    $fechaLimite = $asig['fecha_limite'] ?? null;
+
+    // Vencida = fecha pasó + nunca envió ningún intento
+    if ($fechaLimite && strtotime($fechaLimite) < time() && $estado !== 'Completado' && $intentos === 0) {
+        return 'Vencida';
+    }
 
     return match ($estado) {
-        'Pendiente' => $intentos === 0 ? 'Sin iniciar' : ($borrador ? 'En progreso' : 'Enviado'),
+        'Pendiente' => $intentos === 0
+            ? ($borrador ? 'En progreso' : 'Sin iniciar')
+            : ($borrador ? 'En progreso' : 'Enviado'),
         'En_Progreso' => $borrador ? 'En progreso' : 'Enviado',
         'Completado' => 'Calificada',
-        'Vencido' => 'Vencida',
         default => ucfirst(str_replace('_', ' ', $estado)),
     };
 }
@@ -79,178 +84,180 @@ ob_start();
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.35-4.35" />
             </svg>
-            <input type="text" id="search-asignaciones" placeholder="Buscar caso o profesor...">
+            <input type="text" data-search-for="tbl-asignaciones" placeholder="Buscar caso, profesor o sección...">
         </div>
 
-        <select class="toolbar-select" id="filter-estado">
-            <option value="">Todas</option>
-            <option value="Sin iniciar">Sin iniciar</option>
-            <option value="En progreso">En progreso</option>
-            <option value="Enviado">Enviado</option>
-            <option value="Calificada">Calificada</option>
-        </select>
-
-        <select class="toolbar-select" id="filter-modalidad">
+        <select class="filter-select" id="filter-modalidad">
             <option value="">Todas las modalidades</option>
             <option value="Práctica Libre">Práctica Libre</option>
             <option value="Práctica Guiada">Práctica Guiada</option>
             <option value="Evaluación">Evaluación</option>
         </select>
+
+        <select class="filter-select" id="filter-estado">
+            <option value="">Todos los estados</option>
+            <option value="Sin iniciar">Sin iniciar</option>
+            <option value="En progreso">En progreso</option>
+            <option value="Enviado">Enviado</option>
+            <option value="Calificada">Calificada</option>
+            <option value="Vencida">Vencida</option>
+        </select>
+    </div>
+    <div class="toolbar-right">
+        <label style="font-size:var(--text-xs); color:var(--gray-500); display:flex; align-items:center; gap:6px;">
+            Mostrar <select data-perpage-for="tbl-asignaciones" class="per-page-select"><option value="10" selected>10</option><option value="15">15</option><option value="25">25</option></select> filas
+        </label>
     </div>
 </div>
 
-<!-- Assignment Cards Grid -->
-<?php if (empty($asignaciones)): ?>
-    <div class="table-container">
-        <div class="empty-state empty-state--blue" style="padding: 60px 24px;">
-            <div class="empty-state-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-                </svg>
-            </div>
-            <h3>Sin asignaciones</h3>
-            <p>Cuando tu profesor te asigne casos, aparecerán aquí.</p>
-        </div>
-    </div>
-<?php else: ?>
-    <div class="assignment-grid">
-        <?php foreach ($asignaciones as $asig):
-            // ── Derived values ──
-            $modeLabel = getModeLabel($asig['modalidad']);
-            $modeClass = getModeClassSt($asig['modalidad']);
-            $estadoLabel = mapEstadoLabel($asig);
-            $statusClass = getStatusClassSt($estadoLabel);
-            $maxIntentos = (int) $asig['max_intentos'];
-            $intentosUsados = (int) $asig['intentos_usados'];
-            $mejorNota = $asig['mejor_nota'] !== null ? (float) $asig['mejor_nota'] : null;
-            $tieneBorrador = (bool) $asig['tiene_borrador'];
-            $fechaLimite = $asig['fecha_limite'] ?? null;
-            $profesorNombre = $asig['profesor_nombre'] ?? 'Profesor';
-            $seccionNombre = $asig['seccion_nombre'] ?? '';
-            $maxDisplay = $maxIntentos === 0 ? '∞' : (string) $maxIntentos;
-            $dotCount = $maxIntentos === 0 ? max($intentosUsados + 1, 3) : $maxIntentos;
+<!-- Data Table -->
+<div class="table-container">
+    <table class="data-table" id="tbl-asignaciones">
+        <thead>
+            <tr>
+                <th class="sortable" data-col="0" style="width:22%">Caso</th>
+                <th class="sortable" data-col="1" style="width:16%">Profesor</th>
+                <th class="sortable" data-col="2" style="width:10%">Sección</th>
+                <th class="sortable" data-col="3" style="width:12%">Modalidad</th>
+                <th class="sortable" data-col="4" style="width:9%">Intentos</th>
+                <th class="sortable" data-col="5" style="width:13%">Fecha Límite</th>
+                <th class="sortable" data-col="6" style="width:10%">Estado</th>
+                <th style="width:8%">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (empty($asignaciones)): ?>
+                <tr class="empty-row"><td colspan="8" style="text-align:center; padding:40px; color:var(--gray-400);">No tienes asignaciones pendientes. Cuando tu profesor te asigne casos, aparecerán aquí.</td></tr>
+            <?php else: ?>
+                <?php foreach ($asignaciones as $asig):
+                    $modeLabel = getModeLabel($asig['modalidad']);
+                    $modeClass = getModeClassSt($asig['modalidad']);
+                    $estadoLabel = mapEstadoLabel($asig);
+                    $statusClass = getStatusClassSt($estadoLabel);
+                    $maxIntentos = (int) $asig['max_intentos'];
+                    $intentosUsados = (int) $asig['intentos_usados'];
+                    $tieneBorrador = (bool) $asig['tiene_borrador'];
+                    $fechaLimite = $asig['fecha_limite'] ?? null;
+                    $profesorNombre = $asig['profesor_nombre'] ?? 'Profesor';
+                    $seccionNombre = $asig['seccion_nombre'] ?? '—';
+                    $maxDisplay = $maxIntentos === 0 ? '∞' : (string) $maxIntentos;
 
-            // Deadline urgency
-            $dlBadge = '';
-            $dlText = '';
-            if ($fechaLimite) {
-                $deadlineTs = strtotime($fechaLimite);
-                $daysLeft = (int) (($deadlineTs - time()) / 86400);
-                if ($estadoLabel === 'Vencida' || $daysLeft < 0) {
-                    $dlBadge = 'deadline-expired';
-                    $dlText = 'Fecha límite vencida';
-                } elseif ($daysLeft <= 2) {
-                    $dlBadge = 'deadline-urgent';
-                    $dlText = 'Fecha límite: ' . date('d/m/Y', $deadlineTs);
-                } elseif ($daysLeft <= 5) {
-                    $dlBadge = 'deadline-soon';
-                    $dlText = 'Fecha límite: ' . date('d/m/Y', $deadlineTs);
-                } else {
-                    $dlBadge = 'deadline-ok';
-                    $dlText = 'Fecha límite: ' . date('d/m/Y', $deadlineTs);
-                }
-            }
+                    // Deadline urgency
+                    $dlClass = '';
+                    $dlText = '—';
+                    if ($fechaLimite) {
+                        $deadlineTs = strtotime($fechaLimite);
+                        // Comparar contra inicio del día actual para evitar inconsistencias por hora
+                        $todayTs = strtotime('today');
+                        $daysLeft = (int) (($deadlineTs - $todayTs) / 86400);
+                        $dlText = date('d/m/Y', $deadlineTs);
+                        if ($estadoLabel === 'Vencida' || $daysLeft < 0) {
+                            $dlClass = 'dl-expired';
+                        } elseif ($daysLeft <= 3) {
+                            $dlClass = 'dl-urgent';
+                        } elseif ($daysLeft <= 7) {
+                            $dlClass = 'dl-soon';
+                        }
+                    }
 
-            // Action Button
-            if ($estadoLabel === 'Sin iniciar') {
-                $btnText = 'Comenzar';
-                $btnClass = 'btn-comenzar';
-            } elseif ($tieneBorrador) {
-                $btnText = 'Continuar';
-                $btnClass = 'btn-continuar';
-            } elseif (in_array($estadoLabel, ['Calificada', 'Vencida'])) {
-                $btnText = 'Ver resultados';
-                $btnClass = 'btn-resultados';
-            } elseif ($maxIntentos > 0 && $intentosUsados < $maxIntentos && $intentosUsados > 0) {
-                $btnText = 'Nuevo intento';
-                $btnClass = 'btn-nuevo-intento';
-            } else {
-                $btnText = 'Ver detalles';
-                $btnClass = 'btn-resultados';
-            }
-            ?>
-            <a href="<?= base_url('/mis-asignaciones/' . $asig['asignacion_id']) ?>" class="assignment-card animate-in">
-                <!-- Header -->
-                <div class="assignment-card-header">
-                    <div>
-                        <h3 class="assignment-card-title">
-                            <?= htmlspecialchars($asig['caso_titulo']) ?>
-                        </h3>
-                        <div class="assignment-card-sub">
-                            <?= htmlspecialchars($profesorNombre) ?>
-                            <?php if ($seccionNombre): ?>
-                                | <?= htmlspecialchars($seccionNombre) ?>
+                    // Fecha expirada (para botones y color)
+                    $fechaExpirada = $fechaLimite && strtotime($fechaLimite) < time();
+
+                    // Action Button — si fecha pasó, siempre "Ver"
+                    if ($fechaExpirada && $estadoLabel !== 'Calificada') {
+                        $btnText = 'Ver ›';
+                        $isAction = false;
+                    } elseif ($estadoLabel === 'Sin iniciar') {
+                        $btnText = 'Comenzar ›';
+                        $isAction = true;
+                    } elseif ($tieneBorrador) {
+                        $btnText = 'Continuar ›';
+                        $isAction = true;
+                    } elseif ($estadoLabel === 'Calificada') {
+                        $btnText = 'Ver ›';
+                        $isAction = false;
+                    } elseif (($maxIntentos === 0 || $intentosUsados < $maxIntentos) && $intentosUsados > 0) {
+                        $btnText = 'Reintentar ›';
+                        $isAction = true;
+                    } else {
+                        $btnText = 'Ver ›';
+                        $isAction = false;
+                    }
+
+                    $searchText = mb_strtolower($asig['caso_titulo'] . ' ' . $profesorNombre . ' ' . $seccionNombre . ' ' . $modeLabel . ' ' . $estadoLabel);
+                ?>
+                    <tr data-search="<?= htmlspecialchars($searchText) ?>" data-href="<?= base_url('/mis-asignaciones/' . $asig['asignacion_id']) ?>" data-modalidad="<?= htmlspecialchars($modeLabel) ?>" data-estado="<?= htmlspecialchars($estadoLabel) ?>" class="row-clickable">
+                        <td>
+                            <strong class="td-caso-titulo"><?= htmlspecialchars($asig['caso_titulo']) ?></strong>
+                        </td>
+                        <td><?= htmlspecialchars($profesorNombre) ?></td>
+                        <td><?= htmlspecialchars($seccionNombre) ?></td>
+                        <td><span class="mode-badge <?= $modeClass ?>"><?= htmlspecialchars($modeLabel) ?></span></td>
+                        <td>
+                            <strong><?= $intentosUsados ?></strong>
+                            <span style="color:var(--gray-400)">de <?= $maxDisplay ?></span>
+                        </td>
+                        <td>
+                            <span class="<?= $dlClass ?>"><?= $dlText ?></span>
+                        </td>
+                        <td><span class="status-badge <?= $statusClass ?>"><?= htmlspecialchars($estadoLabel) ?></span></td>
+                        <td>
+                            <?php if ($isAction): ?>
+                                <form method="POST" action="<?= base_url('/api/intentos/iniciar') ?>" style="display:inline;"
+                                    onclick="event.stopPropagation();">
+                                    <input type="hidden" name="asignacion_id" value="<?= $asig['asignacion_id'] ?>">
+                                    <button type="submit" class="btn btn-sm btn-action"><?= $btnText ?></button>
+                                </form>
+                            <?php else: ?>
+                                <a href="<?= base_url('/mis-asignaciones/' . $asig['asignacion_id']) ?>"
+                                   class="btn btn-sm btn-action"
+                                   onclick="event.stopPropagation();"><?= $btnText ?></a>
                             <?php endif; ?>
-                        </div>
-                    </div>
-                    <span class="mode-badge <?= $modeClass ?>">
-                        <?= htmlspecialchars($modeLabel) ?>
-                    </span>
-                </div>
-
-                <!-- Body -->
-                <div class="assignment-card-body">
-                    <div class="assignment-info-row">
-                        <!-- Progress Dots -->
-                        <div class="progress-dots">
-                            <?php for ($i = 0; $i < $dotCount; $i++): ?>
-                                <span class="progress-dot <?= $i < $intentosUsados ? 'dot-used' : 'dot-available' ?>"></span>
-                            <?php endfor; ?>
-                            <span class="progress-dots-label">
-                                <?= $intentosUsados ?> de
-                                <?= $maxDisplay ?>
-                            </span>
-                        </div>
-                    </div>
-
-                    <?php if ($mejorNota !== null): ?>
-                        <div class="assignment-nota">
-                            Mejor nota:
-                            <strong class="<?= $mejorNota >= 10 ? 'nota-pass' : 'nota-fail' ?>">
-                                <?= number_format($mejorNota, 1) ?>/20
-                            </strong>
-                        </div>
-                    <?php elseif ($intentosUsados > 0): ?>
-                        <div class="assignment-nota">Sin calificar aún</div>
-                    <?php endif; ?>
-
-                    <?php if ($dlBadge): ?>
-                        <span class="deadline-badge <?= $dlBadge ?>">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                                <line x1="16" y1="2" x2="16" y2="6" />
-                                <line x1="8" y1="2" x2="8" y2="6" />
-                                <line x1="3" y1="10" x2="21" y2="10" />
-                            </svg>
-                            <?= $dlText ?>
-                        </span>
-                    <?php endif; ?>
-                </div>
-
-                <!-- Footer -->
-                <div class="assignment-card-footer">
-                    <span class="status-badge <?= $statusClass ?>">
-                        <?= htmlspecialchars($estadoLabel) ?>
-                    </span>
-                    <?php if (in_array($btnText, ['Comenzar', 'Continuar', 'Nuevo intento'])): ?>
-                        <form method="POST" action="<?= base_url('/api/intentos/iniciar') ?>" style="display:inline;"
-                            onclick="event.stopPropagation();">
-                            <input type="hidden" name="asignacion_id" value="<?= $asig['asignacion_id'] ?>">
-                            <button type="submit" class="btn btn-sm <?= $btnClass ?>">
-                                <?= $btnText ?>
-                            </button>
-                        </form>
-                    <?php else: ?>
-                        <span class="btn btn-sm <?= $btnClass ?>">
-                            <?= $btnText ?>
-                        </span>
-                    <?php endif; ?>
-                </div>
-            </a>
-        <?php endforeach; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </tbody>
+    </table>
+    <div class="table-footer" data-footer-for="tbl-asignaciones">
+        <div class="table-footer-info"></div>
+        <div class="pagination"></div>
     </div>
-<?php endif; ?>
+</div>
+
+<script>
+// Clickable rows → navigate to assignment detail
+document.querySelectorAll('.row-clickable').forEach(row => {
+    row.addEventListener('click', () => {
+        const href = row.dataset.href;
+        if (href) window.location.href = href;
+    });
+});
+
+// Custom dropdown filters via DataTable API
+(function() {
+    const filterMod = document.getElementById('filter-modalidad');
+    const filterEst = document.getElementById('filter-estado');
+
+    function applyFilters() {
+        const mod = filterMod.value;
+        const est = filterEst.value;
+
+        if (!mod && !est) {
+            DataTableManager.setClientFilter('tbl-asignaciones', null);
+        } else {
+            DataTableManager.setClientFilter('tbl-asignaciones', row => {
+                if (mod && row.dataset.modalidad !== mod) return false;
+                if (est && row.dataset.estado !== est) return false;
+                return true;
+            });
+        }
+    }
+
+    filterMod.addEventListener('change', applyFilters);
+    filterEst.addEventListener('change', applyFilters);
+})();
+</script>
 
 <?php
 $content = ob_get_clean();

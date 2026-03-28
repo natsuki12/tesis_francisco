@@ -1,0 +1,136 @@
+================================================================================
+PLAN: DataTable de Asignaciones + Vista Detalle por Asignación
+================================================================================
+Fecha: 27/03/2026
+Estado: PENDIENTE
+
+RESUMEN
+-------
+Reemplazar el sistema de cards por asignación en gestionar_caso.php con:
+1. Un DataTable global de configuraciones (asignaciones)
+2. Una vista detalle dedicada por asignación con DataTable de estudiantes
+
+================================================================================
+FASE 1: DataTable de Configs en el Tab "Asignaciones"
+================================================================================
+
+Archivo: resources/views/professor/gestionar_caso.php (tab-asignaciones)
+
+Reemplazar las cards actuales (líneas ~1809-1914) con un DataTable global.
+
+COLUMNAS PROPUESTAS:
+  #   | Modalidad       | Intentos     | Apertura      | Límite        | Estudiantes | Estado  | Acciones
+  1   | Práctica Libre  | Ilimitados   | 27/03 14:00   | 30/03 23:59   | 5           | Activo  | ✏️ 🗑️
+  2   | Evaluación      | 3 intentos   | —             | 15/04 23:59   | 12          | Activo  | ✏️ 🗑️
+  3   | Práctica Guiada | 1 intento    | 01/04 08:00   | 10/04 23:59   | 3           | Inactivo| —
+
+- Cada fila es clickeable → navega a la vista detalle
+- Botón "Nueva Asignación" arriba de la tabla (ya existe)
+- Acciones: Editar (abre modal existente), Eliminar/Desactivar (lógica existente)
+- Si no hay configs: mostrar empty state (ya existe)
+
+ARCHIVOS A MODIFICAR:
+  - resources/views/professor/gestionar_caso.php → reemplazar cards por DataTable HTML
+  - public/assets/css/professor/gestionar_caso.css → agregar estilos DataTable si hace falta
+  - public/assets/js/professor/gestionar_caso/asignaciones.js → adaptar event listeners
+
+================================================================================
+FASE 2: Vista Detalle de Asignación (nueva página)
+================================================================================
+
+NUEVA RUTA: /casos-sucesorales/{casoId}/asignacion/{configId}
+
+BACKEND:
+  - Nuevo método en AsignacionesModel → getConfigDetalle(configId)
+    - Retorna: config + estudiantes con datos extendidos (email, sección, intentos usados)
+    - Query: JOIN users, JOIN inscripciones, JOIN secciones
+    - Contar intentos: COUNT(*) FROM sim_intentos WHERE asignacion_id = a.id
+  
+  - Nuevo controlador o método en CasosController:
+    - Ruta: GET /casos-sucesorales/{casoId}/asignacion/{configId}
+    - Validar que el config pertenece al caso y al profesor logueado
+    - Renderizar vista detalle
+
+VISTA (resources/views/professor/detalle_asignacion.php):
+  
+  HEADER:
+    - Breadcrumb: Casos Sucesorales > {Título Caso} > Asignación #{n}
+    - Info de la config: Modalidad, Intentos, Fecha Apertura, Fecha Límite, Estado
+    - Botones: Editar Config, Eliminar/Desactivar, Volver al caso
+  
+  DATATABLE DE ESTUDIANTES:
+    Columnas:
+      Estudiante (nombre completo) | Cédula | Email | Sección | Estado | Intentos | Acciones
+    
+    - Estudiante: avatar con iniciales + nombre
+    - Cédula: V-12345678
+    - Email: correo institucional
+    - Sección: nombre de la sección
+    - Estado: badge (Pendiente/En progreso/Completado/Inactivo)
+    - Intentos: "2/3" o "5/∞"
+    - Acciones: Quitar estudiante (con confirmación)
+  
+  BOTÓN AGREGAR ESTUDIANTES:
+    - Usa el AutocompleteDropdown que ya implementamos
+    - Mismo endpoint existente: GET /api/casos/{id}/estudiantes-disponibles
+
+ARCHIVOS NUEVOS:
+  - resources/views/professor/detalle_asignacion.php (vista)
+  - public/assets/css/professor/detalle_asignacion.css (estilos)
+  - public/assets/js/professor/detalle_asignacion.js (lógica JS)
+
+ARCHIVOS A MODIFICAR:
+  - src/Modules/Professor/Models/Asignaciones/AsignacionesModel.php → getConfigDetalle()
+  - Rutas (routes o controlador) → registrar nueva ruta
+  - Controlador de casos → nuevo método para manejar la vista
+
+================================================================================
+FASE 3: Datos Backend Adicionales
+================================================================================
+
+Nuevo query getConfigDetalle(int $configId):
+
+  SELECT 
+    a.id AS asignacion_id,
+    a.estudiante_id,
+    a.estado,
+    a.created_at,
+    per.nombres,
+    per.apellidos,
+    per.cedula,
+    u.email,
+    sec.nombre AS seccion_nombre,
+    (SELECT COUNT(*) FROM sim_intentos si WHERE si.asignacion_id = a.id) AS intentos_usados
+  FROM sim_caso_asignaciones a
+  JOIN estudiantes est ON a.estudiante_id = est.id
+  JOIN personas per ON est.persona_id = per.id
+  JOIN users u ON u.persona_id = est.persona_id
+  JOIN inscripciones ins ON ins.estudiante_id = est.id
+  JOIN secciones sec ON ins.seccion_id = sec.id
+  JOIN sim_caso_configs c ON a.config_id = c.id
+  WHERE a.config_id = :config_id
+    AND sec.profesor_id = c.profesor_id
+  ORDER BY per.apellidos, per.nombres
+
+================================================================================
+ORDEN DE IMPLEMENTACIÓN
+================================================================================
+
+1. [FASE 1] DataTable de configs en tab Asignaciones (rápido, solo frontend)
+2. [FASE 2] Backend: nuevo método getConfigDetalle + nueva ruta
+3. [FASE 2] Frontend: vista detalle_asignacion.php con DataTable de estudiantes
+4. [FASE 2] Mover lógica de agregar/quitar estudiantes a la vista detalle
+5. Simplificar modal de asignación (solo config, sin selector de estudiantes)
+6. Testing completo
+
+================================================================================
+NOTAS
+================================================================================
+
+- El modal de "Nueva Asignación" se simplifica: solo config (modalidad, intentos, fechas)
+- Los estudiantes se agregan DESPUÉS desde la vista detalle
+- O se puede mantener el flujo actual donde se agregan al crear (decisión del usuario)
+- La tabla sim_intentos ya debería existir por el simulador
+- Verificar que existe la tabla sim_intentos antes de implementar el COUNT
+
+================================================================================

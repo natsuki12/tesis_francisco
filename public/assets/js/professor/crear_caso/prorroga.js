@@ -58,14 +58,39 @@ export function renderProrrogas() {
 export function saveProrroga() {
     const { fecha_solicitud, nro_resolucion, fecha_resolucion, plazo_dias, fecha_vencimiento } = caseData.prorroga;
 
-    // Validación: Todos los campos requeridos
-    if (!fecha_solicitud || !nro_resolucion.trim() || !fecha_resolucion || !plazo_dias || !fecha_vencimiento) {
-        showToast('Complete todos los campos de la prórroga antes de agregarla.');
-        return;
+    // Clear previous errors
+    clearProrrogaErrors();
+
+    // Collect all errors
+    const errors = [];
+    const errorFields = [];
+
+    if (!fecha_solicitud) {
+        errors.push('Fecha de Solicitud');
+        errorFields.push('[data-bind="prorroga.fecha_solicitud"]');
+    }
+    if (!nro_resolucion || !nro_resolucion.trim()) {
+        errors.push('Nro de Resolución');
+        errorFields.push('[data-bind="prorroga.nro_resolucion"]');
+    }
+    if (!fecha_resolucion) {
+        errors.push('Fecha de Resolución');
+        errorFields.push('[data-bind="prorroga.fecha_resolucion"]');
+    }
+    if (!plazo_dias) {
+        errors.push('Plazo Otorgado (días)');
+        errorFields.push('[data-bind="prorroga.plazo_dias"]');
+    } else if (parseInt(plazo_dias) < 1) {
+        errors.push('El plazo otorgado debe ser al menos 1 día');
+        errorFields.push('[data-bind="prorroga.plazo_dias"]');
+    }
+    if (!fecha_vencimiento) {
+        errors.push('Fecha de Vencimiento');
+        errorFields.push('[data-bind="prorroga.fecha_vencimiento"]');
     }
 
-    if (parseInt(plazo_dias) < 1) {
-        showToast('El plazo otorgado debe ser al menos 1 día.');
+    if (errors.length > 0) {
+        showProrrogaErrors(errors, errorFields);
         return;
     }
 
@@ -111,6 +136,39 @@ export function saveProrroga() {
         });
         firstInput.focus();
     }
+}
+
+function showProrrogaErrors(errors, fieldSelectors) {
+    const container = document.getElementById('prorrogaErrors');
+    const list = document.getElementById('prorrogaErrorsList');
+    if (!container || !list) return;
+
+    list.innerHTML = errors.map(e => `<li>${e}</li>`).join('');
+    container.classList.add('is-visible');
+
+    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    fieldSelectors.forEach(sel => {
+        const el = document.querySelector(sel);
+        if (el) {
+            const field = el.closest('.cc-field');
+            if (field) field.classList.add('cc-field--error');
+        }
+    });
+
+    const clearHandler = () => {
+        clearProrrogaErrors();
+        document.removeEventListener('input', clearHandler);
+        document.removeEventListener('change', clearHandler);
+    };
+    document.addEventListener('input', clearHandler, { once: true });
+    document.addEventListener('change', clearHandler, { once: true });
+}
+
+function clearProrrogaErrors() {
+    const container = document.getElementById('prorrogaErrors');
+    if (container) container.classList.remove('is-visible');
+    document.querySelectorAll('#card_prorrogas .cc-field--error').forEach(el => el.classList.remove('cc-field--error'));
 }
 
 /**

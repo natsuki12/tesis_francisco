@@ -104,8 +104,10 @@ window.modalManager = {
 };
 
 // Cerrar el modal al hacer clic en el backdrop (el espacio oscuro fuera de la tarjeta)
+// Dialogs con data-no-backdrop-close se saltan esta lógica
 document.addEventListener('click', function (event) {
     if (event.target.tagName === 'DIALOG' && event.target.classList.contains('modal-base')) {
+        if (event.target.hasAttribute('data-no-backdrop-close')) return;
         const rect = event.target.getBoundingClientRect();
         const isInDialog = (
             rect.top <= event.clientY &&

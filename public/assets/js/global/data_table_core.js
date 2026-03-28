@@ -30,7 +30,8 @@ window.DataTableManager = (function() {
             sortCol: null,
             sortDir: 1,
             rows: rows,
-            tbody: tbody
+            tbody: tbody,
+            clientFilter: null  // optional (row) => bool
         };
 
         tableInstances[tableId] = state;
@@ -38,7 +39,11 @@ window.DataTableManager = (function() {
         function getPerPage() { return parseInt(perPageSel?.value || tableEl.dataset.perPage || '10', 10); }
 
         function getVisible() {
-            return state.rows.filter(r => !state.searchTerm || (r.dataset.search || '').includes(state.searchTerm));
+            return state.rows.filter(r => {
+                if (state.searchTerm && !(r.dataset.search || '').includes(state.searchTerm)) return false;
+                if (state.clientFilter && !state.clientFilter(r)) return false;
+                return true;
+            });
         }
 
         function sortRows(arr) {
@@ -599,6 +604,19 @@ window.DataTableManager = (function() {
             }
             state.currentPage = 1;
             if (state.fetchData) state.fetchData();
+        },
+
+        /**
+         * Set a client-side filter function for a client-side table.
+         * @param {string} tableId
+         * @param {Function|null} filterFn - (row) => bool, return true to show
+         */
+        setClientFilter: function(tableId, filterFn) {
+            const state = tableInstances[tableId];
+            if (!state || !state.render) return;
+            state.clientFilter = filterFn || null;
+            state.currentPage = 1;
+            state.render();
         }
     };
 })();

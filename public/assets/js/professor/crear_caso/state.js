@@ -157,6 +157,44 @@ const onStateChange = (prop) => {
             hide(bCedula);
             show(bActa);
         }
+
+        // Clear causante fields when tipo_sucesion changes
+        if (prop === 'tipo_sucesion') {
+            // Unlock any locked fields
+            (caseData.causante._locked_fields || []).forEach(f => {
+                const el = $(`[data-bind="causante.${f}"]`);
+                if (el) { el.value = ''; el.disabled = false; el.style.backgroundColor = ''; }
+            });
+
+            // Clear causante state
+            const causanteFields = ['tipo_cedula', 'cedula', 'nombres', 'apellidos', 'sexo',
+                'estado_civil', 'fecha_nacimiento', 'fecha_fallecimiento', 'nacionalidad',
+                'persona_id', 'pasaporte', 'rif_personal'];
+            causanteFields.forEach(f => {
+                caseData.causante[f] = '';
+                const el = $(`[data-bind="causante.${f}"]`);
+                if (el) { el.value = ''; el.disabled = false; el.style.backgroundColor = ''; }
+            });
+            caseData.causante._locked_fields = [];
+
+            // Clear datos fiscales
+            caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
+            const cierreEl = $('#input_fecha_cierre_fiscal');
+            if (cierreEl) { cierreEl.value = ''; cierreEl.disabled = false; cierreEl.style.backgroundColor = ''; }
+            // Reset domiciliado_pais to default
+            caseData.datos_fiscales_causante.domiciliado_pais = '1';
+            const domEl = $('[data-bind="datos_fiscales_causante.domiciliado_pais"]');
+            if (domEl) { domEl.value = '1'; domEl.disabled = true; domEl.style.backgroundColor = 'var(--cc-slate-50, #f8fafc)'; }
+
+            // Clear acta de defunción
+            caseData.acta_defuncion.numero_acta = '';
+            caseData.acta_defuncion.year_acta = '';
+            caseData.acta_defuncion.parroquia_registro_id = '';
+            ['numero_acta', 'year_acta', 'parroquia_registro_id'].forEach(f => {
+                const el = $(`[data-bind="acta_defuncion.${f}"]`);
+                if (el) el.value = '';
+            });
+        }
     }
 };
 

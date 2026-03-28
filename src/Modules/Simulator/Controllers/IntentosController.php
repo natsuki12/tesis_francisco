@@ -170,6 +170,60 @@ class IntentosController
     }
 
     /**
+     * POST /api/intentos/declarar
+     * Persiste el borrador_json en tablas normalizadas (StoreIntentoModel)
+     * y marca el intento como Enviado.
+     */
+    public function declarar(): void
+    {
+        header('Content-Type: application/json');
+
+        try {
+            $asignacionId = (int) ($_SESSION['sim_asignacion_id'] ?? 0);
+            if (!$asignacionId) {
+                http_response_code(400);
+                echo json_encode(['ok' => false, 'error' => 'Sin sesión de simulador activa.']);
+                return;
+            }
+
+            $intento = $this->attemptModel->getIntentoActivo($asignacionId);
+            if (!$intento) {
+                http_response_code(403);
+                echo json_encode(['ok' => false, 'error' => 'No hay intento activo para declarar.']);
+                return;
+            }
+
+            $intentoId = (int) $intento['id'];
+            $borrador = json_decode($intento['borrador_json'] ?? '{}', true);
+            if (empty($borrador)) {
+                http_response_code(400);
+                echo json_encode(['ok' => false, 'error' => 'El borrador está vacío.']);
+                return;
+            }
+
+            // Persistir en tablas normalizadas + estado Enviado + bitácora
+            $storeModel = new \App\Modules\Simulator\Models\StoreIntentoModel();
+            $storeModel->store($intentoId, $borrador);
+
+            // Guardar referencia al intento declarado (para acceso a PDFs)
+            $_SESSION['sim_last_intento_id'] = $intentoId;
+
+            // Limpiar sesión del simulador
+            unset($_SESSION['sim_asignacion_id'], $_SESSION['sim_modalidad'], $_SESSION['sim_seniat_logged_in']);
+
+            echo json_encode([
+                'ok'            => true,
+                'asignacion_id' => $asignacionId,
+            ]);
+
+        } catch (\Throwable $e) {
+            error_log('[IntentosController::declarar] CRITICAL: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            http_response_code(500);
+            echo json_encode(['ok' => false, 'error' => 'Error interno al procesar la declaración.']);
+        }
+    }
+
+    /**
      * POST /api/intentos/{id}/cancelar
      * Cancela un intento activo.
      */
@@ -260,18 +314,38 @@ class IntentosController
                 error_log("[IntentosController::validarRs] Error al obtener título del caso: " . $e->getMessage());
             }
 
-            // Validar borrador contra los datos reales del caso
-            $validator = new \App\Modules\Simulator\Validators\RSValidator();
-            $result = $validator->validar($id, $estudianteId);
-
-            // En modalidad Evaluación: solo validar, NO generar RIF ni enviar correo
+            // En modalidad Evaluación: NO validar, siempre poner Pendiente_RIF para que el profesor revise
             $modalidad = $_SESSION['sim_modalidad'] ?? null;
             if ($modalidad === 'Evaluacion') {
-                $result['email_enviado'] = false;
-                $result['modalidad'] = 'Evaluacion';
-                echo json_encode($result, JSON_UNESCAPED_UNICODE);
+                // Cambiar estado a Pendiente_RIF (solo si aún está En_Progreso, previene doble envío)
+                $stmtPendiente = $db->prepare("
+                    UPDATE sim_intentos
+                    SET estado = 'Pendiente_RIF', submitted_at = NOW(), updated_at = NOW()
+                    WHERE id = :id AND estado = 'En_Progreso'
+                ");
+                $stmtPendiente->execute(['id' => $id]);
+
+                if ($stmtPendiente->rowCount() === 0) {
+                    echo json_encode(['ok' => false, 'errores' => ['general' => ['Este intento ya fue enviado o no está activo.']]]);
+                    return;
+                }
+
+                // Limpiar sesión del simulador (el estudiante ya no puede editar)
+                unset($_SESSION['sim_asignacion_id'], $_SESSION['sim_modalidad'], $_SESSION['sim_seniat_logged_in']);
+
+                echo json_encode([
+                    'ok'             => true,
+                    'modalidad'      => 'Evaluacion',
+                    'pendiente_rif'  => true,
+                    'email_enviado'  => false,
+                    'mensaje'        => 'Su inscripción ha sido enviada al profesor para revisión y aprobación del RIF Sucesoral.',
+                ], JSON_UNESCAPED_UNICODE);
                 return;
             }
+
+            // Práctica Libre / Guiada: validar borrador contra los datos reales del caso
+            $validator = new \App\Modules\Simulator\Validators\RSValidator();
+            $result = $validator->validar($id, $estudianteId);
 
             // Práctica Libre / Guiada: generar RIF + enviar correo
             $emailEnviado = false;

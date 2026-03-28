@@ -202,6 +202,9 @@ if (!isset($user)) {
     <!-- Global AJAX Handlers & Formatters for Modals -->
     <script type="module" src="<?= asset('js/global/modals_ajax.js') ?>"></script>
 
+    <!-- Global Utilities (showToast, formatBs, etc.) -->
+    <script type="module" src="<?= asset('js/global/utils.js') ?>"></script>
+
     <!-- Global DataTable Engine & DOM Morphing -->
     <script src="<?= asset('js/global/data_table_core.js') ?>"></script>
 

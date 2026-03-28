@@ -46,6 +46,36 @@ class SeniatAuthController
     }
 
     /**
+     * GET /simulador/servicios_declaracion/sistemas
+     * Muestra la página de Aplicativos con el nombre del causante.
+     */
+    public function accederSistemas(\App\Core\App $app): string
+    {
+        $nombreCausante = '';
+
+        try {
+            if (!empty($_SESSION['sim_asignacion_id'])) {
+                $intento = $this->attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+                if ($intento && !empty($intento['borrador_json'])) {
+                    $borrador = json_decode($intento['borrador_json'], true);
+                    $db = $borrador['datos_basicos'] ?? [];
+                    $apellidos = trim($db['apellidos'] ?? '');
+                    $nombres = trim($db['nombres'] ?? '');
+                    if ($apellidos || $nombres) {
+                        $nombreCausante = mb_strtoupper(trim($apellidos . ' ' . $nombres));
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            error_log('[SeniatAuthController::accederSistemas] ' . $e->getMessage());
+        }
+
+        return $app->view('simulator/seniat_actual/acceder_sistemas', [
+            'nombreCausante' => $nombreCausante,
+        ]);
+    }
+
+    /**
      * POST /simulador/servicios_declaracion/login
      * Valida usuario/clave contra intento activo.
      */

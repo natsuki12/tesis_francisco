@@ -162,6 +162,20 @@
     font-weight: 400;
 }
 
+.grade-cell.grade-no-asignado {
+    background: var(--gray-100);
+    color: var(--gray-400);
+    font-weight: 500;
+    font-size: var(--text-xs);
+}
+
+.grade-cell.grade-sin-intento {
+    background: var(--blue-50);
+    color: var(--blue-400);
+    font-weight: 500;
+    font-size: var(--text-xs);
+}
+
 /* Promedio column styling */
 .promedio-final {
     font-size: var(--text-base);

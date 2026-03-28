@@ -70,3 +70,6 @@ export function showToast(message, type = 'error', duration = 4000) {
         setTimeout(dismiss, duration);
     }
 }
+
+// Expose globally for inline scripts
+window.showToast = showToast;

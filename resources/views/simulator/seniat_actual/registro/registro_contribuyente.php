@@ -280,7 +280,11 @@ ob_start();
                     </div>
                     <div class="card-body">
 
-                        <!-- Formulario de Búsqueda de Contribuyente -->
+                        <?php if (!empty($rifAsignado)): ?>
+                        <div style="display:flex; gap:24px; align-items:flex-start;">
+                            <!-- Formulario (izquierda) -->
+                            <div style="flex:1; min-width:0;">
+                        <?php endif; ?>
                         <form id="formBusquedaContribuyente" novalidate>
                             <div>
                                 <div class="row">
@@ -355,7 +359,24 @@ ob_start();
                         </form>
                         <!-- Fin del formulario -->
 
-                    </div>
+                        <?php if (!empty($rifAsignado)): ?>
+                            </div><!-- cierre flex-izquierda -->
+
+                            <!-- Panel RIF (derecha) -->
+                            <div style="width:320px; flex-shrink:0;">
+                                <div style="background:#eef3fa; border:1px solid #b8cce4; border-radius:8px; padding:20px; text-align:center;">
+                                    <div style="font-size:14px; color:#245b98; margin-bottom:6px; font-weight:500;">✅ Su RIF Sucesoral</div>
+                                    <div style="font-size:26px; font-weight:700; letter-spacing:3px; color:#1a3d6e; margin-bottom:14px;">
+                                        <?= htmlspecialchars($rifAsignado) ?>
+                                    </div>
+                                    <div style="background:#f5f6f8; border:1px solid #d0d5dd; border-radius:6px; padding:10px 12px; text-align:left; font-size:12.5px; color:#495057; line-height:1.6;">
+                                        <strong>📌 Nota educativa:</strong> En el proceso real, el RIF se envía únicamente al correo utilizado durante el proceso de registro. Este simulador también se lo ha enviado a su correo, pero lo muestra aquí con fines educativos.
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><!-- cierre flex container -->
+                        <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -433,6 +454,29 @@ ob_start();
                 // RIF asignado al estudiante (desde el backend)
                 const rifAsignado = <?= json_encode($rifAsignado ?? null) ?>;
 
+                // ── Captcha dinámico (igual que login SENIAT) ──
+                const captchaLabel = document.getElementById('captchaText');
+                const inputCaptcha = document.getElementById('floatingInputCap');
+
+                function generarCaptcha() {
+                    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+                    let code = '';
+                    for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+                    return code;
+                }
+
+                let captchaCode = generarCaptcha();
+                if (captchaLabel) {
+                    captchaLabel.textContent = captchaCode;
+                    captchaLabel.style.cursor = 'pointer';
+                    captchaLabel.title = 'Clic para generar un nuevo código';
+                    captchaLabel.addEventListener('click', () => {
+                        captchaCode = generarCaptcha();
+                        captchaLabel.textContent = captchaCode;
+                        if (inputCaptcha) inputCaptcha.value = '';
+                    });
+                }
+
                 // Cerrar modal
                 document.getElementById('modalCloseBtn').addEventListener('click', () => {
                     modalOverlay.classList.remove('show');
@@ -491,12 +535,14 @@ ob_start();
                 if (btnBuscar) {
                     btnBuscar.addEventListener('click', () => {
                         const rifIngresado = rifInput.value.trim();
-                        const captchaIngresado = document.getElementById('floatingInputCap').value.trim();
-                        const captchaEsperado = document.getElementById('captchaText').textContent.trim();
+                        const captchaIngresado = (inputCaptcha ? inputCaptcha.value : '').trim();
 
-                        // 1. Validar captcha
-                        if (captchaIngresado !== captchaEsperado) {
+                        // 1. Validar captcha (case-insensitive)
+                        if (captchaIngresado.toLowerCase() !== captchaCode.toLowerCase()) {
                             showModal('El código no coincide con la imagen. Por favor verifique e intente de nuevo.', 'danger');
+                            captchaCode = generarCaptcha();
+                            if (captchaLabel) captchaLabel.textContent = captchaCode;
+                            if (inputCaptcha) inputCaptcha.value = '';
                             return;
                         }
 

@@ -2,60 +2,14 @@
 declare(strict_types=1);
 
 // ARCHIVO: resources/views/professor/calificaciones.php
-// Vista de calificaciones: tabla cruzada Estudiantes × Casos
+// Sábana de notas — tabla cruzada Estudiantes × Casos, AJAX por sección.
 
 $pageTitle = 'Calificaciones — Simulador SENIAT';
 $activePage = 'calificaciones';
-$extraCss = '<link rel="stylesheet" href="' . asset('css/professor/calificaciones.css') . '">';
+$extraCss  = '<link rel="stylesheet" href="' . asset('css/shared/data-table.css') . '">';
+$extraCss .= '<link rel="stylesheet" href="' . asset('css/professor/calificaciones.css') . '">';
 
-// ── Datos Placeholder ──────────────────────────────────────
-$secciones = ['4to A', '4to B'];
-$seccionSeleccionada = '4to A'; // Simulates pre-selected
-
-$casos = [
-    ['id' => 1, 'titulo' => 'Sucesión González Méndez'],
-    ['id' => 2, 'titulo' => 'Sucesión Pérez Alvarado'],
-    ['id' => 3, 'titulo' => 'Sucesión Ramírez Torres'],
-];
-
-// Students with grades per caso (best attempt)
-$calificaciones = [
-    [
-        'id' => 1,
-        'nombres' => 'Ana María',
-        'apellidos' => 'Martínez López',
-        'cedula' => '28456789',
-        'nacionalidad' => 'V',
-        'notas' => [1 => 14.5, 2 => 18.0, 3 => null],  // caso_id => nota
-    ],
-    [
-        'id' => 2,
-        'nombres' => 'Pedro José',
-        'apellidos' => 'López Ramírez',
-        'cedula' => '27123456',
-        'nacionalidad' => 'V',
-        'notas' => [1 => 17.0, 2 => 15.5, 3 => 12.0],
-    ],
-    [
-        'id' => 5,
-        'nombres' => 'Valentina',
-        'apellidos' => 'Rodríguez Salas',
-        'cedula' => '28654321',
-        'nacionalidad' => 'V',
-        'notas' => [1 => null, 2 => null, 3 => null],
-    ],
-    [
-        'id' => 6,
-        'nombres' => 'Luis Enrique',
-        'apellidos' => 'Morales Quintero',
-        'cedula' => '27998877',
-        'nacionalidad' => 'V',
-        'notas' => [1 => 12.0, 2 => 8.5, 3 => 'pendiente'],
-    ],
-];
-
-// Helpers
-$avatarColors = ['avatar--blue', 'avatar--green', 'avatar--amber', 'avatar--purple', 'avatar--red'];
+$secciones = $secciones ?? [];
 
 ob_start();
 ?>
@@ -71,136 +25,238 @@ ob_start();
 <!-- Toolbar -->
 <div class="toolbar">
     <div class="toolbar-left">
-        <select class="toolbar-select" id="select-seccion">
+        <select class="filter-select" id="select-seccion" style="min-width:200px;">
             <option value="">— Seleccionar sección —</option>
             <?php foreach ($secciones as $sec): ?>
-                <option value="<?= htmlspecialchars($sec) ?>" <?= $sec === $seccionSeleccionada ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($sec) ?>
+                <option value="<?= (int)$sec['id'] ?>">
+                    <?= htmlspecialchars($sec['nombre']) ?>
                 </option>
             <?php endforeach; ?>
         </select>
-
-        <select class="toolbar-select" id="select-caso">
-            <option value="">Todos los casos</option>
-            <?php foreach ($casos as $caso): ?>
-                <option value="<?= $caso['id'] ?>">
-                    <?= htmlspecialchars($caso['titulo']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
-
-    <div class="toolbar-right">
-        <button class="export-btn" disabled title="Próximamente">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Exportar
-        </button>
     </div>
 </div>
 
-<!-- Grades Table -->
-<div class="grades-wrapper animate-in" id="grades-container">
-    <?php if (!$seccionSeleccionada): ?>
-        <!-- Initial State: No section selected -->
-        <div class="grades-initial-state">
-            <div class="empty-state-icon">
+<!-- Stats Row (hidden until loaded) -->
+<div class="stats-row" id="cal-stats" style="display:none;">
+    <div class="stat-card stat-card--vertical animate-in">
+        <div class="stat-card-top">
+            <span class="stat-label">Estudiantes</span>
+            <div class="stat-icon blue">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                    <polyline points="22 4 12 14.01 9 11.01" />
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
                 </svg>
             </div>
-            <h3>Selecciona una sección</h3>
-            <p>Elige una sección del selector para ver las calificaciones de tus estudiantes.</p>
         </div>
-    <?php else: ?>
-        <table class="grades-table">
-            <thead>
-                <tr>
-                    <th>Estudiante</th>
-                    <?php foreach ($casos as $caso): ?>
-                        <th>
-                            <?= htmlspecialchars($caso['titulo']) ?>
-                        </th>
-                    <?php endforeach; ?>
-                    <th>Promedio</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($calificaciones as $est):
-                    $fullName = trim($est['nombres'] . ' ' . $est['apellidos']);
-                    preg_match_all('/\b\w/u', $fullName, $m);
-                    $iniciales = mb_strtoupper(implode('', array_slice($m[0], 0, 2)));
-                    $avatarClass = $avatarColors[abs(crc32($iniciales)) % count($avatarColors)];
-                    $cedula = ($est['nacionalidad'] ?? 'V') . '-' . number_format((float) $est['cedula'], 0, ',', '.');
-
-                    // Calculate average from numeric grades only
-                    $numericNotes = array_filter($est['notas'], fn($n) => is_numeric($n));
-                    $promedio = count($numericNotes) > 0
-                        ? array_sum($numericNotes) / count($numericNotes)
-                        : null;
-                    ?>
-                    <tr>
-                        <!-- Estudiante (sticky) -->
-                        <td>
-                            <div class="estudiante-cell">
-                                <div class="estudiante-avatar <?= $avatarClass ?>">
-                                    <?= htmlspecialchars($iniciales) ?>
-                                </div>
-                                <div class="estudiante-info">
-                                    <div class="estudiante-name">
-                                        <?= htmlspecialchars($fullName) ?>
-                                    </div>
-                                    <div class="estudiante-ci">
-                                        <?= htmlspecialchars($cedula) ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-
-                        <!-- Grades per case -->
-                        <?php foreach ($casos as $caso):
-                            $nota = $est['notas'][$caso['id']] ?? null;
-                            if ($nota === 'pendiente') {
-                                $cellClass = 'grade-pending';
-                                $cellText = 'Pendiente';
-                            } elseif ($nota === null) {
-                                $cellClass = 'grade-na';
-                                $cellText = '—';
-                            } elseif ($nota >= 10) {
-                                $cellClass = 'grade-pass';
-                                $cellText = number_format($nota, 1);
-                            } else {
-                                $cellClass = 'grade-fail';
-                                $cellText = number_format($nota, 1);
-                            }
-                            ?>
-                            <td>
-                                <span class="grade-cell <?= $cellClass ?>">
-                                    <?= $cellText ?>
-                                </span>
-                            </td>
-                        <?php endforeach; ?>
-
-                        <!-- Promedio (sticky right) -->
-                        <td>
-                            <?php if ($promedio !== null): ?>
-                                <span class="promedio-final <?= $promedio >= 10 ? 'grade-pass' : 'grade-fail' ?>">
-                                    <?= number_format($promedio, 1) ?>
-                                </span>
-                            <?php else: ?>
-                                <span class="promedio-final grade-na">—</span>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    <?php endif; ?>
+        <div class="stat-value" id="stat-total">0</div>
+    </div>
+    <div class="stat-card stat-card--vertical animate-in">
+        <div class="stat-card-top">
+            <span class="stat-label">Calificados</span>
+            <div class="stat-icon green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <polyline points="20 6 9 17 4 12" />
+                </svg>
+            </div>
+        </div>
+        <div class="stat-value" id="stat-calificados">0</div>
+    </div>
+    <div class="stat-card stat-card--vertical animate-in">
+        <div class="stat-card-top">
+            <span class="stat-label">Pendientes</span>
+            <div class="stat-icon amber">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                </svg>
+            </div>
+        </div>
+        <div class="stat-value" id="stat-pendientes">0</div>
+    </div>
 </div>
+
+<!-- Grades Container -->
+<div class="grades-wrapper animate-in" id="grades-container">
+    <div class="grades-initial-state" id="cal-placeholder">
+        <div class="empty-state-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+        </div>
+        <h3>Selecciona una sección</h3>
+        <p>Elige una sección del selector para ver las calificaciones de tus estudiantes.</p>
+    </div>
+    <div id="cal-table-wrap" style="display:none; overflow-x:auto;"></div>
+</div>
+
+<script>
+(function() {
+    var API = '<?= base_url("/calificaciones/api") ?>';
+    var select = document.getElementById('select-seccion');
+    var placeholder = document.getElementById('cal-placeholder');
+    var tableWrap = document.getElementById('cal-table-wrap');
+    var statsRow = document.getElementById('cal-stats');
+
+    var STORAGE_KEY = 'cal_seccion';
+
+    // Restore saved section
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (saved && select.querySelector('option[value="' + saved + '"]')) {
+        select.value = saved;
+    }
+
+    select.addEventListener('change', function() {
+        var secId = this.value;
+        localStorage.setItem(STORAGE_KEY, secId);
+        if (!secId) {
+            placeholder.style.display = '';
+            tableWrap.style.display = 'none';
+            statsRow.style.display = 'none';
+            return;
+        }
+        loadSeccion(secId);
+    });
+
+    function loadSeccion(secId) {
+        placeholder.style.display = 'none';
+        tableWrap.style.display = '';
+        tableWrap.innerHTML = '<p style="text-align:center; padding:40px; color:var(--gray-400)">Cargando…</p>';
+
+        fetch(API + '?seccion_id=' + secId)
+            .then(function(r) { return r.json(); })
+            .then(function(data) { renderSabana(data); })
+            .catch(function() {
+                tableWrap.innerHTML = '<p style="text-align:center; padding:40px; color:var(--red-500)">Error al cargar datos</p>';
+            });
+    }
+
+    var avatarColors = ['avatar--blue', 'avatar--green', 'avatar--amber', 'avatar--purple', 'avatar--red'];
+
+    // Auto-load saved section on page load
+    if (select.value) {
+        loadSeccion(select.value);
+    }
+
+    function renderSabana(data) {
+        var estudiantes = data.estudiantes || [];
+        var casos = data.casos || [];
+        var stats = data.stats || {};
+
+        // Stats
+        document.getElementById('stat-total').textContent = stats.total || 0;
+        document.getElementById('stat-calificados').textContent = stats.calificados || 0;
+        document.getElementById('stat-pendientes').textContent = stats.pendientes || 0;
+        statsRow.style.display = '';
+
+        if (!estudiantes.length) {
+            tableWrap.innerHTML = '<div class="grades-initial-state"><h3>Sin estudiantes</h3><p>No hay estudiantes asignados a casos en esta sección.</p></div>';
+            return;
+        }
+
+        var html = '<table class="grades-table">';
+        // Header
+        html += '<thead><tr><th class="col-estudiante">Estudiante</th>';
+        casos.forEach(function(c) {
+            var tipoLabel = c.tipo_calificacion === 'numerica' ? '(Numérica)' : '(A/R)';
+            html += '<th class="col-caso">' + esc(c.titulo) + '<br><small style="color:var(--gray-400);font-weight:400;">' + tipoLabel + '</small></th>';
+        });
+        html += '<th class="col-promedio">Promedio</th></tr></thead>';
+
+        // Body
+        html += '<tbody>';
+        estudiantes.forEach(function(est, i) {
+            var fullName = (est.nombres || '') + ' ' + (est.apellidos || '');
+            var initials = getInitials(fullName);
+            var avatarCls = avatarColors[Math.abs(hashCode(initials)) % avatarColors.length];
+            var cedula = (est.nacionalidad || 'V') + '-' + formatNumber(est.cedula);
+
+            html += '<tr>';
+            // Estudiante cell
+            html += '<td class="col-estudiante">';
+            html += '<div class="estudiante-cell">';
+            html += '<div class="estudiante-avatar ' + avatarCls + '">' + esc(initials) + '</div>';
+            html += '<div class="estudiante-info">';
+            html += '<div class="estudiante-name">' + esc(fullName.trim()) + '</div>';
+            html += '<div class="estudiante-ci">' + esc(cedula) + '</div>';
+            html += '</div></div></td>';
+
+            // Notas per caso
+            casos.forEach(function(caso) {
+                var nota = est.notas[caso.config_id] || null;
+                html += '<td class="col-caso">' + renderNota(nota, caso) + '</td>';
+            });
+
+            // Promedio
+            html += '<td class="col-promedio">';
+            if (est.promedio !== null) {
+                var promCls = est.promedio >= 10 ? 'grade-pass' : 'grade-fail';
+                html += '<span class="promedio-final ' + promCls + '">' + est.promedio.toFixed(1) + '</span>';
+            } else {
+                html += '<span class="promedio-final grade-na">—</span>';
+            }
+            html += '</td>';
+
+            html += '</tr>';
+        });
+        html += '</tbody></table>';
+
+        tableWrap.innerHTML = html;
+    }
+
+    function renderNota(nota, caso) {
+        if (!nota) {
+            // No asignado a este caso
+            return '<span class="grade-cell grade-no-asignado" title="No asignado">No asignado</span>';
+        }
+        if (nota.estado === 'sin_intento') {
+            // Asignado pero no ha iniciado
+            return '<span class="grade-cell grade-sin-intento" title="Asignado, sin intento">Sin intento</span>';
+        }
+        if (nota.estado === 'Enviado') {
+            return '<a href="<?= base_url("/entregas/") ?>' + nota.intento_id + '" class="grade-cell grade-pending" title="Enviado, pendiente de revisión">Pendiente</a>';
+        }
+        // Calificado
+        if (caso.tipo_calificacion === 'numerica' && nota.nota_numerica !== null) {
+            var n = parseFloat(nota.nota_numerica);
+            var cls = n >= 10 ? 'grade-pass' : 'grade-fail';
+            return '<a href="<?= base_url("/entregas/") ?>' + nota.intento_id + '" class="grade-cell ' + cls + '">' + n.toFixed(1) + '</a>';
+        }
+        // Cualitativa
+        if (nota.nota_cualitativa) {
+            var cls2 = nota.nota_cualitativa === 'Aprobado' ? 'grade-pass' : 'grade-fail';
+            var label = nota.nota_cualitativa === 'Aprobado' ? 'A' : 'R';
+            return '<a href="<?= base_url("/entregas/") ?>' + nota.intento_id + '" class="grade-cell ' + cls2 + '" title="' + nota.nota_cualitativa + '">' + label + '</a>';
+        }
+        return '<span class="grade-cell grade-na">—</span>';
+    }
+
+    function esc(s) {
+        var el = document.createElement('span');
+        el.textContent = s || '';
+        return el.innerHTML;
+    }
+
+    function getInitials(name) {
+        var parts = (name || '').trim().split(/\s+/);
+        return (parts[0] ? parts[0][0] : '') + (parts[1] ? parts[1][0] : '');
+    }
+
+    function hashCode(s) {
+        var h = 0;
+        for (var i = 0; i < s.length; i++) {
+            h = ((h << 5) - h) + s.charCodeAt(i);
+            h |= 0;
+        }
+        return h;
+    }
+
+    function formatNumber(n) {
+        if (!n) return '0';
+        return parseInt(n).toLocaleString('es-VE');
+    }
+})();
+</script>
 
 <?php
 $content = ob_get_clean();

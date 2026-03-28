@@ -323,8 +323,8 @@ $role = $_SESSION['role_id'] ?? 3;
                     </span>
                     <span class="sim-nav__text">Mis Asignaciones</span>
                 </a>
-                <a href="<?= base_url('/historial-planillas') ?>"
-                    class="sim-nav__link <?= $activePage === 'historial-planillas' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/mis-entregas') ?>"
+                    class="sim-nav__link <?= $activePage === 'mis-entregas' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round">
@@ -332,11 +332,10 @@ $role = $_SESSION['role_id'] ?? 3;
                             <polyline points="12 6 12 12 16 14" />
                         </svg>
                     </span>
-                    <span class="sim-nav__text">Historial / Planillas</span>
+                    <span class="sim-nav__text">Mis Entregas</span>
                 </a>
             </div>
 
-            <!-- SECCIÓN: ACADÉMICO (Estudiante) -->
             <div class="sim-nav__section">
                 <span class="sim-nav__section-title">ACADÉMICO</span>
                 <a href="<?= base_url('/marco-legal') ?>"
@@ -349,17 +348,6 @@ $role = $_SESSION['role_id'] ?? 3;
                         </svg>
                     </span>
                     <span class="sim-nav__text">Marco Legal</span>
-                </a>
-                <a href="<?= base_url('/mis-calificaciones') ?>"
-                    class="sim-nav__link <?= $activePage === 'mis-calificaciones' ? 'sim-nav__link--active' : '' ?>">
-                    <span class="sim-nav__icon">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round">
-                            <polygon
-                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                        </svg>
-                    </span>
-                    <span class="sim-nav__text">Mis Calificaciones</span>
                 </a>
             </div>
         <?php endif; ?>

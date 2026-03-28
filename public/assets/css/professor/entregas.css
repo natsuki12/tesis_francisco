@@ -2,6 +2,8 @@
    ENTREGAS — Estilos específicos de la vista
    ============================================= */
 
+@import url('../shared/data-table.css');
+
 /* Colors, radius, shadows, transition → inherited from base.css + components.css */
 /* Search box, filter dropdowns, student cell/avatar, ver-link → components.css */
 

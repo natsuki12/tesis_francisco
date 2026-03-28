@@ -16,29 +16,55 @@ use Mpdf\Mpdf;
 class PdfReportController
 {
     /**
-     * GET /api/declaracion/pdf
+     * Resuelve el intento para generar PDFs.
+     * Intenta: 1) query param ?intento_id, 2) sesión activa del simulador,
+     * 3) sim_last_intento_id (post-declaración).
+     */
+    private function resolveIntento(): ?array
+    {
+        $assignModel  = new StudentAssignmentModel();
+        $attemptModel = new StudentAttemptModel();
+        $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
+        if (!$estudianteId) return null;
+
+        // 1) Query param (desde vista de asignaciones)
+        $qpId = (int) ($_GET['intento_id'] ?? 0);
+        if ($qpId > 0) {
+            $intento = $attemptModel->getIntento($qpId, $estudianteId);
+            if ($intento) return $intento;
+        }
+
+        // 2) Sesión activa del simulador
+        if (!empty($_SESSION['sim_asignacion_id'])) {
+            $intento = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+            if ($intento) return $intento;
+        }
+
+        // 3) Post-declaración: intento ya enviado
+        if (!empty($_SESSION['sim_last_intento_id'])) {
+            $intento = $attemptModel->getIntento((int) $_SESSION['sim_last_intento_id'], $estudianteId);
+            if ($intento) return $intento;
+        }
+
+        return null;
+    }
+
+    /**
+     * GET /simulador/sucesion/declaracion_pdf
      * Generates and streams the PDF directly to the browser.
      */
     public function generar(): void
     {
         try {
-            // 1. Get active intento
-            $assignModel  = new StudentAssignmentModel();
-            $attemptModel = new StudentAttemptModel();
-            $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
-
-            if (!$estudianteId || empty($_SESSION['sim_asignacion_id'])) {
-                http_response_code(403);
-                echo 'No hay sesión activa del simulador.';
-                return;
-            }
-
-            $intento = $attemptModel->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+            $intento = $this->resolveIntento();
             if (!$intento) {
                 http_response_code(404);
-                echo 'No se encontró un intento activo.';
+                echo 'No se encontró un intento para generar el PDF.';
                 return;
             }
+
+            $assignModel  = new StudentAssignmentModel();
+            $estudianteId = $assignModel->getEstudianteId((int) $_SESSION['user_id']);
 
             // Validate herederos have parentesco defined (moved from web.php)
             try {
@@ -89,6 +115,38 @@ class PdfReportController
             error_log('[PdfReportController::generar] ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             http_response_code(500);
             echo 'Error al generar el PDF: ' . $e->getMessage();
+        }
+    }
+
+    /**
+     * GET /simulador/sucesion/planilla_pdf
+     * Generates and streams the SENIAT FORMA DS-99032 planilla PDF.
+     */
+    public function generarPlanilla(): void
+    {
+        try {
+            $intento = $this->resolveIntento();
+            if (!$intento) {
+                http_response_code(404);
+                echo 'No se encontró un intento para generar la planilla.';
+                return;
+            }
+
+            $service = new \App\Modules\Simulator\Services\PlanillaDeclaracionService();
+            
+            // Supresión temporal de Advertencias en mPDF para evitar el "Headers ya enviados"
+            $oldReporting = error_reporting();
+            error_reporting($oldReporting & ~E_WARNING & ~E_NOTICE);
+            
+            $service->generar($intento);
+            
+            // Restaurar configuración original
+            error_reporting($oldReporting);
+
+        } catch (\Throwable $e) {
+            error_log('[PdfReportController::generarPlanilla] ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            http_response_code(500);
+            echo 'Error al generar la planilla: ' . $e->getMessage();
         }
     }
 }

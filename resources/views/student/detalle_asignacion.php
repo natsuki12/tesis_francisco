@@ -235,15 +235,20 @@ ob_start();
                                     </svg>
                                 </a>
                             <?php elseif ($estadoLabel === 'Enviado'): ?>
-                                <a href="#" class="ver-link"
-                                    onclick="event.preventDefault(); alert('Ver declaración (placeholder)');">
-                                    Ver declaración
-                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
-                                        stroke-width="2.5" stroke-linecap="round">
-                                        <path d="M5 12h14" />
-                                        <polyline points="12 5 19 12 12 19" />
-                                    </svg>
-                                </a>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <a href="<?= base_url('/simulador/sucesion/planilla_pdf?intento_id=' . $intento['intento_id']) ?>"
+                                       target="_blank" class="ver-link" title="Planilla FORMA DS-99032"
+                                       style="font-size: var(--text-xs);">
+                                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#dc3545" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                        Planilla
+                                    </a>
+                                    <a href="<?= base_url('/simulador/sucesion/declaracion_pdf?intento_id=' . $intento['intento_id']) ?>"
+                                       target="_blank" class="ver-link" title="Resumen de la Asignación"
+                                       style="font-size: var(--text-xs);">
+                                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                        Resumen
+                                    </a>
+                                </div>
                             <?php else: ?>
                                 <span style="font-size: var(--text-xs); color: var(--gray-400);">—</span>
                             <?php endif; ?>

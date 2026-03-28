@@ -2,6 +2,8 @@
    HISTORIAL / PLANILLAS (Estudiante)
    ============================================= */
 
+@import url('../shared/data-table.css');
+
 /* ===== PLANILLA ACTION BUTTONS ===== */
 .planilla-actions {
     display: flex;
