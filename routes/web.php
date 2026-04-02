@@ -28,6 +28,10 @@ use App\Modules\Admin\Controllers\Monitoreo\ReportesController;
 // 🛠️ RUTAS DE SISTEMA Y LANDING
 // =============================================================================
 $router->get('/health', fn() => 'OK');
+$router->get('/api/ping', function() {
+    if (session_status() === PHP_SESSION_NONE) session_start();
+    return json_encode(['status' => 'alive']);
+});
 $router->get('/', fn() => $app->view('landing/landing'));
 
 // DEV: vista de ejemplo para previsualizar HTML durante desarrollo
@@ -706,7 +710,7 @@ $router->get('/casos-sucesorales/{id}/pdf', function ($id) use ($requireAuth, $r
 $router->get('/crear-caso', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(2);
-    return $app->view('professor/crear_caso');
+    return (new CasosController())->crearCaso();
 });
 
 // Entregas (Profesor)
@@ -731,7 +735,13 @@ $router->get('/marco-legal', function () use ($app, $requireAuth) {
         header('Location: ' . base_url('/home'));
         exit;
     }
-    return $app->view('shared/marco_legal');
+    try {
+        $normas = (new \App\Modules\Admin\Models\MarcoLegalModel())->getAll();
+    } catch (\Throwable $e) {
+        error_log('[marco-legal] ' . $e->getMessage());
+        $normas = [];
+    }
+    return $app->view('shared/marco_legal', ['normas' => $normas]);
 });
 
 // Generación de R.S. (Profesor)
@@ -803,6 +813,13 @@ $router->get('/historial/api', function () use ($requireAuth, $requireRole) {
     (new \App\Modules\Professor\Controllers\HistorialController())->apiList();
 });
 
+// Estadísticas (Profesor)
+$router->get('/estadisticas', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new \App\Modules\Professor\Controllers\EstadisticasController())->index();
+});
+
 // Detalle de Intento (Profesor)
 $router->get('/entregas/{id}', function ($id) use ($requireAuth, $requireRole) {
     $requireAuth();
@@ -836,6 +853,13 @@ $router->get('/mis-asignaciones/{id}', function ($id) use ($app, $requireAuth, $
     return (new \App\Modules\Student\Controllers\AsignacionesEstudianteController())->show((int)$id, $app);
 });
 
+// PDF del Caso (Estudiante)
+$router->get('/mis-asignaciones/{id}/caso-pdf', function ($id) use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(3);
+    (new \App\Modules\Student\Controllers\AsignacionesEstudianteController())->descargarCasoPdf((int)$id);
+});
+
 // Mis Entregas (Estudiante)
 $router->get('/mis-entregas', function () use ($app, $requireAuth, $requireRole) {
     $requireAuth();
@@ -857,7 +881,7 @@ $router->get('/mis-calificaciones', function () use ($app, $requireAuth, $requir
 $router->get('/mis-calificaciones/{id}', function ($id) use ($app, $requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(3);
-    return $app->view('student/detalle_correccion');
+    return (new \App\Modules\Student\Controllers\MisCalificacionesController())->show((int) $id, $app);
 });
 
 // Perfil (Compartido: Profesor + Estudiante)
@@ -1473,5 +1497,6 @@ $router->get('/api/tarifas-sucesion', [CatalogController::class , 'getTarifasSuc
 $router->get('/api/secciones-profesor', [CatalogController::class , 'getSeccionesProfesor']);
 $router->get('/api/estudiantes-profesor', [CatalogController::class , 'getEstudiantesProfesor']);
 $router->get('/api/buscar-empresa-rif', [CatalogController::class , 'buscarEmpresaPorRif']);
+$router->get('/api/buscar-empresas', [CatalogController::class , 'searchEmpresas']);
 $router->get('/api/buscar-persona', [CatalogController::class , 'buscarPersonaPorCedula']);
 $router->get('/api/buscar-personas', [CatalogController::class , 'searchPersonas']);

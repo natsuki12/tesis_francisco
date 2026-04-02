@@ -74,20 +74,35 @@ ob_start();
                 <th class="sortable" data-col="2">Fecha de Envío</th>
                 <th>Estado</th>
                 <th>Nota</th>
-                <th>Observación</th>
                 <th>Documentos</th>
+                <th>Acción</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($entregas as $entrega):
                 $estadoLabel = mapEstadoHistorial($entrega['estado']);
                 $statusClass = getStatusClassHistorial($estadoLabel);
-                $fechaEnvio = $entrega['fecha_envio'] ? date('d/m/Y H:i', strtotime($entrega['fecha_envio'])) : '—';
-                $searchStr = strtolower(
+                $fechaEnvio  = $entrega['fecha_envio'] ? date('d/m/Y H:i', strtotime($entrega['fecha_envio'])) : '—';
+                $searchStr   = strtolower(
                     ($entrega['caso_titulo'] ?? '') . ' ' .
                     $estadoLabel . ' ' .
                     $fechaEnvio
                 );
+
+                // Nota
+                $tipoCalif = $entrega['tipo_calificacion'] ?? 'aprobado_reprobado';
+                if ($tipoCalif === 'numerica' && $entrega['nota_numerica'] !== null) {
+                    $notaDisplay = number_format((float) $entrega['nota_numerica'], 1) . ' / 20';
+                    $notaClass   = (float) $entrega['nota_numerica'] >= 10 ? 'text-green' : 'text-red';
+                } elseif ($entrega['nota_cualitativa'] !== null) {
+                    $notaDisplay = $entrega['nota_cualitativa'];
+                    $notaClass   = $entrega['nota_cualitativa'] === 'Aprobado' ? 'text-green' : 'text-red';
+                } else {
+                    $notaDisplay = null;
+                    $notaClass   = '';
+                }
+
+                $esCalificado = in_array($entrega['estado'], ['Aprobado', 'Rechazado'], true);
             ?>
                 <tr data-search="<?= htmlspecialchars($searchStr) ?>" data-estado="<?= htmlspecialchars($estadoLabel) ?>">
                     <td><strong><?= htmlspecialchars($entrega['caso_titulo']) ?></strong></td>
@@ -99,10 +114,11 @@ ob_start();
                         </span>
                     </td>
                     <td>
-                        <span style="color: var(--gray-400);">—</span>
-                    </td>
-                    <td>
-                        <span style="color: var(--gray-400);">—</span>
+                        <?php if ($notaDisplay !== null): ?>
+                            <strong class="<?= $notaClass ?>"><?= htmlspecialchars($notaDisplay) ?></strong>
+                        <?php else: ?>
+                            <span style="color: var(--gray-400);">—</span>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <?php if (in_array($entrega['estado'], ['Enviado', 'Aprobado', 'Rechazado'], true)): ?>
@@ -124,6 +140,19 @@ ob_start();
                                 Resumen
                             </a>
                         </div>
+                        <?php else: ?>
+                            <span style="color: var(--gray-400);">—</span>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <?php if ($esCalificado): ?>
+                            <a href="<?= base_url('/mis-calificaciones/' . $entrega['asignacion_id']) ?>" class="planilla-btn">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                Ver corrección
+                            </a>
                         <?php else: ?>
                             <span style="color: var(--gray-400);">—</span>
                         <?php endif; ?>

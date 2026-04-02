@@ -124,6 +124,13 @@ class CatalogController
         }
     }
 
+    public function searchEmpresas()
+    {
+        $query = $_GET['q'] ?? '';
+        $model = new CatalogModel();
+        $this->jsonResponse($model->searchEmpresas($query));
+    }
+
     public function getEstudiantesProfesor()
     {
         if (session_status() === PHP_SESSION_NONE)

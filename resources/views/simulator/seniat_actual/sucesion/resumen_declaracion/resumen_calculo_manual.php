@@ -46,13 +46,30 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
 
         <!-- ═══ Card Body ═══ -->
         <div class="card-body">
+            <!-- ── Banner Informativo ── -->
+            <div class="alert alert-info d-flex align-items-start gap-3 mb-4" role="alert" style="border-left: 4px solid #0d6efd; background: #f0f7ff; font-size: 13px; line-height: 1.65;">
+                <i class="bi bi-info-circle-fill flex-shrink-0" style="font-size: 22px; color: #0d6efd; margin-top: 2px;"></i>
+                <div>
+                    <strong style="font-size: 14px;">📝 ¿Cómo funciona el Cálculo Manual?</strong><br><br>
+                    En esta vista puede modificar dos valores por heredero:
+                    <strong>Cuota Parte Hereditaria (UT)</strong> y <strong>Reducción (Bs.)</strong>.
+                    Al presionar <strong>«Calcular»</strong>, el sistema aplicará la tarifa del Art. 7 según el grado de
+                    parentesco y mostrará los resultados. Si está conforme, presione <strong>«Aceptar»</strong> para guardar.<br><br>
+                    <span class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> <strong>Diferencia con el SENIAT real:</strong></span><br>
+                    En el portal oficial del SENIAT, una vez que usted activa el cálculo manual, el cálculo automático
+                    queda <strong>desactivado permanentemente</strong> para esa declaración —
+                    <strong>no existe forma de revertirlo</strong>.
+                    En este simulador, puede volver al cálculo automático desde el Resumen con el botón
+                    «Restaurar Cálculo Automático».
+                </div>
+            </div>
             <div>
                 <!-- ════════════════════════════════════════════
                      FORMULARIO: Inputs + Tabla 1 (Input)
                      ════════════════════════════════════════════ -->
                 <form id="formCalculoManual" novalidate>
                     <!-- Floating inputs row: UT + Total Impuesto -->
-                    <div class="row py-3">
+                    <div class="row py-3" id="cmInputsGenerales">
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <div class="form-floating">
@@ -77,7 +94,7 @@ $totalImp  = $datos['total_impuesto'] ?? '0,00';
                     </div>
 
                     <!-- ── TABLA 1: Entrada (7 columnas) ── -->
-                    <table class="table table-bordered table-sm lenletratablaResumen">
+                    <table class="table table-bordered table-sm lenletratablaResumen" id="cmTablaEntrada">
                         <thead class="table-light">
                             <tr>
                                 <th>Apellido(s) y Nombre(s)</th>

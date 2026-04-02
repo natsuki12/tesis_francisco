@@ -32,7 +32,8 @@ if (!($causante['vacio'] ?? true)) {
 $relacionesTotal = 0; $relacionesOk = 0;
 foreach ($relaciones['representante'] ?? [] as $c) { $relacionesTotal++; if ($c['coincide']) $relacionesOk++; }
 foreach ($relaciones['herederos'] ?? [] as $h) {
-    foreach ($h as $c) { $relacionesTotal++; if ($c['coincide']) $relacionesOk++; }
+    $hCampos = $h['campos'] ?? $h;
+    foreach ($hCampos as $c) { if (is_array($c)) { $relacionesTotal++; if ($c['coincide']) $relacionesOk++; } }
 }
 
 $direccionesTotal = 0; $direccionesOk = 0;
@@ -187,8 +188,19 @@ ob_start();
                 <?php endif; ?>
 
                 <?php foreach ($relaciones['herederos'] as $idx => $heredero): ?>
-                    <tr class="rs-group-row"><td colspan="4">Heredero #<?= $idx + 1 ?></td></tr>
-                    <?php foreach ($heredero as $campo): ?>
+                    <?php
+                        $tipo = $heredero['tipo'] ?? 'match';
+                        $campos = $heredero['campos'] ?? $heredero; // Backwards compat
+                        if ($tipo === 'faltante') {
+                            $label = 'Heredero — No ingresado por el estudiante';
+                        } elseif ($tipo === 'extra') {
+                            $label = 'Heredero Extra — No existe en el caso';
+                        } else {
+                            $label = 'Heredero #' . ($idx + 1);
+                        }
+                    ?>
+                    <tr class="rs-group-row"><td colspan="4"><?= $label ?></td></tr>
+                    <?php foreach ($campos as $campo): ?>
                     <tr>
                         <td class="field-label"><?= htmlspecialchars($campo['label']) ?></td>
                         <td><?= htmlspecialchars($campo['esperado'] ?: '—') ?></td>
@@ -266,11 +278,11 @@ ob_start();
 <?php if ($esPendiente): ?>
 <!-- ═══ BARRA DE ACCIONES ═══ -->
 <div class="rs-acciones-sticky">
-    <button class="action-btn action-btn--approve" id="btn-aprobar-detalle">
+    <button class="btn btn-primary" id="btn-aprobar-detalle">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12" /></svg>
         Aprobar RIF
     </button>
-    <button class="action-btn action-btn--reject" id="btn-rechazar-detalle">
+    <button class="btn btn-danger" id="btn-rechazar-detalle">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
         Rechazar
     </button>
@@ -308,7 +320,8 @@ ob_start();
                 <div class="reject-field">
                     <label for="nota-rechazo">Nota numérica (0–9)</label>
                     <input type="number" id="nota-rechazo" min="0" max="9" step="0.5" placeholder="0"
-                        style="width: 100%; padding: 10px 14px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: var(--text-md);">
+                        oninput="if(this.value!==''){var v=parseFloat(this.value);if(v>9)this.value=9;if(v<0)this.value=0;}"
+                        style="width: 100%; padding: 10px 14px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: var(--text-md); font-family: var(--font-ui); box-sizing: border-box;">
                     <p class="field-hint">Nota asignada al estudiante por este intento.</p>
                 </div>
             <?php else: ?>
@@ -322,7 +335,8 @@ ob_start();
             <?php endif; ?>
             <div class="reject-field">
                 <label for="motivo-rechazo">Observación del rechazo <span style="color: var(--red-500);">*</span></label>
-                <textarea id="motivo-rechazo" placeholder="Explique al estudiante por qué se rechaza esta solicitud..." required></textarea>
+                <textarea id="motivo-rechazo" rows="4" placeholder="Explique al estudiante por qué se rechaza esta solicitud..." required
+                    style="width: 100%; box-sizing: border-box;"></textarea>
                 <p class="field-hint">Este mensaje será visible para el estudiante y enviado por correo electrónico.</p>
             </div>
         </div>

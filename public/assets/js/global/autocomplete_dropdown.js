@@ -204,7 +204,11 @@ class AutocompleteDropdown {
 
     _selectItem(item) {
         this.close();
+        this._cache.clear();
         this.onSelect(item);
+        // Re-focus and reopen so user can keep selecting
+        this.input.focus();
+        setTimeout(() => this._search(this.input.value.trim()), 50);
     }
 
     /* ── Highlight / navigation ── */

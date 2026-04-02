@@ -124,9 +124,11 @@ if ($source === 'borrador') {
     $gruposTarifa = [];
     $calculoManual = [];
     $totalExenciones = 0;
-    foreach ($exenciones as $ex) $totalExenciones += (float)($ex['valor_declarado'] ?? 0);
+    foreach ($exenciones as $ex)
+        $totalExenciones += (float) ($ex['valor_declarado'] ?? 0);
     $totalExoneraciones = 0;
-    foreach ($exoneraciones as $eo) $totalExoneraciones += (float)($eo['valor_declarado'] ?? 0);
+    foreach ($exoneraciones as $eo)
+        $totalExoneraciones += (float) ($eo['valor_declarado'] ?? 0);
 
 } else {
     // ============================
@@ -248,10 +250,12 @@ if ($source === 'borrador') {
         <button class="gc-tab is-active" data-tab="resumen">Resumen General</button>
         <button class="gc-tab" data-tab="patrimonio">Inventario Patrimonial</button>
         <button class="gc-tab" data-tab="tributo">Resumen del Tributo</button>
+        <?php if ($source !== 'borrador'): ?>
         <button class="gc-tab" data-tab="asignaciones">Asignaciones</button>
+        <?php endif; ?>
     </div>
     <button type="button" class="btn btn-secondary" title="Exportar este caso como archivo PDF"
-        style="margin-left: auto; padding: 6px 14px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; white-space: nowrap;"
+        style="margin-left: auto; margin-bottom: 8px; padding: 6px 14px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; white-space: nowrap;"
         onclick="window.open('<?= base_url('/casos-sucesorales/' . $casoId . '/pdf') ?>', 'pdfPreview', 'width=900,height=700,scrollbars=yes,resizable=yes,menubar=no,toolbar=no,location=no');">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
@@ -288,7 +292,8 @@ if ($source === 'borrador') {
             <div class="gc-stat-card">
                 <div class="gc-stat-icon green">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                        <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" stroke="none">Bs</text>
+                        <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor"
+                            stroke="none">Bs</text>
                     </svg>
                 </div>
                 <div class="gc-stat-info">
@@ -346,7 +351,8 @@ if ($source === 'borrador') {
                     <?php if ($esConCedula && !empty($causante['cedula'])): ?>
                         <div class="gc-info-item">
                             <span class="gc-info-label">Cédula</span>
-                            <span class="gc-info-value"><?= showVal(($causante['tipo_cedula'] ?? 'V') . '-' . $causante['cedula']) ?></span>
+                            <span
+                                class="gc-info-value"><?= showVal(($causante['tipo_cedula'] ?? 'V') . '-' . $causante['cedula']) ?></span>
                         </div>
                     <?php endif; ?>
                     <div class="gc-info-item">
@@ -360,17 +366,20 @@ if ($source === 'borrador') {
                     <?php if (!empty($caso['causante_nacionalidad_nombre'] ?? null)): ?>
                         <div class="gc-info-item">
                             <span class="gc-info-label">Nacionalidad</span>
-                            <span class="gc-info-value"><?= htmlspecialchars($caso['causante_nacionalidad_nombre']) ?></span>
+                            <span
+                                class="gc-info-value"><?= htmlspecialchars($caso['causante_nacionalidad_nombre']) ?></span>
                         </div>
                     <?php endif; ?>
                     <div class="gc-info-item">
                         <span class="gc-info-label">Fecha Nacimiento</span>
-                        <span class="gc-info-value"><?= !empty($causante['fecha_nacimiento']) ? date('d/m/Y', strtotime($causante['fecha_nacimiento'])) : '—' ?></span>
+                        <span
+                            class="gc-info-value"><?= !empty($causante['fecha_nacimiento']) ? date('d/m/Y', strtotime($causante['fecha_nacimiento'])) : '—' ?></span>
                     </div>
                     <?php if ($source === 'borrador' && !empty($causante['fecha_fallecimiento'])): ?>
                         <div class="gc-info-item">
                             <span class="gc-info-label">Fecha Fallecimiento</span>
-                            <span class="gc-info-value"><?= date('d/m/Y', strtotime($causante['fecha_fallecimiento'])) ?></span>
+                            <span
+                                class="gc-info-value"><?= date('d/m/Y', strtotime($causante['fecha_fallecimiento'])) ?></span>
                         </div>
                     <?php elseif ($source === 'publicado' && $esConCedula && !empty($acta['fecha_fallecimiento'])): ?>
                         <div class="gc-info-item">
@@ -396,7 +405,8 @@ if ($source === 'borrador') {
                     <div class="gc-info-list">
                         <div class="gc-info-item">
                             <span class="gc-info-label">Fecha Fallecimiento</span>
-                            <span class="gc-info-value"><?= !empty($acta['fecha_fallecimiento']) ? date('d/m/Y', strtotime($acta['fecha_fallecimiento'])) : '—' ?></span>
+                            <span
+                                class="gc-info-value"><?= !empty($acta['fecha_fallecimiento']) ? date('d/m/Y', strtotime($acta['fecha_fallecimiento'])) : '—' ?></span>
                         </div>
                         <div class="gc-info-item">
                             <span class="gc-info-label">Número de Acta</span>
@@ -425,11 +435,13 @@ if ($source === 'borrador') {
                     <div class="gc-info-list">
                         <div class="gc-info-item">
                             <span class="gc-info-label">Domiciliado en el País</span>
-                            <span class="gc-info-value"><?= ($datosFiscales['domiciliado_pais'] ?? 0) ? 'Sí' : 'No' ?></span>
+                            <span
+                                class="gc-info-value"><?= ($datosFiscales['domiciliado_pais'] ?? 0) ? 'Sí' : 'No' ?></span>
                         </div>
                         <div class="gc-info-item">
                             <span class="gc-info-label">Fecha Cierre Fiscal</span>
-                            <span class="gc-info-value"><?= !empty($datosFiscales['fecha_cierre_fiscal']) ? date('d/m/Y', strtotime($datosFiscales['fecha_cierre_fiscal'])) : '—' ?></span>
+                            <span
+                                class="gc-info-value"><?= !empty($datosFiscales['fecha_cierre_fiscal']) ? date('d/m/Y', strtotime($datosFiscales['fecha_cierre_fiscal'])) : '—' ?></span>
                         </div>
                     </div>
                 </div>
@@ -438,7 +450,7 @@ if ($source === 'borrador') {
             <?php
             $dfBorrador = $b['datos_fiscales_causante'] ?? [];
             if (!empty($dfBorrador)):
-            ?>
+                ?>
                 <div class="gc-card">
                     <div class="gc-card-header">
                         <h3>Datos Fiscales del Causante</h3>
@@ -451,7 +463,8 @@ if ($source === 'borrador') {
                             </div>
                             <div class="gc-info-item">
                                 <span class="gc-info-label">Fecha Cierre Fiscal</span>
-                                <span class="gc-info-value"><?= !empty($dfBorrador['fecha_cierre_fiscal']) ? date('d/m/Y', strtotime($dfBorrador['fecha_cierre_fiscal'])) : '—' ?></span>
+                                <span
+                                    class="gc-info-value"><?= !empty($dfBorrador['fecha_cierre_fiscal']) ? date('d/m/Y', strtotime($dfBorrador['fecha_cierre_fiscal'])) : '—' ?></span>
                             </div>
                         </div>
                     </div>
@@ -468,11 +481,13 @@ if ($source === 'borrador') {
                 <div class="gc-info-list">
                     <div class="gc-info-item">
                         <span class="gc-info-label">Nombres</span>
-                        <span class="gc-info-value"><?= showVal($rep['nombres'] ?? $caso['rep_nombres'] ?? null) ?></span>
+                        <span
+                            class="gc-info-value"><?= showVal($rep['nombres'] ?? $caso['rep_nombres'] ?? null) ?></span>
                     </div>
                     <div class="gc-info-item">
                         <span class="gc-info-label">Apellidos</span>
-                        <span class="gc-info-value"><?= showVal($rep['apellidos'] ?? $caso['rep_apellidos'] ?? null) ?></span>
+                        <span
+                            class="gc-info-value"><?= showVal($rep['apellidos'] ?? $caso['rep_apellidos'] ?? null) ?></span>
                     </div>
                     <?php
                     $repCedula = $rep['cedula'] ?? $caso['rep_cedula'] ?? '';
@@ -482,7 +497,8 @@ if ($source === 'borrador') {
                     <?php if (!empty($repCedula)): ?>
                         <div class="gc-info-item">
                             <span class="gc-info-label">Cédula</span>
-                            <span class="gc-info-value"><?= htmlspecialchars(($rep['letra_cedula'] ?? $rep['tipo_cedula'] ?? $caso['rep_tipo_cedula'] ?? 'V') . '-' . $repCedula) ?></span>
+                            <span
+                                class="gc-info-value"><?= htmlspecialchars(($rep['letra_cedula'] ?? $rep['tipo_cedula'] ?? $caso['rep_tipo_cedula'] ?? 'V') . '-' . $repCedula) ?></span>
                         </div>
                     <?php elseif (!empty($repPasaporte)): ?>
                         <div class="gc-info-item">
@@ -503,7 +519,7 @@ if ($source === 'borrador') {
                     <?php
                     $repFn = $rep['fecha_nacimiento'] ?? $caso['rep_fecha_nacimiento'] ?? '';
                     if (!empty($repFn)):
-                    ?>
+                        ?>
                         <div class="gc-info-item">
                             <span class="gc-info-label">Fecha Nacimiento</span>
                             <span class="gc-info-value"><?= date('d/m/Y', strtotime($repFn)) ?></span>
@@ -528,10 +544,12 @@ if ($source === 'borrador') {
                                     <small>(<?= htmlspecialchars($h['subtipo_testamento']) ?>)</small>
                                 <?php endif; ?>
                                 <?php if (!empty($h['fecha_testamento'])): ?>
-                                    <small style="margin-left:4px;color:var(--gray-500)">— <?= date('d/m/Y', strtotime($h['fecha_testamento'])) ?></small>
+                                    <small style="margin-left:4px;color:var(--gray-500)">—
+                                        <?= date('d/m/Y', strtotime($h['fecha_testamento'])) ?></small>
                                 <?php endif; ?>
                                 <?php if (!empty($h['fecha_conclusion_inventario'])): ?>
-                                    <small style="margin-left:4px;color:var(--gray-500)">Inv: <?= date('d/m/Y', strtotime($h['fecha_conclusion_inventario'])) ?></small>
+                                    <small style="margin-left:4px;color:var(--gray-500)">Inv:
+                                        <?= date('d/m/Y', strtotime($h['fecha_conclusion_inventario'])) ?></small>
                                 <?php endif; ?>
                             </span>
                         <?php endforeach; ?>
@@ -583,7 +601,8 @@ if ($source === 'borrador') {
                                         <?php if ($isPremuerto): ?>
                                             <span class="gc-badge-small badge-red">Sí</span>
                                             <?php if (!empty($h['fecha_fallecimiento'])): ?>
-                                                <br><small style="color:var(--gray-500)"><?= date('d/m/Y', strtotime($h['fecha_fallecimiento'])) ?></small>
+                                                <br><small
+                                                    style="color:var(--gray-500)"><?= date('d/m/Y', strtotime($h['fecha_fallecimiento'])) ?></small>
                                             <?php endif; ?>
                                         <?php else: ?>
                                             <span class="gc-badge-small badge-gray">No</span>
@@ -653,22 +672,25 @@ if ($source === 'borrador') {
                         $tipoDir = str_replace('_', ' ', $dir['tipo_direccion'] ?? 'Sin tipo');
                         $ubicacion = trim(($dir['estado_nombre'] ?? $dir['estado'] ?? '') . ', ' . ($dir['municipio_nombre'] ?? $dir['municipio'] ?? '') . ', ' . ($dir['parroquia_nombre'] ?? $dir['parroquia'] ?? ''), ', ');
                         $vialidad = trim(($dir['tipo_vialidad'] ?? '') . ' ' . ($dir['nombre_vialidad'] ?? ''));
-                    ?>
+                        ?>
                         <div class="gc-dir-item" data-dir-index="<?= $i ?>">
                             <div class="gc-dir-summary">
                                 <div class="gc-dir-summary-left">
                                     <div class="gc-dir-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" width="18" height="18">
                                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                             <circle cx="12" cy="10" r="3"></circle>
                                         </svg>
                                     </div>
                                     <div>
                                         <span class="gc-dir-type"><?= htmlspecialchars($tipoDir) ?></span>
-                                        <span class="gc-dir-location"><?= !empty($ubicacion) ? htmlspecialchars($ubicacion) : 'Sin ubicación' ?></span>
+                                        <span
+                                            class="gc-dir-location"><?= !empty($ubicacion) ? htmlspecialchars($ubicacion) : 'Sin ubicación' ?></span>
                                     </div>
                                 </div>
-                                <svg class="gc-dir-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16">
+                                <svg class="gc-dir-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" width="16" height="16">
                                     <polyline points="6 9 12 15 18 9"></polyline>
                                 </svg>
                             </div>
@@ -684,59 +706,67 @@ if ($source === 'borrador') {
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Inmueble</span>
-                                        <span class="gc-info-value"><?= showVal(($dir['tipo_inmueble'] ?? '') . (!empty($dir['nombre_inmueble']) ? ' ' . $dir['nombre_inmueble'] : '') . (!empty($dir['nro_inmueble']) ? ' #' . $dir['nro_inmueble'] : '')) ?></span>
+                                        <span
+                                            class="gc-info-value"><?= showVal(($dir['tipo_inmueble'] ?? '') . (!empty($dir['nombre_inmueble']) ? ' ' . $dir['nombre_inmueble'] : '') . (!empty($dir['nro_inmueble']) ? ' #' . $dir['nro_inmueble'] : '')) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Nivel</span>
-                                        <span class="gc-info-value"><?= showVal(($dir['tipo_nivel'] ?? '') . (!empty($dir['nro_nivel']) ? ' ' . $dir['nro_nivel'] : '')) ?></span>
+                                        <span
+                                            class="gc-info-value"><?= showVal(($dir['tipo_nivel'] ?? '') . (!empty($dir['nro_nivel']) ? ' ' . $dir['nro_nivel'] : '')) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Sector</span>
-                                        <span class="gc-info-value"><?= showVal(($dir['tipo_sector'] ?? '') . (!empty($dir['nombre_sector']) ? ' ' . $dir['nombre_sector'] : '')) ?></span>
+                                        <span
+                                            class="gc-info-value"><?= showVal(($dir['tipo_sector'] ?? '') . (!empty($dir['nombre_sector']) ? ' ' . $dir['nombre_sector'] : '')) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Estado</span>
-                                        <span class="gc-info-value"><?= showVal($dir['estado_nombre'] ?? $dir['estado'] ?? null) ?></span>
+                                        <span
+                                            class="gc-info-value"><?= showVal($dir['estado_nombre'] ?? $dir['estado'] ?? null) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Municipio</span>
-                                        <span class="gc-info-value"><?= showVal($dir['municipio_nombre'] ?? $dir['municipio'] ?? null) ?></span>
+                                        <span
+                                            class="gc-info-value"><?= showVal($dir['municipio_nombre'] ?? $dir['municipio'] ?? null) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Parroquia</span>
-                                        <span class="gc-info-value"><?= showVal($dir['parroquia_nombre'] ?? $dir['parroquia'] ?? null) ?></span>
+                                        <span
+                                            class="gc-info-value"><?= showVal($dir['parroquia_nombre'] ?? $dir['parroquia'] ?? null) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Ciudad</span>
-                                        <span class="gc-info-value"><?= showVal($dir['ciudad_nombre'] ?? $dir['ciudad'] ?? null) ?></span>
+                                        <span
+                                            class="gc-info-value"><?= showVal($dir['ciudad_nombre'] ?? $dir['ciudad'] ?? null) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Zona Postal</span>
-                                        <span class="gc-info-value"><?= showVal($dir['codigo_postal_codigo'] ?? $dir['codigo_postal_id'] ?? null) ?></span>
+                                        <span
+                                            class="gc-info-value"><?= showVal($dir['codigo_postal_codigo'] ?? $dir['codigo_postal_id'] ?? null) ?></span>
                                     </div>
                                     <?php if (!empty($dir['telefono_fijo'])): ?>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Teléfono Fijo</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($dir['telefono_fijo']) ?></span>
-                                    </div>
+                                        <div class="gc-info-item">
+                                            <span class="gc-info-label">Teléfono Fijo</span>
+                                            <span class="gc-info-value"><?= htmlspecialchars($dir['telefono_fijo']) ?></span>
+                                        </div>
                                     <?php endif; ?>
                                     <?php if (!empty($dir['telefono_celular'])): ?>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Celular</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($dir['telefono_celular']) ?></span>
-                                    </div>
+                                        <div class="gc-info-item">
+                                            <span class="gc-info-label">Celular</span>
+                                            <span class="gc-info-value"><?= htmlspecialchars($dir['telefono_celular']) ?></span>
+                                        </div>
                                     <?php endif; ?>
                                     <?php if (!empty($dir['fax'])): ?>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Fax</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($dir['fax']) ?></span>
-                                    </div>
+                                        <div class="gc-info-item">
+                                            <span class="gc-info-label">Fax</span>
+                                            <span class="gc-info-value"><?= htmlspecialchars($dir['fax']) ?></span>
+                                        </div>
                                     <?php endif; ?>
                                     <?php if (!empty($dir['punto_referencia'])): ?>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Punto de Referencia</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($dir['punto_referencia']) ?></span>
-                                    </div>
+                                        <div class="gc-info-item">
+                                            <span class="gc-info-label">Punto de Referencia</span>
+                                            <span class="gc-info-value"><?= htmlspecialchars($dir['punto_referencia']) ?></span>
+                                        </div>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -769,7 +799,8 @@ if ($source === 'borrador') {
                                     <td><?= !empty($pr['fecha_solicitud']) ? date('d/m/Y', strtotime($pr['fecha_solicitud'])) : '—' ?>
                                     </td>
                                     <td><?= showVal($pr['nro_resolucion'] ?? null) ?></td>
-                                    <td><?= !empty($pr['fecha_resolucion']) ? date('d/m/Y', strtotime($pr['fecha_resolucion'])) : '—' ?></td>
+                                    <td><?= !empty($pr['fecha_resolucion']) ? date('d/m/Y', strtotime($pr['fecha_resolucion'])) : '—' ?>
+                                    </td>
                                     <td><?= showVal($pr['plazo_otorgado_dias'] ?? $pr['plazo_dias'] ?? null) ?></td>
                                     <td><?= !empty($pr['fecha_vencimiento']) ? date('d/m/Y', strtotime($pr['fecha_vencimiento'])) : '—' ?>
                                     </td>
@@ -814,7 +845,8 @@ if ($source === 'borrador') {
             <div class="gc-stat-card">
                 <div class="gc-stat-icon blue">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" stroke="none">Bs</text>
+                        <text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor"
+                            stroke="none">Bs</text>
                     </svg>
                 </div>
                 <div class="gc-stat-info">
@@ -837,17 +869,18 @@ if ($source === 'borrador') {
                         $tipoBien = $bi['tipo_bien_nombres'] ?? $bi['tipo_bien_nombre'] ?? '';
                         $desc = $bi['descripcion'] ?? 'Inmueble #' . ($i + 1);
                         $headerLabel = !empty($tipoBien) ? $tipoBien : $desc;
-                        $valor = formatBs((float)($bi['valor_declarado'] ?? 0));
+                        $valor = formatBs((float) ($bi['valor_declarado'] ?? 0));
                         $esVivienda = ($bi['vivienda_principal'] ?? $bi['es_vivienda_principal'] ?? 0);
                         $esVivienda = ($esVivienda === 'true' || $esVivienda == 1);
                         $esLitigioso = ($bi['bien_litigioso'] ?? $bi['es_bien_litigioso'] ?? 0);
                         $esLitigioso = ($esLitigioso === 'true' || $esLitigioso == 1);
-                    ?>
+                        ?>
                         <div class="gc-dir-item" data-dir-index="bi_<?= $i ?>">
                             <div class="gc-dir-summary">
                                 <div class="gc-dir-summary-left">
                                     <div class="gc-dir-icon" style="background: var(--green-50); color: var(--green-600);">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" width="18" height="18">
                                             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                                             <polyline points="9 22 9 12 15 12 15 22"></polyline>
                                         </svg>
@@ -856,26 +889,30 @@ if ($source === 'borrador') {
                                         <span class="gc-dir-type"><?= htmlspecialchars($headerLabel) ?></span>
                                         <span class="gc-dir-location">
                                             <?= $valor ?>
-                                            <?php if ($esVivienda): ?> · <span style="color: var(--green-600);">Vivienda Principal</span><?php endif; ?>
-                                            <?php if ($esLitigioso): ?> · <span style="color: var(--red-500);">Litigioso</span><?php endif; ?>
+                                            <?php if ($esVivienda): ?> · <span style="color: var(--green-600);">Vivienda
+                                                    Principal</span><?php endif; ?>
+                                            <?php if ($esLitigioso): ?> · <span
+                                                    style="color: var(--red-500);">Litigioso</span><?php endif; ?>
                                         </span>
                                     </div>
                                 </div>
-                                <svg class="gc-dir-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16">
+                                <svg class="gc-dir-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" width="16" height="16">
                                     <polyline points="6 9 12 15 18 9"></polyline>
                                 </svg>
                             </div>
                             <div class="gc-dir-details">
                                 <div class="gc-info-list">
                                     <?php if (!empty($tipoBien)): ?>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Tipo de Bien</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($tipoBien) ?></span>
-                                    </div>
+                                        <div class="gc-info-item">
+                                            <span class="gc-info-label">Tipo de Bien</span>
+                                            <span class="gc-info-value"><?= htmlspecialchars($tipoBien) ?></span>
+                                        </div>
                                     <?php endif; ?>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Porcentaje</span>
-                                        <span class="gc-info-value"><?= number_format((float)($bi['porcentaje'] ?? 0), 2) ?>%</span>
+                                        <span
+                                            class="gc-info-value"><?= number_format((float) ($bi['porcentaje'] ?? 0), 2) ?>%</span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Vivienda Principal</span>
@@ -887,19 +924,22 @@ if ($source === 'borrador') {
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Valor Original</span>
-                                        <span class="gc-info-value"><?= formatBs((float)($bi['valor_original'] ?? 0)) ?></span>
+                                        <span class="gc-info-value"><?= formatBs((float) ($bi['valor_original'] ?? 0)) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Valor Declarado</span>
-                                        <span class="gc-info-value" style="font-weight:700;color:var(--green-600);"><?= $valor ?></span>
+                                        <span class="gc-info-value"
+                                            style="font-weight:700;color:var(--green-600);"><?= $valor ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Sup. Construida</span>
-                                        <span class="gc-info-value"><?= showVal($bi['superficie_construida'] ?? null) ?> m²</span>
+                                        <span class="gc-info-value"><?= showVal($bi['superficie_construida'] ?? null) ?>
+                                            m²</span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Sup. No Construida</span>
-                                        <span class="gc-info-value"><?= showVal($bi['superficie_no_construida'] ?? null) ?> m²</span>
+                                        <span class="gc-info-value"><?= showVal($bi['superficie_no_construida'] ?? null) ?>
+                                            m²</span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Área Superficie</span>
@@ -907,11 +947,13 @@ if ($source === 'borrador') {
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Oficina Registro</span>
-                                        <span class="gc-info-value"><?= showVal($bi['oficina_registro'] ?? $bi['oficina_subalterna'] ?? null) ?></span>
+                                        <span
+                                            class="gc-info-value"><?= showVal($bi['oficina_registro'] ?? $bi['oficina_subalterna'] ?? null) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Nro. Registro</span>
-                                        <span class="gc-info-value"><?= showVal($bi['nro_registro'] ?? $bi['numero_registro'] ?? null) ?></span>
+                                        <span
+                                            class="gc-info-value"><?= showVal($bi['nro_registro'] ?? $bi['numero_registro'] ?? null) ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Libro</span>
@@ -923,7 +965,8 @@ if ($source === 'borrador') {
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Fecha Registro</span>
-                                        <span class="gc-info-value"><?= !empty($bi['fecha_registro']) ? date('d/m/Y', strtotime($bi['fecha_registro'])) : '—' ?></span>
+                                        <span
+                                            class="gc-info-value"><?= !empty($bi['fecha_registro']) ? date('d/m/Y', strtotime($bi['fecha_registro'])) : '—' ?></span>
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Trimestre</span>
@@ -939,25 +982,26 @@ if ($source === 'borrador') {
                                     </div>
                                     <div class="gc-info-item">
                                         <span class="gc-info-label">Libro Folio Real</span>
-                                        <span class="gc-info-value"><?= showVal($bi['folio_real_anio'] ?? $bi['libro_folio_real'] ?? null) ?></span>
+                                        <span
+                                            class="gc-info-value"><?= showVal($bi['folio_real_anio'] ?? $bi['libro_folio_real'] ?? null) ?></span>
                                     </div>
                                     <?php if (!empty($bi['descripcion'])): ?>
-                                    <div class="gc-info-item" style="grid-column: 1 / -1;">
-                                        <span class="gc-info-label">Descripción</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($bi['descripcion']) ?></span>
-                                    </div>
+                                        <div class="gc-info-item" style="grid-column: 1 / -1;">
+                                            <span class="gc-info-label">Descripción</span>
+                                            <span class="gc-info-value"><?= htmlspecialchars($bi['descripcion']) ?></span>
+                                        </div>
                                     <?php endif; ?>
                                     <?php if (!empty($bi['linderos'])): ?>
-                                    <div class="gc-info-item" style="grid-column: 1 / -1;">
-                                        <span class="gc-info-label">Linderos</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($bi['linderos']) ?></span>
-                                    </div>
+                                        <div class="gc-info-item" style="grid-column: 1 / -1;">
+                                            <span class="gc-info-label">Linderos</span>
+                                            <span class="gc-info-value"><?= htmlspecialchars($bi['linderos']) ?></span>
+                                        </div>
                                     <?php endif; ?>
                                     <?php if (!empty($bi['direccion'])): ?>
-                                    <div class="gc-info-item" style="grid-column: 1 / -1;">
-                                        <span class="gc-info-label">Dirección</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($bi['direccion']) ?></span>
-                                    </div>
+                                        <div class="gc-info-item" style="grid-column: 1 / -1;">
+                                            <span class="gc-info-label">Dirección</span>
+                                            <span class="gc-info-value"><?= htmlspecialchars($bi['direccion']) ?></span>
+                                        </div>
                                     <?php endif; ?>
                                     <?php
                                     $litData = $bi['litigioso_data'] ?? null;
@@ -971,27 +1015,34 @@ if ($source === 'borrador') {
                                         ];
                                     }
                                     if ($esLitigioso && $litData): ?>
-                                    <div style="grid-column: 1 / -1; margin-top: 8px; padding: 12px 16px; background: var(--red-50, #fef2f2); border-left: 3px solid var(--red-400, #f87171); border-radius: 6px;">
-                                        <div style="font-weight: 600; color: var(--red-600, #dc2626); margin-bottom: 8px; font-size: 0.85rem;">⚠️ Datos Litigiosos</div>
-                                        <div class="gc-info-list" style="gap: 6px 24px;">
-                                            <div class="gc-info-item">
-                                                <span class="gc-info-label">Tribunal</span>
-                                                <span class="gc-info-value"><?= showVal($litData['tribunal_causa'] ?? null) ?></span>
-                                            </div>
-                                            <div class="gc-info-item">
-                                                <span class="gc-info-label">Nro. Expediente</span>
-                                                <span class="gc-info-value"><?= showVal($litData['numero_expediente'] ?? null) ?></span>
-                                            </div>
-                                            <div class="gc-info-item">
-                                                <span class="gc-info-label">Partes del Juicio</span>
-                                                <span class="gc-info-value"><?= showVal($litData['partes_juicio'] ?? null) ?></span>
-                                            </div>
-                                            <div class="gc-info-item">
-                                                <span class="gc-info-label">Estado del Juicio</span>
-                                                <span class="gc-info-value"><?= showVal($litData['estado_juicio'] ?? null) ?></span>
+                                        <div
+                                            style="grid-column: 1 / -1; margin-top: 8px; padding: 12px 16px; background: var(--red-50, #fef2f2); border-left: 3px solid var(--red-400, #f87171); border-radius: 6px;">
+                                            <div
+                                                style="font-weight: 600; color: var(--red-600, #dc2626); margin-bottom: 8px; font-size: 0.85rem;">
+                                                ⚠️ Datos Litigiosos</div>
+                                            <div class="gc-info-list" style="gap: 6px 24px;">
+                                                <div class="gc-info-item">
+                                                    <span class="gc-info-label">Tribunal</span>
+                                                    <span
+                                                        class="gc-info-value"><?= showVal($litData['tribunal_causa'] ?? null) ?></span>
+                                                </div>
+                                                <div class="gc-info-item">
+                                                    <span class="gc-info-label">Nro. Expediente</span>
+                                                    <span
+                                                        class="gc-info-value"><?= showVal($litData['numero_expediente'] ?? null) ?></span>
+                                                </div>
+                                                <div class="gc-info-item">
+                                                    <span class="gc-info-label">Partes del Juicio</span>
+                                                    <span
+                                                        class="gc-info-value"><?= showVal($litData['partes_juicio'] ?? null) ?></span>
+                                                </div>
+                                                <div class="gc-info-item">
+                                                    <span class="gc-info-label">Estado del Juicio</span>
+                                                    <span
+                                                        class="gc-info-value"><?= showVal($litData['estado_juicio'] ?? null) ?></span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -1014,294 +1065,316 @@ if ($source === 'borrador') {
                     $bmCats = [];
                     foreach ($bienesMuebles as $bm) {
                         $c = $bm['categoria_nombre'] ?? $bm['categoria'] ?? 'Otros';
-                        if (!in_array($c, $bmCats)) $bmCats[] = $c;
+                        if (!in_array($c, $bmCats))
+                            $bmCats[] = $c;
                     }
                     ?>
                     <div class="gc-filter-bar" id="bmFilterBar">
-                        <button class="gc-filter-pill is-active" data-filter="all">Todos (<?= count($bienesMuebles) ?>)</button>
+                        <button class="gc-filter-pill is-active" data-filter="all">Todos
+                            (<?= count($bienesMuebles) ?>)</button>
                         <?php foreach ($bmCats as $catName):
                             $catCount = count(array_filter($bienesMuebles, fn($b) => ($b['categoria_nombre'] ?? $b['categoria'] ?? 'Otros') === $catName));
-                        ?>
-                            <button class="gc-filter-pill" data-filter="<?= htmlspecialchars($catName) ?>"><?= htmlspecialchars($catName) ?> (<?= $catCount ?>)</button>
+                            ?>
+                            <button class="gc-filter-pill"
+                                data-filter="<?= htmlspecialchars($catName) ?>"><?= htmlspecialchars($catName) ?>
+                                (<?= $catCount ?>)</button>
                         <?php endforeach; ?>
                     </div>
                     <div id="bmItems">
-                    <?php foreach ($bienesMuebles as $i => $bm):
-                        $cat = $bm['categoria_nombre'] ?? $bm['categoria'] ?? 'Sin categoría';
-                        $tipo = $bm['tipo_nombre'] ?? '';
-                        $descBm = $bm['descripcion'] ?? 'Bien mueble #' . ($i + 1);
-                        $valorBm = formatBs((float)($bm['valor_declarado'] ?? 0));
-                        $esLitigiosoBm = ($bm['es_bien_litigioso'] ?? 0) == 1;
-                    ?>
-                        <div class="gc-dir-item" data-dir-index="bm_<?= $i ?>" data-bm-cat="<?= htmlspecialchars($cat) ?>">
-                            <div class="gc-dir-summary">
-                                <div class="gc-dir-summary-left">
-                                    <div class="gc-dir-icon" style="background: var(--purple-50, #f5f3ff); color: var(--purple-600, #7c3aed);">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18">
-                                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                                        </svg>
+                        <?php foreach ($bienesMuebles as $i => $bm):
+                            $cat = $bm['categoria_nombre'] ?? $bm['categoria'] ?? 'Sin categoría';
+                            $tipo = $bm['tipo_nombre'] ?? '';
+                            $descBm = $bm['descripcion'] ?? 'Bien mueble #' . ($i + 1);
+                            $valorBm = formatBs((float) ($bm['valor_declarado'] ?? 0));
+                            $esLitigiosoBm = ($bm['es_bien_litigioso'] ?? 0) == 1;
+                            ?>
+                            <div class="gc-dir-item" data-dir-index="bm_<?= $i ?>" data-bm-cat="<?= htmlspecialchars($cat) ?>">
+                                <div class="gc-dir-summary">
+                                    <div class="gc-dir-summary-left">
+                                        <div class="gc-dir-icon"
+                                            style="background: var(--purple-50, #f5f3ff); color: var(--purple-600, #7c3aed);">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" width="18" height="18">
+                                                <path
+                                                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <span
+                                                class="gc-dir-type"><?= htmlspecialchars($cat) ?><?= !empty($tipo) ? ' — ' . htmlspecialchars($tipo) : '' ?></span>
+                                            <span class="gc-dir-location">
+                                                <?= $valorBm ?>
+                                                <?php if ($esLitigiosoBm): ?> · <span
+                                                        style="color: var(--red-500);">Litigioso</span><?php endif; ?>
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <span class="gc-dir-type"><?= htmlspecialchars($cat) ?><?= !empty($tipo) ? ' — ' . htmlspecialchars($tipo) : '' ?></span>
-                                        <span class="gc-dir-location">
-                                            <?= $valorBm ?>
-                                            <?php if ($esLitigiosoBm): ?> · <span style="color: var(--red-500);">Litigioso</span><?php endif; ?>
-                                        </span>
-                                    </div>
+                                    <svg class="gc-dir-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" width="16" height="16">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
                                 </div>
-                                <svg class="gc-dir-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16">
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
-                            </div>
-                            <div class="gc-dir-details">
-                                <div class="gc-info-list">
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Categoría</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($cat) ?></span>
-                                    </div>
-                                    <?php if (!empty($tipo)): ?>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Tipo</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($tipo) ?></span>
-                                    </div>
-                                    <?php endif; ?>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Porcentaje</span>
-                                        <span class="gc-info-value"><?= number_format((float)($bm['porcentaje'] ?? 0), 2) ?>%</span>
-                                    </div>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Bien Litigioso</span>
-                                        <span class="gc-info-value"><?= $esLitigiosoBm ? 'Sí' : 'No' ?></span>
-                                    </div>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Valor Declarado</span>
-                                        <span class="gc-info-value" style="font-weight:700;color:var(--green-600);"><?= $valorBm ?></span>
-                                    </div>
-                                    <?php
-                                    $catCheck = strtolower($bm['categoria_nombre'] ?? $bm['categoria'] ?? '');
+                                <div class="gc-dir-details">
+                                    <div class="gc-info-list">
+                                        <div class="gc-info-item">
+                                            <span class="gc-info-label">Categoría</span>
+                                            <span class="gc-info-value"><?= htmlspecialchars($cat) ?></span>
+                                        </div>
+                                        <?php if (!empty($tipo)): ?>
+                                            <div class="gc-info-item">
+                                                <span class="gc-info-label">Tipo</span>
+                                                <span class="gc-info-value"><?= htmlspecialchars($tipo) ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                        <div class="gc-info-item">
+                                            <span class="gc-info-label">Porcentaje</span>
+                                            <span
+                                                class="gc-info-value"><?= number_format((float) ($bm['porcentaje'] ?? 0), 2) ?>%</span>
+                                        </div>
+                                        <div class="gc-info-item">
+                                            <span class="gc-info-label">Bien Litigioso</span>
+                                            <span class="gc-info-value"><?= $esLitigiosoBm ? 'Sí' : 'No' ?></span>
+                                        </div>
+                                        <div class="gc-info-item">
+                                            <span class="gc-info-label">Valor Declarado</span>
+                                            <span class="gc-info-value"
+                                                style="font-weight:700;color:var(--green-600);"><?= $valorBm ?></span>
+                                        </div>
+                                        <?php
+                                        $catCheck = strtolower($bm['categoria_nombre'] ?? $bm['categoria'] ?? '');
 
-                                    // -- Banco --
-                                    if (strpos($catCheck, 'banco') !== false):
-                                        $bancoNombre = $bm['banco_nombre'] ?? $bm['nombre_banco'] ?? $bm['banco'] ?? '—';
-                                        $numCuenta = $bm['numero_cuenta'] ?? $bm['numeroCuenta'] ?? '—';
-                                    ?>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Banco</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($bancoNombre) ?></span>
-                                    </div>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Número de Cuenta</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($numCuenta) ?></span>
-                                    </div>
-
-                                    <?php elseif (strpos($catCheck, 'seguro') !== false):
-                                        $ds = $bm['detalle_seguro'] ?? null;
-                                    ?>
-                                    <?php if ($ds): ?>
-                                        <?php if (!empty($ds['empresa_nombre'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Empresa</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($ds['empresa_nombre']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($ds['numero_prima'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Nro. Prima</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($ds['numero_prima']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
-
-                                    <?php elseif (strpos($catCheck, 'transporte') !== false):
-                                        $dt = $bm['detalle_transporte'] ?? null;
-                                    ?>
-                                    <?php if ($dt): ?>
-                                        <?php if (!empty($dt['anio'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Año</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($dt['anio']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($dt['marca'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Marca</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($dt['marca']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($dt['modelo'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Modelo</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($dt['modelo']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($dt['serial_placa'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Serial / Placa</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($dt['serial_placa']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
-
-                                    <?php elseif (strpos($catCheck, 'acciones') !== false):
-                                        $da = $bm['detalle_acciones'] ?? null;
-                                    ?>
-                                    <?php if ($da && !empty($da['empresa_nombre'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Empresa</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($da['empresa_nombre']) ?></span>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php elseif (strpos($catCheck, 'bonos') !== false):
-                                        $db_ = $bm['detalle_bonos'] ?? null;
-                                    ?>
-                                    <?php if ($db_): ?>
-                                        <?php if (!empty($db_['tipo_bonos'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Tipo de Bonos</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($db_['tipo_bonos']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($db_['numero_bonos'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Nro. Bonos</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($db_['numero_bonos']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($db_['numero_serie'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Nro. Serie</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($db_['numero_serie']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
-
-                                    <?php elseif (strpos($catCheck, 'cuentas') !== false || strpos($catCheck, 'efectos') !== false):
-                                        $dc = $bm['detalle_cuentas_cobrar'] ?? null;
-                                    ?>
-                                    <?php if ($dc): ?>
-                                        <?php if (!empty($dc['rif_cedula'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">RIF / Cédula Deudor</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($dc['rif_cedula']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($dc['apellidos_nombres'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Nombre Deudor</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($dc['apellidos_nombres']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
-
-                                    <?php elseif (strpos($catCheck, 'opciones') !== false || strpos($catCheck, 'compra') !== false):
-                                        $dop = $bm['detalle_opciones_compra'] ?? null;
-                                    ?>
-                                    <?php if ($dop && !empty($dop['nombre_oferente'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Nombre Oferente</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($dop['nombre_oferente']) ?></span>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php elseif (strpos($catCheck, 'prestaciones') !== false):
-                                        $dp = $bm['detalle_prestaciones'] ?? null;
-                                    ?>
-                                    <?php if ($dp): ?>
-                                        <?php if (!empty($dp['empresa_nombre'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Empresa</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($dp['empresa_nombre']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                        <?php if ($dp['posee_banco'] ?? 0): ?>
-                                            <?php if (!empty($dp['banco_prestaciones_nombre'])): ?>
+                                        // -- Banco --
+                                        if (strpos($catCheck, 'banco') !== false):
+                                            $bancoNombre = $bm['banco_nombre'] ?? $bm['nombre_banco'] ?? $bm['banco'] ?? '—';
+                                            $numCuenta = $bm['numero_cuenta'] ?? $bm['numeroCuenta'] ?? '—';
+                                            ?>
                                             <div class="gc-info-item">
                                                 <span class="gc-info-label">Banco</span>
-                                                <span class="gc-info-value"><?= htmlspecialchars($dp['banco_prestaciones_nombre']) ?></span>
+                                                <span class="gc-info-value"><?= htmlspecialchars($bancoNombre) ?></span>
                                             </div>
+                                            <div class="gc-info-item">
+                                                <span class="gc-info-label">Número de Cuenta</span>
+                                                <span class="gc-info-value"><?= htmlspecialchars($numCuenta) ?></span>
+                                            </div>
+
+                                        <?php elseif (strpos($catCheck, 'seguro') !== false):
+                                            $ds = $bm['detalle_seguro'] ?? null;
+                                            ?>
+                                            <?php if ($ds): ?>
+                                                <?php if (!empty($ds['empresa_nombre'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Empresa</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars($ds['empresa_nombre']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <?php if (!empty($ds['numero_prima'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Nro. Prima</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars($ds['numero_prima']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
                                             <?php endif; ?>
-                                            <?php if (!empty($dp['numero_cuenta'])): ?>
-                                            <div class="gc-info-item">
-                                                <span class="gc-info-label">Nro. Cuenta</span>
-                                                <span class="gc-info-value"><?= htmlspecialchars($dp['numero_cuenta']) ?></span>
-                                            </div>
+
+                                        <?php elseif (strpos($catCheck, 'transporte') !== false):
+                                            $dt = $bm['detalle_transporte'] ?? null;
+                                            ?>
+                                            <?php if ($dt): ?>
+                                                <?php if (!empty($dt['anio'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Año</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars($dt['anio']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <?php if (!empty($dt['marca'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Marca</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars($dt['marca']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <?php if (!empty($dt['modelo'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Modelo</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars($dt['modelo']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <?php if (!empty($dt['serial_placa'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Serial / Placa</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars($dt['serial_placa']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
                                             <?php endif; ?>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
 
-                                    <?php elseif (strpos($catCheck, 'semovientes') !== false):
-                                        $dsm = $bm['detalle_semovientes'] ?? null;
-                                    ?>
-                                    <?php if ($dsm): ?>
-                                        <?php if (!empty($dsm['tipo_semoviente_nombre'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Tipo Semoviente</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($dsm['tipo_semoviente_nombre']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($dsm['cantidad'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Cantidad</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars((string)$dsm['cantidad']) ?></span>
-                                        </div>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
+                                        <?php elseif (strpos($catCheck, 'acciones') !== false):
+                                            $da = $bm['detalle_acciones'] ?? null;
+                                            ?>
+                                            <?php if ($da && !empty($da['empresa_nombre'])): ?>
+                                                <div class="gc-info-item">
+                                                    <span class="gc-info-label">Empresa</span>
+                                                    <span class="gc-info-value"><?= htmlspecialchars($da['empresa_nombre']) ?></span>
+                                                </div>
+                                            <?php endif; ?>
 
-                                    <?php elseif (strpos($catCheck, 'caja') !== false || strpos($catCheck, 'ahorro') !== false):
-                                        $dca = $bm['detalle_caja_ahorro'] ?? null;
-                                    ?>
-                                    <?php if ($dca && !empty($dca['empresa_nombre'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Empresa</span>
-                                            <span class="gc-info-value"><?= htmlspecialchars($dca['empresa_nombre']) ?></span>
-                                        </div>
-                                    <?php endif; ?>
+                                        <?php elseif (strpos($catCheck, 'bonos') !== false):
+                                            $db_ = $bm['detalle_bonos'] ?? null;
+                                            ?>
+                                            <?php if ($db_): ?>
+                                                <?php if (!empty($db_['tipo_bonos'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Tipo de Bonos</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars($db_['tipo_bonos']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <?php if (!empty($db_['numero_bonos'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Nro. Bonos</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars($db_['numero_bonos']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <?php if (!empty($db_['numero_serie'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Nro. Serie</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars($db_['numero_serie']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
 
-                                    <?php endif; ?>
-                                    <?php if (!empty($bm['descripcion'])): ?>
-                                    <div class="gc-info-item" style="grid-column: 1 / -1;">
-                                        <span class="gc-info-label">Descripción</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($bm['descripcion']) ?></span>
+                                        <?php elseif (strpos($catCheck, 'cuentas') !== false || strpos($catCheck, 'efectos') !== false):
+                                            $dc = $bm['detalle_cuentas_cobrar'] ?? null;
+                                            ?>
+                                            <?php if ($dc): ?>
+                                                <?php if (!empty($dc['rif_cedula'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">RIF / Cédula Deudor</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars($dc['rif_cedula']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <?php if (!empty($dc['apellidos_nombres'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Nombre Deudor</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars($dc['apellidos_nombres']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+
+                                        <?php elseif (strpos($catCheck, 'opciones') !== false || strpos($catCheck, 'compra') !== false):
+                                            $dop = $bm['detalle_opciones_compra'] ?? null;
+                                            ?>
+                                            <?php if ($dop && !empty($dop['nombre_oferente'])): ?>
+                                                <div class="gc-info-item">
+                                                    <span class="gc-info-label">Nombre Oferente</span>
+                                                    <span class="gc-info-value"><?= htmlspecialchars($dop['nombre_oferente']) ?></span>
+                                                </div>
+                                            <?php endif; ?>
+
+                                        <?php elseif (strpos($catCheck, 'prestaciones') !== false):
+                                            $dp = $bm['detalle_prestaciones'] ?? null;
+                                            ?>
+                                            <?php if ($dp): ?>
+                                                <?php if (!empty($dp['empresa_nombre'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Empresa</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars($dp['empresa_nombre']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <?php if ($dp['posee_banco'] ?? 0): ?>
+                                                    <?php if (!empty($dp['banco_prestaciones_nombre'])): ?>
+                                                        <div class="gc-info-item">
+                                                            <span class="gc-info-label">Banco</span>
+                                                            <span
+                                                                class="gc-info-value"><?= htmlspecialchars($dp['banco_prestaciones_nombre']) ?></span>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($dp['numero_cuenta'])): ?>
+                                                        <div class="gc-info-item">
+                                                            <span class="gc-info-label">Nro. Cuenta</span>
+                                                            <span class="gc-info-value"><?= htmlspecialchars($dp['numero_cuenta']) ?></span>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+
+                                        <?php elseif (strpos($catCheck, 'semovientes') !== false):
+                                            $dsm = $bm['detalle_semovientes'] ?? null;
+                                            ?>
+                                            <?php if ($dsm): ?>
+                                                <?php if (!empty($dsm['tipo_semoviente_nombre'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Tipo Semoviente</span>
+                                                        <span
+                                                            class="gc-info-value"><?= htmlspecialchars($dsm['tipo_semoviente_nombre']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                                <?php if (!empty($dsm['cantidad'])): ?>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Cantidad</span>
+                                                        <span class="gc-info-value"><?= htmlspecialchars((string) $dsm['cantidad']) ?></span>
+                                                    </div>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+
+                                        <?php elseif (strpos($catCheck, 'caja') !== false || strpos($catCheck, 'ahorro') !== false):
+                                            $dca = $bm['detalle_caja_ahorro'] ?? null;
+                                            ?>
+                                            <?php if ($dca && !empty($dca['empresa_nombre'])): ?>
+                                                <div class="gc-info-item">
+                                                    <span class="gc-info-label">Empresa</span>
+                                                    <span class="gc-info-value"><?= htmlspecialchars($dca['empresa_nombre']) ?></span>
+                                                </div>
+                                            <?php endif; ?>
+
+                                        <?php endif; ?>
+                                        <?php if (!empty($bm['descripcion'])): ?>
+                                            <div class="gc-info-item" style="grid-column: 1 / -1;">
+                                                <span class="gc-info-label">Descripción</span>
+                                                <span class="gc-info-value"><?= htmlspecialchars($bm['descripcion']) ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                        <?php
+                                        $litDataBm = $bm['litigioso_data'] ?? null;
+                                        if (!$litDataBm && $esLitigiosoBm) {
+                                            $litDataBm = [
+                                                'tribunal_causa' => $bm['tribunal_causa'] ?? null,
+                                                'numero_expediente' => $bm['numero_expediente'] ?? null,
+                                                'partes_juicio' => $bm['partes_juicio'] ?? null,
+                                                'estado_juicio' => $bm['estado_juicio'] ?? null,
+                                            ];
+                                        }
+                                        if ($esLitigiosoBm && $litDataBm): ?>
+                                            <div
+                                                style="grid-column: 1 / -1; margin-top: 8px; padding: 12px 16px; background: var(--red-50, #fef2f2); border-left: 3px solid var(--red-400, #f87171); border-radius: 6px;">
+                                                <div
+                                                    style="font-weight: 600; color: var(--red-600, #dc2626); margin-bottom: 8px; font-size: 0.85rem;">
+                                                    ⚠️ Datos Litigiosos</div>
+                                                <div class="gc-info-list" style="gap: 6px 24px;">
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Tribunal</span>
+                                                        <span
+                                                            class="gc-info-value"><?= showVal($litDataBm['tribunal_causa'] ?? null) ?></span>
+                                                    </div>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Nro. Expediente</span>
+                                                        <span
+                                                            class="gc-info-value"><?= showVal($litDataBm['numero_expediente'] ?? null) ?></span>
+                                                    </div>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Partes del Juicio</span>
+                                                        <span
+                                                            class="gc-info-value"><?= showVal($litDataBm['partes_juicio'] ?? null) ?></span>
+                                                    </div>
+                                                    <div class="gc-info-item">
+                                                        <span class="gc-info-label">Estado del Juicio</span>
+                                                        <span
+                                                            class="gc-info-value"><?= showVal($litDataBm['estado_juicio'] ?? null) ?></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
-                                    <?php endif; ?>
-                                    <?php
-                                    $litDataBm = $bm['litigioso_data'] ?? null;
-                                    if (!$litDataBm && $esLitigiosoBm) {
-                                        $litDataBm = [
-                                            'tribunal_causa' => $bm['tribunal_causa'] ?? null,
-                                            'numero_expediente' => $bm['numero_expediente'] ?? null,
-                                            'partes_juicio' => $bm['partes_juicio'] ?? null,
-                                            'estado_juicio' => $bm['estado_juicio'] ?? null,
-                                        ];
-                                    }
-                                    if ($esLitigiosoBm && $litDataBm): ?>
-                                    <div style="grid-column: 1 / -1; margin-top: 8px; padding: 12px 16px; background: var(--red-50, #fef2f2); border-left: 3px solid var(--red-400, #f87171); border-radius: 6px;">
-                                        <div style="font-weight: 600; color: var(--red-600, #dc2626); margin-bottom: 8px; font-size: 0.85rem;">⚠️ Datos Litigiosos</div>
-                                        <div class="gc-info-list" style="gap: 6px 24px;">
-                                            <div class="gc-info-item">
-                                                <span class="gc-info-label">Tribunal</span>
-                                                <span class="gc-info-value"><?= showVal($litDataBm['tribunal_causa'] ?? null) ?></span>
-                                            </div>
-                                            <div class="gc-info-item">
-                                                <span class="gc-info-label">Nro. Expediente</span>
-                                                <span class="gc-info-value"><?= showVal($litDataBm['numero_expediente'] ?? null) ?></span>
-                                            </div>
-                                            <div class="gc-info-item">
-                                                <span class="gc-info-label">Partes del Juicio</span>
-                                                <span class="gc-info-value"><?= showVal($litDataBm['partes_juicio'] ?? null) ?></span>
-                                            </div>
-                                            <div class="gc-info-item">
-                                                <span class="gc-info-label">Estado del Juicio</span>
-                                                <span class="gc-info-value"><?= showVal($litDataBm['estado_juicio'] ?? null) ?></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <?php endif; ?>
                                 </div>
                             </div>
-                        </div>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
             </div>
@@ -1317,65 +1390,70 @@ if ($source === 'borrador') {
                     <p class="gc-empty-text" style="padding: 20px;">No hay deudas registradas.</p>
                 <?php else: ?>
                     <div>
-                    <?php foreach ($pasivosDeuda as $i => $pd):
-                        $pdTipo = $pd['tipo_nombre'] ?? $pd['tipo'] ?? 'Sin tipo';
-                        $pdValor = formatBs((float)($pd['valor_declarado'] ?? 0));
-                        $pdTipoLower = strtolower($pdTipo);
-                    ?>
-                        <div class="gc-dir-item" data-dir-index="pd_<?= $i ?>">
-                            <div class="gc-dir-summary">
-                                <div class="gc-dir-summary-left">
-                                    <div class="gc-dir-icon" style="background: var(--red-50, #fef2f2); color: var(--red-600, #dc2626);">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="18" height="18">
-                                            <line x1="12" y1="1" x2="12" y2="23"></line>
-                                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                                        </svg>
+                        <?php foreach ($pasivosDeuda as $i => $pd):
+                            $pdTipo = $pd['tipo_nombre'] ?? $pd['tipo'] ?? 'Sin tipo';
+                            $pdValor = formatBs((float) ($pd['valor_declarado'] ?? 0));
+                            $pdTipoLower = strtolower($pdTipo);
+                            ?>
+                            <div class="gc-dir-item" data-dir-index="pd_<?= $i ?>">
+                                <div class="gc-dir-summary">
+                                    <div class="gc-dir-summary-left">
+                                        <div class="gc-dir-icon"
+                                            style="background: var(--red-50, #fef2f2); color: var(--red-600, #dc2626);">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" width="18" height="18">
+                                                <line x1="12" y1="1" x2="12" y2="23"></line>
+                                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <span class="gc-dir-type"><?= htmlspecialchars($pdTipo) ?></span>
+                                            <span class="gc-dir-location"><?= $pdValor ?></span>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <span class="gc-dir-type"><?= htmlspecialchars($pdTipo) ?></span>
-                                        <span class="gc-dir-location"><?= $pdValor ?></span>
+                                    <svg class="gc-dir-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" width="16" height="16">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </div>
+                                <div class="gc-dir-details">
+                                    <div class="gc-info-list">
+                                        <div class="gc-info-item">
+                                            <span class="gc-info-label">Tipo</span>
+                                            <span class="gc-info-value"><?= htmlspecialchars($pdTipo) ?></span>
+                                        </div>
+                                        <div class="gc-info-item">
+                                            <span class="gc-info-label">Porcentaje</span>
+                                            <span
+                                                class="gc-info-value"><?= number_format((float) ($pd['porcentaje'] ?? 0), 2) ?>%</span>
+                                        </div>
+                                        <div class="gc-info-item">
+                                            <span class="gc-info-label">Valor Declarado</span>
+                                            <span class="gc-info-value"
+                                                style="font-weight:700;color:var(--red-600);"><?= $pdValor ?></span>
+                                        </div>
+                                        <?php if (strpos($pdTipoLower, 'tarjeta') !== false || strpos($pdTipoLower, 'hipotecario') !== false || strpos($pdTipoLower, 'stamo') !== false || !empty($pd['banco_nombre'])): ?>
+                                            <div class="gc-info-item">
+                                                <span class="gc-info-label">Banco</span>
+                                                <span class="gc-info-value"><?= showVal($pd['banco_nombre'] ?? null) ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                        <?php if (strpos($pdTipoLower, 'tarjeta') !== false || !empty($pd['numero_tdc'])): ?>
+                                            <div class="gc-info-item">
+                                                <span class="gc-info-label">Nro. Tarjeta de Crédito</span>
+                                                <span class="gc-info-value"><?= showVal($pd['numero_tdc'] ?? null) ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                        <?php if (!empty($pd['descripcion'])): ?>
+                                            <div class="gc-info-item" style="grid-column: 1 / -1;">
+                                                <span class="gc-info-label">Descripción</span>
+                                                <span class="gc-info-value"><?= htmlspecialchars($pd['descripcion']) ?></span>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
-                                <svg class="gc-dir-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16">
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
                             </div>
-                            <div class="gc-dir-details">
-                                <div class="gc-info-list">
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Tipo</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($pdTipo) ?></span>
-                                    </div>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Porcentaje</span>
-                                        <span class="gc-info-value"><?= number_format((float)($pd['porcentaje'] ?? 0), 2) ?>%</span>
-                                    </div>
-                                    <div class="gc-info-item">
-                                        <span class="gc-info-label">Valor Declarado</span>
-                                        <span class="gc-info-value" style="font-weight:700;color:var(--red-600);"><?= $pdValor ?></span>
-                                    </div>
-                                    <?php if (strpos($pdTipoLower, 'tarjeta') !== false || strpos($pdTipoLower, 'hipotecario') !== false || strpos($pdTipoLower, 'stamo') !== false || !empty($pd['banco_nombre'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Banco</span>
-                                            <span class="gc-info-value"><?= showVal($pd['banco_nombre'] ?? null) ?></span>
-                                        </div>
-                                    <?php endif; ?>
-                                    <?php if (strpos($pdTipoLower, 'tarjeta') !== false || !empty($pd['numero_tdc'])): ?>
-                                        <div class="gc-info-item">
-                                            <span class="gc-info-label">Nro. Tarjeta de Crédito</span>
-                                            <span class="gc-info-value"><?= showVal($pd['numero_tdc'] ?? null) ?></span>
-                                        </div>
-                                    <?php endif; ?>
-                                    <?php if (!empty($pd['descripcion'])): ?>
-                                    <div class="gc-info-item" style="grid-column: 1 / -1;">
-                                        <span class="gc-info-label">Descripción</span>
-                                        <span class="gc-info-value"><?= htmlspecialchars($pd['descripcion']) ?></span>
-                                    </div>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
             </div>
@@ -1483,7 +1561,7 @@ if ($source === 'borrador') {
                 $desgravamenesItems[] = [
                     'concepto' => 'Vivienda Principal',
                     'detalle' => $bi['tipo_bien_nombres'] ?? $bi['tipo_bien_nombre'] ?? ($bi['descripcion'] ?? 'Inmueble'),
-                    'valor' => (float)($bi['valor_declarado'] ?? 0),
+                    'valor' => (float) ($bi['valor_declarado'] ?? 0),
                 ];
             }
         }
@@ -1491,12 +1569,14 @@ if ($source === 'borrador') {
         foreach ($bienesMuebles as $bm) {
             $catN = strtolower($bm['categoria_nombre'] ?? $bm['categoria'] ?? '');
             $tipoN = strtolower($bm['tipo_nombre'] ?? '');
-            if (strpos($catN, 'seguro') !== false &&
-                (strpos($tipoN, 'montep') !== false || strpos($tipoN, 'seguro de vida') !== false)) {
+            if (
+                strpos($catN, 'seguro') !== false &&
+                (strpos($tipoN, 'montep') !== false || strpos($tipoN, 'seguro de vida') !== false)
+            ) {
                 $desgravamenesItems[] = [
                     'concepto' => 'Seguro (' . ($bm['tipo_nombre'] ?? 'Seguro') . ')',
                     'detalle' => $bm['descripcion'] ?? '—',
-                    'valor' => (float)($bm['valor_declarado'] ?? 0),
+                    'valor' => (float) ($bm['valor_declarado'] ?? 0),
                 ];
             }
             // 3. Prestaciones sociales sin banco
@@ -1504,17 +1584,19 @@ if ($source === 'borrador') {
                 $desgravamenesItems[] = [
                     'concepto' => 'Prestaciones Sociales',
                     'detalle' => $bm['descripcion'] ?? '—',
-                    'valor' => (float)($bm['valor_declarado'] ?? 0),
+                    'valor' => (float) ($bm['valor_declarado'] ?? 0),
                 ];
             }
         }
         $totalDesgItems = 0;
-        foreach ($desgravamenesItems as $dg) $totalDesgItems += $dg['valor'];
+        foreach ($desgravamenesItems as $dg)
+            $totalDesgItems += $dg['valor'];
         ?>
         <div class="gc-card">
             <div class="gc-card-header" style="display: flex; align-items: center; gap: 8px;">
                 <h3>Desgravámenes</h3>
-                <span style="background: var(--green-50, #f0fdf4); color: var(--green-700, #15803d); padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">
+                <span
+                    style="background: var(--green-50, #f0fdf4); color: var(--green-700, #15803d); padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">
                     <?= formatBs($totalDesgItems) ?>
                 </span>
             </div>
@@ -1542,7 +1624,8 @@ if ($source === 'borrador') {
                         <tfoot>
                             <tr style="font-weight: 600; background: var(--green-50, #f0fdf4);">
                                 <td colspan="2" style="text-align: right;">Total Desgravámenes</td>
-                                <td class="gc-money" style="color: var(--green-700, #15803d);"><?= formatBs($totalDesgItems) ?></td>
+                                <td class="gc-money" style="color: var(--green-700, #15803d);">
+                                    <?= formatBs($totalDesgItems) ?></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -1566,22 +1649,24 @@ if ($source === 'borrador') {
         if ($fechaFall) {
             $utData = \App\Core\UnidadTributariaService::obtenerPorFecha($fechaFall);
         }
-        $utValor = $utData ? (float)$utData['valor'] : 0;
+        $utValor = $utData ? (float) $utData['valor'] : 0;
         $utAnio = $utData ? $utData['anio'] : '—';
 
         // Totals for inmuebles and muebles
         $tInmuebles = 0;
-        foreach ($bienesInmuebles as $bi) $tInmuebles += (float)($bi['valor_declarado'] ?? 0);
+        foreach ($bienesInmuebles as $bi)
+            $tInmuebles += (float) ($bi['valor_declarado'] ?? 0);
         $tMuebles = 0;
-        foreach ($bienesMuebles as $bm) $tMuebles += (float)($bm['valor_declarado'] ?? 0);
+        foreach ($bienesMuebles as $bm)
+            $tMuebles += (float) ($bm['valor_declarado'] ?? 0);
         $patrimonioBruto = $tInmuebles + $tMuebles;
         $activoHerBruto = $patrimonioBruto; // Row 4 = Row 3
-
+        
         // Desgravámenes: vivienda principal inmuebles + seguros montepío/vida + prestaciones sin banco
         $totalDesgravamenes = 0;
         foreach ($bienesInmuebles as $bi) {
             if (($bi['es_vivienda_principal'] ?? 0) == 1 || ($bi['vivienda_principal'] ?? '') === 'Si') {
-                $totalDesgravamenes += (float)($bi['valor_declarado'] ?? 0);
+                $totalDesgravamenes += (float) ($bi['valor_declarado'] ?? 0);
             }
         }
         // Seguros montepío/vida and prestaciones sin banco from bienes muebles
@@ -1589,13 +1674,15 @@ if ($source === 'borrador') {
             $catNombre = strtolower($bm['categoria_nombre'] ?? '');
             $tipoNombre = strtolower($bm['tipo_nombre'] ?? '');
             // Seguros: Montepío or Seguro de Vida
-            if (strpos($catNombre, 'seguro') !== false &&
-                (strpos($tipoNombre, 'montep') !== false || strpos($tipoNombre, 'seguro de vida') !== false)) {
-                $totalDesgravamenes += (float)($bm['valor_declarado'] ?? 0);
+            if (
+                strpos($catNombre, 'seguro') !== false &&
+                (strpos($tipoNombre, 'montep') !== false || strpos($tipoNombre, 'seguro de vida') !== false)
+            ) {
+                $totalDesgravamenes += (float) ($bm['valor_declarado'] ?? 0);
             }
             // Prestaciones Sociales without bank
             if (strpos($catNombre, 'prestacion') !== false && empty($bm['banco_id'])) {
-                $totalDesgravamenes += (float)($bm['valor_declarado'] ?? 0);
+                $totalDesgravamenes += (float) ($bm['valor_declarado'] ?? 0);
             }
         }
 
@@ -1609,12 +1696,12 @@ if ($source === 'borrador') {
         // Build tarifa lookup: grupo_id → sorted tramos
         $tramosPorGrupo = [];
         foreach ($tarifas as $t) {
-            $gid = (int)$t['grupo_tarifa_id'];
+            $gid = (int) $t['grupo_tarifa_id'];
             $tramosPorGrupo[$gid][] = [
-                'desde' => (float)$t['rango_desde_ut'],
-                'hasta' => $t['rango_hasta_ut'] !== null ? (float)$t['rango_hasta_ut'] : null,
-                'porcentaje' => (float)$t['porcentaje'],
-                'sustraendo' => (float)$t['sustraendo_ut'],
+                'desde' => (float) $t['rango_desde_ut'],
+                'hasta' => $t['rango_hasta_ut'] !== null ? (float) $t['rango_hasta_ut'] : null,
+                'porcentaje' => (float) $t['porcentaje'],
+                'sustraendo' => (float) $t['sustraendo_ut'],
             ];
         }
 
@@ -1627,12 +1714,12 @@ if ($source === 'borrador') {
         $totalImpuesto = 0;
         $totalReducciones = 0;
         foreach ($mainHerederos as $h) {
-            $parentescoId = (int)($h['parentesco_id'] ?? 0);
+            $parentescoId = (int) ($h['parentesco_id'] ?? 0);
             // Use grupo_tarifa_id from the parentesco JOIN
             $grupoId = isset($h['grupo_tarifa_id']) && $h['grupo_tarifa_id'] !== null
-                ? (int)$h['grupo_tarifa_id']
+                ? (int) $h['grupo_tarifa_id']
                 : 4; // default: Extraños
-
+        
             $cuotaParteUT = 0;
             $porcentaje = 0;
             $sustraendoUT = 0;
@@ -1653,7 +1740,8 @@ if ($source === 'borrador') {
                         break;
                     }
                 }
-                if (!$tramo && !empty($tramos)) $tramo = end($tramos);
+                if (!$tramo && !empty($tramos))
+                    $tramo = end($tramos);
 
                 if ($tramo) {
                     $porcentaje = $tramo['porcentaje'];
@@ -1695,13 +1783,14 @@ if ($source === 'borrador') {
                 <div class="gc-info-list">
                     <div class="gc-info-item">
                         <span class="gc-info-label">Unidad Tributaria (UT)</span>
-                        <span class="gc-info-value" style="font-weight:700;font-size:1.1rem;color:var(--primary-600, #2563eb);">
+                        <span class="gc-info-value"
+                            style="font-weight:700;font-size:1.1rem;color:var(--primary-600, #2563eb);">
                             <?= $utValor > 0 ? formatBs($utValor) : 'No determinada' ?>
                         </span>
                     </div>
                     <div class="gc-info-item">
                         <span class="gc-info-label">Año UT</span>
-                        <span class="gc-info-value"><?= htmlspecialchars((string)$utAnio) ?></span>
+                        <span class="gc-info-value"><?= htmlspecialchars((string) $utAnio) ?></span>
                     </div>
                 </div>
             </div>
@@ -1763,7 +1852,11 @@ if ($source === 'borrador') {
                             <td style="text-align:right;"><?= formatBs($tExclusiones) ?></td>
                         </tr>
                         <!-- Section header: Patrimonio Neto Hereditario -->
-                        <tr><td colspan="3" style="text-align:center;font-weight:700;padding:10px;background:var(--gray-100,#f3f4f6);border-top:2px solid var(--gray-300,#d1d5db);">Patrimonio Neto Hereditario</td></tr>
+                        <tr>
+                            <td colspan="3"
+                                style="text-align:center;font-weight:700;padding:10px;background:var(--gray-100,#f3f4f6);border-top:2px solid var(--gray-300,#d1d5db);">
+                                Patrimonio Neto Hereditario</td>
+                        </tr>
                         <tr>
                             <td style="text-align:center;">9</td>
                             <td>Activo Hereditario Neto (Activo Hereditario Bruto - Total de Exclusiones)</td>
@@ -1776,13 +1869,19 @@ if ($source === 'borrador') {
                         </tr>
                         <tr style="font-weight:700;background:var(--gray-100,#f3f4f6);font-size:1.02em;">
                             <td style="text-align:center;">11</td>
-                            <td><strong>Patrimonio Neto Hereditario o Líquido Hereditario Gravable (Activo Hereditario Neto - Total Pasivo)</strong></td>
-                            <td style="text-align:right;color:<?= $tPatrimonioNeto >= 0 ? 'var(--emerald-600,#059669)' : 'var(--red-600,#dc2626)' ?>;">
+                            <td><strong>Patrimonio Neto Hereditario o Líquido Hereditario Gravable (Activo Hereditario
+                                    Neto - Total Pasivo)</strong></td>
+                            <td
+                                style="text-align:right;color:<?= $tPatrimonioNeto >= 0 ? 'var(--emerald-600,#059669)' : 'var(--red-600,#dc2626)' ?>;">
                                 <?= formatBs($tPatrimonioNeto) ?>
                             </td>
                         </tr>
                         <!-- Section header: Determinación de Tributo -->
-                        <tr><td colspan="3" style="text-align:center;font-weight:700;padding:10px;background:var(--gray-100,#f3f4f6);border-top:2px solid var(--gray-300,#d1d5db);">Determinación de Tributo</td></tr>
+                        <tr>
+                            <td colspan="3"
+                                style="text-align:center;font-weight:700;padding:10px;background:var(--gray-100,#f3f4f6);border-top:2px solid var(--gray-300,#d1d5db);">
+                                Determinación de Tributo</td>
+                        </tr>
                         <tr>
                             <td style="text-align:center;">12</td>
                             <td>Impuesto Determinado por Según Tarifa</td>
@@ -1796,7 +1895,8 @@ if ($source === 'borrador') {
                         <tr style="font-weight:700;background:var(--primary-50,#eff6ff);font-size:1.05em;">
                             <td style="text-align:center;">14</td>
                             <td><strong>Total Impuesto a Pagar</strong></td>
-                            <td style="text-align:right;color:var(--primary-600,#2563eb);"><?= formatBs($totalImpuesto) ?></td>
+                            <td style="text-align:right;color:var(--primary-600,#2563eb);">
+                                <?= formatBs($totalImpuesto) ?></td>
                         </tr>
                     </tbody>
                 </table>
@@ -1836,19 +1936,21 @@ if ($source === 'borrador') {
                                 $parentesco = $hh['parentesco_nombre'] ?? $hh['parentesco_id'] ?? '—';
                                 $isP = ($hh['es_premuerto'] ?? 0);
                                 $isP = ($isP === 1 || $isP === '1' || $isP === 'SI');
-                            ?>
+                                ?>
                                 <tr>
                                     <td><?= htmlspecialchars($nombre ?: '—') ?></td>
                                     <td style="text-align:center;"><?= htmlspecialchars($cedula) ?></td>
-                                    <td style="text-align:center;"><?= htmlspecialchars((string)$parentesco) ?></td>
+                                    <td style="text-align:center;"><?= htmlspecialchars((string) $parentesco) ?></td>
                                     <td style="text-align:center;"><?= $hc['grupo_id'] ?></td>
                                     <td style="text-align:center;"><?= $isP ? 'Sí' : 'No' ?></td>
                                     <td style="text-align:right;"><?= number_format($hc['cuota_parte_ut'], 2, ',', '.') ?></td>
                                     <td style="text-align:right;"><?= number_format($hc['porcentaje'], 2, ',', '.') ?></td>
                                     <td style="text-align:right;"><?= number_format($hc['sustraendo_ut'], 2, ',', '.') ?></td>
-                                    <td style="text-align:right;"><?= number_format($hc['impuesto_determinado'], 2, ',', '.') ?></td>
+                                    <td style="text-align:right;"><?= number_format($hc['impuesto_determinado'], 2, ',', '.') ?>
+                                    </td>
                                     <td style="text-align:right;"><?= number_format($hc['reduccion'], 2, ',', '.') ?></td>
-                                    <td style="text-align:right;font-weight:600;"><?= number_format($hc['impuesto_a_pagar'], 2, ',', '.') ?></td>
+                                    <td style="text-align:right;font-weight:600;">
+                                        <?= number_format($hc['impuesto_a_pagar'], 2, ',', '.') ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -1864,11 +1966,12 @@ if ($source === 'borrador') {
             </div>
             <div class="gc-card-body gc-table-wrapper" style="padding: 0;">
                 <?php foreach ($gruposTarifa as $gi => $grupo):
-                    $gId = (int)$grupo['id'];
+                    $gId = (int) $grupo['id'];
                     $gTramos = $tramosPorGrupo[$gId] ?? [];
-                ?>
+                    ?>
                     <div style="<?= $gi > 0 ? 'border-top: 2px solid var(--gray-200,#e5e7eb);' : '' ?>">
-                        <div style="padding: 12px 16px; background: var(--gray-50,#f9fafb); font-weight: 600; font-size: 0.9rem; color: var(--gray-700,#374151);">
+                        <div
+                            style="padding: 12px 16px; background: var(--gray-50,#f9fafb); font-weight: 600; font-size: 0.9rem; color: var(--gray-700,#374151);">
                             Grupo <?= $gId ?>: <?= htmlspecialchars($grupo['nombre'] ?? '') ?>
                         </div>
                         <table class="gc-table" style="margin: 0; font-size: 0.85rem;">
@@ -1884,7 +1987,8 @@ if ($source === 'borrador') {
                                 <?php foreach ($gTramos as $tr): ?>
                                     <tr>
                                         <td><?= number_format($tr['desde'], 2, ',', '.') ?></td>
-                                        <td><?= $tr['hasta'] !== null ? number_format($tr['hasta'], 2, ',', '.') : 'En adelante' ?></td>
+                                        <td><?= $tr['hasta'] !== null ? number_format($tr['hasta'], 2, ',', '.') : 'En adelante' ?>
+                                        </td>
                                         <td style="text-align:right;"><?= number_format($tr['porcentaje'], 2, ',', '.') ?>%</td>
                                         <td style="text-align:right;"><?= number_format($tr['sustraendo'], 2, ',', '.') ?></td>
                                     </tr>
@@ -1897,6 +2001,7 @@ if ($source === 'borrador') {
         </div>
     </div>
 
+    <?php if ($source !== 'borrador'): ?>
     <div class="gc-panel" id="tab-asignaciones">
         <div class="gc-asig-toolbar">
             <button class="btn btn-primary" id="btnNuevaAsignacion" data-caso-id="<?= $caso['id'] ?>">
@@ -1922,86 +2027,142 @@ if ($source === 'borrador') {
                 <p>Aún no se han creado asignaciones para este caso.</p>
             </div>
         <?php else: ?>
-            <?php foreach ($configs as $idx => $cfg): ?>
-                <div
-                    class="gc-card gc-assignment-card<?= ($cfg['status'] ?? 'Activo') === 'Inactivo' ? ' gc-card-inactive' : '' ?>">
-                    <div class="gc-card-header gc-assignment-header">
-                        <div>
-                            <h3>Asignación
-                                #<?= $idx + 1 ?><?= ($cfg['status'] ?? 'Activo') === 'Inactivo' ? ' <span class="gc-badge-small badge-gray">Inactiva</span>' : '' ?>
-                            </h3>
-                            <div class="gc-assignment-badges">
-                                <span
-                                    class="gc-badge-pill <?= ($cfg['modalidad'] ?? '') === 'Evaluacion' ? 'pill-red' : 'pill-blue' ?>">
-                                    <?= htmlspecialchars(str_replace('_', ' ', $cfg['modalidad'] ?? 'Sin modalidad')) ?>
-                                </span>
-                                <span class="gc-badge-pill pill-gray">
-                                    <?= ($cfg['max_intentos'] ?? 0) == 0 ? 'Ilimitados' : ($cfg['max_intentos'] . ' intento' . ((int) $cfg['max_intentos'] !== 1 ? 's' : '')) ?>
-                                </span>
-                                <?php if (!empty($cfg['fecha_apertura'])): ?>
-                                    <span class="gc-badge-pill pill-gray">Desde:
-                                        <?= date('d/m/Y H:i', strtotime($cfg['fecha_apertura'])) ?></span>
-                                <?php endif; ?>
-                                <span class="gc-badge-pill pill-gray">
-                                    <?= !empty($cfg['fecha_limite']) ? 'Hasta: ' . date('d/m/Y H:i', strtotime($cfg['fecha_limite'])) : 'Sin límite' ?>
-                                </span>
-                            </div>
-                        </div>
-                        <?php if (($cfg['status'] ?? 'Activo') === 'Activo'): ?>
-                            <div class="gc-card-actions">
-                                <button class="btn btn-sm btn-outline btnEditConfig" data-config-id="<?= $cfg['id'] ?>"
-                                    title="Editar">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"
-                                        height="16">
-                                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path>
-                                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                    </svg>
-                                    Editar
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger btnDeleteConfig" data-config-id="<?= $cfg['id'] ?>"
-                                    title="Eliminar">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"
-                                        height="16">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path>
-                                    </svg>
-                                    Eliminar
-                                </button>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="gc-card-body gc-table-wrapper">
-                        <?php if (empty($cfg['estudiantes'])): ?>
-                            <p class="gc-empty-text">No hay estudiantes en esta asignación.</p>
-                        <?php else: ?>
-                            <table class="gc-table">
-                                <thead>
-                                    <tr>
-                                        <th>Estudiante</th>
-                                        <th>Cédula</th>
-                                        <th>Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach ($cfg['estudiantes'] as $a): ?>
-                                        <tr>
-                                            <td><?= htmlspecialchars(($a['nombres'] ?? '') . ' ' . ($a['apellidos'] ?? '')) ?></td>
-                                            <td><?= showVal($a['cedula'] ?? null) ?></td>
-                                            <td>
-                                                <span
-                                                    class="gc-badge-small <?= ($a['estado'] ?? '') === 'Completado' ? 'badge-green' : 'badge-amber' ?>">
-                                                    <?= showVal($a['estado'] ?? null, 'Pendiente') ?>
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        <?php endif; ?>
-                    </div>
+            <div class="table-container">
+                <table class="data-table" id="asignacionesTable" data-no-auto-init>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Modalidad</th>
+                            <th>Intentos</th>
+                            <th>Período</th>
+                            <th style="text-align:center;">Estud.</th>
+                            <th>Estado</th>
+                            <th style="width:80px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($configs as $idx => $cfg):
+                            $isInactive = ($cfg['status'] ?? 'Activo') === 'Inactivo';
+                            $modalidad = $cfg['modalidad'] ?? 'Practica_Libre';
+                            $modalidadLabel = str_replace('_', ' ', $modalidad);
+                            $intentos = ($cfg['max_intentos'] ?? 0) == 0 ? '∞' : $cfg['max_intentos'];
+                            $desde = !empty($cfg['fecha_apertura']) ? date('d/m/Y', strtotime($cfg['fecha_apertura'])) : '—';
+                            $hasta = !empty($cfg['fecha_limite']) ? date('d/m/Y', strtotime($cfg['fecha_limite'])) : 'Sin límite';
+                            $periodo = $desde . ' – ' . $hasta;
+                            $numEst = count($cfg['estudiantes'] ?? []);
+                            $nombre = !empty($cfg['nombre']) ? htmlspecialchars($cfg['nombre']) : 'Asignación #' . ($idx + 1);
+                            if ($modalidad === 'Evaluacion')
+                                $modClass = 'mode-evaluacion';
+                            elseif ($modalidad === 'Practica_guiada')
+                                $modClass = 'mode-guiado';
+                            else
+                                $modClass = 'mode-libre';
+                            $estudiantesJson = htmlspecialchars(json_encode($cfg['estudiantes'] ?? []), ENT_QUOTES, 'UTF-8');
+                            ?>
+                            <tr class="asig-row<?= $isInactive ? ' asig-row--inactive' : '' ?>"
+                                data-config-id="<?= $cfg['id'] ?>" data-nombre="<?= $nombre ?>"
+                                data-modalidad="<?= htmlspecialchars($modalidadLabel) ?>" data-mod-class="<?= $modClass ?>"
+                                data-intentos="<?= $intentos ?>" data-periodo="<?= $periodo ?>"
+                                data-estado="<?= $isInactive ? 'Inactiva' : 'Activa' ?>"
+                                data-estudiantes="<?= $estudiantesJson ?>">
+                                <td><strong><?= $nombre ?></strong></td>
+                                <td><span class="mode-badge <?= $modClass ?>"><?= htmlspecialchars($modalidadLabel) ?></span>
+                                </td>
+                                <td><?= $intentos ?></td>
+                                <td><span style="font-size:var(--text-xs,12px);color:var(--gray-500);"><?= $periodo ?></span>
+                                </td>
+                                <td style="text-align:center;"><strong><?= $numEst ?></strong></td>
+                                <td>
+                                    <?php if ($isInactive): ?>
+                                        <span class="status-badge status-draft has-dot">Inactiva</span>
+                                    <?php else: ?>
+                                        <span class="status-badge status-active has-dot">Activa</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if (!$isInactive): ?>
+                                        <div class="row-actions">
+                                            <button class="row-action-btn btnEditConfig" data-config-id="<?= $cfg['id'] ?>"
+                                                title="Editar">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                </svg>
+                                            </button>
+                                            <button class="row-action-btn danger btnDeleteConfig" data-config-id="<?= $cfg['id'] ?>"
+                                                title="Eliminar">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polyline points="3 6 5 6 21 6" />
+                                                    <path
+                                                        d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="row-actions">
+                                            <button class="row-action-btn btnReactivarConfig" data-config-id="<?= $cfg['id'] ?>"
+                                                title="Reactivar">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <polygon points="5 3 19 12 5 21 5 3" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <div class="table-footer">
+                    <span class="table-footer-info"><strong><?= count($configs) ?></strong>
+                        asignación<?= count($configs) !== 1 ? 'es' : '' ?></span>
                 </div>
-            <?php endforeach; ?>
+            </div>
         <?php endif; ?>
+    </div>
+    <?php endif; ?>
+
+    <!-- Modal detalle de asignación -->
+    <div class="gc-modal-overlay" id="modalDetalleAsignacion" style="display:none;">
+        <div class="gc-modal" style="max-width:560px;">
+            <div class="modal-base__header">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"
+                        style="color:var(--blue-500);">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    <h3 class="modal-base__title" id="detalleAsigTitulo">Estudiantes</h3>
+                </div>
+                <button type="button" class="modal-base__close" id="btnCloseDetalle">&times;</button>
+            </div>
+            <div class="modal-base__body" style="padding:0;">
+                <!-- Summary badges -->
+                <div id="detalleAsigSummary"
+                    style="padding:16px 20px;border-bottom:1px solid var(--gray-100,#f1f5f9);display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+                </div>
+                <!-- Student table -->
+                <table class="data-table data-table--sm" id="detalleAsigTabla">
+                    <thead>
+                        <tr>
+                            <th>Estudiante</th>
+                            <th>Cédula</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detalleAsigBody"></tbody>
+                </table>
+                <p id="detalleAsigEmpty"
+                    style="display:none;color:var(--gray-400);font-size:13px;padding:24px;margin:0;text-align:center;">
+                    No hay estudiantes en esta asignación.
+                </p>
+            </div>
+            <div class="modal-base__footer">
+                <button type="button" class="btn btn-secondary" id="btnCloseDetalle2">Cerrar</button>
+            </div>
+        </div>
     </div>
 
 </div>
@@ -2042,15 +2203,30 @@ if ($source === 'borrador') {
 <!-- Modal: Crear/Editar Asignación -->
 <div class="gc-modal-overlay" id="asignacionModal" style="display:none">
     <div class="gc-modal">
-        <div class="gc-modal-header">
-            <h3 id="asignacionModalTitle">Nueva Asignación</h3>
-            <button class="gc-modal-close" id="btnCloseModal">&times;</button>
+        <div class="modal-base__header">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    width="20" height="20" style="color:var(--blue-500,#3b82f6);">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <h3 class="modal-base__title" id="asignacionModalTitle">Nueva Asignación</h3>
+            </div>
+            <button class="modal-base__close" id="btnCloseModal">&times;</button>
         </div>
-        <div class="gc-modal-body">
+        <div class="modal-base__body">
             <form id="formAsignacion">
                 <input type="hidden" id="editConfigId" value="">
 
-                <div class="gc-form-row">
+                <div class="gc-form-group" style="margin-bottom:16px;">
+                    <label for="cfgNombre">Nombre de la asignación</label>
+                    <input type="text" id="cfgNombre" class="gc-input"
+                        placeholder="Ej: Práctica Sección A, Evaluación Parcial 1..." maxlength="100">
+                </div>
+
+                <div class="gc-form-row gc-form-row--3col" id="tipoCalifRow">
                     <div class="gc-form-group">
                         <label for="cfgModalidad">Modalidad *</label>
                         <select id="cfgModalidad" class="gc-input" required>
@@ -2060,8 +2236,15 @@ if ($source === 'borrador') {
                         </select>
                     </div>
                     <div class="gc-form-group">
-                        <label for="cfgMaxIntentos">Máx. Intentos <small>(0 = ilimitados)</small></label>
+                        <label for="cfgMaxIntentos">Máx. Intentos <small>(0 = ilim.)</small></label>
                         <input type="number" id="cfgMaxIntentos" class="gc-input" value="0" min="0">
+                    </div>
+                    <div class="gc-form-group">
+                        <label for="cfgTipoCalificacion">Tipo Calificación</label>
+                        <select id="cfgTipoCalificacion" class="gc-input">
+                            <option value="aprobado_reprobado">Aprobado / Reprobado</option>
+                            <option value="numerica">Numérica (1-20)</option>
+                        </select>
                     </div>
                 </div>
 
@@ -2076,170 +2259,308 @@ if ($source === 'borrador') {
                     </div>
                 </div>
 
-                <hr class="gc-divider">
+                <!-- Inline errors -->
+                <div class="modal-error-box" id="asigErrors">
+                    <ul id="asigErrorsList" style="margin:0;padding-left:18px;"></ul>
+                </div>
 
-                <div class="gc-form-group">
-                    <label>Estudiantes</label>
-                    <div class="gc-student-search">
-                        <input type="text" id="studentSearch" class="gc-input"
-                            placeholder="Buscar por nombre, cédula o correo...">
+                <!-- Section divider -->
+                <div class="gc-section-divider">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"
+                        style="flex-shrink:0;">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    Estudiantes <span class="gc-student-counter" id="studentCounter">0</span>
+                </div>
+
+                <!-- Section filter + Search combined -->
+                <div class="gc-filter-search-row">
+                    <div class="gc-filter-select">
+                        <label for="cfgSeccionFilter">Sección</label>
+                        <select id="cfgSeccionFilter" class="gc-input">
+                            <option value="">— Todas —</option>
+                        </select>
                     </div>
-                    <div id="selectedStudents" class="gc-selected-students"></div>
+                    <div class="gc-filter-search">
+                        <label for="studentSearch">Buscar</label>
+                        <input type="text" id="studentSearch" class="gc-input" placeholder="Nombre, cédula o correo...">
+                    </div>
+                </div>
+
+
+
+                <!-- Bulk actions (only in create mode) -->
+                <div class="gc-bulk-actions" id="bulkStudentActions">
+                    <button type="button" class="gc-btn-bulk gc-btn-select-all" id="btnSelectAllSection">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12"
+                            height="12">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Seleccionar todos
+                    </button>
+                    <button type="button" class="gc-btn-bulk gc-btn-remove-all" id="btnRemoveAll">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12"
+                            height="12">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                        Quitar todos
+                    </button>
+                </div>
+
+                <!-- Selected students -->
+                <div id="selectedStudents" class="gc-selected-students">
+                    <div class="gc-empty-students">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32"
+                            height="32">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <line x1="19" y1="11" x2="23" y2="11"></line>
+                        </svg>
+                        <span>No hay estudiantes seleccionados</span>
+                    </div>
                 </div>
             </form>
         </div>
-        <div class="gc-modal-footer">
-            <button class="btn btn-secondary" id="btnCancelModal">Cancelar</button>
-            <button class="btn btn-primary" id="btnSaveAsignacion">Guardar</button>
+        <div class="modal-base__footer">
+            <button class="modal-btn modal-btn-cancel" id="btnCancelModal">Cancelar</button>
+            <button class="modal-btn modal-btn-primary" id="btnSaveAsignacion">Guardar</button>
         </div>
     </div>
 </div>
 
 <style>
-  .gc-card-header { cursor: pointer; user-select: none; }
-  .gc-card-header .gc-chevron { width: 20px; height: 20px; transition: transform 0.25s ease; flex-shrink: 0; margin-left: 12px; color: var(--cc-slate-400, #94a3b8); }
-  .gc-card.is-collapsed .gc-card-header .gc-chevron { transform: rotate(-90deg); }
-  .gc-card.is-collapsed .gc-card-body { display: none; }
+    .gc-card-header {
+        cursor: pointer;
+        user-select: none;
+    }
 
-  /* Direcciones Accordion */
-  .gc-dir-item { border-bottom: 1px solid var(--gray-100); }
-  .gc-dir-item:last-child { border-bottom: none; }
-  .gc-dir-summary {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 20px; cursor: pointer; user-select: none;
-    transition: background 0.15s ease;
-  }
-  .gc-dir-summary:hover { background: var(--gray-50); }
-  .gc-dir-summary-left { display: flex; align-items: center; gap: 12px; }
-  .gc-dir-icon {
-    width: 36px; height: 36px; border-radius: 10px;
-    background: var(--blue-50); color: var(--blue-500);
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .gc-dir-type {
-    display: block; font-size: var(--text-sm); font-weight: 600;
-    color: var(--gray-800); line-height: 1.3;
-  }
-  .gc-dir-location {
-    display: block; font-size: var(--text-xs); color: var(--gray-500);
-    margin-top: 1px;
-  }
-  .gc-dir-chevron {
-    width: 16px; height: 16px; color: var(--gray-400);
-    transition: transform 0.25s ease; flex-shrink: 0;
-  }
-  .gc-dir-item.is-open .gc-dir-chevron { transform: rotate(180deg); }
-  .gc-dir-item.is-open .gc-dir-summary { background: var(--gray-50); }
-  .gc-dir-details {
-    display: none; padding: 12px 20px 16px 68px;
-  }
-  .gc-dir-item.is-open .gc-dir-details { display: block; }
-  .gc-dir-details .gc-info-list {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px 24px;
-  }
-  .gc-dir-details .gc-info-value { font-size: var(--text-sm); }
+    .gc-card-header .gc-chevron {
+        width: 20px;
+        height: 20px;
+        transition: transform 0.25s ease;
+        flex-shrink: 0;
+        margin-left: 12px;
+        color: var(--cc-slate-400, #94a3b8);
+    }
 
-  /* Filter pill bar */
-  .gc-filter-bar {
-    display: flex; gap: 6px; padding: 12px 20px;
-    border-bottom: 1px solid var(--gray-100);
-    overflow-x: auto; flex-wrap: wrap;
-  }
-  .gc-filter-pill {
-    padding: 5px 14px; border-radius: 20px;
-    font-size: var(--text-xs); font-weight: 500;
-    border: 1px solid var(--gray-200); background: var(--white, #fff);
-    color: var(--gray-600); cursor: pointer;
-    transition: all 0.15s ease; white-space: nowrap;
-  }
-  .gc-filter-pill:hover { border-color: var(--blue-300); color: var(--blue-600); }
-  .gc-filter-pill.is-active {
-    background: var(--blue-500); color: #fff;
-    border-color: var(--blue-500);
-  }
+    .gc-card.is-collapsed .gc-card-header .gc-chevron {
+        transform: rotate(-90deg);
+    }
+
+    .gc-card.is-collapsed .gc-card-body {
+        display: none;
+    }
+
+    /* Direcciones Accordion */
+    .gc-dir-item {
+        border-bottom: 1px solid var(--gray-100);
+    }
+
+    .gc-dir-item:last-child {
+        border-bottom: none;
+    }
+
+    .gc-dir-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.15s ease;
+    }
+
+    .gc-dir-summary:hover {
+        background: var(--gray-50);
+    }
+
+    .gc-dir-summary-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .gc-dir-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--blue-50);
+        color: var(--blue-500);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .gc-dir-type {
+        display: block;
+        font-size: var(--text-sm);
+        font-weight: 600;
+        color: var(--gray-800);
+        line-height: 1.3;
+    }
+
+    .gc-dir-location {
+        display: block;
+        font-size: var(--text-xs);
+        color: var(--gray-500);
+        margin-top: 1px;
+    }
+
+    .gc-dir-chevron {
+        width: 16px;
+        height: 16px;
+        color: var(--gray-400);
+        transition: transform 0.25s ease;
+        flex-shrink: 0;
+    }
+
+    .gc-dir-item.is-open .gc-dir-chevron {
+        transform: rotate(180deg);
+    }
+
+    .gc-dir-item.is-open .gc-dir-summary {
+        background: var(--gray-50);
+    }
+
+    .gc-dir-details {
+        display: none;
+        padding: 12px 20px 16px 68px;
+    }
+
+    .gc-dir-item.is-open .gc-dir-details {
+        display: block;
+    }
+
+    .gc-dir-details .gc-info-list {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px 24px;
+    }
+
+    .gc-dir-details .gc-info-value {
+        font-size: var(--text-sm);
+    }
+
+    /* Filter pill bar */
+    .gc-filter-bar {
+        display: flex;
+        gap: 6px;
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--gray-100);
+        overflow-x: auto;
+        flex-wrap: wrap;
+    }
+
+    .gc-filter-pill {
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: var(--text-xs);
+        font-weight: 500;
+        border: 1px solid var(--gray-200);
+        background: var(--white, #fff);
+        color: var(--gray-600);
+        cursor: pointer;
+        transition: all 0.15s ease;
+        white-space: nowrap;
+    }
+
+    .gc-filter-pill:hover {
+        border-color: var(--blue-300);
+        color: var(--blue-600);
+    }
+
+    .gc-filter-pill.is-active {
+        background: var(--blue-500);
+        color: #fff;
+        border-color: var(--blue-500);
+    }
 </style>
 <script>
     window.__casoId = <?= (int) $caso['id'] ?>;
     window.__baseUrl = '<?= base_url('') ?>'.replace(/\/+$/, '');
 </script>
 <script>
-(function() {
-  const STORAGE_KEY = 'gc_cards_state_' + window.__casoId;
+    (function () {
+        const STORAGE_KEY = 'gc_cards_state_' + window.__casoId;
 
-  function loadState() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
-  }
-  function saveState(state) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
-  }
+        function loadState() {
+            try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+        }
+        function saveState(state) {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { }
+        }
 
-  const cards = document.querySelectorAll('.gc-card');
-  const state = loadState();
-  const isFirstVisit = Object.keys(state).length === 0;
+        const cards = document.querySelectorAll('.gc-card');
+        const state = loadState();
+        const isFirstVisit = Object.keys(state).length === 0;
 
-  cards.forEach((card, idx) => {
-    const header = card.querySelector('.gc-card-header');
-    const body = card.querySelector('.gc-card-body');
-    if (!header || !body) return;
+        cards.forEach((card, idx) => {
+            const header = card.querySelector('.gc-card-header');
+            const body = card.querySelector('.gc-card-body');
+            if (!header || !body) return;
 
-    // Add chevron icon
-    const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    chevron.setAttribute('class', 'gc-chevron');
-    chevron.setAttribute('viewBox', '0 0 24 24');
-    chevron.setAttribute('fill', 'none');
-    chevron.setAttribute('stroke', 'currentColor');
-    chevron.setAttribute('stroke-width', '2');
-    chevron.setAttribute('stroke-linecap', 'round');
-    chevron.setAttribute('stroke-linejoin', 'round');
-    chevron.innerHTML = '<polyline points="6 9 12 15 18 9"></polyline>';
-    header.appendChild(chevron);
+            // Add chevron icon
+            const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            chevron.setAttribute('class', 'gc-chevron');
+            chevron.setAttribute('viewBox', '0 0 24 24');
+            chevron.setAttribute('fill', 'none');
+            chevron.setAttribute('stroke', 'currentColor');
+            chevron.setAttribute('stroke-width', '2');
+            chevron.setAttribute('stroke-linecap', 'round');
+            chevron.setAttribute('stroke-linejoin', 'round');
+            chevron.innerHTML = '<polyline points="6 9 12 15 18 9"></polyline>';
+            header.appendChild(chevron);
 
-    // Apply state: collapsed by default on first visit, restore on revisit
-    const key = 'card_' + idx;
-    const isCollapsed = isFirstVisit ? true : (state[key] !== false);
-    if (isCollapsed) {
-      card.classList.add('is-collapsed');
-    }
+            // Apply state: collapsed by default on first visit, restore on revisit
+            const key = 'card_' + idx;
+            const isCollapsed = isFirstVisit ? true : (state[key] !== false);
+            if (isCollapsed) {
+                card.classList.add('is-collapsed');
+            }
 
-    header.addEventListener('click', function(e) {
-      // Don't toggle if clicking buttons inside the header
-      if (e.target.closest('button, a')) return;
+            header.addEventListener('click', function (e) {
+                // Don't toggle if clicking buttons inside the header
+                if (e.target.closest('button, a')) return;
 
-      const collapsed = card.classList.toggle('is-collapsed');
-      const st = loadState();
-      st[key] = collapsed;
-      saveState(st);
-    });
-  });
-
-  // Direcciones / Bienes accordion
-  document.querySelectorAll('.gc-dir-summary').forEach(function(summary) {
-    summary.addEventListener('click', function() {
-      summary.closest('.gc-dir-item').classList.toggle('is-open');
-    });
-  });
-
-  // Bienes Muebles category filter
-  var bmFilterBar = document.getElementById('bmFilterBar');
-  if (bmFilterBar) {
-    bmFilterBar.querySelectorAll('.gc-filter-pill').forEach(function(pill) {
-      pill.addEventListener('click', function() {
-        bmFilterBar.querySelectorAll('.gc-filter-pill').forEach(function(p) { p.classList.remove('is-active'); });
-        pill.classList.add('is-active');
-        var filter = pill.getAttribute('data-filter');
-        document.querySelectorAll('#bmItems .gc-dir-item').forEach(function(item) {
-          item.classList.remove('is-open'); // collapse on filter change
-          if (filter === 'all' || item.getAttribute('data-bm-cat') === filter) {
-            item.style.display = '';
-          } else {
-            item.style.display = 'none';
-          }
+                const collapsed = card.classList.toggle('is-collapsed');
+                const st = loadState();
+                st[key] = collapsed;
+                saveState(st);
+            });
         });
-      });
-    });
-  }
-})();
+
+        // Direcciones / Bienes accordion
+        document.querySelectorAll('.gc-dir-summary').forEach(function (summary) {
+            summary.addEventListener('click', function () {
+                summary.closest('.gc-dir-item').classList.toggle('is-open');
+            });
+        });
+
+        // Bienes Muebles category filter
+        var bmFilterBar = document.getElementById('bmFilterBar');
+        if (bmFilterBar) {
+            bmFilterBar.querySelectorAll('.gc-filter-pill').forEach(function (pill) {
+                pill.addEventListener('click', function () {
+                    bmFilterBar.querySelectorAll('.gc-filter-pill').forEach(function (p) { p.classList.remove('is-active'); });
+                    pill.classList.add('is-active');
+                    var filter = pill.getAttribute('data-filter');
+                    document.querySelectorAll('#bmItems .gc-dir-item').forEach(function (item) {
+                        item.classList.remove('is-open'); // collapse on filter change
+                        if (filter === 'all' || item.getAttribute('data-bm-cat') === filter) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        }
+    })();
 </script>
 
 

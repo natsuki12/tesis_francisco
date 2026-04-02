@@ -232,7 +232,7 @@ class RSMailerService
 
         return "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
-            <div style='background: linear-gradient(135deg, #065f46, #059669); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
+            <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
                 <h1 style='margin: 0; font-size: 24px;'>✅ RIF Sucesoral Aprobado</h1>
                 <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Pedagógico de Declaración Sucesoral Simulada</p>
             </div>
@@ -327,34 +327,29 @@ class RSMailerService
 
         return "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
-            <div style='background: linear-gradient(135deg, #991b1b, #dc2626); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
+            <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
                 <h1 style='margin: 0; font-size: 24px;'>❌ RIF Sucesoral No Aprobado</h1>
                 <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Pedagógico de Declaración Sucesoral Simulada</p>
             </div>
             <div style='background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;'>
                 <p style='font-size: 16px;'>Estimado/a <strong>{$n}</strong>,</p>
-                <p>Le informamos que su inscripción de RIF Sucesoral <strong style='color: #dc2626;'>no ha sido aprobada</strong> por su profesor. A continuación encontrará los detalles de la revisión:</p>
+                <p>Le informamos que su inscripción de RIF Sucesoral <strong>no ha sido aprobada</strong> por su profesor. A continuación encontrará los detalles de la revisión:</p>
 
-                <div style='background: #f5f5f5; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
+                <div style='background: #f5f5f5; border-left: 4px solid #283593; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
                     <p style='margin: 5px 0;'><strong>📋 Caso:</strong> {$caso}</p>
                     <p style='margin: 5px 0;'><strong>🔢 Intento:</strong> #{$intentoId}</p>
                     <p style='margin: 5px 0;'><strong>📅 Fecha de revisión:</strong> {$fecha}</p>
                     {$notaHtml}
                 </div>
 
-                <div style='background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin: 24px 0;'>
-                    <h3 style='font-size: 15px; color: #991b1b; margin: 0 0 8px 0;'>📝 Observación del profesor</h3>
+                <div style='background: #f0f1f8; border: 1px solid #c5cae9; border-radius: 8px; padding: 16px; margin: 24px 0;'>
+                    <h3 style='font-size: 15px; color: #1a237e; margin: 0 0 8px 0;'>📝 Observación del profesor</h3>
                     <p style='margin: 0; font-size: 14px; color: #444; line-height: 1.7;'>{$obs}</p>
                 </div>
 
-                <div style='background: #eff6ff; border-left: 4px solid #2563eb; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
-                    <p style='margin: 0; font-weight: bold; color: #1e40af;'>💡 ¿Qué puede hacer?</p>
-                    <p style='margin: 10px 0 0; font-size: 13px; color: #555;'>Si la configuración de su caso permite múltiples intentos, puede iniciar un nuevo intento de inscripción de RIF Sucesoral desde la vista de <strong>Mis Asignaciones</strong>, revisando cuidadosamente los datos del caso antes de enviarlo nuevamente.</p>
-                </div>
-
-                <div style='background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
-                    <p style='margin: 0; font-weight: bold; color: #92400e;'>📧 ¿Tiene dudas?</p>
-                    <p style='margin: 10px 0 0; font-size: 13px; color: #555;'>Si tiene preguntas sobre la observación o el resultado, puede comunicarse directamente con su profesor para obtener orientación adicional.</p>
+                <div style='background: #f5f5f5; border-left: 4px solid #283593; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
+                    <p style='margin: 0; font-weight: bold; color: #1a237e;'>💡 ¿Qué puede hacer?</p>
+                    <p style='margin: 10px 0 0; font-size: 13px; color: #555;'>Si la configuración de su caso permite múltiples intentos, puede iniciar un nuevo intento desde la vista de <strong>Mis Asignaciones</strong>, revisando cuidadosamente los datos antes de enviarlo nuevamente. Si tiene dudas, comuníquese directamente con su profesor.</p>
                 </div>
 
                 <p style='color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;'>

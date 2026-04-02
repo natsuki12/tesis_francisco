@@ -5,7 +5,9 @@ declare(strict_types=1);
 
 $pageTitle = 'Detalle de Intento — Simulador SENIAT';
 $activePage = 'entregas';
-$extraCss = '<link rel="stylesheet" href="' . asset('css/professor/detalle_intento.css') . '">';
+$esRechazadoSinRif = $esRechazadoSinRif ?? false;
+$extraCss = '<link rel="stylesheet" href="' . asset('css/professor/detalle_intento.css') . '">'
+          . ($esRechazadoSinRif ? '<link rel="stylesheet" href="' . asset('css/professor/generacion_rs_detalle.css') . '">' : '');
 
 // ── $intento y $comparacion vienen del route ──
 
@@ -20,18 +22,20 @@ $cedula = $intento['estudiante_cedula']
 $fechaEnvio = $intento['fecha_envio'] ? date('d/m/Y H:i', strtotime($intento['fecha_envio'])) : '—';
 
 $estadoLabel = match ($intento['estado']) {
-    'Enviado' => 'Enviado',
-    'Aprobado' => 'Aprobado',
-    'Rechazado' => 'No Aprobado',
-    'En_Progreso' => 'En Progreso',
+    'Enviado'      => 'Enviado',
+    'Aprobado'     => 'Aprobado',
+    'Rechazado'    => 'No Aprobado',
+    'En_Progreso'  => 'En Progreso',
+    'Pendiente_RIF' => 'Pendiente RIF',
     default => ucfirst(str_replace('_', ' ', $intento['estado'])),
 };
 
 $statusClass = match ($estadoLabel) {
-    'Enviado' => 'status-enviado',
-    'Aprobado' => 'status-calificado',
-    'No Aprobado' => 'status-danger',
-    'En Progreso' => 'status-progreso',
+    'Enviado'       => 'status-enviado',
+    'Aprobado'      => 'status-calificado',
+    'No Aprobado'   => 'status-danger',
+    'En Progreso'   => 'status-progreso',
+    'Pendiente RIF' => 'status-enviado',
     default => 'status-enviado',
 };
 
@@ -93,6 +97,205 @@ ob_start();
 
     <!-- ═══ MAIN AREA ═══ -->
     <div class="correction-main">
+
+        <?php if ($esRechazadoSinRif): ?>
+
+        <!-- Banner: intento rechazado en etapa de inscripción de RIF -->
+        <div class="rif-banner rif-banner--rechazado animate-in" style="margin-bottom:16px;">
+            <div class="rif-banner-label">Rechazado en Inscripción de RIF Sucesoral</div>
+            <div class="rif-banner-meta">Este intento fue rechazado antes de completar la declaración. Solo se registraron los datos de causante, relaciones y direcciones.</div>
+        </div>
+
+        <?php
+        // Calcular totales para los badges de los tabs
+        $causanteTotal = 0; $causanteOk = 0;
+        if (!($causante['vacio'] ?? true)) {
+            foreach ($causante['campos'] as $c) { $causanteTotal++; if ($c['coincide']) $causanteOk++; }
+        }
+        $relacionesTotal = 0; $relacionesOk = 0;
+        foreach ($relaciones['representante'] ?? [] as $c) { $relacionesTotal++; if ($c['coincide']) $relacionesOk++; }
+        foreach ($relaciones['herederos'] ?? [] as $h) {
+            $hCampos = $h['campos'] ?? $h;
+            foreach ($hCampos as $c) { if (is_array($c)) { $relacionesTotal++; if ($c['coincide']) $relacionesOk++; } }
+        }
+        $direccionesTotal = 0; $direccionesOk = 0;
+        foreach ($direcciones ?? [] as $campos) {
+            foreach ($campos as $c) { $direccionesTotal++; if ($c['coincide']) $direccionesOk++; }
+        }
+        ?>
+
+        <!-- Tabs RS -->
+        <div class="rs-tabs-bar animate-in">
+            <button class="rs-tab rs-tab--active" data-target="rif-panel-causante">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Causante
+                <span class="rs-tab-badge <?= $causanteTotal > 0 && $causanteOk === $causanteTotal ? 'badge-ok' : 'badge-err' ?>"><?= $causanteOk ?>/<?= $causanteTotal ?></span>
+            </button>
+            <button class="rs-tab" data-target="rif-panel-relaciones">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Relaciones
+                <span class="rs-tab-badge <?= $relacionesTotal > 0 && $relacionesOk === $relacionesTotal ? 'badge-ok' : 'badge-err' ?>"><?= $relacionesOk ?>/<?= $relacionesTotal ?></span>
+            </button>
+            <button class="rs-tab" data-target="rif-panel-direcciones">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Direcciones
+                <span class="rs-tab-badge <?= $direccionesTotal > 0 && $direccionesOk === $direccionesTotal ? 'badge-ok' : 'badge-err' ?>"><?= $direccionesOk ?>/<?= $direccionesTotal ?></span>
+            </button>
+        </div>
+
+        <!-- Panel: Causante -->
+        <div class="rs-panel-content animate-in" id="rif-panel-causante">
+            <?php if ($causante['vacio'] ?? true): ?>
+                <div class="rs-panel-empty">El estudiante no completó los datos del causante.</div>
+            <?php else: ?>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Esperado (Caso)</th>
+                            <th>Ingresado (Estudiante)</th>
+                            <th style="width:32px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($causante['campos'] as $campo): ?>
+                        <tr>
+                            <td class="field-label"><?= htmlspecialchars($campo['label']) ?></td>
+                            <td><?= htmlspecialchars($campo['esperado'] ?: '—') ?></td>
+                            <td class="<?= $campo['coincide'] ? 'cell-correct' : 'cell-error' ?>"><?= htmlspecialchars($campo['ingresado'] ?: '—') ?></td>
+                            <td class="cell-match-icon <?= $campo['coincide'] ? 'match-ok' : 'match-fail' ?>">
+                                <?php if ($campo['coincide']): ?>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                <?php else: ?>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+        </div>
+
+        <!-- Panel: Relaciones -->
+        <div class="rs-panel-content animate-in" id="rif-panel-relaciones" style="display:none;">
+            <?php if (!empty($relaciones['representante']) || !empty($relaciones['herederos'])): ?>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Campo</th>
+                            <th>Esperado (Caso)</th>
+                            <th>Ingresado (Estudiante)</th>
+                            <th style="width:32px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($relaciones['representante'])): ?>
+                            <tr class="rs-group-row"><td colspan="4">Representante de la Sucesión</td></tr>
+                            <?php foreach ($relaciones['representante'] as $campo): ?>
+                            <tr>
+                                <td class="field-label"><?= htmlspecialchars($campo['label']) ?></td>
+                                <td><?= htmlspecialchars($campo['esperado'] ?: '—') ?></td>
+                                <td class="<?= $campo['coincide'] ? 'cell-correct' : 'cell-error' ?>"><?= htmlspecialchars($campo['ingresado'] ?: '—') ?></td>
+                                <td class="cell-match-icon <?= $campo['coincide'] ? 'match-ok' : 'match-fail' ?>">
+                                    <?php if ($campo['coincide']): ?>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <?php else: ?>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        <?php foreach ($relaciones['herederos'] as $idx => $heredero): ?>
+                            <?php
+                                $tipo   = $heredero['tipo'] ?? 'match';
+                                $campos = $heredero['campos'] ?? $heredero;
+                                if ($tipo === 'faltante') {
+                                    $label = 'Heredero — No ingresado por el estudiante';
+                                } elseif ($tipo === 'extra') {
+                                    $label = 'Heredero Extra — No existe en el caso';
+                                } else {
+                                    $label = 'Heredero #' . ($idx + 1);
+                                }
+                            ?>
+                            <tr class="rs-group-row"><td colspan="4"><?= $label ?></td></tr>
+                            <?php foreach ($campos as $campo): ?>
+                            <tr>
+                                <td class="field-label"><?= htmlspecialchars($campo['label']) ?></td>
+                                <td><?= htmlspecialchars($campo['esperado'] ?: '—') ?></td>
+                                <td class="<?= $campo['coincide'] ? 'cell-correct' : 'cell-error' ?>"><?= htmlspecialchars($campo['ingresado'] ?: '—') ?></td>
+                                <td class="cell-match-icon <?= $campo['coincide'] ? 'match-ok' : 'match-fail' ?>">
+                                    <?php if ($campo['coincide']): ?>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <?php else: ?>
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <div class="rs-panel-empty">No se encontraron relaciones en el borrador.</div>
+            <?php endif; ?>
+        </div>
+
+        <!-- Panel: Direcciones -->
+        <div class="rs-panel-content animate-in" id="rif-panel-direcciones" style="display:none;">
+            <?php if (empty($direcciones)): ?>
+                <div class="rs-panel-empty">No se encontraron direcciones en el borrador.</div>
+            <?php else: ?>
+                <?php foreach ($direcciones as $idx => $campos): ?>
+                    <?php
+                        $dirOk = 0; $dirTotal = count($campos);
+                        foreach ($campos as $c) { if ($c['coincide']) $dirOk++; }
+                        $dirTieneErrores = ($dirOk < $dirTotal);
+                    ?>
+                    <div class="rs-dir-card <?= $dirTieneErrores ? 'rs-dir-card--error' : 'rs-dir-card--ok' ?>">
+                        <button class="rs-dir-toggle" type="button" onclick="this.parentElement.classList.toggle('rs-dir-card--open')">
+                            <div class="rs-dir-toggle-left">
+                                <svg class="rs-dir-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                Dirección #<?= $idx + 1 ?>
+                            </div>
+                            <span class="rs-tab-badge <?= $dirTieneErrores ? 'badge-err' : 'badge-ok' ?>"><?= $dirOk ?>/<?= $dirTotal ?></span>
+                        </button>
+                        <div class="rs-dir-body">
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Campo</th>
+                                        <th>Esperado (Caso)</th>
+                                        <th>Ingresado (Estudiante)</th>
+                                        <th style="width:32px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($campos as $campo): ?>
+                                    <tr>
+                                        <td class="field-label"><?= htmlspecialchars($campo['label']) ?></td>
+                                        <td><?= htmlspecialchars($campo['esperado'] ?: '—') ?></td>
+                                        <td class="<?= $campo['coincide'] ? 'cell-correct' : 'cell-error' ?>"><?= htmlspecialchars($campo['ingresado'] ?: '—') ?></td>
+                                        <td class="cell-match-icon <?= $campo['coincide'] ? 'match-ok' : 'match-fail' ?>">
+                                            <?php if ($campo['coincide']): ?>
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                            <?php else: ?>
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+        <?php else: ?>
 
         <!-- PDF Links -->
         <div class="sidebar-panel animate-in">
@@ -369,6 +572,8 @@ ob_start();
         </div>
         <?php endif; ?>
 
+        <?php endif; ?>
+
     </div>
 
     <!-- ═══ SIDEBAR (Grading Panel) ═══ -->
@@ -493,6 +698,25 @@ ob_start();
         var acc = document.getElementById('accordion-' + index);
         if (acc) acc.classList.toggle('accordion--open');
     };
+
+    <?php if ($esRechazadoSinRif): ?>
+    // ── Tabs de revisión RIF ──
+    var rifTabs   = document.querySelectorAll('.rs-tab');
+    var rifPanels = document.querySelectorAll('.rs-panel-content');
+    rifTabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+            rifTabs.forEach(function(t) { t.classList.remove('rs-tab--active'); });
+            rifPanels.forEach(function(p) { p.style.display = 'none'; });
+            tab.classList.add('rs-tab--active');
+            var target = document.getElementById(tab.getAttribute('data-target'));
+            if (target) target.style.display = 'block';
+        });
+    });
+    // Auto-expandir direcciones con errores
+    document.querySelectorAll('.rs-dir-card--error').forEach(function(card) {
+        card.classList.add('rs-dir-card--open');
+    });
+    <?php endif; ?>
 
     // ── Confirmation Modal ──
     var form = document.getElementById('form-calificar');

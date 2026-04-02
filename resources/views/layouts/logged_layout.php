@@ -298,6 +298,31 @@ if (!isset($user)) {
         </script>
     <?php endif; ?>
 
+    <?php
+    // ── Driver.js Guided Tour (solo Práctica Guiada con sesión activa) ──
+    $isGuidedMode = !empty($_SESSION['sim_asignacion_id'])
+                 && ($_SESSION['sim_modalidad'] ?? '') === 'Practica_guiada';
+
+    if ($isGuidedMode):
+        // Obtener estado del intento para el tour adaptativo
+        $tourIntento = (new \App\Modules\Student\Models\StudentAttemptModel())
+            ->getIntentoActivo((int) $_SESSION['sim_asignacion_id']);
+    ?>
+    <link rel="stylesheet" href="<?= asset('css/lib/driver.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/simulator/guided_tour.css') ?>">
+    <script src="<?= asset('js/lib/driver.js.iife.js') ?>"></script>
+    <script>
+        window.SIM_TOUR_STATE = {
+            modalidad: 'Practica_guiada',
+            tieneRif: <?= json_encode(!empty($tourIntento['rif_sucesoral'])) ?>,
+            estaRegistrado: <?= json_encode(!empty($tourIntento['usuario_seniat'])) ?>,
+            estaLoggeado: <?= json_encode(!empty($_SESSION['sim_seniat_logged_in'])) ?>,
+            intentoId: <?= (int)($tourIntento['id'] ?? 0) ?>
+        };
+    </script>
+    <script src="<?= asset('js/simulator/guided_tour.js') ?>"></script>
+    <?php endif; ?>
+
     <!-- JS extra de la página (si existe) -->
     <?php if (isset($extraJs))
         echo $extraJs; ?>

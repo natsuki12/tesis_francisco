@@ -585,15 +585,25 @@ ob_start();
                 '</div>';
         }
 
-        // Abrir modal — botón "Entendido" redirige al portal
+        // Abrir modal — tanto X como "Entendido" redirigen al portal en éxito
         var checkModal = setInterval(function() {
             if (window.modalManager) {
                 clearInterval(checkModal);
-                var btnEntendido = document.querySelector('#resultadoValidacionModal .modal-btn-primary');
-                if (btnEntendido) {
-                    btnEntendido.onclick = function() {
-                        window.location.href = (window.simBaseUrl || '') + '/simulador?validado=1';
-                    };
+                var redirectUrl = (window.simBaseUrl || '') + '/simulador?validado=1';
+                var modal = document.getElementById('resultadoValidacionModal');
+                if (modal) {
+                    // Sobreescribir botón "Entendido"
+                    var btnEntendido = modal.querySelector('.modal-btn-primary');
+                    if (btnEntendido) {
+                        btnEntendido.removeAttribute('onclick');
+                        btnEntendido.onclick = function() { window.location.href = redirectUrl; };
+                    }
+                    // Sobreescribir botón X
+                    var btnClose = modal.querySelector('.modal-base__close');
+                    if (btnClose) {
+                        btnClose.removeAttribute('onclick');
+                        btnClose.onclick = function() { window.location.href = redirectUrl; };
+                    }
                 }
                 window.modalManager.open('resultadoValidacionModal');
             }
@@ -608,7 +618,6 @@ ob_start();
         var body = document.getElementById('resultadoModalBody');
         var btnConfirmar = document.getElementById('btnConfirmarValidacion');
 
-        // Re-habilitar botón para que pueda reintentar
         if (btnConfirmar) {
             btnConfirmar.disabled = false;
             btnConfirmar.textContent = 'Confirmar y validar';
@@ -624,25 +633,73 @@ ob_start();
             { key: 'general',     titulo: 'General',             icono: '🔍' }
         ];
 
+        var reComp = /^(.+?)(?:no coincide)?\.\s*Esperado:\s*'?(.+?)'?,\s*ingresado:\s*'?(.+?)'?\.?$/i;
+
         var html = '<p style="margin:0 0 16px; color:var(--gray-500);">Se encontraron diferencias entre los datos ingresados y el caso asignado:</p>';
+        html += '<style>';
+        html += '.disc-sec{margin-bottom:10px;border:1px solid var(--gray-200);border-radius:8px;overflow:hidden}';
+        html += '.disc-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--gray-50);cursor:pointer;user-select:none;border-bottom:1px solid transparent;transition:background .15s}';
+        html += '.disc-hdr:hover{background:var(--gray-100)}';
+        html += '.disc-hdr h4{font-size:.875rem;color:var(--gray-700);margin:0}';
+        html += '.disc-chv{transition:transform .2s;font-size:.7rem;color:var(--gray-400)}';
+        html += '.disc-chv.coll{transform:rotate(-90deg)}';
+        html += '.disc-bd{padding:10px 14px;overflow:hidden;transition:max-height .3s ease,padding .2s,opacity .2s;opacity:1}';
+        html += '.disc-bd.coll{max-height:0!important;padding:0 14px;opacity:0}';
+        html += '.disc-tbl{width:100%;border-collapse:collapse;font-size:.8125rem}';
+        html += '.disc-tbl th{text-align:left;padding:4px 8px;background:var(--gray-100);color:var(--gray-600);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.3px}';
+        html += '.disc-tbl td{padding:5px 8px;border-bottom:1px solid var(--gray-100);color:var(--gray-700);vertical-align:top}';
+        html += '.disc-tbl .v-ok{color:var(--green-700);font-weight:500}';
+        html += '.disc-tbl .v-bad{color:var(--red-600);font-weight:500}';
+        html += '.disc-ul{margin:8px 0 0;padding-left:18px;font-size:.8125rem;line-height:1.7}';
+        html += '.disc-ul li{color:var(--red-600);margin-bottom:2px}';
+        html += '.disc-badge{font-size:.7rem;background:var(--red-100);color:var(--red-600);padding:1px 7px;border-radius:10px;font-weight:600;margin-left:8px}';
+        html += '</style>';
+
         var totalErrores = 0;
+        var si = 0;
 
         secciones.forEach(function(sec) {
             var items = errores[sec.key];
             if (!items || items.length === 0) return;
             totalErrores += items.length;
 
-            html += '<div style="margin-bottom:16px;">';
-            html += '<h4 style="font-size:.875rem; color:var(--gray-700); margin:0 0 8px; border-bottom:1px solid var(--gray-200); padding-bottom:6px;">' +
-                        sec.icono + ' ' + sec.titulo +
-                    '</h4>';
-            html += '<ul style="margin:0; padding-left:20px; font-size:.8125rem; line-height:1.8;">';
-
+            var comps = [];
+            var otros = [];
             items.forEach(function(err) {
-                html += '<li style="color:var(--red-600);">' + escapeHtml(err) + '</li>';
+                var m = err.match(reComp);
+                if (m) {
+                    comps.push({ campo: m[1].replace(/no coincide\s*$/i,'').trim().replace(/\.\s*$/,''), esperado: m[2].trim(), ingresado: m[3].trim() });
+                } else {
+                    otros.push(err);
+                }
             });
 
-            html += '</ul></div>';
+            var sid = 'ds' + si; si++;
+
+            html += '<div class="disc-sec">';
+            html += '<div class="disc-hdr" onclick="toggleDisc(\'' + sid + '\')">';
+            html += '<h4>' + sec.icono + ' ' + sec.titulo + '<span class="disc-badge">' + items.length + '</span></h4>';
+            html += '<span class="disc-chv coll" id="' + sid + 'C">▼</span>';
+            html += '</div>';
+            html += '<div class="disc-bd coll" id="' + sid + '">';
+
+            if (comps.length > 0) {
+                html += '<table class="disc-tbl"><thead><tr><th>Campo</th><th>Esperado</th><th>Ingresado</th></tr></thead><tbody>';
+                comps.forEach(function(c) {
+                    html += '<tr><td>' + escapeHtml(c.campo) + '</td>';
+                    html += '<td class="v-ok">' + escapeHtml(c.esperado) + '</td>';
+                    html += '<td class="v-bad">' + escapeHtml(c.ingresado) + '</td></tr>';
+                });
+                html += '</tbody></table>';
+            }
+
+            if (otros.length > 0) {
+                html += '<ul class="disc-ul">';
+                otros.forEach(function(e) { html += '<li>' + escapeHtml(e) + '</li>'; });
+                html += '</ul>';
+            }
+
+            html += '</div></div>';
         });
 
         html += '<div style="background:var(--red-50); border:1px solid var(--red-200); border-radius:8px; padding:10px 14px; font-size:.8125rem; color:var(--red-700);">' +
@@ -652,13 +709,27 @@ ob_start();
 
         body.innerHTML = html;
 
-        // Abrir modal
         var checkModal = setInterval(function() {
             if (window.modalManager) {
                 clearInterval(checkModal);
                 window.modalManager.open('resultadoValidacionModal');
             }
         }, 50);
+    }
+
+    function toggleDisc(id) {
+        var el = document.getElementById(id);
+        var ch = document.getElementById(id + 'C');
+        if (!el) return;
+        var isOpen = !el.classList.contains('coll');
+        // Cerrar todas las secciones
+        document.querySelectorAll('.disc-bd').forEach(function(s) { s.classList.add('coll'); });
+        document.querySelectorAll('.disc-chv').forEach(function(c) { c.classList.add('coll'); });
+        // Si estaba cerrada, abrirla
+        if (!isOpen) {
+            el.classList.remove('coll');
+            if (ch) ch.classList.remove('coll');
+        }
     }
 
     // ── Utilidad para escapar HTML ──

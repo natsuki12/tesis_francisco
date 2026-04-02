@@ -139,6 +139,22 @@ class CatalogModel
         return $stmt->fetch() ?: null;
     }
 
+    public function searchEmpresas(string $query)
+    {
+        $db = DB::connect();
+        $db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false); // Permitir LIMIT seguro
+        $sql = "SELECT id as empresa_id, razon_social, rif as rif_empresa 
+                FROM sim_empresas 
+                WHERE (rif LIKE :q1 OR razon_social LIKE :q2) 
+                  AND activo = 1 
+                ORDER BY razon_social ASC
+                LIMIT 15";
+        $stmt = $db->prepare($sql);
+        $likeStr = '%' . trim($query) . '%';
+        $stmt->execute(['q1' => $likeStr, 'q2' => $likeStr]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function getSeccionesByProfesor(int $userId)
     {
         $db = DB::connect();
@@ -193,37 +209,33 @@ class CatalogModel
                 FROM sim_personas p
                 LEFT JOIN sim_actas_defunciones a ON a.sim_persona_id = p.id
                 LEFT JOIN sim_causante_datos_fiscales df ON df.sim_persona_id = p.id
-                WHERE 1=0";
+                WHERE 1=1 AND (";
 
         $params = [];
 
         if ($personaId > 0) {
-            $sql .= " OR p.id = :persona_id";
+            $sql .= " p.id = :persona_id";
             $params['persona_id'] = $personaId;
-        }
-
-        if ($cedula !== '') {
+        } elseif ($cedula !== '') {
             if ($tipoCedula !== '') {
-                $sql .= " OR (p.tipo_cedula = :tipo_cedula AND p.cedula = :cedula)";
+                $sql .= " p.tipo_cedula = :tipo_cedula AND p.cedula = :cedula";
                 $params['tipo_cedula'] = $tipoCedula;
                 $params['cedula'] = $cedula;
             } else {
-                $sql .= " OR p.cedula = :cedula";
+                $sql .= " p.cedula = :cedula";
                 $params['cedula'] = $cedula;
             }
-        }
-
-        if ($pasaporte !== '') {
-            $sql .= " OR p.pasaporte = :pasaporte";
-            $params['pasaporte'] = $pasaporte;
-        }
-
-        if ($rif !== '') {
-            $sql .= " OR p.rif_personal = :rif";
+        } elseif ($rif !== '') {
+            $sql .= " p.rif_personal = :rif";
             $params['rif'] = $rif;
+        } elseif ($pasaporte !== '') {
+            $sql .= " p.pasaporte = :pasaporte";
+            $params['pasaporte'] = $pasaporte;
+        } else {
+            $sql .= " 1=0"; // Fallback if no params actually sent
         }
 
-        $sql .= " LIMIT 1";
+        $sql .= ") LIMIT 1";
 
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
@@ -245,9 +257,9 @@ class CatalogModel
         $where  = " WHERE 1=1";
         $params = [];
 
-        // Filtrar por tipo de cédula si se proporcionó (include NULLs and No_Aplica always)
+        // Filtrar por tipo de cédula si se proporcionó (match estricto)
         if ($tipo !== '') {
-            $where .= " AND (p.tipo_cedula = :tipo OR p.tipo_cedula IS NULL OR p.tipo_cedula = 'No_Aplica')";
+            $where .= " AND p.tipo_cedula = :tipo";
             $params['tipo'] = $tipo;
         }
 
@@ -271,7 +283,7 @@ class CatalogModel
             $params['q4'] = $likeVal;
         }
 
-        $sql = $select . $from . $where . " ORDER BY p.cedula ASC LIMIT 50";
+        $sql = $select . $from . $where . " ORDER BY p.apellidos ASC, p.nombres ASC, p.cedula ASC LIMIT 50";
 
         $stmt = $db->prepare($sql);
         $stmt->execute($params);

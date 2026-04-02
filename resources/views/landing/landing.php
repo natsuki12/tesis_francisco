@@ -17,10 +17,7 @@ ob_start();
     <div class="landing-left">
         <div class="content-wrapper">
 
-            <span class="badge-project">
-                <span class="badge-dot"></span>
-                Trabajo de Grado &mdash; UNIMAR
-            </span>
+            <img src="<?= asset('img/logos/sucelab/sucelab logo_Mesa de trabajo 1-01.png') ?>" alt="SuceLab — Simulador Educativo" class="hero-brand-logo">
 
             <h1 class="landing-title">
                 <span class="title-line-1">Simulador del Proceso</span>

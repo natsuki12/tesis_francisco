@@ -1,0 +1,55 @@
+6.4.2 Pantallas de la Aplicación Web
+Al acceder al sistema, el usuario se encuentra con la pantalla de inicio de sesión. El formulario solicita correo electrónico y contraseña. Una vez ingresados los datos, el sistema valida las credenciales y redirige al panel que corresponda según el rol detectado: Administrador, Profesor o Estudiante. Si los datos son incorrectos, se muestra un mensaje de error; si la cuenta fue desactivada por el administrador, un aviso distinto informa la restricción de acceso. Las cuentas de administrador se configuran directamente en el sistema, las de profesores y estudiantes las crea el administrador.
+Figura X. Pantalla de Inicio de Sesión
+Fuente: Elaboración propia (2026)
+Tras autenticarse como Administrador, el sistema muestra el Dashboard de control. La parte superior presenta tarjetas con cifras globales: usuarios registrados, profesores activos, estudiantes inscritos y secciones abiertas. Debajo se encuentran tres accesos rápidos que conducen a la gestión de profesores, la configuración de secciones y los catálogos maestros del sistema. La parte inferior se divide en dos paneles: a la izquierda, un feed de actividad reciente que muestra cronológicamente las acciones de los usuarios; a la derecha, un panel de estado del sistema que reporta en tiempo real la conexión a la base de datos, el período académico activo, el estado de la bitácora y la disponibilidad del servidor de correos.
+Figura X. Dashboard Principal del Administrador
+Fuente: Elaboración propia (2026)
+El módulo de Gestión de Profesores presenta una tabla con los docentes registrados en el sistema. Cada fila muestra nombre completo, cédula, correo electrónico, teléfono, sección asignada y estado de la cuenta (Activo o Inactivo). Los botones de acción en cada fila dan acceso a la edición de datos o a la desactivación de la cuenta. Para registrar un nuevo profesor, se abre un modal que solicita los datos requeridos y valida en tiempo real campos como la cédula y el correo para evitar duplicados. El módulo de Gestión de Estudiantes sigue el mismo esquema visual: tabla de datos con filtros, búsqueda, paginación y las mismas opciones de edición, desactivación y reactivación de cuentas.
+Figura X. Módulo de Gestión de Profesores
+Fuente: Elaboración propia (2026)
+La Gestión Académica agrupa dos submódulos. El primero es la Gestión de Períodos Académicos, donde el administrador define los trimestres que enmarcan la actividad del simulador: crear nuevos períodos, activarlos o cerrarlos. El segundo es la Gestión de Secciones, que vincula cada sección con un profesor y un período específico. Ambos submódulos operan con tablas de datos y modales para crear o editar registros, y la integridad entre períodos, secciones y profesores se mantiene de forma referencial: toda asignación posterior depende de esta configuración base.
+Figura X. Módulo de Gestión Académica — Períodos y Secciones
+Fuente: Elaboración propia (2026)
+El módulo de Monitoreo reúne tres herramientas de supervisión. La Bitácora de Actividades registra cronológicamente las acciones de los usuarios: creación de casos, asignaciones, entregas de simulaciones y cambios de estado, con filtros por fecha, usuario y tipo de acción. La Cola de Correos muestra el estado de las notificaciones electrónicas que el sistema envía de forma automática, con indicadores de éxito, fallo y reintento. La sección de Reportes y Estadísticas presenta métricas sobre el rendimiento de los estudiantes por sección y la carga de trabajo de los profesores.
+Figura X. Módulo de Monitoreo — Bitácora de Actividades
+Fuente: Elaboración propia (2026)
+
+Módulo del Profesor
+
+El Dashboard del Profesor tiene un enfoque distinto al del administrador: se centra en la actividad académica. Las tarjetas superiores resumen los estudiantes activos, los casos asignados, las solicitudes de RIF pendientes y las declaraciones por calificar. Debajo se presentan tres tarjetas de acceso rápido que conducen a la revisión de declaraciones sucesorales, la consulta de estudiantes asignados y el módulo de reportes. La parte inferior se divide en dos paneles: a la izquierda, una lista de los estudiantes que han ingresado recientemente al sistema con su última conexión; a la derecha, un feed de actividad reciente que registra envíos, calificaciones y asignaciones creadas.
+Figura X. Dashboard del Profesor
+Fuente: Elaboración propia (2026)
+La pantalla de Casos Sucesorales despliega una tabla con todos los casos que el profesor ha creado. Las columnas muestran el nombre del caso, la fecha de creación, la cantidad de asignaciones vinculadas y el estado. Desde esta vista se accede a la gestión detallada de cada caso, se crean nuevos escenarios o se eliminan los que ya no se requieran. La interfaz incluye búsqueda por nombre y paginación automática.
+Figura X. Lista de Casos Sucesorales
+Fuente: Elaboración propia (2026)
+La creación de un caso sucesoral se realiza a través de un Constructor por pasos (Wizard), con un indicador de progreso visible en la parte superior de la pantalla. El primer paso, "Datos del Causante", solicita la información personal del fallecido: nombres, apellidos, cédula, fecha de nacimiento, fecha de fallecimiento y datos de residencia. Estos campos condicionan los cálculos de plazos legales que el sistema aplica conforme a la normativa sucesoral.
+Figura X. Constructor de Casos — Datos del Causante
+Fuente: Elaboración propia (2026)
+En el paso de Registro de Herederos, el profesor carga la estructura familiar del caso. Una tabla dinámica recibe los datos de cada heredero: parentesco con el causante, cédula y datos personales. El sistema rechaza cédulas duplicadas y calcula automáticamente las cuotas hereditarias según el parentesco y la legislación vigente. Cada registro se puede editar o eliminar de forma individual.
+Figura X. Constructor de Casos — Registro de Herederos
+Fuente: Elaboración propia (2026)
+El paso de Inventario Patrimonial es el más extenso del constructor. La interfaz organiza los activos del causante por categorías: bienes inmuebles, vehículos, cuentas bancarias, inversiones, acciones y otros activos. También se registran los pasivos, deudas, desgravámenes y exenciones conforme a la Ley de Impuesto sobre Sucesiones, Donaciones y demás Ramos Conexos. Cada categoría tiene formularios con campos adaptados al tipo de bien y validaciones numéricas para montos y porcentajes.
+Figura X. Constructor de Casos — Inventario de Bienes y Patrimonio
+Fuente: Elaboración propia (2026)
+El último paso presenta un Resumen del caso completo. La pantalla consolida los datos del causante, la lista de herederos con sus parentescos, el desglose patrimonial por categorías y los cálculos tributarios resultantes. Si algún dato requiere corrección, el profesor puede regresar a cualquier paso anterior sin perder la información ya cargada. Al confirmar, el caso queda registrado en el sistema y disponible para ser asignado a los estudiantes.
+Figura X. Constructor de Casos — Resumen y Confirmación
+Fuente: Elaboración propia (2026)
+Desde la vista detallada de un caso, el profesor accede al módulo de Gestión de Asignaciones. La tabla muestra las configuraciones creadas para ese caso: nombre de la asignación, modalidad de simulación (Práctica Libre, Práctica Guiada o Evaluación), intentos máximos, período de vigencia, cantidad de estudiantes asignados y estado. Al hacer clic sobre una fila, un modal despliega el listado de estudiantes vinculados con su nombre, cédula y estado de declaración. La creación de nuevas asignaciones se hace a través de otro modal donde el profesor define los parámetros y selecciona estudiantes con un buscador dinámico. Si el profesor intenta eliminar una asignación que ya tiene intentos registrados, el sistema propone desactivarla en lugar de borrarla, para conservar los datos históricos.
+Figura X. Módulo de Gestión de Asignaciones
+Fuente: Elaboración propia (2026)
+
+Módulo del Estudiante
+
+Al iniciar sesión, el estudiante accede a su Dashboard, que muestra un resumen de su actividad en el simulador. Las tarjetas superiores indican asignaciones pendientes, simulaciones en progreso, casos calificados y promedio general. Debajo, la interfaz se divide en dos secciones: a la izquierda, un panel "Continuar donde lo dejaste" que muestra el borrador activo del estudiante con la última edición, la fecha límite y un botón para retomar la declaración; a la derecha, un feed de actividad reciente que registra cronológicamente los envíos, calificaciones recibidas y nuevas asignaciones. La vista de Mis Asignaciones, accesible desde el menú lateral, presenta una tabla de datos con columnas para caso, profesor, sección, modalidad, intentos utilizados, fecha límite y estado. Desde esta tabla el estudiante puede iniciar un nuevo intento o consultar los resultados de intentos anteriores.
+Figura X. Dashboard del Estudiante y Mis Asignaciones
+Fuente: Elaboración propia (2026)
+El módulo de Mis Calificaciones concentra el historial de rendimiento del estudiante. En la parte superior se presenta una barra de promedio general calculada sobre los casos calificados. Debajo, una tabla muestra cada caso con su modalidad, mejor nota obtenida, intentos realizados, fecha de calificación y estado. Cada fila permite expandir un desglose con las notas parciales por sección (Datos del Causante, Herederos, Inventario, Cálculo) y las observaciones emitidas por el profesor, ofreciendo retroalimentación detallada sobre cada aspecto de la declaración.
+Figura X. Módulo de Entregas y Calificaciones
+Fuente: Elaboración propia (2026)
+El Entorno de Simulación es el componente central del sistema. Al iniciar un intento, la interfaz reproduce el formulario oficial de Declaración Sucesoral del SENIAT con las mismas secciones y campos del documento real: datos del causante, información de herederos, inventario de bienes muebles e inmuebles, pasivos, desgravámenes y determinación del impuesto sucesoral. Los campos aplican validaciones en tiempo real sobre formatos de cédula, montos numéricos y fechas. Si el estudiante introduce un dato inconsistente, el sistema señala el error antes de que pueda enviar la declaración. La fidelidad con el formulario oficial es el objetivo pedagógico del simulador: que el estudiante opere los mismos campos y categorías que encontrará en el portal del SENIAT cuando atienda un caso real.
+Figura X. Entorno de Simulación — Formulario de Declaración Sucesoral SENIAT
+Fuente: Elaboración propia (2026)
+Una vez evaluada la simulación, el estudiante consulta la pantalla de Detalle de Corrección. La interfaz presenta una comparación campo por campo entre lo que el estudiante declaró y la solución del caso, con indicadores de color que distinguen aciertos de errores. También se muestran las observaciones que el profesor haya registrado durante la corrección y la calificación final obtenida.
+Figura X. Detalle de Corrección del Estudiante
+Fuente: Elaboración propia (2026)

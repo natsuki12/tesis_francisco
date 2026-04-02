@@ -1,6 +1,6 @@
 <?php
 // Placeholders para imágenes
-$logoMain = $logoMain ?? asset('img/logos/logo-unimar.png');
+$logoMain = $logoMain ?? asset('img/logos/sucelab/logo_Mesa de trabajo 1-04.svg');
 $phLogo = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij4KICA8cmVjdCB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIGZpbGw9IiMwYjVhYTYiIHJ4PSI0Ii8+CiAgPHRleHQgeD0iMjQiIHk9IjI4IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5VTTwvdGV4dD4KPC9zdmc+';
 $activePage = $activePage ?? '';
 $role = $_SESSION['role_id'] ?? 3;
@@ -9,11 +9,11 @@ $role = $_SESSION['role_id'] ?? 3;
 <aside class="sim-sidebar" id="sidebar">
     <div class="sim-sidebar__header">
         <div class="sim-sidebar__brand">
-            <img class="sim-sidebar__logo" src="<?= $logoMain ?>" alt="Logo"
+            <img class="sim-sidebar__logo" src="<?= $logoMain ?>" alt="SuceLab Logo"
                 onerror="this.onerror=null;this.src='<?= $phLogo ?>';">
             <div class="sim-sidebar__brand-text">
-                <div class="sim-sidebar__brand-name">SPDSS</div>
-                <div class="sim-sidebar__brand-sub">Universidad de Margarita</div>
+                <div class="sim-sidebar__brand-name">SUCELAB</div>
+                <div class="sim-sidebar__brand-sub">Simulador Educativo</div>
             </div>
         </div>
     </div>
@@ -290,7 +290,7 @@ $role = $_SESSION['role_id'] ?? 3;
             <!-- SECCIÓN: REPORTES (Profesor) -->
             <div class="sim-nav__section">
                 <span class="sim-nav__section-title">REPORTES</span>
-                <a href="#" class="sim-nav__link <?= $activePage === 'estadisticas' ? 'sim-nav__link--active' : '' ?>">
+                <a href="<?= base_url('/estadisticas') ?>" class="sim-nav__link <?= $activePage === 'estadisticas' ? 'sim-nav__link--active' : '' ?>">
                     <span class="sim-nav__icon">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round">
@@ -300,7 +300,6 @@ $role = $_SESSION['role_id'] ?? 3;
                         </svg>
                     </span>
                     <span class="sim-nav__text">Estadísticas</span>
-                    <span class="sim-nav__badge">Pronto</span>
                 </a>
             </div>
         <?php endif; ?>
@@ -383,6 +382,42 @@ $role = $_SESSION['role_id'] ?? 3;
                     </svg>
                 </a>
             </div>
+        <?php endif; ?>
+        <?php 
+        $reqUri = $_SERVER['REQUEST_URI'] ?? '';
+        $isSucesionFill = (strpos($reqUri, '/simulador/sucesion/') !== false && strpos($reqUri, '/simulador/sucesion/principal') === false);
+        
+        if (($role === 3) && ($_SESSION['sim_modalidad'] ?? '') === 'Practica_guiada'): 
+        ?>
+            <?php if ($isSucesionFill): ?>
+            <a href="#" class="sim-nav__link" id="btnSucesionesMenuTour"
+                onclick="event.preventDefault(); if(typeof window.playSucesionesOnboardingTour === 'function') window.playSucesionesOnboardingTour();"
+                style="color: var(--sim-blue); background: var(--sim-blue-light); border-radius: 8px; margin: 0 8px 4px;">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="16" x2="12" y2="12"/>
+                        <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                </span>
+                <span class="sim-nav__text">Guía Inicial del Menú</span>
+            </a>
+            <?php endif; ?>
+
+            <a href="#" class="sim-nav__link" id="btnGuidedTour"
+                onclick="event.preventDefault(); if(window.startGuidedTour) window.startGuidedTour();"
+                style="color: var(--sim-blue); background: var(--sim-blue-light); border-radius: 8px; margin: 0 8px 4px;">
+                <span class="sim-nav__icon">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                </span>
+                <span class="sim-nav__text">Ver Guía</span>
+            </a>
         <?php endif; ?>
         <a href="<?= base_url('/logout') ?>" class="sim-nav__link">
             <span class="sim-nav__icon">

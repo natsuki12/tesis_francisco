@@ -298,7 +298,7 @@ ob_start();
 
                                 <!-- Tipo de Búsqueda y Campo RIF/CI -->
                                 <div class="row row-cols-auto">
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-3" id="tourTipoBusqueda">
                                         <div class="form-floating">
                                             <select id="tipobusqueda" name="tipobusqueda"
                                                 class="form-control form-control-sm">
@@ -309,7 +309,7 @@ ob_start();
                                             <label for="tipobusqueda">Tipo Búsqueda</label>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4" id="tourRifInput">
                                         <div class="form-floating">
                                             <input id="rif" name="rif" maxlength="10"
                                                 class="form-control form-control-sm" placeholder=" " value="">
@@ -327,7 +327,7 @@ ob_start();
                             <br>
 
                             <!-- Captcha -->
-                            <div class="row row-cols-auto g-1">
+                            <div class="row row-cols-auto g-1" id="tourCaptchaRegistro">
                                 <div class="col-sm-3">
                                     <label class="imageninput" id="captchaText"
                                         style="font-size:25px; width:120px; height:60px; line-height:60px;">ojht6y</label>

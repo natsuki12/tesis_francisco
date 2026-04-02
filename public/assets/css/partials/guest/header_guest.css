@@ -51,10 +51,5 @@
 .gh-logo {
     height: 40px;
     width: auto;
-    background-color: white;
-    /* Fondo blanco si el logo es transparente */
-    padding: 2px;
-    border-radius: 4px;
     box-sizing: border-box;
-    /* Asegura consistencia de tamaño */
 }

@@ -36,7 +36,22 @@ ob_start();
     <span class="status-badge status-draft">Borrador</span>
   </div>
   <div class="cc-topbar__right">
-    <button class="btn btn-secondary" id="btnSaveDraft">
+    <button class="btn btn-outline" id="btnTourTutorial" style="margin-right: 8px; border-color: var(--gray-300); background: #fff;" title="Ver tutorial guiado">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+      </svg>
+      Tutorial
+    </button>
+    <button class="btn btn-outline" id="btnChecklistToggle" style="margin-right: 8px; border-color: var(--gray-300); background: #fff;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 11l3 3L22 4" />
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+      </svg>
+      Estado del Caso
+      <span id="checklistPercentage" style="background:#e2e8f0; color:#475569; border-radius:10px; padding:2px 8px; font-size:11px; margin-left:6px; font-weight:700;">0%</span>
+    </button>
+    <button class="btn btn-outline" id="btnSaveDraft" style="border-color: var(--gray-300); background: #fff;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round">
         <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
@@ -1387,7 +1402,7 @@ ob_start();
           <div class="cc-card__header" style="padding:10px 16px;">
             <h3 style="font-size:13px;">Tabla de Entrada</h3>
           </div>
-          <div class="cc-card__body" style="padding:0;overflow-x:auto;">
+          <div class="cc-card__body" style="padding:0;overflow:visible;">
             <table class="cc-herederos-table" id="cmTablaEntrada">
               <thead>
                 <tr>
@@ -1396,8 +1411,8 @@ ob_start();
                   <th class="text-center">Parentesco</th>
                   <th class="text-center">Grado</th>
                   <th class="text-center">Premuerto</th>
-                  <th class="text-end">Cuota Parte (UT)</th>
-                  <th class="text-end">Reducción (Bs.)</th>
+                  <th class="text-end">Cuota Parte (UT) <span class="cc-tooltip" data-tooltip="Patrimonio neto (UT) ÷ herederos. Si el heredero es grado 1 (ascendiente, descendiente, cónyuge o hijo adoptivo) y su cuota es ≤ 75 UT, queda exento de impuesto.">ⓘ</span></th>
+                  <th class="text-end">Reducción (Bs.) <span class="cc-tooltip" data-tooltip="No puede igualar o superar el impuesto determinado, ni exceder el 50% de este, ni la proporción equitativa (impuesto total ÷ número de herederos).">ⓘ</span></th>
                 </tr>
               </thead>
               <tbody id="cmEntradaBody">
@@ -1579,6 +1594,73 @@ ob_start();
     </button>
   </div>
 </div>
+
+<!-- ===== CHECKLIST OFFCANVAS PANEL ===== -->
+<div class="cc-checklist-overlay" id="checklistOverlay"></div>
+<div class="cc-checklist-panel" id="checklistPanel">
+  <div class="cc-checklist-header">
+    <h3>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 11l3 3L22 4" />
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+      </svg>
+      Validación de Publicación
+    </h3>
+    <button class="cc-checklist-close" id="btnCloseChecklist">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  
+  <div class="cc-checklist-footer" style="border-top: none; border-bottom: 1px solid var(--gray-200); padding-bottom: 12px;">
+    <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:var(--gray-600); margin-bottom:6px;">
+      <span>Progreso de llenado</span>
+      <span id="ccProgressText">0%</span>
+    </div>
+    <div class="cc-checklist-progress">
+      <div class="cc-checklist-bar" id="ccProgressBar" style="width: 0%;"></div>
+    </div>
+  </div>
+
+  <div class="cc-checklist-body" id="checklistItemsContainer">
+    <!-- Renderizado por checklist.js -->
+  </div>
+</div>
+
+<!-- Tooltip handler (position: fixed, ignora overflow) -->
+<script>
+(function(){
+    var bubble = null;
+    document.addEventListener('mouseenter', function(e){
+        if (!e.target.classList || !e.target.classList.contains('cc-tooltip')) return;
+        var text = e.target.getAttribute('data-tooltip');
+        if (!text) return;
+
+        if (!bubble) {
+            bubble = document.createElement('div');
+            bubble.className = 'cc-tooltip-bubble';
+            document.body.appendChild(bubble);
+        }
+        bubble.textContent = text;
+
+        var rect = e.target.getBoundingClientRect();
+        bubble.style.top = (rect.bottom + 8) + 'px';
+        bubble.style.right = (window.innerWidth - rect.right) + 'px';
+        bubble.style.left = '';
+
+        requestAnimationFrame(function(){
+            bubble.classList.add('is-visible');
+        });
+    }, true);
+
+    document.addEventListener('mouseleave', function(e){
+        if (!e.target.classList || !e.target.classList.contains('cc-tooltip')) return;
+        if (bubble) bubble.classList.remove('is-visible');
+    }, true);
+})();
+</script>
 
 <?php
 $content = ob_get_clean();

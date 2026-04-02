@@ -31,7 +31,7 @@ ob_start();
                     <path d="M12 28V16l8-6 8 6v12H12z" stroke="#fff" stroke-width="1.8" fill="none" />
                     <rect x="17" y="22" width="6" height="6" rx="1" stroke="#fff" stroke-width="1.5" fill="none" />
                 </svg>
-                <span class="brand-logo-text">Simulador SENIAT</span>
+                <span class="brand-logo-text">Inicio SUCELAB</span>
             </a>
 
             <div class="brand-message">
@@ -76,6 +76,11 @@ ob_start();
     <!-- ====== PANEL DERECHO (Formulario) ====== -->
     <section class="auth-panel">
         <div class="auth-panel-inner">
+
+            <!-- Logo Top Formulario -->
+            <div class="auth-top-logo">
+                <img src="<?= asset('img/logos/sucelab/sucelab logo_Mesa de trabajo 1-01.png') ?>" alt="SuceLab Logo" class="auth-form-brand-logo">
+            </div>
 
             <!-- Link volver -->
             <a href="<?= base_url('/') ?>" class="back-link">

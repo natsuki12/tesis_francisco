@@ -1,4 +1,4 @@
-import { $, $$, show, hide, formatBs, showToast } from '../../global/utils.js';
+import { $, $$, show, hide, formatBs, showToast, showInlineError } from '../../global/utils.js';
 import { caseData } from './state.js';
 import { openModal, removeItem } from './modal.js';
 import { getCatalogs } from '../../global/catalogos.js';
@@ -15,7 +15,13 @@ export function renderHerenciaCheckboxes() {
   if (!extrasContainer) return;
 
   let htmlCheckboxes = '';
-  let htmlExtras = '';
+  let htmlExtras = `<div class="cc-inline-errors" id="herenciaErrors" style="margin-bottom:16px;">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Error de validación</span>
+        </p>
+        <ul class="cc-inline-errors__list" id="herenciaErrorsList"></ul>
+      </div>`;
 
   tiposHerencia.forEach(tipo => {
     const id = tipo.id;
@@ -81,8 +87,7 @@ export function renderHerenciaCheckboxes() {
       if (field === 'fecha_testamento') {
         const fechaFall = caseData.causante?.fecha_fallecimiento;
         if (fechaFall && el.value && el.value > fechaFall) {
-          showToast('La fecha del testamento no puede ser posterior a la fecha de fallecimiento del causante.');
-          el.value = '';
+          showInlineError('herenciaErrors', 'herenciaErrorsList', 'La fecha del testamento no puede ser posterior a la fecha de fallecimiento del causante.', el);
           if (item) item[field] = '';
           return;
         }
@@ -103,12 +108,13 @@ export function renderHerenciaCheckboxes() {
       el.setAttribute('max', maxDate);
       // Si la fecha actual excede el nuevo max, limpiarla
       if (el.value && el.value > maxDate) {
-        el.value = '';
         const id = el.dataset.herenciaRef;
         const item = caseData.herencia.tipos.find(t => t.tipo_herencia_id == id);
         if (item) {
           item.fecha_testamento = '';
-          showToast('La fecha del testamento fue limpiada porque excede la fecha de fallecimiento.');
+          showInlineError('herenciaErrors', 'herenciaErrorsList', 'La fecha del testamento fue rechazada porque excede la fecha de fallecimiento.', el);
+        } else {
+          showInlineError('herenciaErrors', 'herenciaErrorsList', 'La fecha del testamento fue rechazada porque excede la fecha de fallecimiento.', el);
         }
       }
     });

@@ -39,6 +39,17 @@ class InscripcionRifController
     }
 
     /**
+     * Helper: verifica si el borrador tiene datos básicos del causante guardados.
+     * Se usa como guard para impedir acceso a pasos 2-4 sin completar el paso 1.
+     */
+    private function tieneDatosBasicos(?array $intento): bool
+    {
+        if (!$intento || empty($intento['borrador_json'])) return false;
+        $borrador = json_decode($intento['borrador_json'], true);
+        return !empty($borrador['datos_basicos']['apellidos']);
+    }
+
+    /**
      * Helper: renderiza un sub-paso del formulario con guard de RIF.
      * Si el RIF ya se generó, redirige al simulador.
      */
@@ -48,6 +59,27 @@ class InscripcionRifController
 
         if ($intentoActivo && !empty($intentoActivo['rif_sucesoral'])) {
             header('Location: ' . base_url('/simulador'));
+            exit;
+        }
+
+        return $app->view($vista, ['intento' => $intentoActivo]);
+    }
+
+    /**
+     * Helper: renderiza un sub-paso con guard de RIF + guard de datos básicos.
+     * Si no hay datos básicos guardados, redirige a datos-basicos.
+     */
+    private function renderPasoConGuardCompleto(\App\Core\App $app, string $vista): string
+    {
+        $intentoActivo = $this->cargarIntento();
+
+        if ($intentoActivo && !empty($intentoActivo['rif_sucesoral'])) {
+            header('Location: ' . base_url('/simulador'));
+            exit;
+        }
+
+        if (!$this->tieneDatosBasicos($intentoActivo)) {
+            header('Location: ' . base_url('/simulador/inscripcion-rif/datos-basicos'));
             exit;
         }
 
@@ -77,7 +109,7 @@ class InscripcionRifController
      */
     public function direcciones(\App\Core\App $app): string
     {
-        return $this->renderPasoConGuard($app, 'simulator/legacy/formulario_inscripcion_rif/direcciones');
+        return $this->renderPasoConGuardCompleto($app, 'simulator/legacy/formulario_inscripcion_rif/direcciones');
     }
 
     /**
@@ -85,7 +117,7 @@ class InscripcionRifController
      */
     public function relaciones(\App\Core\App $app): string
     {
-        return $this->renderPasoConGuard($app, 'simulator/legacy/formulario_inscripcion_rif/relaciones');
+        return $this->renderPasoConGuardCompleto($app, 'simulator/legacy/formulario_inscripcion_rif/relaciones');
     }
 
     /**
@@ -93,6 +125,6 @@ class InscripcionRifController
      */
     public function validarInscripcion(\App\Core\App $app): string
     {
-        return $this->renderPasoConGuard($app, 'simulator/legacy/formulario_inscripcion_rif/validar_inscripcion');
+        return $this->renderPasoConGuardCompleto($app, 'simulator/legacy/formulario_inscripcion_rif/validar_inscripcion');
     }
 }

@@ -9,48 +9,6 @@
     const BASE = window.__baseUrl || '';
     const CASO_ID = window.__casoId || 0;
 
-    /* ========== STYLED CONFIRM (global style) ========== */
-    function showConfirm(message, title = 'Confirmación', { confirmText = 'Aceptar', cancelText = 'Cancelar', icon = '⚠️' } = {}) {
-        return new Promise(resolve => {
-            const overlay = document.createElement('div');
-            overlay.style.cssText = `position:fixed;inset:0;background:rgba(10,30,61,0.5);backdrop-filter:blur(4px);
-                -webkit-backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:99999;
-                opacity:0;transition:opacity 0.2s ease;`;
-            overlay.innerHTML = `
-                <div style="background:#fff;border-radius:16px;width:440px;max-width:90vw;
-                    box-shadow:0 24px 80px rgba(0,0,0,0.25);transform:translateY(10px) scale(0.98);
-                    transition:transform 0.2s ease;overflow:hidden;">
-                    <div style="padding:16px 24px;border-bottom:1px solid #f1f5f9;
-                        display:flex;align-items:center;gap:10px;">
-                        <span style="font-size:20px;">${icon}</span>
-                        <h3 style="margin:0;font-size:15px;font-weight:700;color:#1e293b;">${title}</h3>
-                    </div>
-                    <div style="padding:20px 24px;font-size:14px;color:#475569;line-height:1.6;">
-                        ${message}
-                    </div>
-                    <div style="padding:16px 24px;border-top:1px solid #f1f5f9;
-                        display:flex;justify-content:flex-end;gap:10px;">
-                        <button id="gcConfirmNo" style="padding:8px 20px;border-radius:8px;border:1px solid #e2e8f0;
-                            background:#fff;color:#475569;font-size:13px;font-weight:600;
-                            cursor:pointer;transition:all 0.15s ease;">${cancelText}</button>
-                        <button id="gcConfirmYes" style="padding:8px 20px;border-radius:8px;border:none;
-                            background:#2563eb;color:#fff;font-size:13px;font-weight:600;
-                            cursor:pointer;transition:all 0.15s ease;">${confirmText}</button>
-                    </div>
-                </div>`;
-            document.body.appendChild(overlay);
-            requestAnimationFrame(() => {
-                overlay.style.opacity = '1';
-                overlay.querySelector('div').style.transform = 'translateY(0) scale(1)';
-            });
-            const close = (val) => {
-                overlay.style.opacity = '0';
-                setTimeout(() => { overlay.remove(); resolve(val); }, 200);
-            };
-            overlay.querySelector('#gcConfirmNo').addEventListener('click', () => close(false));
-            overlay.querySelector('#gcConfirmYes').addEventListener('click', () => close(true));
-        });
-    }
 
     /* ========== DOM refs ========== */
     const modal = document.getElementById('asignacionModal');
@@ -58,17 +16,78 @@
     const form = document.getElementById('formAsignacion');
     const hiddenId = document.getElementById('editConfigId');
     const elModalidad = document.getElementById('cfgModalidad');
+    const elNombre = document.getElementById('cfgNombre');
     const elIntentos = document.getElementById('cfgMaxIntentos');
     const elApertura = document.getElementById('cfgFechaApertura');
     const elLimite = document.getElementById('cfgFechaLimite');
+    const elTipoCalif = document.getElementById('cfgTipoCalificacion');
+    const elTipoCalifRow = document.getElementById('tipoCalifRow');
     const searchInput = document.getElementById('studentSearch');
     const selectedDiv = document.getElementById('selectedStudents');
+    const counterEl = document.getElementById('studentCounter');
+    const seccionSelect = document.getElementById('cfgSeccionFilter');
+    const bulkActions = document.getElementById('bulkStudentActions');
+    const btnSelectAll = document.getElementById('btnSelectAllSection');
+    const btnRemoveAll = document.getElementById('btnRemoveAll');
+    const errContainer = document.getElementById('asigErrors');
+    const errList = document.getElementById('asigErrorsList');
 
     let selectedStudents = [];
     let editRules = null;
     let availableStudents = [];
+    let isEditMode = false;
+    let currentSeccion = '';
 
     if (!modal) return;
+
+    /* ========== INLINE ERRORS (uses global modal-error-box) ========== */
+    function showErrors(messages) {
+        if (!errContainer || !errList) return;
+        if (!Array.isArray(messages)) messages = [messages];
+        errList.innerHTML = messages.map(m => `<li>${m}</li>`).join('');
+        errContainer.classList.add('show');
+        // Shake animation for attention
+        errContainer.classList.remove('shake');
+        void errContainer.offsetWidth; // force reflow
+        errContainer.classList.add('shake');
+        // Scroll modal body to make errors visible
+        const modalBody = errContainer.closest('.modal-base__body');
+        if (modalBody) {
+            modalBody.scrollTop = errContainer.offsetTop - modalBody.offsetTop - 10;
+        }
+    }
+
+    function clearErrors() {
+        if (errContainer) errContainer.classList.remove('show', 'shake');
+        if (errList) errList.innerHTML = '';
+    }
+
+    /* ========== COUNTER ========== */
+    function updateCounter() {
+        if (counterEl) counterEl.textContent = selectedStudents.length;
+    }
+
+    /* ========== SECTION FILTER ========== */
+    function populateSecciones() {
+        if (!seccionSelect) return;
+        const secciones = [...new Set(availableStudents.flatMap(s => (s.seccion_nombre || '').split(', ')).filter(Boolean))].sort();
+        // Keep the "Todas" option, remove dynamic ones
+        seccionSelect.innerHTML = '<option value="">— Todas —</option>';
+        secciones.forEach(sec => {
+            const opt = document.createElement('option');
+            opt.value = sec;
+            opt.textContent = sec;
+            seccionSelect.appendChild(opt);
+        });
+        currentSeccion = '';
+    }
+
+    if (seccionSelect) {
+        seccionSelect.addEventListener('change', () => {
+            currentSeccion = seccionSelect.value;
+            if (searchInput) { searchInput.value = ''; searchInput.focus(); }
+        });
+    }
 
     /* ========== MODAL open/close ========== */
     function openModal() { modal.style.display = 'flex'; }
@@ -82,12 +101,21 @@
         hiddenId.value = '';
         selectedStudents = [];
         editRules = null;
+        isEditMode = false;
+        currentSeccion = '';
+        clearErrors();
+        updateCounter();
         renderSelected();
-        searchInput.value = '';
+        if (searchInput) searchInput.value = '';
         elModalidad.disabled = false;
         elIntentos.min = 0;
         elModalidad.title = '';
         elIntentos.title = '';
+        if (elTipoCalif) elTipoCalif.value = 'aprobado_reprobado';
+        toggleTipoCalif();
+        if (seccionSelect) seccionSelect.value = '';
+        // Show bulk actions (create mode)
+        if (bulkActions) bulkActions.style.display = '';
     }
 
     document.getElementById('btnCloseModal')?.addEventListener('click', closeModal);
@@ -98,7 +126,12 @@
     document.getElementById('btnNuevaAsignacion')?.addEventListener('click', async () => {
         resetForm();
         modalTitle.textContent = 'Nueva Asignación';
+        isEditMode = false;
+        if (bulkActions) bulkActions.style.display = '';
+        if (searchInput) { searchInput.disabled = true; searchInput.placeholder = 'Cargando estudiantes...'; }
         await loadAvailableStudents();
+        if (searchInput) { searchInput.disabled = false; searchInput.placeholder = 'Nombre, cédula o correo...'; }
+        populateSecciones();
         openModal();
     });
 
@@ -109,6 +142,9 @@
             resetForm();
             modalTitle.textContent = 'Editar Asignación';
             hiddenId.value = configId;
+            isEditMode = true;
+            // Hide bulk actions in edit mode
+            if (bulkActions) bulkActions.style.display = 'none';
 
             try {
                 const res = await fetch(`${BASE}/api/casos/${CASO_ID}/configs`);
@@ -119,7 +155,10 @@
                 if (!cfg) return;
 
                 elModalidad.value = cfg.modalidad || 'Practica_Libre';
+                if (elNombre) elNombre.value = cfg.nombre || '';
                 elIntentos.value = cfg.max_intentos || 0;
+                if (elTipoCalif) elTipoCalif.value = cfg.tipo_calificacion || 'aprobado_reprobado';
+                toggleTipoCalif();
                 if (cfg.fecha_apertura) {
                     elApertura.value = cfg.fecha_apertura.replace(' ', 'T').substring(0, 16);
                 }
@@ -144,12 +183,17 @@
                     nombres: e.nombres,
                     apellidos: e.apellidos,
                     cedula: e.cedula,
+                    seccion: '',
                     asignacion_id: e.asignacion_id,
                     existing: true
                 }));
+                updateCounter();
                 renderSelected();
 
+                if (searchInput) { searchInput.disabled = true; searchInput.placeholder = 'Cargando estudiantes...'; }
                 await loadAvailableStudents();
+                if (searchInput) { searchInput.disabled = false; searchInput.placeholder = 'Nombre, cédula o correo...'; }
+                populateSecciones();
                 openModal();
             } catch (err) {
                 console.error('Error loading config:', err);
@@ -193,7 +237,13 @@
                     + `<br><br><span style="color:#94a3b8;font-size:12px;">Puede reactivar la asignación posteriormente si lo necesita.</span>`;
             }
 
-            const confirmed = await showConfirm(msg, title, { confirmText, icon });
+            const confirmed = await window.showConfirm({
+                title,
+                message: msg,
+                icon: canDelete ? 'danger' : 'warning',
+                confirmText,
+                confirmStyle: canDelete ? 'danger' : 'primary'
+            });
             if (!confirmed) return;
 
             try {
@@ -210,21 +260,103 @@
         });
     });
 
+    /* ========== REACTIVAR CONFIG ========== */
+    document.querySelectorAll('.btnReactivarConfig').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const configId = btn.dataset.configId;
+
+            const confirmed = await window.showConfirm({
+                title: '¿Reactivar asignación?',
+                message: 'Esta asignación volverá a estar activa y los estudiantes podrán iniciar nuevos intentos.',
+                icon: 'info',
+                confirmText: 'Reactivar',
+                confirmStyle: 'primary'
+            });
+            if (!confirmed) return;
+
+            try {
+                const res = await fetch(`${BASE}/api/configs/${configId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'Activo' })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    location.reload();
+                } else {
+                    alert(data.error || 'Error al reactivar.');
+                }
+            } catch (err) {
+                alert('Error de conexión.');
+            }
+        });
+    });
+
+    /* ========== VALIDATION ========== */
+    function validateForm() {
+        const errors = [];
+        const now = new Date();
+
+        const apertura = elApertura.value ? new Date(elApertura.value) : null;
+        const cierre = elLimite.value ? new Date(elLimite.value) : null;
+
+        // Only validate dates-in-past for NEW assignments (edit may have dates already passed)
+        if (!isEditMode) {
+            if (apertura && apertura < now) {
+                errors.push('La fecha de apertura no puede ser anterior al momento actual.');
+            }
+            if (cierre && cierre < now) {
+                errors.push('La fecha de cierre no puede ser anterior al momento actual.');
+            }
+        }
+        if (apertura && cierre && cierre <= apertura) {
+            errors.push('La fecha de cierre debe ser posterior a la fecha de apertura.');
+        }
+        if (!isEditMode && selectedStudents.length === 0) {
+            errors.push('Debe seleccionar al menos un estudiante.');
+        }
+
+        const intentos = parseInt(elIntentos.value) || 0;
+        if (intentos < 0) {
+            errors.push('El máximo de intentos no puede ser negativo.');
+        }
+        if (intentos > 100) {
+            errors.push('El máximo de intentos no puede superar 100.');
+        }
+
+        return errors;
+    }
+
     /* ========== GUARDAR ========== */
-    document.getElementById('btnSaveAsignacion')?.addEventListener('click', async () => {
+    const btnSave = document.getElementById('btnSaveAsignacion');
+    btnSave?.addEventListener('click', async () => {
+        clearErrors();
+        const validationErrors = validateForm();
+        if (validationErrors.length > 0) {
+            showErrors(validationErrors);
+            return;
+        }
+
+        // Prevent double-submit
+        btnSave.disabled = true;
+        btnSave.textContent = 'Guardando...';
+
         const configId = hiddenId.value;
         const isEdit = !!configId;
 
         const payload = {
+            nombre: elNombre ? elNombre.value.trim() : '',
             modalidad: elModalidad.value,
-            max_intentos: parseInt(elIntentos.value) || 0,
+            max_intentos: Math.max(0, Math.min(100, parseInt(elIntentos.value) || 0)),
+            tipo_calificacion: elTipoCalif ? elTipoCalif.value : 'aprobado_reprobado',
             fecha_apertura: elApertura.value || null,
             fecha_limite: elLimite.value || null,
         };
 
-        if (!isEdit) {
-            payload.estudiante_ids = selectedStudents.map(s => s.id);
-            try {
+        try {
+            if (!isEdit) {
+                payload.estudiante_ids = selectedStudents.map(s => s.id);
                 const res = await fetch(`${BASE}/api/casos/${CASO_ID}/configs`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -235,13 +367,9 @@
                     closeModal();
                     location.reload();
                 } else {
-                    alert(data.error || 'Error al crear.');
+                    showErrors(data.error || 'Error al crear la asignación.');
                 }
-            } catch (err) {
-                alert('Error de conexión.');
-            }
-        } else {
-            try {
+            } else {
                 const res = await fetch(`${BASE}/api/configs/${configId}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
@@ -249,10 +377,11 @@
                 });
                 const data = await res.json();
                 if (!data.ok) {
-                    alert(data.error || 'Error al actualizar.');
+                    showErrors(data.error || 'Error al actualizar.');
                     return;
                 }
 
+                let hasDuplicates = false;
                 const newStudents = selectedStudents.filter(s => !s.existing);
                 if (newStudents.length > 0) {
                     const addRes = await fetch(`${BASE}/api/configs/${configId}/estudiantes`, {
@@ -262,17 +391,67 @@
                     });
                     const addData = await addRes.json();
                     if (addData.duplicados?.length > 0) {
-                        alert(`${addData.duplicados.length} estudiante(s) ya estaban asignados en otra configuración.`);
+                        showErrors(`${addData.duplicados.length} estudiante(s) ya estaban asignados en esta configuración.`);
+                        hasDuplicates = true;
                     }
                 }
 
-                closeModal();
-                location.reload();
-            } catch (err) {
-                alert('Error de conexión.');
+                if (!hasDuplicates) {
+                    closeModal();
+                    location.reload();
+                }
             }
+        } catch (err) {
+            showErrors('Error de conexión. Intente de nuevo.');
+        } finally {
+            btnSave.disabled = false;
+            btnSave.textContent = 'Guardar';
         }
     });
+
+    /* ========== BULK ACTIONS ========== */
+    // Select all from current section
+    if (btnSelectAll) {
+        btnSelectAll.addEventListener('click', () => {
+            clearErrors();
+            const seccion = seccionSelect ? seccionSelect.value : '';
+            const selectedIds = new Set(selectedStudents.map(s => String(s.id)));
+            const toAdd = availableStudents.filter(s =>
+                !selectedIds.has(String(s.estudiante_id)) &&
+                (!seccion || (s.seccion_nombre || '').split(', ').includes(seccion))
+            );
+            if (toAdd.length === 0) {
+                showErrors('No hay estudiantes disponibles, o ya están todos seleccionados.');
+                return;
+            }
+            toAdd.forEach(s => selectedStudents.push({
+                id: s.estudiante_id,
+                nombres: s.nombres,
+                apellidos: s.apellidos,
+                cedula: s.cedula,
+                seccion: s.seccion_nombre || '',
+                existing: false
+            }));
+            updateCounter();
+            renderSelected();
+        });
+    }
+
+    // Remove all
+    if (btnRemoveAll) {
+        btnRemoveAll.addEventListener('click', () => {
+            clearErrors();
+            if (selectedStudents.length === 0) return;
+            if (isEditMode) {
+                // In edit mode, only remove non-existing (newly added)
+                selectedStudents = selectedStudents.filter(s => s.existing);
+            } else {
+                selectedStudents.length = 0;
+            }
+            updateCounter();
+            renderSelected();
+        });
+    }
 
     /* ========== STUDENT SEARCH (AutocompleteDropdown) ========== */
     async function loadAvailableStudents() {
@@ -295,6 +474,7 @@
                 const selectedIds = new Set(selectedStudents.map(s => String(s.id)));
                 return availableStudents.filter(s =>
                     !selectedIds.has(String(s.estudiante_id)) &&
+                    (!currentSeccion || (s.seccion_nombre || '').split(', ').includes(currentSeccion)) &&
                     (q.length === 0 ||
                      `${s.nombres} ${s.apellidos}`.toLowerCase().includes(q) ||
                      (s.cedula || '').includes(q) ||
@@ -316,13 +496,16 @@
                     </div>`;
             },
             onSelect: (item) => {
+                clearErrors();
                 selectedStudents.push({
                     id: item.estudiante_id,
                     nombres: item.nombres,
                     apellidos: item.apellidos,
                     cedula: item.cedula,
+                    seccion: item.seccion_nombre || '',
                     existing: false
                 });
+                updateCounter();
                 renderSelected();
                 searchInput.value = '';
             }
@@ -332,15 +515,16 @@
     function renderSelected() {
         if (!selectedDiv) return;
         if (selectedStudents.length === 0) {
-            selectedDiv.innerHTML = '<p class="gc-empty-text">No hay estudiantes seleccionados.</p>';
+            selectedDiv.innerHTML = '<div class="gc-empty-students"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="11" x2="23" y2="11"></line></svg><span>No hay estudiantes seleccionados</span></div>';
             return;
         }
-        selectedDiv.innerHTML = selectedStudents.map((s, i) =>
-            `<div class="gc-student-chip${s.existing ? ' existing' : ''}">
-                <span>${esc(s.nombres)} ${esc(s.apellidos)} <small>(${esc(s.cedula || '—')})</small></span>
+        selectedDiv.innerHTML = selectedStudents.map((s, i) => {
+            const secLabel = s.seccion ? ` <span class="gc-chip-section">· ${esc(s.seccion)}</span>` : '';
+            return `<div class="gc-student-chip${s.existing ? ' existing' : ''}">
+                <span>${esc(s.nombres)} ${esc(s.apellidos)} <small>(${esc(s.cedula || '—')})</small>${secLabel}</span>
                 <button type="button" class="gc-chip-remove" data-idx="${i}" title="${s.existing ? 'Quitar de la asignación' : 'Quitar'}">&times;</button>
-            </div>`
-        ).join('');
+            </div>`;
+        }).join('');
     }
 
     selectedDiv?.addEventListener('click', async e => {
@@ -350,11 +534,13 @@
         const student = selectedStudents[idx];
 
         if (student.existing && student.asignacion_id && hiddenId.value) {
-            const confirmed = await showConfirm(
-                `Se quitará a <strong>${esc(student.nombres)} ${esc(student.apellidos)}</strong> (CI: ${esc(student.cedula || '—')}) de esta asignación.<br><br>Si el estudiante ya tiene intentos registrados, será <strong>desactivado</strong> en lugar de eliminado y sus intentos se conservarán.`,
-                '¿Quitar estudiante?',
-                { confirmText: 'Quitar', icon: '👤' }
-            );
+            const confirmed = await window.showConfirm({
+                title: '¿Quitar estudiante?',
+                message: `Se quitará a <strong>${esc(student.nombres)} ${esc(student.apellidos)}</strong> (CI: ${esc(student.cedula || '—')}) de esta asignación.<br><br>Si el estudiante ya tiene intentos registrados, será <strong>desactivado</strong> en lugar de eliminado y sus intentos se conservarán.`,
+                icon: 'warning',
+                confirmText: 'Quitar',
+                confirmStyle: 'warning'
+            });
             if (!confirmed) return;
             try {
                 const res = await fetch(`${BASE}/api/configs/${hiddenId.value}/estudiantes/${student.asignacion_id}`, {
@@ -363,17 +549,29 @@
                 const data = await res.json();
                 if (data.ok) {
                     selectedStudents.splice(idx, 1);
+                    updateCounter();
                     renderSelected();
                 } else {
-                    alert(data.error || 'Error.');
+                    showErrors(data.error || 'Error al quitar estudiante.');
                 }
             } catch (err) {
-                alert('Error de conexión.');
+                showErrors('Error de conexión.');
             }
         } else {
             selectedStudents.splice(idx, 1);
+            updateCounter();
             renderSelected();
         }
+    });
+
+    // Clear errors when user interacts with form fields
+    /* ========== TOGGLE TIPO CALIFICACION ========== */
+    function toggleTipoCalif() {
+        // Tipo de calificación is now always visible for all modalities
+    }
+
+    [elApertura, elLimite, elModalidad, elIntentos].forEach(el => {
+        if (el) el.addEventListener('change', clearErrors);
     });
 
     /* ========== helpers ========== */
@@ -382,4 +580,77 @@
         div.textContent = str || '';
         return div.innerHTML;
     }
+
+    /* ========== DETAIL MODAL (click row → show students) ========== */
+    const detailModal = document.getElementById('modalDetalleAsignacion');
+    const detailTitle = document.getElementById('detalleAsigTitulo');
+    const detailBody = document.getElementById('detalleAsigBody');
+    const detailTable = document.getElementById('detalleAsigTabla');
+    const detailEmpty = document.getElementById('detalleAsigEmpty');
+    const detailSummary = document.getElementById('detalleAsigSummary');
+
+    function openDetailModal(row) {
+        const nombre = row.dataset.nombre || 'Asignación';
+        const modalidad = row.dataset.modalidad || '';
+        const modClass = row.dataset.modClass || 'mode-libre';
+        const intentos = row.dataset.intentos || '∞';
+        const periodo = row.dataset.periodo || '';
+        const estado = row.dataset.estado || 'Activa';
+        let estudiantes = [];
+        try { estudiantes = JSON.parse(row.dataset.estudiantes || '[]'); } catch(e) {}
+
+        // Title
+        detailTitle.textContent = nombre;
+
+        // Summary badges
+        detailSummary.innerHTML = `
+            <span class="mode-badge ${modClass}">${esc(modalidad)}</span>
+            <span class="status-badge status-draft has-dot" style="font-size:12px;">${esc(intentos === '∞' ? 'Ilimitados' : intentos + ' intentos')}</span>
+            <span style="font-size:12px;color:var(--gray-500);">📅 ${esc(periodo)}</span>
+            <span class="status-badge ${estado === 'Activa' ? 'status-active' : 'status-draft'} has-dot" style="margin-left:auto;font-size:12px;">${esc(estado)}</span>
+        `;
+
+        // Students table
+        detailBody.innerHTML = '';
+
+        if (estudiantes.length === 0) {
+            detailTable.style.display = 'none';
+            detailEmpty.style.display = '';
+        } else {
+            detailTable.style.display = '';
+            detailEmpty.style.display = 'none';
+            estudiantes.forEach(est => {
+                const fullName = esc((est.nombres || '') + ' ' + (est.apellidos || ''));
+                const cedula = esc(est.cedula || '—');
+                const estado = est.estado || 'Pendiente';
+                const badgeClass = estado === 'Completado' ? 'status-completed' : 'status-review';
+                detailBody.innerHTML += `
+                    <tr>
+                        <td>${fullName}</td>
+                        <td>${cedula}</td>
+                        <td><span class="status-badge ${badgeClass} has-dot">${esc(estado)}</span></td>
+                    </tr>`;
+            });
+        }
+
+        detailModal.style.display = '';
+    }
+
+    function closeDetailModal() {
+        detailModal.style.display = 'none';
+    }
+
+    // Row click → open detail
+    document.querySelectorAll('.asig-row').forEach(row => {
+        row.style.cursor = 'pointer';
+        row.addEventListener('click', (e) => {
+            if (e.target.closest('.row-actions')) return;
+            openDetailModal(row);
+        });
+    });
+
+    // Close detail modal
+    document.getElementById('btnCloseDetalle')?.addEventListener('click', closeDetailModal);
+    document.getElementById('btnCloseDetalle2')?.addEventListener('click', closeDetailModal);
+    detailModal?.addEventListener('click', e => { if (e.target === detailModal) closeDetailModal(); });
 })();

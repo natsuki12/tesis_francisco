@@ -142,7 +142,7 @@ class GeneracionRsController
 
                 if ($email) {
                     $mailer = new RSMailerService();
-                    $emailEnviado = $mailer->enviarAprobacionRif($email, $nombre, $id, $rif, $caso);
+                    $emailEnviado = $mailer->enviarAprobacionRif($email, $nombre, (int)($intento['numero_intento'] ?? 1), $rif, $caso);
                 }
             } catch (\Throwable $e) {
                 error_log('[GeneracionRsController::aprobar] Error enviando correo: ' . $e->getMessage());
@@ -261,7 +261,7 @@ class GeneracionRsController
                     $emailEnviado = $mailer->enviarRechazoRif(
                         $email,
                         $nombre,
-                        $id,
+                        (int)($intento['numero_intento'] ?? 1),
                         $caso,
                         $observacion,
                         $notaParaCorreo

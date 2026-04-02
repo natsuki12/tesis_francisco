@@ -132,7 +132,7 @@ class EntregasModel
     /**
      * Obtiene el detalle completo de un intento para la vista de corrección.
      */
-    public function getIntentoDetalle(int $intentoId): ?array
+    public function getIntentoDetalle(int $intentoId, ?int $profesorId = null): ?array
     {
         $sql = "
             SELECT
@@ -144,6 +144,7 @@ class EntregasModel
                 i.nota_cualitativa,
                 i.observacion,
                 i.borrador_json,
+                i.rif_sucesoral,
 
                 /* Estudiante */
                 pe.nombres           AS estudiante_nombres,
@@ -178,12 +179,16 @@ class EntregasModel
             INNER JOIN estudiantes est            ON est.id = a.estudiante_id
             INNER JOIN personas pe                ON pe.id  = est.persona_id
 
-            WHERE i.id = :intento_id
+            WHERE i.id = :intento_id"
+            . ($profesorId !== null ? " AND cfg.profesor_id = :prof_id" : "") . "
             LIMIT 1
         ";
 
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':intento_id', $intentoId, PDO::PARAM_INT);
+        if ($profesorId !== null) {
+            $stmt->bindValue(':prof_id', $profesorId, PDO::PARAM_INT);
+        }
         $stmt->execute();
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

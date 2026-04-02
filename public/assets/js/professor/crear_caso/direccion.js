@@ -394,7 +394,7 @@ export function saveDireccion() {
         $('#btnSaveDireccion').innerText = "+ Agregar Dirección";
     } else {
         if (caseData.direcciones_causante.length >= 1) {
-            showToast('Solo se permite un domicilio fiscal. Edite o elimine el existente.');
+            showDireccionErrors(['Solo se permite un domicilio fiscal. Edite o elimine el existente.'], []);
             return;
         }
         caseData.direcciones_causante.push(nuevaDir);

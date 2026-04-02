@@ -1,0 +1,141 @@
+// ═══════════════════════════════════════════════
+// DIAGRAMA ER SIMPLIFICADO — SPDSS
+// Solo tablas principales para el trabajo de grado
+// Pegar en: https://dbdiagram.io
+// ═══════════════════════════════════════════════
+
+Table personas {
+  id bigint [pk]
+  nacionalidad enum('V','E')
+  cedula varchar
+  nombres varchar
+  apellidos varchar
+  fecha_nacimiento date
+  genero enum('M','F')
+}
+
+Table users {
+  id bigint [pk]
+  persona_id bigint [ref: > personas.id]
+  role_id int [ref: > roles.id]
+  email varchar
+  password varchar
+  status enum('active','inactive','banned')
+}
+
+Table roles {
+  id int [pk]
+  nombre varchar
+  descripcion varchar
+}
+
+Table profesores {
+  id bigint [pk]
+  persona_id bigint [ref: > personas.id]
+  titulo varchar
+}
+
+Table estudiantes {
+  id bigint [pk]
+  persona_id bigint [ref: > personas.id]
+  carrera_id int [ref: > carreras.id]
+}
+
+Table carreras {
+  id int [pk]
+  nombre varchar
+  codigo varchar
+}
+
+Table periodos {
+  id int [pk]
+  nombre varchar
+  fecha_inicio date
+  fecha_fin date
+  activo tinyint
+}
+
+Table secciones {
+  id int [pk]
+  materia_id int
+  profesor_id bigint [ref: > profesores.id]
+  periodo_id int [ref: > periodos.id]
+  nombre varchar
+  cupo_maximo int
+}
+
+Table inscripciones {
+  id bigint [pk]
+  estudiante_id bigint [ref: > estudiantes.id]
+  seccion_id int [ref: > secciones.id]
+}
+
+// ─── SIMULADOR: Núcleo ───
+
+Table sim_personas {
+  id bigint [pk]
+  cedula varchar
+  rif_personal varchar
+  nombres varchar
+  apellidos varchar
+  fecha_nacimiento date
+  estado_civil enum
+  created_by bigint [ref: > profesores.id]
+}
+
+Table sim_casos_estudios {
+  id bigint [pk]
+  profesor_id bigint [ref: > profesores.id]
+  causante_id bigint [ref: > sim_personas.id]
+  representante_id bigint [ref: > sim_personas.id]
+  unidad_tributaria_id smallint
+  tipo_sucesion enum('Con_Cedula','Sin_Cedula')
+  titulo varchar
+  estado enum('Borrador','Publicado','Inactivo','Eliminado')
+  created_at timestamp
+}
+
+Table sim_caso_configs {
+  id bigint [pk]
+  caso_id bigint [ref: > sim_casos_estudios.id]
+  profesor_id bigint [ref: > profesores.id]
+  modalidad enum('Practica_Libre','Practica_Guiada','Evaluacion')
+  max_intentos tinyint
+  fecha_limite timestamp
+}
+
+Table sim_caso_asignaciones {
+  id bigint [pk]
+  config_id bigint [ref: > sim_caso_configs.id]
+  estudiante_id bigint [ref: > estudiantes.id]
+  estado enum('Pendiente','En_Progreso','Enviado','Calificado')
+  created_at timestamp
+}
+
+Table sim_intentos {
+  id bigint [pk]
+  asignacion_id bigint [ref: > sim_caso_asignaciones.id]
+  numero_intento smallint
+  estado enum('En_Progreso','Enviado','Aprobado','Rechazado','Cancelado')
+  borrador_json longtext [note: 'Estado completo del simulador']
+  rif_sucesoral varchar
+  submitted_at timestamp
+  created_at timestamp
+}
+
+Table sim_caso_participantes {
+  id bigint [pk]
+  caso_estudio_id bigint [ref: > sim_casos_estudios.id]
+  persona_id bigint [ref: > sim_personas.id]
+  rol_en_caso enum('Heredero','Legatario')
+  parentesco_id int
+  es_premuerto tinyint
+}
+
+Table bitacora_accesos {
+  id bigint [pk]
+  user_id bigint [ref: > users.id]
+  tipo_evento_id int
+  ip_address varchar
+  created_at timestamp
+}

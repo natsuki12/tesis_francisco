@@ -52,7 +52,7 @@ class RSValidator
             $errores = [];
 
             // 2. Validar datos del causante
-            $erroresCausante = $this->validarCausante($borrador, $casoId);
+            $erroresCausante = $this->validarCausante($borrador, $casoId, $intento['tipo_sucesion'] ?? '');
             if (!empty($erroresCausante)) {
                 $errores['causante'] = $erroresCausante;
             }
@@ -112,7 +112,7 @@ class RSValidator
     //  VALIDACIÓN: CAUSANTE
     // ════════════════════════════════════════════════════════
 
-    private function validarCausante(array $borrador, int $casoId): array
+    private function validarCausante(array $borrador, int $casoId, string $tipoSucesionDb = ''): array
     {
         $errores = [];
 
@@ -127,13 +127,24 @@ class RSValidator
             return ['No se encontró el causante del caso en la base de datos.'];
         }
 
-        // Comparar cédula (DB guarda tipo_cedula y cedula por separado, borrador los une como "V4079920")
-        $cedulaBorrador = mb_strtoupper(trim($datosBasicos['cedula'] ?? ''));
-        $tipoCedulaDb = mb_strtoupper(trim($causanteDb['tipo_cedula'] ?? ''));
-        $cedulaDb = trim($causanteDb['cedula'] ?? '');
-        $cedulaCompletaDb = $tipoCedulaDb . $cedulaDb; // Ej: "V" + "4079920" = "V4079920"
-        if ($cedulaBorrador !== $cedulaCompletaDb) {
-            $errores[] = "La cédula del causante no coincide. Esperado: {$cedulaCompletaDb}, ingresado: {$cedulaBorrador}.";
+        $sinCedula = in_array($tipoSucesionDb, ['Sin_Cedula', 'Sin Cédula']);
+
+        // Comparar tipo de sucesión
+        $tipoSucB = mb_strtoupper(str_replace('_', ' ', trim($borrador['tipo_sucesion'] ?? '')));
+        $tipoSucDbNorm = mb_strtoupper(str_replace('_', ' ', $tipoSucesionDb));
+        if ($tipoSucB && $tipoSucDbNorm && $tipoSucB !== $tipoSucDbNorm) {
+            $errores[] = "Tipo de sucesión no coincide. Esperado: {$tipoSucDbNorm}, ingresado: {$tipoSucB}.";
+        }
+
+        // Comparar cédula (solo si es Con Cédula)
+        if (!$sinCedula) {
+            $cedulaBorrador = mb_strtoupper(trim($datosBasicos['cedula'] ?? ''));
+            $tipoCedulaDb = mb_strtoupper(trim($causanteDb['tipo_cedula'] ?? ''));
+            $cedulaDb = trim($causanteDb['cedula'] ?? '');
+            $cedulaCompletaDb = $tipoCedulaDb . $cedulaDb;
+            if ($cedulaBorrador !== $cedulaCompletaDb) {
+                $errores[] = "La cédula del causante no coincide. Esperado: {$cedulaCompletaDb}, ingresado: {$cedulaBorrador}.";
+            }
         }
 
         // Comparar nombres
@@ -201,6 +212,27 @@ class RSValidator
             $errores[] = "El RIF del causante no coincide. Esperado: {$rifDb}, ingresado: {$rifB}.";
         }
 
+        // Campos del acta de fallecimiento (solo aplican en Sin Cédula)
+        if ($sinCedula) {
+            $numActaB = trim($datosBasicos['numero_acta'] ?? '');
+            $numActaDb = trim($causanteDb['numero_acta'] ?? '');
+            if ($numActaDb && $numActaB !== $numActaDb) {
+                $errores[] = "Nro. acta de defunción no coincide. Esperado: {$numActaDb}, ingresado: {$numActaB}.";
+            }
+
+            $yearActaB = trim((string)($datosBasicos['year_acta'] ?? ''));
+            $yearActaDb = trim((string)($causanteDb['year_acta'] ?? ''));
+            if ($yearActaDb && $yearActaB !== $yearActaDb) {
+                $errores[] = "Año del acta no coincide. Esperado: {$yearActaDb}, ingresado: {$yearActaB}.";
+            }
+
+            $parroquiaActaB = mb_strtoupper(trim($datosBasicos['parroquia_acta'] ?? ''));
+            $parroquiaActaDb = mb_strtoupper(trim($causanteDb['parroquia_registro'] ?? ''));
+            if ($parroquiaActaDb && $parroquiaActaB !== $parroquiaActaDb) {
+                $errores[] = "Parroquia de registro no coincide. Esperado: {$parroquiaActaDb}, ingresado: {$parroquiaActaB}.";
+            }
+        }
+
         return $errores;
     }
 
@@ -211,7 +243,7 @@ class RSValidator
                 p.tipo_cedula, p.cedula, p.pasaporte, p.rif_personal,
                 p.nombres, p.apellidos, p.sexo, p.estado_civil,
                 p.fecha_nacimiento, p.nacionalidad,
-                a.fecha_fallecimiento,
+                a.fecha_fallecimiento, a.numero_acta, a.year_acta, a.parroquia_registro,
                 df.domiciliado_pais, df.fecha_cierre_fiscal
             FROM sim_casos_estudios c
             INNER JOIN sim_personas p ON p.id = c.causante_id
@@ -744,7 +776,7 @@ class RSValidator
             $casoId = (int) $intento['caso_id'];
 
             // 2. Construir comparación del causante
-            $causanteComparacion = $this->compararCausanteParaVista($borrador, $casoId);
+            $causanteComparacion = $this->compararCausanteParaVista($borrador, $casoId, $intento['tipo_sucesion'] ?? '');
 
             // 3. Construir comparación de relaciones
             $relacionesComparacion = $this->compararRelacionesParaVista($borrador, $casoId);
@@ -761,6 +793,35 @@ class RSValidator
             ];
         } catch (\Throwable $e) {
             error_log('[RSValidator::getComparacionParaRevision] ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Comparación campo a campo para la vista de corrección del ESTUDIANTE.
+     * Misma lógica que getComparacionParaRevision() pero verifica ownership
+     * por estudiante en lugar de por profesor.
+     *
+     * @return array|null  ['intento','borrador','causante','relaciones','direcciones']
+     */
+    public function getComparacionParaEstudiante(int $intentoId, int $estudianteId): ?array
+    {
+        try {
+            $intento = $this->getIntentoConCaso($intentoId, $estudianteId);
+            if (!$intento) return null;
+
+            $borrador = json_decode($intento['borrador_json'] ?: '{}', true);
+            $casoId   = (int) $intento['caso_id'];
+
+            return [
+                'intento'     => $intento,
+                'borrador'    => $borrador,
+                'causante'    => $this->compararCausanteParaVista($borrador, $casoId, $intento['tipo_sucesion'] ?? ''),
+                'relaciones'  => $this->compararRelacionesParaVista($borrador, $casoId),
+                'direcciones' => $this->compararDireccionesParaVista($borrador, $casoId),
+            ];
+        } catch (\Throwable $e) {
+            error_log('[RSValidator::getComparacionParaEstudiante] ' . $e->getMessage());
             return null;
         }
     }
@@ -804,7 +865,7 @@ class RSValidator
     /**
      * Construye array de comparación campo a campo para el causante.
      */
-    private function compararCausanteParaVista(array $borrador, int $casoId): array
+    private function compararCausanteParaVista(array $borrador, int $casoId, string $tipoSucesionDb = ''): array
     {
         $campos = [];
         $datosBasicos = $borrador['datos_basicos'] ?? [];
@@ -814,10 +875,21 @@ class RSValidator
             return ['campos' => $campos, 'vacio' => true];
         }
 
-        // Cédula
+        $sinCedula = in_array($tipoSucesionDb, ['Sin_Cedula', 'Sin Cédula']);
+
+        // Tipo de Sucesión
+        $tipoSucB = mb_strtoupper(str_replace('_', ' ', trim($borrador['tipo_sucesion'] ?? '')));
+        $tipoSucDbNorm = mb_strtoupper(str_replace('_', ' ', $tipoSucesionDb));
+        $campos[] = ['label' => 'Tipo de Sucesión', 'esperado' => $tipoSucDbNorm ?: '—', 'ingresado' => $tipoSucB ?: '—', 'coincide' => $tipoSucB === $tipoSucDbNorm];
+
+        // Cédula (condicionada por tipo de sucesión)
         $cedulaB = mb_strtoupper(trim($datosBasicos['cedula'] ?? ''));
-        $cedulaDb = mb_strtoupper(trim($causanteDb['tipo_cedula'] ?? '')) . trim($causanteDb['cedula'] ?? '');
-        $campos[] = ['label' => 'Cédula', 'esperado' => $cedulaDb, 'ingresado' => $cedulaB, 'coincide' => $cedulaB === $cedulaDb];
+        if ($sinCedula) {
+            $campos[] = ['label' => 'Cédula', 'esperado' => 'No aplica (Sin Cédula)', 'ingresado' => $cedulaB ?: 'No aplica', 'coincide' => empty($cedulaB)];
+        } else {
+            $cedulaDb = mb_strtoupper(trim($causanteDb['tipo_cedula'] ?? '')) . trim($causanteDb['cedula'] ?? '');
+            $campos[] = ['label' => 'Cédula', 'esperado' => $cedulaDb, 'ingresado' => $cedulaB, 'coincide' => $cedulaB === $cedulaDb];
+        }
 
         // Nombres
         $nombresB = mb_strtoupper(trim($datosBasicos['nombres'] ?? ''));
@@ -878,6 +950,21 @@ class RSValidator
             $campos[] = ['label' => 'RIF Personal', 'esperado' => $rifDb, 'ingresado' => $rifB, 'coincide' => $rifB === $rifDb];
         }
 
+        // Acta de fallecimiento (solo aplica en Sin Cédula)
+        if ($sinCedula) {
+            $numActaB = trim($datosBasicos['numero_acta'] ?? '');
+            $numActaDb = trim($causanteDb['numero_acta'] ?? '');
+            $campos[] = ['label' => 'Nro. Acta Defunción', 'esperado' => $numActaDb ?: '—', 'ingresado' => $numActaB ?: '—', 'coincide' => $numActaB === $numActaDb];
+
+            $yearActaB = trim((string)($datosBasicos['year_acta'] ?? ''));
+            $yearActaDb = trim((string)($causanteDb['year_acta'] ?? ''));
+            $campos[] = ['label' => 'Año del Acta', 'esperado' => $yearActaDb ?: '—', 'ingresado' => $yearActaB ?: '—', 'coincide' => $yearActaB === $yearActaDb];
+
+            $parroquiaActaB = mb_strtoupper(trim($datosBasicos['parroquia_acta'] ?? ''));
+            $parroquiaActaDb = mb_strtoupper(trim($causanteDb['parroquia_registro'] ?? ''));
+            $campos[] = ['label' => 'Parroquia de Registro', 'esperado' => $parroquiaActaDb ?: '—', 'ingresado' => $parroquiaActaB ?: '—', 'coincide' => $parroquiaActaB === $parroquiaActaDb];
+        }
+
         return ['campos' => $campos, 'vacio' => false];
     }
 
@@ -923,46 +1010,58 @@ class RSValidator
 
         // ── Herederos ──
         $dbUsados = [];
-        foreach ($herederosB as $i => $hB) {
-            $campos = [];
-            $docB = trim($hB['idDocumento'] ?? $hB['cedula'] ?? '');
-            $matchedDb = null;
+        $bUsados = [];
 
+        // Paso 1: Emparejar por documento
+        foreach ($herederosB as $i => $hB) {
+            $docB = trim($hB['idDocumento'] ?? $hB['cedula'] ?? '');
             foreach ($participantesDb as $j => $hDb) {
                 if (in_array($j, $dbUsados) || !$this->matchDocumento($docB, $hDb)) continue;
-                $matchedDb = $hDb;
+                // Match encontrado
                 $dbUsados[] = $j;
-                break;
-            }
-
-            if ($matchedDb) {
-                $docDb = $matchedDb['rif_personal'] ?: (($matchedDb['tipo_cedula'] ?? '') . ($matchedDb['cedula'] ?? ''));
+                $bUsados[] = $i;
+                $campos = [];
+                $docDb = $hDb['rif_personal'] ?: (($hDb['tipo_cedula'] ?? '') . ($hDb['cedula'] ?? ''));
                 $campos[] = ['label' => 'Documento', 'esperado' => $docDb, 'ingresado' => $docB, 'coincide' => true];
 
-                $nombresDb = mb_strtoupper(trim($matchedDb['nombres'] ?? ''));
+                $nombresDb = mb_strtoupper(trim($hDb['nombres'] ?? ''));
                 $nombresB = mb_strtoupper(trim($hB['nombre'] ?? $hB['nombres'] ?? ''));
                 $campos[] = ['label' => 'Nombres', 'esperado' => $nombresDb, 'ingresado' => $nombresB, 'coincide' => $nombresB === $nombresDb];
 
-                $apellidosDb = mb_strtoupper(trim($matchedDb['apellidos'] ?? ''));
+                $apellidosDb = mb_strtoupper(trim($hDb['apellidos'] ?? ''));
                 $apellidosB = mb_strtoupper(trim($hB['apellido'] ?? $hB['apellidos'] ?? ''));
                 $campos[] = ['label' => 'Apellidos', 'esperado' => $apellidosDb, 'ingresado' => $apellidosB, 'coincide' => $apellidosB === $apellidosDb];
-            } else {
-                $campos[] = ['label' => 'Documento', 'esperado' => '— No coincide —', 'ingresado' => $docB, 'coincide' => false];
-                $campos[] = ['label' => 'Nombres', 'esperado' => '—', 'ingresado' => $hB['nombre'] ?? $hB['nombres'] ?? '', 'coincide' => false];
-                $campos[] = ['label' => 'Apellidos', 'esperado' => '—', 'ingresado' => $hB['apellido'] ?? $hB['apellidos'] ?? '', 'coincide' => false];
-            }
 
-            $resultado['herederos'][] = $campos;
+                $resultado['herederos'][] = ['tipo' => 'match', 'campos' => $campos];
+                break;
+            }
         }
 
-        // Herederos que faltan (DB tiene pero estudiante no los puso)
+        // Paso 2: Herederos del caso que el estudiante NO ingresó
         foreach ($participantesDb as $j => $hDb) {
             if (in_array($j, $dbUsados)) continue;
             $docDb = $hDb['rif_personal'] ?: (($hDb['tipo_cedula'] ?? '') . ($hDb['cedula'] ?? ''));
             $resultado['herederos'][] = [
-                ['label' => 'Documento', 'esperado' => $docDb, 'ingresado' => '— Falta —', 'coincide' => false],
-                ['label' => 'Nombres', 'esperado' => $hDb['nombres'] ?? '', 'ingresado' => '— Falta —', 'coincide' => false],
-                ['label' => 'Apellidos', 'esperado' => $hDb['apellidos'] ?? '', 'ingresado' => '— Falta —', 'coincide' => false],
+                'tipo' => 'faltante',
+                'campos' => [
+                    ['label' => 'Documento', 'esperado' => $docDb, 'ingresado' => '— No ingresado —', 'coincide' => false],
+                    ['label' => 'Nombres', 'esperado' => $hDb['nombres'] ?? '', 'ingresado' => '— No ingresado —', 'coincide' => false],
+                    ['label' => 'Apellidos', 'esperado' => $hDb['apellidos'] ?? '', 'ingresado' => '— No ingresado —', 'coincide' => false],
+                ],
+            ];
+        }
+
+        // Paso 3: Herederos que el estudiante ingresó pero NO existen en el caso
+        foreach ($herederosB as $i => $hB) {
+            if (in_array($i, $bUsados)) continue;
+            $docB = trim($hB['idDocumento'] ?? $hB['cedula'] ?? '');
+            $resultado['herederos'][] = [
+                'tipo' => 'extra',
+                'campos' => [
+                    ['label' => 'Documento', 'esperado' => '— No existe en el caso —', 'ingresado' => $docB, 'coincide' => false],
+                    ['label' => 'Nombres', 'esperado' => '— No existe en el caso —', 'ingresado' => $hB['nombre'] ?? $hB['nombres'] ?? '', 'coincide' => false],
+                    ['label' => 'Apellidos', 'esperado' => '— No existe en el caso —', 'ingresado' => $hB['apellido'] ?? $hB['apellidos'] ?? '', 'coincide' => false],
+                ],
             ];
         }
 
@@ -1105,6 +1204,20 @@ class RSValidator
                 if ($localB || $nroNivelDb) {
                     $campos[] = ['label' => 'Nro. Local', 'esperado' => $nroNivelDb ?: '—', 'ingresado' => $localB ?: '—', 'coincide' => $localB === $nroNivelDb];
                 }
+
+                // Fax
+                $faxB = trim($dirB['fax'] ?? '');
+                $faxDb = trim($matchedDb['fax'] ?? '');
+                if ($faxB || $faxDb) {
+                    $campos[] = ['label' => 'Fax', 'esperado' => $faxDb ?: '—', 'ingresado' => $faxB ?: '—', 'coincide' => $faxB === $faxDb];
+                }
+
+                // Punto de referencia
+                $refB = mb_strtoupper(trim($dirB['referencia'] ?? ''));
+                $refDb = mb_strtoupper(trim($matchedDb['punto_referencia'] ?? ''));
+                if ($refB || $refDb) {
+                    $campos[] = ['label' => 'Punto de Referencia', 'esperado' => $refDb ?: '—', 'ingresado' => $refB ?: '—', 'coincide' => $refB === $refDb];
+                }
             } else {
                 // Sin match exacto de geo → comparar campo a campo contra la primera dirección disponible del caso
                 $fallbackDb = null;
@@ -1203,6 +1316,20 @@ class RSValidator
                     $nroNivelDb = mb_strtoupper(trim($fallbackDb['nro_nivel'] ?? ''));
                     if ($localB || $nroNivelDb) {
                         $campos[] = ['label' => 'Nro. Local', 'esperado' => $nroNivelDb ?: '—', 'ingresado' => $localB ?: '—', 'coincide' => $localB === $nroNivelDb];
+                    }
+
+                    // Fax
+                    $faxB = trim($dirB['fax'] ?? '');
+                    $faxDb = trim($fallbackDb['fax'] ?? '');
+                    if ($faxB || $faxDb) {
+                        $campos[] = ['label' => 'Fax', 'esperado' => $faxDb ?: '—', 'ingresado' => $faxB ?: '—', 'coincide' => $faxB === $faxDb];
+                    }
+
+                    // Punto de referencia
+                    $refB = mb_strtoupper(trim($dirB['referencia'] ?? ''));
+                    $refDb = mb_strtoupper(trim($fallbackDb['punto_referencia'] ?? ''));
+                    if ($refB || $refDb) {
+                        $campos[] = ['label' => 'Punto de Referencia', 'esperado' => $refDb ?: '—', 'ingresado' => $refB ?: '—', 'coincide' => $refB === $refDb];
                     }
                 } else {
                     // No hay dirección del caso para comparar

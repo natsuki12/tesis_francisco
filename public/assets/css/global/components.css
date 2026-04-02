@@ -81,6 +81,7 @@
     font-size: 0.9375rem;
     /* 15px */
     font-weight: 600;
+    font-family: var(--font-ui, inherit);
     border-radius: var(--radius-md, 8px);
     cursor: pointer;
     transition: all var(--transition);

@@ -238,10 +238,7 @@ class StoreCasoModel
                 }
             }
             // Las tablas sim_caso_configs y sim_caso_asignaciones quedan vacías al publicar.
-
-            // Limpiar borrador_json al publicar
-            $this->db->prepare("UPDATE sim_casos_estudios SET borrador_json = NULL WHERE id = :id")
-                ->execute(['id' => $casoId]);
+            // NOTA: borrador_json se conserva para permitir duplicación futura del caso.
 
             $this->db->commit();
 
@@ -269,19 +266,26 @@ class StoreCasoModel
         if (!$personaId) {
             $sqlSearch = "SELECT id, nombres, apellidos, sexo, estado_civil, fecha_nacimiento, nacionalidad 
                           FROM sim_personas 
-                          WHERE (tipo_cedula = :tc AND cedula = :ced)
-                             OR (pasaporte IS NOT NULL AND pasaporte = :pas)
-                             OR (rif_personal IS NOT NULL AND rif_personal = :rif)
-                          LIMIT 1";
+                          WHERE 1=1 AND (";
+            
+            $params = [];
+            if ($cedula) {
+                $sqlSearch .= " tipo_cedula = :tc AND cedula = :ced";
+                $params['tc'] = $tipoCedula;
+                $params['ced'] = $cedula;
+            } elseif ($rifPersonal) {
+                $sqlSearch .= " rif_personal = :rif";
+                $params['rif'] = $rifPersonal;
+            } elseif ($pasaporte) {
+                $sqlSearch .= " pasaporte = :pas";
+                $params['pas'] = $pasaporte;
+            } else {
+                $sqlSearch .= " 1=0";
+            }
+            $sqlSearch .= ") LIMIT 1";
+
             $stmtSearch = $this->db->prepare($sqlSearch);
-            // PDO requiere bindear null adecuadamente o ignorar la busqueda estricta en DB,
-            // pero COALESCE no es necesario ya que se envian param por nombre
-            $stmtSearch->execute([
-                'tc' => $tipoCedula,
-                'ced' => $cedula,
-                'pas' => $pasaporte,
-                'rif' => $rifPersonal
-            ]);
+            $stmtSearch->execute($params);
             $existingPersona = $stmtSearch->fetch(PDO::FETCH_ASSOC);
 
             if ($existingPersona) {
@@ -501,7 +505,7 @@ class StoreCasoModel
                     titulo = :titulo, descripcion = :descripcion,
                     tipo_sucesion = :tipo_sucesion, estado = :estado,
                     causante_id = :causante_id, representante_id = :representante_id,
-                    unidad_tributaria_id = :unidad_tributaria_id, borrador_json = NULL
+                    unidad_tributaria_id = :unidad_tributaria_id
                 WHERE id = :id";
 
         $stmt = $this->db->prepare($sql);

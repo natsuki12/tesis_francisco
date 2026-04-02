@@ -13,6 +13,10 @@ $extraJs   = '<script src="' . asset('js/global/data_table_core.js') . '"></scri
 $estudiantes = $estudiantes ?? [];
 $stats       = $stats ?? ['total' => 0, 'pendientes' => 0, 'sin_actividad' => 0];
 
+// Extraer secciones únicas para el filtro
+$secciones = array_unique(array_filter(array_column($estudiantes, 'seccion')));
+sort($secciones);
+
 $avatarColors = ['avatar--blue', 'avatar--green', 'avatar--amber', 'avatar--purple', 'avatar--red'];
 
 function getInitialsEst(string $name): string
@@ -98,6 +102,12 @@ ob_start();
             </svg>
             <input type="text" data-search-for="estudiantes-table" placeholder="Buscar estudiante...">
         </div>
+        <select id="filter-seccion" class="per-page-select" style="min-width: 160px;">
+            <option value="">Todas las secciones</option>
+            <?php foreach ($secciones as $sec): ?>
+                <option value="<?= htmlspecialchars($sec) ?>"><?= htmlspecialchars($sec) ?></option>
+            <?php endforeach; ?>
+        </select>
     </div>
     <div class="toolbar-right">
         <select data-perpage-for="estudiantes-table" class="per-page-select">
@@ -139,7 +149,7 @@ ob_start();
                     $accesoText = timeAgo($est['ultimo_acceso'] ?? null);
                     $searchText = mb_strtolower($fullName . ' ' . $cedula . ' ' . ($est['seccion'] ?? ''));
                 ?>
-                    <tr data-search="<?= htmlspecialchars($searchText) ?>">
+                    <tr data-search="<?= htmlspecialchars($searchText) ?>" data-seccion="<?= htmlspecialchars($est['seccion'] ?? '') ?>">
                         <td>
                             <div class="estudiante-cell">
                                 <div class="estudiante-avatar <?= $avatarClass ?>">
@@ -190,6 +200,21 @@ ob_start();
         <div class="pagination"></div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterSec = document.getElementById('filter-seccion');
+    if (filterSec) {
+        filterSec.addEventListener('change', function() {
+            const val = this.value;
+            DataTableManager.setClientFilter('estudiantes-table', val
+                ? row => (row.dataset.seccion || '') === val
+                : null
+            );
+        });
+    }
+});
+</script>
 
 <?php
 $content = ob_get_clean();

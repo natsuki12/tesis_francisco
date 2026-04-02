@@ -76,8 +76,9 @@ class MisEstudiantesModel
                 (
                     SELECT MAX(be.created_at)
                     FROM bitacora_eventos be
-                    INNER JOIN users u6 ON u6.email = be.attempted_email
-                    WHERE u6.persona_id = pe.id
+                    WHERE be.user_id = (
+                        SELECT u6.id FROM users u6 WHERE u6.persona_id = pe.id LIMIT 1
+                    )
                 ) AS ultimo_acceso
 
             FROM estudiantes est

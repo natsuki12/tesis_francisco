@@ -267,12 +267,25 @@ ob_start();
 <script>
   (function () {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('borrador') !== 'ok') return;
-    history.replaceState(null, '', window.location.pathname);
-    // Wait for utils.js module to load and set window.showToast
+    if (params.get('borrador') === 'ok') {
+      history.replaceState(null, '', window.location.pathname);
+      setTimeout(() => {
+        if (window.showToast) window.showToast('Borrador guardado exitosamente.', 'success');
+      }, 100);
+    }
+    // Mostrar mensaje de redirección (ej. caso publicado no editable)
+    const redirectMsg = sessionStorage.getItem('cc_redirect_msg');
+    if (redirectMsg) {
+      sessionStorage.removeItem('cc_redirect_msg');
+      setTimeout(() => {
+        if (window.showToast) window.showToast(redirectMsg, 'error');
+      }, 100);
+    }
+    <?php if (!empty($_SESSION['flash_msg'])): ?>
     setTimeout(() => {
-      if (window.showToast) window.showToast('Borrador guardado exitosamente.', 'success');
+      if (window.showToast) window.showToast(<?= json_encode($_SESSION['flash_msg']) ?>, 'error');
     }, 100);
+    <?php unset($_SESSION['flash_msg']); endif; ?>
   })();
 </script>
 

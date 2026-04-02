@@ -11,50 +11,37 @@ $extraCss = '<link rel="stylesheet" href="' . asset('css/student/home_st.css') .
 // ── Datos ────────────────────────────────────────────────────
 $userName = $_SESSION['user_name'] ?? 'Estudiante';
 
-// $draft viene del route (StudentAssignmentModel::getUltimaAsignacionAccedida)
-// Claves: asignacion_id, caso_titulo, fecha_limite, ultima_edicion
-// null si no hay borrador activo.
+// $draft, $stats, $actividad y $proximoVencimiento vienen del controller
+$stats     = $stats ?? ['pendientes' => 0, 'en_progreso' => 0, 'calificados' => 0];
+$actividad = $actividad ?? [];
 
-$stats = [
-  'pendientes' => 3,
-  'en_progreso' => 1,
-  'calificados' => 2,
-  'promedio' => 15.7,
-];
+// Calcular urgencia del vencimiento
+$vencFecha = null;
+$vencColor = '';
+$vencLabel = '—';
+$vencCaso  = 'Sin fechas límite';
+$vencIconColor = 'blue';
 
-// Activity feed
-$actividad = [
-  [
-    'tipo' => 'envio',
-    'dot' => 'dot-blue',
-    'texto' => 'Enviaste el intento <strong>#2</strong> del caso <strong>Sucesión González Méndez</strong>',
-    'tiempo' => 'Hace 1 día',
-  ],
-  [
-    'tipo' => 'calificacion',
-    'dot' => 'dot-green',
-    'texto' => 'Tu intento <strong>#1</strong> del caso <strong>Sucesión Pérez Alvarado</strong> fue calificado: <strong>16/20</strong>',
-    'tiempo' => 'Hace 3 días',
-  ],
-  [
-    'tipo' => 'asignacion',
-    'dot' => 'dot-purple',
-    'texto' => 'El <strong>Prof. César Rodríguez</strong> te asignó el caso <strong>Sucesión Ramírez Torres</strong>',
-    'tiempo' => 'Hace 5 días',
-  ],
-  [
-    'tipo' => 'calificacion',
-    'dot' => 'dot-green',
-    'texto' => 'Tu intento <strong>#1</strong> del caso <strong>Sucesión González Méndez</strong> fue calificado: <strong>14.5/20</strong>',
-    'tiempo' => 'Hace 6 días',
-  ],
-  [
-    'tipo' => 'envio',
-    'dot' => 'dot-blue',
-    'texto' => 'Enviaste el intento <strong>#1</strong> del caso <strong>Sucesión González Méndez</strong>',
-    'tiempo' => 'Hace 8 días',
-  ],
-];
+if (!empty($proximoVencimiento['fecha_limite'])) {
+    $vencFecha = $proximoVencimiento['fecha_limite'];
+    $diasRestantes = (int) ceil((strtotime($vencFecha) - time()) / 86400);
+    $vencLabel = date('d/m/Y', strtotime($vencFecha));
+    $vencCaso = $proximoVencimiento['caso_titulo'] ?? '';
+
+    if ($diasRestantes <= 0) {
+        $vencColor = 'color: var(--red-500);';
+        $vencIconColor = 'red';
+    } elseif ($diasRestantes <= 2) {
+        $vencColor = 'color: var(--red-500);';
+        $vencIconColor = 'red';
+    } elseif ($diasRestantes <= 5) {
+        $vencColor = 'color: var(--amber-600, #d97706);';
+        $vencIconColor = 'amber';
+    } else {
+        $vencColor = 'color: var(--green-500);';
+        $vencIconColor = 'green';
+    }
+}
 
 ob_start();
 ?>
@@ -105,19 +92,20 @@ ob_start();
     <div class="stat-value"><?= $stats['calificados'] ?></div>
   </div>
 
-  <div class="stat-card stat-card--vertical stat-dark animate-in">
+  <div class="stat-card stat-card--vertical animate-in">
     <div class="stat-card-top">
-      <span class="stat-label">Promedio General</span>
-      <div class="stat-icon">
+      <span class="stat-label">Próximo Vencimiento</span>
+      <div class="stat-icon <?= $vencIconColor ?>">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
         </svg>
       </div>
     </div>
-    <div class="stat-value">
-      <?= $stats['promedio'] !== null ? number_format($stats['promedio'], 1) : '—' ?>
-    </div>
+    <div class="stat-value" style="<?= $vencColor ?>"><?= $vencLabel ?></div>
+    <div class="stat-sub" title="<?= htmlspecialchars($vencCaso) ?>"><?= htmlspecialchars($vencCaso) ?></div>
   </div>
 </div>
 

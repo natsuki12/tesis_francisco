@@ -277,23 +277,15 @@
 }
 
 
-/* ===== STAT-CARD DARK VARIANT (for Promedio) ===== */
-.stat-card.stat-dark {
-    background: var(--gray-800);
-    border-color: var(--gray-700);
-}
-
-.stat-card.stat-dark .stat-label {
+/* ===== STAT-CARD SUBTITLE (for Próximo Vencimiento) ===== */
+.stat-sub {
+    font-size: var(--text-2xs);
     color: var(--gray-400);
-}
-
-.stat-card.stat-dark .stat-value {
-    color: var(--white);
-}
-
-.stat-card.stat-dark .stat-icon {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--gray-300);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 

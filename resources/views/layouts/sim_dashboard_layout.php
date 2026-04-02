@@ -108,8 +108,9 @@ $activeItem = $activeItem ?? '';
     $isActive = ($key === $activeMenu);
     $btnClass = $isActive ? 'accordion-button' : 'accordion-button collapsed';
     $panelClass = $isActive ? 'accordion-collapse collapse show' : 'accordion-collapse collapse';
+    $accordionItemId = ($key === 'declaraciones') ? ' id="tourMenuDeclaraciones"' : '';
 ?>
-    <div class="accordion-item">
+    <div class="accordion-item"<?= $accordionItemId ?>>
         <h2 class="accordion-header"><button class="<?= $btnClass ?>" type="button" data-section="<?= $key ?>"> <?= $menu['label'] ?> </button></h2>
         <div class="<?= $panelClass ?>" data-panel="<?= $key ?>">
             <ul class="list-group">
@@ -117,8 +118,9 @@ $activeItem = $activeItem ?? '';
                 $itemLabel = is_array($item) ? $item['label'] : $item;
                 $itemUrl = (is_array($item) && !empty($item['url'])) ? base_url($item['url']) : '#';
                 $isItemActive = ($isActive && $itemLabel === $activeItem);
+                $linkId = ($itemLabel === 'Sucesiones') ? ' id="tourSucesionesLink"' : '';
             ?>
-                <li class="list-group-item"><a href="<?= $itemUrl ?>" class="link-secondary<?= $isItemActive ? ' active-link' : '' ?>" style="cursor:pointer;text-decoration:none"><?= $itemLabel ?></a></li>
+                <li class="list-group-item"><a href="<?= $itemUrl ?>"<?= $linkId ?> class="link-secondary<?= $isItemActive ? ' active-link' : '' ?>" style="cursor:pointer;text-decoration:none"><?= $itemLabel ?></a></li>
             <?php endforeach; ?>
             </ul>
         </div>

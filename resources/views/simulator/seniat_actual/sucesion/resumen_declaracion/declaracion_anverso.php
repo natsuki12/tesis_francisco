@@ -39,7 +39,7 @@ $herederos = $d['herederos'] ?? [];
     <div>
         <div class="row">
             <!-- Botones de navegación -->
-            <div class="col-sm-12" style="text-align:center">
+            <div id="navAnverso" class="col-sm-12" style="text-align:center">
                 <button type="button" class="btn btn-sm btn-danger" disabled>
                     <i class="bi bi-arrow-bar-left"></i> Anverso
                 </button>
@@ -59,7 +59,7 @@ $herederos = $d['herederos'] ?? [];
                 <div class="col-sm-12">
                     <div>
                         <!-- ═══ Tabla principal: Secciones A-E ═══ -->
-                        <table class="table table-bordered table-sm lenletratablaResumen">
+                        <table id="seccionAE" class="table table-bordered table-sm lenletratablaResumen">
                             <!-- A - DATOS DEL CONTRIBUYENTE -->
                             <tbody>
                                 <tr>
@@ -144,7 +144,7 @@ $herederos = $d['herederos'] ?? [];
                         </table>
 
                         <!-- ═══ F - DATOS DE LA PRORROGA ═══ -->
-                        <table class="table table-bordered table-sm lenletratablaResumen">
+                        <table id="seccionF" class="table table-bordered table-sm lenletratablaResumen">
                             <thead>
                                 <tr>
                                     <td colspan="10" class="table-light">F- DATOS DE LA PRORROGA</td>
@@ -189,7 +189,7 @@ $herederos = $d['herederos'] ?? [];
                         </table>
 
                         <!-- ═══ G - HEREDEROS ═══ -->
-                        <table class="table table-bordered table-sm lenletratablaResumen">
+                        <table id="seccionG" class="table table-bordered table-sm lenletratablaResumen">
                             <thead class="table-light">
                                 <tr>
                                     <td colspan="11" class="table-light"> G - HEREDEROS</td>
@@ -241,7 +241,7 @@ $herederos = $d['herederos'] ?? [];
                         </table>
 
                         <!-- ═══ H - IDENTIFICACION DE HEREDERO PREMUERTO ═══ -->
-                        <table class="table table-bordered table-sm lenletratablaResumen">
+                        <table id="seccionH" class="table table-bordered table-sm lenletratablaResumen">
                             <thead class="table-light">
                                 <tr>
                                     <td colspan="11" class="table-light"> H - IDENTIFICACION DE HEREDERO PREMUERTO</td>
@@ -330,7 +330,7 @@ $herederos = $d['herederos'] ?? [];
                         </table>
 
                         <!-- ═══ I - AUTOLIQUIDACIÓN DEL IMPUESTO ═══ -->
-                        <table class="table table-bordered table-sm lenletratablaResumen">
+                        <table id="seccionI" class="table table-bordered table-sm lenletratablaResumen">
                             <thead class="table-light">
                                 <tr>
                                     <td colspan="11" class="table-light"> I – AUTOLIQUIDACIÓN DEL IMPUESTO</td>
@@ -352,7 +352,7 @@ $herederos = $d['herederos'] ?? [];
                                 <tr>
                                     <td>
                                         <table class="table table-bordered">
-                                            <tbody>
+                                            <tbody id="grupoPatrimonioBruto">
                                                 <tr>
                                                     <td colspan="2" class="table-light text-center">
                                                         <strong>Concepto</strong></td>
@@ -379,6 +379,8 @@ $herederos = $d['herederos'] ?? [];
                                                             Bruto)</strong></td>
                                                     <td class="text-end"><strong><?= $d['linea_4'] ?? '0,00' ?></strong></td>
                                                 </tr>
+                                            </tbody>
+                                            <tbody id="grupoExclusiones">
                                                 <tr>
                                                     <td>5</td>
                                                     <td>Desgravámenes</td>
@@ -400,6 +402,8 @@ $herederos = $d['herederos'] ?? [];
                                                             Exoneraciones)</strong></td>
                                                     <td class="text-end"><strong><?= $d['linea_8'] ?? '0,00' ?></strong></td>
                                                 </tr>
+                                            </tbody>
+                                            <tbody id="grupoPatrimonioNeto">
                                                 <tr>
                                                     <td colspan="3" class="text-center border-white"><strong>Patrimonio
                                                             Neto Hereditario</strong></td>
@@ -422,6 +426,8 @@ $herederos = $d['herederos'] ?? [];
                                                     </td>
                                                     <td class="text-end"><strong><?= $d['linea_11'] ?? '0,00' ?></strong></td>
                                                 </tr>
+                                            </tbody>
+                                            <tbody id="grupoTributo">
                                                 <tr>
                                                     <td colspan="3" class="text-center border-white">
                                                         <strong>Determinación de Tributo</strong></td>

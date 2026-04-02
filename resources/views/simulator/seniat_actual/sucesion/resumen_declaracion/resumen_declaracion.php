@@ -28,7 +28,7 @@ $fmtBs = function ($v): string {
 <div class="shadow-lg p-3 mb-5 bg-body rounded lenletratablaResumen">
     <div>
         <!-- ═══ Tabla 1: Unidad Tributaria / Total Herederos ═══ -->
-        <table class="table table-bordered table-sm lenletratablaResumen">
+        <table class="table table-bordered table-sm lenletratablaResumen" id="resumenDatosGenerales">
             <tbody>
                 <tr>
                     <td class="table-light"><strong>Unidad Tributaria</strong></td>
@@ -43,14 +43,15 @@ $fmtBs = function ($v): string {
         <br>
 
         <!-- ═══ Tabla 2: Resumen Patrimonio / Tributo ═══ -->
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="resumenPatrimonioTributo">
             <tbody>
                 <!-- Header -->
                 <tr>
                     <td colspan="2" class="table-light text-center"><strong>Concepto</strong></td>
                     <td class="table-light text-center"><strong>Gravamen</strong></td>
                 </tr>
-                <!-- Rows 1-2 -->
+            </tbody>
+            <tbody id="resumenGrupoBruto">
                 <tr>
                     <td>1</td>
                     <td>Total Bienes Inmuebles</td>
@@ -73,7 +74,8 @@ $fmtBs = function ($v): string {
                     <td><strong>Activo Hereditario Bruto (Patrimonio Hereditario Bruto)</strong></td>
                     <td class="text-end"><strong><?= $f('activo_bruto') ?></strong></td>
                 </tr>
-                <!-- Rows 5-7 -->
+            </tbody>
+            <tbody id="resumenGrupoExclusiones">
                 <tr>
                     <td>5</td>
                     <td>Desgravámenes</td>
@@ -95,7 +97,8 @@ $fmtBs = function ($v): string {
                     <td><strong>Total de Exclusiones (Desgravámenes - Exenciones - Exoneraciones)</strong></td>
                     <td class="text-end"><strong><?= $f('total_exclusiones') ?></strong></td>
                 </tr>
-                <!-- Section separator -->
+            </tbody>
+            <tbody id="resumenGrupoNeto">
                 <tr>
                     <td colspan="3" class="text-center border-white"><strong>Patrimonio Neto Hereditario</strong></td>
                 </tr>
@@ -116,7 +119,8 @@ $fmtBs = function ($v): string {
                     <td><strong>Patrimonio Neto Hereditario o Líquido Hereditario Gravable (Activo Hereditario Neto - Total Pasivo)</strong></td>
                     <td class="text-end"><strong><?= $f('patrimonio_neto') ?></strong></td>
                 </tr>
-                <!-- Section separator -->
+            </tbody>
+            <tbody id="resumenGrupoTributo">
                 <tr>
                     <td colspan="3" class="text-center border-white"><strong>Determinación de Tributo</strong></td>
                 </tr>
@@ -142,7 +146,7 @@ $fmtBs = function ($v): string {
         <br>
 
         <!-- ═══ Tabla 3: Cuota Parte Hereditaria ═══ -->
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="resumenCuotaParte">
             <thead class="table-light">
                 <tr>
                     <td colspan="11" class="text-center">
@@ -155,18 +159,23 @@ $fmtBs = function ($v): string {
             <tbody>
                 <tr>
                     <td>
-                        <div class="row">
+                        <div class="row" id="resumenCalculoManual">
                             <div class="col-sm-12 py-2">
                                 <div class="text-info text-center">
                                     <h6>Si desea ajustar los cálculos de forma manual presione</h6>
                                     <a class="btn btn-sm btn-danger" href="<?= base_url('/simulador/sucesion/resumen_calculo_manual') ?>">Modificar Cálculo</a>
                                     &nbsp;
-                                    <button type="button" id="btnRestaurar" class="btn btn-sm btn-danger">Restaurar Cálculo Automático</button>
+                                    <button type="button" id="btnRestaurar" class="btn btn-sm btn-outline-secondary"
+                                        title="Esta función NO existe en el portal real del SENIAT. Es una facilidad exclusiva del simulador."
+                                        style="border-style: dashed;">
+                                        <i class="bi bi-arrow-counterclockwise"></i> Restaurar Cálculo Automático
+                                        <span class="badge bg-warning text-dark" style="font-size: 9px; vertical-align: middle; margin-left: 4px;">Solo Simulador</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                         <!-- Sub-tabla de herederos -->
-                        <table colspan="11" class="table table-bordered table-sm lenletratablaResumen">
+                        <table colspan="11" class="table table-bordered table-sm lenletratablaResumen" id="resumenTablaHerederos">
                             <thead class="table-light">
                                 <tr>
                                     <th>Apellido(s) y Nombre(s)</th>
@@ -213,7 +222,7 @@ $fmtBs = function ($v): string {
         <br>
 
         <!-- ═══ Tabla 4: Tarifa de Referencia ═══ -->
-        <table class="table table-bordered table-sm lenletratablaResumen">
+        <table class="table table-bordered table-sm lenletratablaResumen" id="resumenTarifaReferencia">
             <thead class="table-light">
                 <tr>
                     <th>Indicación del Parentesco</th>

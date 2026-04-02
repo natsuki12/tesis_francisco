@@ -27,6 +27,7 @@ export function saveCaseData(immediate = false) {
             const plain = JSON.parse(JSON.stringify(caseData));
             sessionStorage.setItem(STORAGE_KEY, JSON.stringify(plain));
             sessionStorage.setItem(STORAGE_KEY_STEP, UIState.currentStep.toString());
+            if (window.CC && window.CC.updateChecklist) window.CC.updateChecklist();
         } catch (e) { /* silently fail */ }
         return;
     }
@@ -37,6 +38,7 @@ export function saveCaseData(immediate = false) {
             const plain = JSON.parse(JSON.stringify(caseData));
             sessionStorage.setItem(STORAGE_KEY, JSON.stringify(plain));
             sessionStorage.setItem(STORAGE_KEY_STEP, UIState.currentStep.toString());
+            if (window.CC && window.CC.updateChecklist) window.CC.updateChecklist();
         } catch (e) { /* silently fail */ }
     }, 300);
 }

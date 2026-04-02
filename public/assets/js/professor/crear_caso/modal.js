@@ -328,6 +328,13 @@ const MODAL_CONFIGS = {
     saveLabel: (edit) => edit !== null ? 'Guardar Cambios' : 'Agregar Inmueble',
     wide: true,
     build: (form) => `
+      <div class="cc-inline-errors" id="modalInmuebleErrors" style="margin-bottom:16px;">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Error de validación</span>
+        </p>
+        <ul class="cc-inline-errors__list" id="modalInmuebleErrorsList"></ul>
+      </div>
       <div class="cc-field" style="margin-bottom:16px">
         <label style="margin-bottom:8px;display:block">Tipo de Bien</label>
         <div class="cc-grid cc-grid--4 cc-grid--compact" id="inmuebleTipoCheckboxes">
@@ -479,19 +486,51 @@ const MODAL_CONFIGS = {
       const nameKey = cat ? cat.nombre.toLowerCase() : '';
       const tipos = getCatalogs().tiposBienMueble[UIState.currentSubTab] || [];
 
+      // Componente Inline Errors universal para Muebles (inicialmente oculto)
+      const errorBlock = `
+        <div class="cc-inline-errors" id="modalMuebleErrors" style="margin-bottom:16px; margin-top:8px;">
+          <p class="cc-inline-errors__title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Error de validación</span>
+          </p>
+          <ul class="cc-inline-errors__list" id="modalMuebleErrorsList"></ul>
+        </div>
+      `;
+
       // ── Helper: bloque RIF Empresa + Razón Social (readonly) ──
-      const rifDigits = (form.rif_empresa || '').replace(/^[A-Za-z]/, ''); // quitar letra J si existe
-      const rifEmpresaBlock = (labelRif = 'Rif Empresa', labelRS = 'Razón Social') => `
+      const rifDigits = (form.rif_empresa || '').replace(/^[A-Za-z]/, ''); // quitar letra inicial si existe
+      const rifLetra = form.rif_empresa ? form.rif_empresa.charAt(0).toUpperCase() : 'J';
+      const rifEmpresaBlock = (labelRif = 'Rif Empresa', labelRS = 'Razón Social', showSearch = false) => {
+        let searchHtml = '';
+        if (showSearch) {
+          searchHtml = `
+            <div class="cc-search-persona" style="grid-column: 1 / -1; margin-bottom:12px; margin-top:8px;">
+              <label class="cc-search-persona__label">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                Buscar Empresa Existente
+              </label>
+              <input type="text" id="inputBuscarEmpresa" placeholder="Escriba la Razón Social o RIF..." autocomplete="off">
+            </div>
+          `;
+        }
+        return `
+            ${searchHtml}
             <div class="cc-field"><label>${labelRif}</label>
               <div style="display:flex;gap:4px;">
-                <select id="modalRifLetra" style="width:60px;flex-shrink:0;" disabled>
-                  <option value="J" selected>J</option>
+                <select id="modalRifLetra" data-modal="letra_rif_empresa" style="width:60px;flex-shrink:0;">
+                  <option value="J" ${rifLetra === 'J' ? 'selected' : ''}>J</option>
+                  <option value="G" ${rifLetra === 'G' ? 'selected' : ''}>G</option>
+                  <option value="V" ${rifLetra === 'V' ? 'selected' : ''}>V</option>
+                  <option value="E" ${rifLetra === 'E' ? 'selected' : ''}>E</option>
                 </select>
                 <input type="text" data-modal="rif_empresa" id="modalRifEmpresa" value="${rifDigits}" placeholder="012345678" maxlength="9" style="flex:1;">
               </div>
               <span class="cc-hint cc-rif-hint" id="rifHint" style="color:var(--cc-amber-600)"></span></div>
             <div class="cc-field"><label>${labelRS}</label>
               <input type="text" data-modal="razon_social" id="modalRazonSocial" value="${form.razon_social || ''}" readonly style="background:var(--cc-slate-50)"></div>`;
+      };
 
       let extraFields = '';
 
@@ -521,13 +560,13 @@ const MODAL_CONFIGS = {
         // ── 3. Seguro ──
       } else if (nameKey.includes('seguro')) {
         extraFields = `
-              ${rifEmpresaBlock()}
+              ${rifEmpresaBlock('Rif Empresa', 'Razón Social', true)}
               <div class="cc-field"><label>Número de Prima</label>
                 <input type="text" data-modal="numero_prima" value="${form.numero_prima || ''}" maxlength="15"></div>`;
 
         // ── 4. Acciones ──
       } else if (nameKey.includes('acciones')) {
-        extraFields = rifEmpresaBlock();
+        extraFields = rifEmpresaBlock('Rif Empresa', 'Razón Social', true);
 
         // ── 5. Bonos ──
       } else if (nameKey.includes('bonos')) {
@@ -541,7 +580,7 @@ const MODAL_CONFIGS = {
 
         // ── 6. Caja de Ahorro ──  (NO tipo de bien select)
       } else if (nameKey.includes('caja de ahorro')) {
-        extraFields = rifEmpresaBlock();
+        extraFields = rifEmpresaBlock('Rif Empresa', 'Razón Social', true);
 
         // ── 7. Cuentas y Efectos por Cobrar ──
       } else if (nameKey.includes('cobrar')) {
@@ -580,7 +619,7 @@ const MODAL_CONFIGS = {
                 </select></div>
               <div class="cc-field"><label>Número de Cuenta</label>
                 <input type="text" data-modal="numero_cuenta" id="modalPrestCuenta" value="${form.numero_cuenta || ''}" maxlength="20" ${form.posee_banco !== 'SI' ? 'disabled' : ''}></div>
-              ${rifEmpresaBlock()}`;
+              ${rifEmpresaBlock('Rif Empresa', 'Razón Social', true)}`;
 
         // ── 12. Semovientes ──
       } else if (nameKey.includes('semovientes')) {
@@ -619,7 +658,7 @@ const MODAL_CONFIGS = {
                 </div>
             </div>`;
 
-      return `
+      const finalHtml = `
       <div class="cc-grid cc-grid--2">
         ${selectsTipo}
         ${extraFields}
@@ -641,6 +680,8 @@ const MODAL_CONFIGS = {
             <input type="text" class="decimal-input decimal-signed" data-modal="valor_declarado" placeholder="0,00" value="${form.valor_declarado || ''}"></div>
         </div>
       </div>`;
+
+      return errorBlock + finalHtml;
     },
     collect: () => {
       const form = collectModalFields();
@@ -710,9 +751,11 @@ const MODAL_CONFIGS = {
       return null;
     },
     save: async (form) => {
-      // Concatenar letra J con los dígitos del RIF para guardar completo
+      // Concatenar letra seleccionada con los dígitos del RIF para guardar completo
       if (form.rif_empresa && /^\d{9}$/.test(form.rif_empresa)) {
-        form.rif_empresa = 'J' + form.rif_empresa;
+        const letra = form.letra_rif_empresa || 'J';
+        form.rif_empresa = letra + form.rif_empresa;
+        delete form.letra_rif_empresa; // Limpiar del payload
       }
       if (!caseData.bienes_muebles[UIState.currentSubTab]) caseData.bienes_muebles[UIState.currentSubTab] = [];
       if (UIState.editIndex !== null) {
@@ -769,6 +812,13 @@ const MODAL_CONFIGS = {
     build: (form) => {
       const catalogs = getCatalogs();
       return `
+      <div class="cc-inline-errors" id="modalPasivoDeudaErrors" style="margin-bottom:16px;">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Error de validación</span>
+        </p>
+        <ul class="cc-inline-errors__list" id="modalPasivoDeudaErrorsList"></ul>
+      </div>
       <div class="cc-grid cc-grid--2 cc-pasivo-deuda-grid" style="display: grid;">
         <div class="cc-field cc-span-2" id="wrapTipoDeuda" style="order:0"><label>Tipo de Deuda</label>
           <select data-modal="tipo_pasivo_deuda_id" id="selectPasivoDeuda">
@@ -846,6 +896,13 @@ const MODAL_CONFIGS = {
     saveLabel: (edit) => edit !== null ? 'Guardar Cambios' : 'Agregar',
     wide: false,
     build: (form) => `
+      <div class="cc-inline-errors" id="modalPasivoGastoErrors" style="margin-bottom:16px;">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Error de validación</span>
+        </p>
+        <ul class="cc-inline-errors__list" id="modalPasivoGastoErrorsList"></ul>
+      </div>
       <div class="cc-grid cc-grid--2">
         <div class="cc-field"><label>Tipo de Gasto</label>
           <select data-modal="tipo_pasivo_gasto_id">
@@ -883,6 +940,13 @@ const MODAL_CONFIGS = {
     saveLabel: (edit) => edit !== null ? 'Guardar Cambios' : 'Agregar',
     wide: false,
     build: (form) => `
+      <div class="cc-inline-errors" id="modalExencionErrors" style="margin-bottom:16px;">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Error de validación</span>
+        </p>
+        <ul class="cc-inline-errors__list" id="modalExencionErrorsList"></ul>
+      </div>
       <div class="cc-field"><label>Tipo de Exención</label>
         <input type="text" data-modal="tipo_exencion" placeholder="Tipo de exención" value="${form.tipo_exencion || ''}" maxlength="253"></div>
       <div class="cc-field cc-mt"><label>Descripción</label>
@@ -912,6 +976,13 @@ const MODAL_CONFIGS = {
     saveLabel: (edit) => edit !== null ? 'Guardar Cambios' : 'Agregar',
     wide: false,
     build: (form) => `
+      <div class="cc-inline-errors" id="modalExoneracionErrors" style="margin-bottom:16px;">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Error de validación</span>
+        </p>
+        <ul class="cc-inline-errors__list" id="modalExoneracionErrorsList"></ul>
+      </div>
       <div class="cc-field"><label>Tipo de Exoneración</label>
         <input type="text" data-modal="tipo_exoneracion" placeholder="Tipo de exoneración" value="${form.tipo_exoneracion || ''}" maxlength="253"></div>
       <div class="cc-field cc-mt"><label>Descripción</label>
@@ -942,6 +1013,13 @@ const MODAL_CONFIGS = {
     saveLabel: () => 'Agregar',
     wide: false,
     build: (form) => `
+      <div class="cc-inline-errors" id="modalProrrogaErrors" style="margin-bottom:16px;">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Error de validación</span>
+        </p>
+        <ul class="cc-inline-errors__list" id="modalProrrogaErrorsList"></ul>
+      </div>
       <div class="cc-grid cc-grid--2">
         <div class="cc-field"><label>Fecha de Solicitud</label>
           <input type="date" data-modal="fecha_solicitud" value="${form.fecha_solicitud || ''}"></div>
@@ -1697,7 +1775,8 @@ export function openModal(type, editIdx) {
           if (rifHint) rifHint.textContent = 'Debe ingresar exactamente 9 dígitos.';
           return;
         }
-        const rif = 'J' + digits; // Concatenar letra + dígitos
+        const letter = rifLetra ? rifLetra.value : 'J';
+        const rif = letter + digits; // Concatenar letra dinámica + dígitos
 
         // 1. Buscar primero en la BD (si existe, siempre bloquea razón social)
         try {
@@ -1736,8 +1815,64 @@ export function openModal(type, editIdx) {
         if (rifHint) rifHint.textContent = 'RIF no encontrado en la base de datos. Ingrese la Razón Social manualmente.';
       };
       rifInput.addEventListener('blur', buscarRif);
+      if (rifLetra) {
+        rifLetra.addEventListener('change', buscarRif);
+      }
       // Si hay RIF al abrir (editando), verificar si debe bloquear o desbloquear razón social
       if (rifInput.value.trim()) buscarRif();
+      
+      // ── Search bar AutocompleteDropdown para Empresas ──
+      const inputBuscarEmp = bodyEl.querySelector('#inputBuscarEmpresa');
+      if (inputBuscarEmp && typeof AutocompleteDropdown !== 'undefined') {
+        new AutocompleteDropdown({
+          input: inputBuscarEmp,
+          debounceMs: 350,
+          minLength: 0,
+          fetchFn: async (query, signal) => {
+            const baseUrl2 = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+            const resp = await fetch(`${baseUrl2}/api/buscar-empresas?q=${encodeURIComponent(query)}`, { signal });
+            const json = await resp.json();
+            return json.success ? json.data : [];
+          },
+          renderItem: (item) => {
+            const badgeClass = 'ac-dropdown__badge';
+            const letra = item.rif_empresa ? item.rif_empresa.charAt(0).toUpperCase() : 'J';
+            return `
+              <span class="${badgeClass}">${letra}</span>
+              <span class="ac-dropdown__cedula">${item.rif_empresa || '—'}</span>
+              <span class="ac-dropdown__sep">—</span>
+              <span class="ac-dropdown__name">${item.razon_social || 'Desconocido'}</span>
+            `;
+          },
+          onSelect: async (item) => {
+            try {
+              if (!item.rif_empresa) return;
+              
+              const letra = item.rif_empresa.charAt(0).toUpperCase();
+              const digitos = item.rif_empresa.substring(1).replace(/\D/g, '').slice(0, 9);
+              
+              if (rifLetra) rifLetra.value = letra;
+              if (rifInput) rifInput.value = digitos;
+              if (razonSocialInput) {
+                razonSocialInput.value = item.razon_social || '';
+                lockRazonSocial();
+              }
+              if (rifHint) rifHint.textContent = '';
+              
+              // Clear inline errors si estaban encendidos
+              const errContainerMueble = document.getElementById('modalMuebleErrors');
+              if (errContainerMueble) errContainerMueble.classList.remove('is-visible');
+
+              inputBuscarEmp.value = `${item.razon_social || ''} — ${item.rif_empresa}`.trim();
+              inputBuscarEmp.blur();
+              
+              showToast('Empresa autocompletada', 'success');
+            } catch (err) {
+              console.error('Error auto-rellenando empresa:', err);
+            }
+          }
+        });
+      }
     }
   }
 
@@ -1845,21 +1980,34 @@ export async function saveModal() {
   if (!config) return;
   const form = config.collect();
 
-  // Clear previous inline errors
-  const errContainer = document.getElementById('modalHerederoErrors');
-  const errList = document.getElementById('modalHerederoErrorsList');
+  // Diccionario para extraer el sufijo del ID de error según el modal actual
+  const errorMapping = {
+    'heredero': 'Heredero',
+    'heredero_premuerto': 'Heredero',
+    'inmueble': 'Inmueble',
+    'mueble': 'Mueble',
+    'pasivo_deuda': 'PasivoDeuda',
+    'pasivo_gasto': 'PasivoGasto',
+    'exencion': 'Exencion',
+    'exoneracion': 'Exoneracion',
+    'prorroga': 'Prorroga'
+  };
+  const suffix = errorMapping[UIState.currentModalType] || '';
+  const errContainer = document.getElementById(`modal${suffix}Errors`);
+  const errList = document.getElementById(`modal${suffix}ErrorsList`);
+
+  // Limpiar error renderizado en este contenedor
   if (errContainer) errContainer.classList.remove('is-visible');
 
   if (config.validate) {
     const error = config.validate(form);
     if (error) {
-      // Show inline for heredero modals
-      if ((UIState.currentModalType === 'heredero' || UIState.currentModalType === 'heredero_premuerto') && errContainer && errList) {
+      if (errContainer && errList) {
         errList.innerHTML = `<li>${error}</li>`;
         errContainer.classList.add('is-visible');
         errContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         // Auto-clear on next input
-        const bodyEl = $('#modalBody');
+        const bodyEl = document.getElementById('modalBody');
         if (bodyEl) {
           const clearHandler = () => {
             errContainer.classList.remove('is-visible');
@@ -1870,6 +2018,7 @@ export async function saveModal() {
           bodyEl.addEventListener('change', clearHandler, { once: true });
         }
       } else {
+        // Fallback en caso radical de que algún modal no tenga el contenedor inyectado
         showToast(error);
       }
       return;

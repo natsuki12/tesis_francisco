@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Modules\Professor\Controllers;
 
 use App\Modules\Professor\Models\CalificacionesModel;
+use App\Modules\Professor\Models\HomeProfessorModel;
 
 /**
  * Controlador de Calificaciones — sábana de notas del profesor.
@@ -17,7 +18,8 @@ class CalificacionesController
     public function __construct()
     {
         $this->model = new CalificacionesModel();
-        $this->profesorId = (int) ($_SESSION['user_id'] ?? 0);
+        $userId = (int) ($_SESSION['user_id'] ?? 0);
+        $this->profesorId = (new HomeProfessorModel())->getProfesorId($userId) ?? 0;
     }
 
     /**

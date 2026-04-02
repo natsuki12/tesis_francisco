@@ -55,7 +55,7 @@ $catalogoParentescos = [
 ob_start();
 ?>
 
-<div _ngcontent-pgi-c76 class="shadow p-3 mb-5 bg-white rounded lenletra">
+<div _ngcontent-pgi-c76 class="shadow p-3 mb-5 bg-white rounded lenletra" data-sub-herederos-count="<?= count($herederosPremuertos) ?>">
     <div _ngcontent-pgi-c76 class=card>
         <div _ngcontent-pgi-c76 class=card-header>IDENTIFICACIÓN DE HEREDEROS PREMUERTO EN REPRESENTACIÓN</div>
         <div _ngcontent-pgi-c76 class=card-body>

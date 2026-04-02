@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Modules\Professor\Controllers;
 
 use App\Modules\Professor\Models\EntregasModel;
+use App\Modules\Professor\Models\HomeProfessorModel;
 use App\Modules\Simulator\Services\DeclaracionComparador;
 
 /**
@@ -13,10 +14,13 @@ use App\Modules\Simulator\Services\DeclaracionComparador;
 class EntregasDetalleController
 {
     private EntregasModel $model;
+    private int $profesorId;
 
     public function __construct()
     {
         $this->model = new EntregasModel();
+        $userId = (int) ($_SESSION['user_id'] ?? 0);
+        $this->profesorId = (new HomeProfessorModel())->getProfesorId($userId) ?? 0;
     }
 
     /**
@@ -24,34 +28,61 @@ class EntregasDetalleController
      */
     public function detalle(int $id): void
     {
-        $intento = $this->model->getIntentoDetalle($id);
+        $intento = $this->model->getIntentoDetalle($id, $this->profesorId);
         if (!$intento) {
             http_response_code(404);
             require __DIR__ . '/../../../../resources/views/errors/404.php';
             return;
         }
 
-        // Comparación: reutiliza el mismo motor que genera el PDF de retroalimentación
-        $comparacion = [];
-        try {
-            $comparador = new DeclaracionComparador();
-            $comparacion = $comparador->comparar($id, (int) $intento['estudiante_id']);
-        } catch (\Throwable $e) {
-            // Si falla la comparación (ej: borrador vacío), seguimos sin ella
-            $comparacion = [
-                'secciones'         => [],
-                'resumen_secciones' => [],
-                'autoliquidacion'   => [],
-                'herederos_calculo' => [],
-                'score'             => [
-                    'correctas'      => 0,
-                    'con_errores'    => 0,
-                    'omitidas'       => 0,
-                    'de_mas'         => 0,
-                    'total_esperado' => 0,
-                    'porcentaje'     => 0,
-                ],
-            ];
+        $emptyComparacion = [
+            'secciones'         => [],
+            'resumen_secciones' => [],
+            'autoliquidacion'   => [],
+            'herederos_calculo' => [],
+            'score'             => [
+                'correctas'      => 0,
+                'con_errores'    => 0,
+                'omitidas'       => 0,
+                'de_mas'         => 0,
+                'total_esperado' => 0,
+                'porcentaje'     => 0,
+            ],
+        ];
+
+        // Detectar intento rechazado en etapa de inscripción de RIF (sin declaración completa)
+        $esRechazadoSinRif = ($intento['estado'] === 'Rechazado' && empty($intento['rif_sucesoral']));
+
+        $causante    = ['campos' => [], 'vacio' => true];
+        $relaciones  = ['representante' => [], 'herederos' => []];
+        $direcciones = [];
+        $comparacion = $emptyComparacion;
+
+        if ($esRechazadoSinRif) {
+            // Cargar los datos de revisión de RIF (causante, relaciones, direcciones)
+            try {
+                $rsModel    = new \App\Modules\Professor\Models\GeneracionRsModel();
+                $profesorId = $rsModel->getProfesorId((int) ($_SESSION['user_id'] ?? 0));
+                if ($profesorId) {
+                    $validator = new \App\Modules\Simulator\Validators\RSValidator();
+                    $rsData    = $validator->getComparacionParaRevision($id, $profesorId);
+                    if ($rsData) {
+                        $causante    = $rsData['causante']    ?? $causante;
+                        $relaciones  = $rsData['relaciones']  ?? $relaciones;
+                        $direcciones = $rsData['direcciones'] ?? $direcciones;
+                    }
+                }
+            } catch (\Throwable $e) {
+                // Secciones quedan vacías — la vista mostrará mensajes de "sin datos"
+            }
+        } else {
+            // Comparación completa: reutiliza el motor que genera el PDF de retroalimentación
+            try {
+                $comparador  = new DeclaracionComparador();
+                $comparacion = $comparador->comparar($id, (int) $intento['estudiante_id']);
+            } catch (\Throwable $e) {
+                // Si falla la comparación (ej: borrador vacío), seguimos sin ella
+            }
         }
 
         require __DIR__ . '/../../../../resources/views/professor/detalle_intento.php';
@@ -63,7 +94,7 @@ class EntregasDetalleController
      */
     public function calificar(int $id): void
     {
-        $intento = $this->model->getIntentoDetalle($id);
+        $intento = $this->model->getIntentoDetalle($id, $this->profesorId);
         if (!$intento) {
             http_response_code(404);
             header('Content-Type: application/json');

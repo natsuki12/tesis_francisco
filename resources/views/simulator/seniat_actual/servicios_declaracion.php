@@ -369,7 +369,7 @@ ob_start();
                                                 contribuyente a
                                                 través del Portal Fiscal del SENIAT
                                             <form id="loginForm">
-                                                <div class="form-floating mb-3">
+                                                <div class="form-floating mb-3" id="tourUsuario">
                                                     <input class="form-control form-control-sm" id="floatingInput"
                                                         maxlength="30" placeholder=" " required="" type="text"
                                                         value="" />
@@ -377,7 +377,7 @@ ob_start();
                                                         Usuario
                                                     </label>
                                                 </div>
-                                                <div class="input-group mb-3">
+                                                <div class="input-group mb-3" id="tourClave">
                                                     <div class="form-floating">
                                                         <input class="form-control form-control-sm"
                                                             id="floatingPassword" maxlength="30" placeholder=" "
@@ -391,7 +391,7 @@ ob_start();
                                                         </i>
                                                     </span>
                                                 </div>
-                                                <div class="row g-2">
+                                                <div class="row g-2" id="tourCaptcha">
                                                     <div class="col-md-3">
                                                         <label class="imageninput"
                                                             style="font-size:25px; width:120px; height:60px; line-height:60px;">
@@ -413,19 +413,19 @@ ob_start();
                                                 <div class="form-floating mb-3">
                                                     <div class="row">
                                                         <div class="col align-items-center">
-                                                            <button class="btn btn-seniat" id="btnAceptar"
+                                                            <button class="btn btn-seniat" id="btnAceptar" data-tour-id="tourAceptar"
                                                                 type="button">
                                                                 Aceptar
                                                             </button>
                                                             <a href="<?= base_url('/simulador') ?>"
-                                                                class="btn btn-seniat" type="button">
+                                                                class="btn btn-seniat" type="button" id="tourSalir">
                                                                 Salir
                                                             </a>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col align-items-center d-flex justify-content mt-3">
-                                                            <a class="btn btn-light"
+                                                            <a class="btn btn-light" id="tourRegistrarse"
                                                                 href="<?= base_url('/simulador/registro/contribuyente') ?>">
                                                                 Regístrese
                                                             </a>

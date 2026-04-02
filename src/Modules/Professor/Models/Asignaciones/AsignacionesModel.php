@@ -45,6 +45,7 @@ class AsignacionesModel
                  JOIN estudiantes est ON a.estudiante_id = est.id
                  JOIN personas per ON est.persona_id = per.id
                  WHERE a.config_id = :cid
+                   AND a.estado != 'Inactivo'
                  ORDER BY per.apellidos ASC, per.nombres ASC"
             );
             $stmt2->execute(['cid' => $cfg['id']]);
@@ -68,42 +69,46 @@ class AsignacionesModel
         try {
             // Insertar config
             $stmt = $this->db->prepare(
-                "INSERT INTO sim_caso_configs (caso_id, profesor_id, modalidad, max_intentos, fecha_apertura, fecha_limite, status)
-                 VALUES (:caso_id, :prof_id, :modalidad, :max, :apertura, :limite, 'Activo')"
+                "INSERT INTO sim_caso_configs (caso_id, profesor_id, nombre, modalidad, max_intentos, tipo_calificacion, fecha_apertura, fecha_limite, status)
+                 VALUES (:caso_id, :prof_id, :nombre, :modalidad, :max, :tipo_calif, :apertura, :limite, 'Activo')"
             );
+            $tipoCalif = in_array($data['tipo_calificacion'] ?? '', ['numerica', 'aprobado_reprobado'])
+                ? $data['tipo_calificacion']
+                : 'aprobado_reprobado';
+            $maxIntentos = max(0, min(100, (int) ($data['max_intentos'] ?? 0)));
+            $nombre = !empty(trim($data['nombre'] ?? '')) ? trim($data['nombre']) : null;
             $stmt->execute([
                 'caso_id' => $casoId,
                 'prof_id' => $profesorId,
+                'nombre' => $nombre,
                 'modalidad' => $data['modalidad'],
-                'max' => (int) ($data['max_intentos'] ?? 0),
+                'max' => $maxIntentos,
+                'tipo_calif' => $tipoCalif,
                 'apertura' => !empty($data['fecha_apertura']) ? $data['fecha_apertura'] : null,
                 'limite' => !empty($data['fecha_limite']) ? $data['fecha_limite'] : null,
             ]);
             $configId = (int) $this->db->lastInsertId();
 
-            // Insertar estudiantes
+            // Insertar estudiantes (la config es nueva, no puede haber duplicados)
             $estudianteIds = $data['estudiante_ids'] ?? [];
-            $duplicados = [];
             foreach ($estudianteIds as $estId) {
                 $estId = (int) $estId;
-                // Verificar duplicado en el caso
-                $yaEn = $this->rules->estudianteYaAsignadoEnCaso($casoId, $estId);
-                if ($yaEn !== null) {
-                    $duplicados[] = $estId;
-                    continue;
+                try {
+                    $ins = $this->db->prepare(
+                        "INSERT INTO sim_caso_asignaciones (config_id, estudiante_id, estado)
+                         VALUES (:cid, :eid, 'Pendiente')"
+                    );
+                    $ins->execute(['cid' => $configId, 'eid' => $estId]);
+                } catch (\Throwable $e) {
+                    // Silently skip if duplicate (e.g. same student sent twice in array)
+                    error_log('[AsignacionesModel::createConfig] Skip estudiante ' . $estId . ': ' . $e->getMessage());
                 }
-                $ins = $this->db->prepare(
-                    "INSERT INTO sim_caso_asignaciones (config_id, estudiante_id, estado)
-                     VALUES (:cid, :eid, 'Pendiente')"
-                );
-                $ins->execute(['cid' => $configId, 'eid' => $estId]);
             }
 
             $this->db->commit();
             return [
                 'ok' => true,
                 'config_id' => $configId,
-                'duplicados' => $duplicados,
             ];
         } catch (\Throwable $e) {
             $this->db->rollBack();
@@ -139,13 +144,18 @@ class AsignacionesModel
         $sets = [];
         $params = ['id' => $configId];
 
+        if (array_key_exists('nombre', $data)) {
+            $sets[] = 'nombre = :nombre';
+            $trimmed = trim($data['nombre'] ?? '');
+            $params['nombre'] = $trimmed !== '' ? $trimmed : null;
+        }
         if (isset($data['modalidad'])) {
             $sets[] = 'modalidad = :modalidad';
             $params['modalidad'] = $data['modalidad'];
         }
         if (isset($data['max_intentos'])) {
             $sets[] = 'max_intentos = :max';
-            $params['max'] = (int) $data['max_intentos'];
+            $params['max'] = max(0, min(100, (int) $data['max_intentos']));
         }
         if (array_key_exists('fecha_apertura', $data)) {
             $sets[] = 'fecha_apertura = :apertura';
@@ -154,6 +164,14 @@ class AsignacionesModel
         if (array_key_exists('fecha_limite', $data)) {
             $sets[] = 'fecha_limite = :limite';
             $params['limite'] = !empty($data['fecha_limite']) ? $data['fecha_limite'] : null;
+        }
+        if (isset($data['status']) && in_array($data['status'], ['Activo', 'Inactivo'])) {
+            $sets[] = 'status = :status';
+            $params['status'] = $data['status'];
+        }
+        if (isset($data['tipo_calificacion']) && in_array($data['tipo_calificacion'], ['numerica', 'aprobado_reprobado'])) {
+            $sets[] = 'tipo_calificacion = :tipo_calif';
+            $params['tipo_calif'] = $data['tipo_calificacion'];
         }
 
         if (empty($sets)) {
@@ -210,23 +228,27 @@ class AsignacionesModel
         if (!$cfg)
             return ['ok' => false, 'error' => 'Config no encontrada.'];
 
-        $casoId = (int) $cfg['caso_id'];
         $agregados = 0;
         $duplicados = [];
 
         foreach ($estudianteIds as $estId) {
             $estId = (int) $estId;
-            $yaEn = $this->rules->estudianteYaAsignadoEnCaso($casoId, $estId);
-            if ($yaEn !== null) {
+            // Verificar duplicado dentro de ESTA config (no a nivel de caso)
+            if ($this->estudianteYaEnConfig($configId, $estId)) {
                 $duplicados[] = $estId;
                 continue;
             }
-            $ins = $this->db->prepare(
-                "INSERT INTO sim_caso_asignaciones (config_id, estudiante_id, estado)
-                 VALUES (:cid, :eid, 'Pendiente')"
-            );
-            $ins->execute(['cid' => $configId, 'eid' => $estId]);
-            $agregados++;
+            try {
+                $ins = $this->db->prepare(
+                    "INSERT INTO sim_caso_asignaciones (config_id, estudiante_id, estado)
+                     VALUES (:cid, :eid, 'Pendiente')"
+                );
+                $ins->execute(['cid' => $configId, 'eid' => $estId]);
+                $agregados++;
+            } catch (\Throwable $e) {
+                error_log('[AsignacionesModel::addEstudiantes] Error: ' . $e->getMessage());
+                $duplicados[] = $estId;
+            }
         }
 
         return ['ok' => true, 'agregados' => $agregados, 'duplicados' => $duplicados];
@@ -263,27 +285,85 @@ class AsignacionesModel
      * ========================================================= */
 
     /**
-     * Devuelve estudiantes de secciones del profesor que no están
-     * asignados activamente a ninguna config del caso dado.
+     * Devuelve todos los estudiantes de secciones del profesor (período activo).
+     * Usa GROUP BY para evitar duplicados si un estudiante está en múltiples secciones.
+     * El frontend se encarga de excluir los ya seleccionados en el modal.
      */
-    public function getEstudiantesDisponibles(int $casoId, int $profesorId): array
+    public function getEstudiantesDisponibles(int $profesorId): array
     {
-        $sql = "SELECT est.id AS estudiante_id, per.nombres, per.apellidos, per.cedula,
-                       sec.nombre AS seccion_nombre, u.email
-                FROM estudiantes est
-                JOIN personas per ON est.persona_id = per.id
-                JOIN users u ON u.persona_id = est.persona_id
-                JOIN inscripciones ins ON ins.estudiante_id = est.id
-                JOIN secciones sec ON ins.seccion_id = sec.id
-                WHERE sec.profesor_id = :prof_id
-                  AND est.id NOT IN (
-                      SELECT a.estudiante_id FROM sim_caso_asignaciones a
-                      JOIN sim_caso_configs c ON a.config_id = c.id
-                      WHERE c.caso_id = :caso_id AND a.estado != 'Inactivo' AND c.status = 'Activo'
-                  )
-                ORDER BY sec.nombre, per.apellidos, per.nombres";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(['prof_id' => $profesorId, 'caso_id' => $casoId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $sql = "SELECT est.id AS estudiante_id, per.nombres, per.apellidos, per.cedula,
+                           GROUP_CONCAT(DISTINCT sec.nombre ORDER BY sec.nombre SEPARATOR ', ') AS seccion_nombre,
+                           u.email
+                    FROM estudiantes est
+                    JOIN personas per ON est.persona_id = per.id
+                    JOIN users u ON u.persona_id = est.persona_id
+                    JOIN inscripciones ins ON ins.estudiante_id = est.id
+                    JOIN secciones sec ON ins.seccion_id = sec.id
+                    JOIN periodos p ON sec.periodo_id = p.id AND p.activo = 1
+                    WHERE sec.profesor_id = :prof_id
+                      AND sec.deleted_at IS NULL
+                    GROUP BY est.id, per.nombres, per.apellidos, per.cedula, u.email
+                    ORDER BY per.apellidos, per.nombres";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute(['prof_id' => $profesorId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (\Throwable $e) {
+            error_log('[AsignacionesModel::getEstudiantesDisponibles] Error: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /* =========================================================
+     *  Verificar propiedad del caso
+     * ========================================================= */
+
+    public function casoPertenece(int $casoId, int $profesorId): bool
+    {
+        try {
+            $stmt = $this->db->prepare(
+                "SELECT 1 FROM sim_casos WHERE id = :cid AND profesor_id = :pid LIMIT 1"
+            );
+            $stmt->execute(['cid' => $casoId, 'pid' => $profesorId]);
+            return (bool) $stmt->fetch();
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Verifica que un configId pertenece al profesor dado.
+     */
+    public function configPertenece(int $configId, int $profesorId): bool
+    {
+        try {
+            $stmt = $this->db->prepare(
+                "SELECT 1 FROM sim_caso_configs WHERE id = :cid AND profesor_id = :pid LIMIT 1"
+            );
+            $stmt->execute(['cid' => $configId, 'pid' => $profesorId]);
+            return (bool) $stmt->fetch();
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    /* =========================================================
+     *  Helper: ¿Estudiante ya activo en esta config?
+     * ========================================================= */
+
+    private function estudianteYaEnConfig(int $configId, int $estudianteId): bool
+    {
+        try {
+            $stmt = $this->db->prepare(
+                "SELECT 1 FROM sim_caso_asignaciones
+                 WHERE config_id = :cid AND estudiante_id = :eid AND estado != 'Inactivo'
+                 LIMIT 1"
+            );
+            $stmt->execute(['cid' => $configId, 'eid' => $estudianteId]);
+            return (bool) $stmt->fetch();
+        } catch (\Throwable $e) {
+            error_log('[AsignacionesModel::estudianteYaEnConfig] Error: ' . $e->getMessage());
+            return false;
+        }
     }
 }

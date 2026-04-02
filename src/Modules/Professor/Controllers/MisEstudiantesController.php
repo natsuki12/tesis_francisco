@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Modules\Professor\Controllers;
 
 use App\Modules\Professor\Models\MisEstudiantesModel;
+use App\Modules\Professor\Models\HomeProfessorModel;
 
 /**
  * Controlador de Mis Estudiantes del Profesor.
@@ -17,7 +18,8 @@ class MisEstudiantesController
     public function __construct()
     {
         $this->model = new MisEstudiantesModel();
-        $this->profesorId = (int) ($_SESSION['user_id'] ?? 0);
+        $userId = (int) ($_SESSION['user_id'] ?? 0);
+        $this->profesorId = (new HomeProfessorModel())->getProfesorId($userId) ?? 0;
     }
 
     /**

@@ -392,7 +392,7 @@ class GestionarCasoModel
                 'total_pasivos' => $totalPasivos,
                 'total_exenciones' => $totalExenciones,
                 'total_exoneraciones' => $totalExoneraciones,
-                'patrimonio_neto' => $totalActivos - $totalPasivos,
+                'patrimonio_neto' => $totalActivos - $totalPasivos - $totalExenciones - $totalExoneraciones,
                 'total_bienes' => count($bienesInmuebles) + count($bienesMuebles),
                 'total_items' => count($bienesInmuebles) + count($bienesMuebles) + count($pasivosDeuda) + count($pasivosGastos),
             ]

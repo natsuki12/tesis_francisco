@@ -376,7 +376,7 @@ function buildDescripcionDesgravamen(array $des): string
     <div>
         <div class="row">
             <!-- Botones de navegación -->
-            <div class="col-sm-12" style="text-align:center">
+            <div class="col-sm-12" style="text-align:center" id="navReverso">
                 <a href="<?= base_url('/simulador/sucesion/declaracion_anverso') ?>" class="btn btn-sm btn-danger">
                     <i class="bi bi-arrow-bar-left"></i> Anverso
                 </a>
@@ -397,7 +397,7 @@ function buildDescripcionDesgravamen(array $des): string
                 <div class="col-sm-12">
                     <div>
                         <!-- ═══ Tabla A–D (misma que Anverso) ═══ -->
-                        <table class="table table-bordered table-sm lenletratablaResumen">
+                        <table class="table table-bordered table-sm lenletratablaResumen" id="headerReverso">
                             <!-- A - DATOS DEL CONTRIBUYENTE -->
                             <tbody>
                                 <tr>
@@ -489,7 +489,7 @@ function buildDescripcionDesgravamen(array $des): string
                             <!-- ══════════════════════════════════════ -->
                             <!-- ── Bienes Inmuebles ───────────────── -->
                             <!-- ══════════════════════════════════════ -->
-                            <tbody>
+                            <tbody id="anexoInmuebles">
                                 <tr>
                                     <td colspan="10" class="table-light"><strong>Bienes Inmuebles</strong></td>
                                 </tr>
@@ -567,7 +567,7 @@ function buildDescripcionDesgravamen(array $des): string
                             <!-- ══════════════════════════════════════ -->
                             <!-- ── Bienes Muebles ─────────────────── -->
                             <!-- ══════════════════════════════════════ -->
-                            <tbody>
+                            <tbody id="anexoMuebles">
                                 <tr>
                                     <td colspan="10" class="table-light"><strong>Bienes Muebles</strong></td>
                                 </tr>
@@ -627,7 +627,7 @@ function buildDescripcionDesgravamen(array $des): string
                             <!-- ══════════════════════════════════════ -->
                             <!-- ── Pasivos ────────────────────────── -->
                             <!-- ══════════════════════════════════════ -->
-                            <tbody>
+                            <tbody id="anexoPasivos">
                                 <tr>
                                     <td colspan="10" class="table-light"><strong>Pasivos</strong></td>
                                 </tr>
@@ -677,7 +677,7 @@ function buildDescripcionDesgravamen(array $des): string
                             <!-- ══════════════════════════════════════ -->
                             <!-- ── Desgravamenes ──────────────────── -->
                             <!-- ══════════════════════════════════════ -->
-                            <tbody>
+                            <tbody id="anexoDesgravamenes">
                                 <tr>
                                     <td colspan="10" class="table-light"><strong>Desgravamenes</strong></td>
                                 </tr>
@@ -728,7 +728,7 @@ function buildDescripcionDesgravamen(array $des): string
                             <!-- ══════════════════════════════════════ -->
                             <!-- ── Exenciones ─────────────────────── -->
                             <!-- ══════════════════════════════════════ -->
-                            <tbody>
+                            <tbody id="anexoExenciones">
                                 <tr>
                                     <td colspan="10" class="table-light"><strong>Exenciones</strong></td>
                                 </tr>
@@ -780,7 +780,7 @@ function buildDescripcionDesgravamen(array $des): string
                             <!-- ══════════════════════════════════════ -->
                             <!-- ── Exoneraciones ──────────────────── -->
                             <!-- ══════════════════════════════════════ -->
-                            <tbody>
+                            <tbody id="anexoExoneraciones">
                                 <tr>
                                     <td colspan="10" class="table-light"><strong>Exoneraciones</strong></td>
                                 </tr>
@@ -832,7 +832,7 @@ function buildDescripcionDesgravamen(array $des): string
                             <!-- ══════════════════════════════════════ -->
                             <!-- ── Bienes Litigiosos ──────────────── -->
                             <!-- ══════════════════════════════════════ -->
-                            <tbody>
+                            <tbody id="anexoLitigiosos">
                                 <tr>
                                     <td colspan="10" class="table-light"><strong>Bienes Litigiosos</strong></td>
                                 </tr>

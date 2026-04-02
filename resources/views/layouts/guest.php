@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $pageTitle ?? 'Sistema SENIAT' ?></title>
 
-    <!-- CSS del Header Guest -->
-    <link rel="stylesheet" href="<?= asset('css/partials/guest/header_guest.css') ?>">
+    <!-- CSS del Header Guest eliminado (No longer used) -->
 
     <!-- Google Fonts (local, offline) -->
     <link rel="stylesheet" href="<?= asset('css/fonts-local.css') ?>">
@@ -28,8 +27,7 @@
 </head>
 
 <body>
-
-    <?php include __DIR__ . '/../partials/guest/header_guest.php'; ?>
+    <!-- Navbar eliminado por rediseño -->
 
     <main>
         <?= $content ?? '' ?>

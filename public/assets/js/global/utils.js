@@ -73,3 +73,62 @@ export function showToast(message, type = 'error', duration = 4000) {
 
 // Expose globally for inline scripts
 window.showToast = showToast;
+
+/**
+ * Muestra un error in-line estandarizado y autolimpiante.
+ * @param {string} containerId - ID del div contenedor del error (ej. 'causanteErrors')
+ * @param {string} listId - ID de la lista UL dentro del contenedor (ej. 'causanteErrorsList')
+ * @param {string} message - Texto del error a mostrar
+ * @param {HTMLElement|null} inputToClear - (Opcional) Elemento input para limpiar su valor simultáneamente
+ */
+export function showInlineError(containerId, listId, message, inputToClear = null) {
+    const container = document.getElementById(containerId);
+    const list = document.getElementById(listId);
+    if (!container || !list) {
+        showToast(message, 'warning');
+        if (inputToClear) {
+            inputToClear.value = '';
+            inputToClear.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        return;
+    }
+
+    list.innerHTML = `<li>${message}</li>`;
+    container.classList.add('is-visible');
+    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (inputToClear) {
+        inputToClear.value = '';
+        inputToClear.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    const clearHandler = () => {
+        container.classList.remove('is-visible');
+        document.body.removeEventListener('input', clearHandler);
+        document.body.removeEventListener('change', clearHandler);
+    };
+    
+    // Slight delay to avoid immediate clear if triggered by a generic event
+    setTimeout(() => {
+        document.body.addEventListener('input', clearHandler, { once: true });
+        document.body.addEventListener('change', clearHandler, { once: true });
+    }, 100);
+}
+
+window.showInlineError = showInlineError;
+
+/**
+ * ── Mantiene Viva la Sesión de PHP (Evita la Expiración por Inactividad) ──
+ * Se lanza un "ping" cada 5 minutos (300,000 ms) para asegurar que la
+ * sesión del usuario (Profesor/Estudiante) no caduque mientras llena formularios.
+ */
+export function initSessionPing(intervalMs = 300000) {
+    const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+    setInterval(() => {
+        fetch(baseUrl + '/api/ping', { method: 'GET', headers: { 'Cache-Control': 'no-cache' } })
+            .then(res => res.json())
+            .catch(e => console.log('[PING] Fallo de latido', e));
+    }, intervalMs);
+}
+
+// Iniciar automáticamente en todas las páginas que incluyan utils.js
+initSessionPing();

@@ -23,6 +23,8 @@ ob_start();
   <p>Panel de control del profesor. Gestione sus estudiantes y revise sus declaraciones.</p>
 </div>
 
+<?php $stats = $stats ?? ['estudiantes' => 0, 'casos' => 0, 'rif_pendientes' => 0, 'por_calificar' => 0]; ?>
+
 <!-- Stats -->
 <div class="stats-row">
   <div class="stat-card stat-card--vertical animate-in">
@@ -37,7 +39,7 @@ ob_start();
         </svg>
       </div>
     </div>
-    <div class="stat-value">24</div>
+    <div class="stat-value"><?= $stats['estudiantes'] ?></div>
     <div class="stat-label">Estudiantes activos</div>
   </div>
   <div class="stat-card stat-card--vertical animate-in">
@@ -45,13 +47,12 @@ ob_start();
       <div class="stat-icon green">
         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round" viewBox="0 0 24 24">
-          <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-          <polyline points="22 4 12 14.01 9 11.01" />
+          <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
         </svg>
       </div>
     </div>
-    <div class="stat-value">12</div>
-    <div class="stat-label">Declaraciones completadas</div>
+    <div class="stat-value"><?= $stats['casos'] ?></div>
+    <div class="stat-label">Casos asignados</div>
   </div>
   <div class="stat-card stat-card--vertical animate-in">
     <div class="stat-card-top">
@@ -63,28 +64,29 @@ ob_start();
         </svg>
       </div>
     </div>
-    <div class="stat-value">8</div>
-    <div class="stat-label">Pendientes por revisar</div>
+    <div class="stat-value"><?= $stats['rif_pendientes'] ?></div>
+    <div class="stat-label">Solicitudes de RIF pendientes</div>
   </div>
   <div class="stat-card stat-card--vertical animate-in">
     <div class="stat-card-top">
       <div class="stat-icon red">
         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
           stroke-linejoin="round" viewBox="0 0 24 24">
-          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-          <line x1="12" y1="9" x2="12" y2="13" />
-          <line x1="12" y1="17" x2="12.01" y2="17" />
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
         </svg>
       </div>
     </div>
-    <div class="stat-value">4</div>
-    <div class="stat-label">Declaraciones con errores</div>
+    <div class="stat-value"><?= $stats['por_calificar'] ?></div>
+    <div class="stat-label">Declaraciones por calificar</div>
   </div>
 </div>
 
 <!-- Action Cards -->
 <div class="action-cards">
-  <a class="action-card animate-in" href="#">
+  <a class="action-card animate-in" href="<?= base_url('/entregas') ?>">
     <div class="action-card-icon">
       <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
         stroke-linejoin="round" viewBox="0 0 24 24">
@@ -96,7 +98,7 @@ ob_start();
       </svg>
     </div>
     <h3>Revisar Declaraciones</h3>
-    <p>Acceda a las declaraciones sucesorales (Forma 32) realizadas por sus estudiantes para evaluarlas.</p>
+    <p>Acceda a las declaraciones sucesorales realizadas por sus estudiantes para evaluarlas.</p>
     <span class="action-card-link">
       Ver declaraciones
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
@@ -106,7 +108,7 @@ ob_start();
       </svg>
     </span>
   </a>
-  <a class="action-card animate-in" href="#">
+  <a class="action-card animate-in" href="<?= base_url('/mis-estudiantes') ?>">
     <div class="action-card-icon">
       <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
         stroke-linejoin="round" viewBox="0 0 24 24">
@@ -127,7 +129,7 @@ ob_start();
       </svg>
     </span>
   </a>
-  <div class="action-card disabled animate-in">
+  <a class="action-card animate-in" href="<?= base_url('/estadisticas') ?>">
     <div class="action-card-icon">
       <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
         stroke-linejoin="round" viewBox="0 0 24 24">
@@ -136,11 +138,17 @@ ob_start();
         <line x1="6" y1="20" x2="6" y2="14" />
       </svg>
     </div>
-    <h3>Reportes</h3>
-    <p>Genere reportes de rendimiento y estadísticas de progreso de sus estudiantes.</p>
-    <span class="badge-wip">(Módulo en construcción)</span>
-    <span class="btn-disabled">No disponible</span>
-  </div>
+    <h3>Estadísticas</h3>
+    <p>Consulte métricas de rendimiento, distribución de notas y actividad de sus estudiantes.</p>
+    <span class="action-card-link">
+      Ver estadísticas
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+        stroke-linejoin="round" viewBox="0 0 24 24">
+        <line x1="5" y1="12" x2="19" y2="12" />
+        <polyline points="12 5 19 12 12 19" />
+      </svg>
+    </span>
+  </a>
 </div>
 
 <!-- Bottom Panels -->
@@ -150,7 +158,7 @@ ob_start();
   <div class="panel">
     <div class="panel-header">
       <h3>Estudiantes recientes</h3>
-      <a href="#">Ver todos</a>
+      <a href="<?= base_url('/mis-estudiantes') ?>">Ver todos</a>
     </div>
     <?php if (empty($recentStudents)): ?>
       <div style="text-align:center; padding: 2rem; color: var(--gray-400); font-size: var(--text-md);">
@@ -201,9 +209,9 @@ ob_start();
       <a href="<?= base_url('/historial') ?>">Ver todo</a>
     </div>
     <?php
-      $recentActivity = $recentActivity ?? [];
-      if (empty($recentActivity)):
-    ?>
+    $recentActivity = $recentActivity ?? [];
+    if (empty($recentActivity)):
+      ?>
       <div style="text-align:center; padding: 2rem; color: var(--gray-400); font-size: var(--text-md);">
         No hay actividad registrada aún.
       </div>
@@ -212,11 +220,11 @@ ob_start();
         // Dot color by event type
         $dotColor = match ($act['tipo'] ?? '') {
           'intento_calificado' => 'green',
-          'intento_enviado'    => 'blue',
-          'asignacion_creada'  => 'amber',
-          'caso_creado'        => 'purple',
-          'intento_iniciado'   => 'blue',
-          default              => 'blue',
+          'intento_enviado' => 'blue',
+          'asignacion_creada' => 'amber',
+          'caso_creado' => 'purple',
+          'intento_iniciado' => 'blue',
+          default => 'blue',
         };
 
         // Relative time
@@ -239,7 +247,7 @@ ob_start();
         // Activity text
         $nombre = htmlspecialchars($act['estudiante'] ?? '');
         $detalle = htmlspecialchars($act['detalle'] ?? '');
-      ?>
+        ?>
         <div class="activity-item">
           <div class="activity-dot <?= $dotColor ?>"></div>
           <div>

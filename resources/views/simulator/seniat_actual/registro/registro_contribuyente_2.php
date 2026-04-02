@@ -346,7 +346,7 @@ ob_start();
                             <br>
 
                             <!-- Campo: Usuario -->
-                            <div class="row mb-3">
+                            <div class="row mb-3" id="tourUsuarioRegistro">
                                 <div class="col-sm-6">
                                     <div class="form-floating">
                                         <input id="usuario" name="usuario" type="text" maxlength="30"
@@ -357,7 +357,7 @@ ob_start();
                             </div>
 
                             <!-- Campo: Clave -->
-                            <div class="row mb-3">
+                            <div class="row mb-3" id="tourClaveRegistro">
                                 <div class="col-sm-6">
                                     <div class="form-floating" style="position:relative;">
                                         <input id="clave" name="clave" type="password" maxlength="29"
@@ -381,17 +381,6 @@ ob_start();
                                 </div>
                             </div>
 
-                            <!-- Campo: Nro. Celular (deshabilitado en simulador) -->
-                            <div class="row mb-3 sim-disabled">
-                                <div class="col-sm-6">
-                                    <div class="form-floating">
-                                        <input id="nroCelular" name="nroCelular" type="text" maxlength="11"
-                                            class="form-control form-control-sm" placeholder=" " value="" disabled>
-                                        <label for="nroCelular">Nro. Celular</label>
-                                    </div>
-                                </div>
-                            </div>
-
                             <hr class="section-separator">
 
                             <!-- Nota del simulador -->
@@ -401,9 +390,21 @@ ob_start();
                             </div>
 
                             <!-- ============================
-                                 Sección 2: Preguntas de Seguridad (deshabilitada en simulador)
+                                 Sección 2: Campos ilustrativos (deshabilitada en simulador)
                             ============================= -->
-                            <div class="sim-disabled">
+                            <div class="sim-disabled" id="tourSeccionIlustrativa">
+
+                                <!-- Campo: Nro. Celular (deshabilitado en simulador) -->
+                                <div class="row mb-3">
+                                    <div class="col-sm-6">
+                                        <div class="form-floating">
+                                            <input id="nroCelular" name="nroCelular" type="text" maxlength="11"
+                                                class="form-control form-control-sm" placeholder=" " value="" disabled>
+                                            <label for="nroCelular">Nro. Celular</label>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div style="color: rgb(33, 37, 41); font-size: 16px; margin-bottom: 8px;">
                                     Registre las preguntas de seguridad para la recuperación de su información:
                                 </div>

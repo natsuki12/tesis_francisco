@@ -522,7 +522,7 @@ ob_start();
                                               usemap="#aistencia" />
                                           </a>
                                         </td>
-                                        <td width="110">
+                                        <td width="110" id="tourSistemasEnLinea">
                                           <a href="#" onclick="return clickreturnvalue()" onmouseout="delayhidemenu()"
                                             onmouseover="dropdownmenu(this, event, menu2, '210px')">
                                             <img border="0"
@@ -1977,7 +1977,7 @@ ob_start();
                     <div id="pcnt78_29329_78_1_1">
               <tbody>
                 <tr valign="top">
-                  <td align="center" colspan="3" height="18">
+                  <td align="center" colspan="3" height="18" id="tourServiciosDeclaracion">
                     <a href="<?= base_url('/simulador/servicios_declaracion') ?>">
                       <img border="0" height="140" src="<?= asset('img/seniat-index-viejo/cd18ca8322c9.jpg') ?>"
                         width="150" />

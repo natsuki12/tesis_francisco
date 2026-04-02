@@ -1,5 +1,6 @@
-import { $, $$, showToast } from '../../global/utils.js';
+import { $, $$, showToast, showInlineError } from '../../global/utils.js';
 import { caseData, UIState, loadCaseData, saveCaseData, clearSavedCaseData, hydrateCaseData } from './state.js';
+import { initChecklist } from './checklist.js';
 
 /**
  * Envía el caseData completo al backend vía POST /api/casos.
@@ -69,7 +70,7 @@ async function submitCase(modo) {
         }
     } catch (err) {
         _saving = false;
-        showToast('Error de red al guardar el caso: ' + err.message);
+        showToast('Ocurrió un error inesperado al intentar guardar el caso. Revisa tu conexión a internet o contacta al administrador.');
     }
 }
 import { renderHerenciaCheckboxes, initRepresentanteLogic, renderHerederos, renderHerederosPremuertos } from './herederos.js';
@@ -278,10 +279,18 @@ function applyConstraints(container) {
             if (fromEl.value) {
                 toEl.setAttribute('min', fromEl.value);
                 if (toEl.value && toEl.value < fromEl.value) {
-                    toEl.value = '';
                     setTimeout(() => {
-                        showToast('La segunda fecha fue limpiada porque no puede ser anterior a la primera fecha introducida.', 'warning');
-                    }, 300);
+                        const bind = toEl.dataset.bind || toEl.dataset.modal || '';
+                        let container = 'causanteErrors';
+                        let list = 'causanteErrorsList';
+                        if (bind.includes('representante')) { container = 'representanteErrors'; list = 'representanteErrorsList'; }
+                        else if (bind.includes('prorroga') || bind.includes('fecha_resolucion')) { container = 'prorrogaErrors'; list = 'prorrogaErrorsList'; }
+                        else if (bind === 'fecha_nacimiento' || bind === 'fecha_fallecimiento') { 
+                            container = document.getElementById('modalHerederoErrors') ? 'modalHerederoErrors' : 'causanteErrors';
+                            list = document.getElementById('modalHerederoErrors') ? 'modalHerederoErrorsList' : 'causanteErrorsList';
+                        }
+                        showInlineError(container, list, 'La segunda fecha fue rechazada porque no puede ser anterior a la primera fecha.', toEl);
+                    }, 100);
                 }
             } else {
                 toEl.removeAttribute('min');
@@ -348,8 +357,7 @@ function applyConstraints(container) {
             if (caseData.causante.cedula) {
                 const causanteCed = (caseData.causante.tipo_cedula || '') + caseData.causante.cedula;
                 if (fullRepCed === causanteCed) {
-                    showToast('La cédula del representante no puede ser igual a la del causante.');
-                    repCedEl.value = '';
+                    showInlineError('representanteErrors', 'representanteErrorsList', 'La cédula del representante no puede ser igual a la del causante.', repCedEl);
                     return;
                 }
             }
@@ -357,7 +365,7 @@ function applyConstraints(container) {
             const dupH = caseData.herederos.some(h => (h.letra_cedula || '') + (h.cedula || '') === fullRepCed);
             const dupHP = caseData.herederos_premuertos.some(h => (h.letra_cedula || '') + (h.cedula || '') === fullRepCed);
             if (dupH || dupHP) {
-                showToast('La cédula del representante coincide con la de un heredero registrado.');
+                showInlineError('representanteErrors', 'representanteErrorsList', 'La cédula del representante coincide con la de un heredero registrado.', repCedEl);
             }
         };
         repCedEl.addEventListener('change', checkRepCed);
@@ -401,12 +409,10 @@ function initFieldConstraints() {
             // Validar valor actual contra nuevos límites
             if (cierreInput.value) {
                 if (cierreInput.min && cierreInput.value < cierreInput.min) {
-                    showToast('La fecha de cierre fiscal no puede ser anterior a la fecha de fallecimiento.');
-                    cierreInput.value = '';
+                    showInlineError('causanteErrors', 'causanteErrorsList', 'La fecha de cierre fiscal no puede ser anterior a la fecha de fallecimiento.', cierreInput);
                     caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
                 } else if (cierreInput.max && cierreInput.value > cierreInput.max) {
-                    showToast('La fecha de cierre fiscal no puede ser posterior al 31/12 del año de fallecimiento.');
-                    cierreInput.value = '';
+                    showInlineError('causanteErrors', 'causanteErrorsList', 'La fecha de cierre fiscal no puede ser posterior al 31/12 del año de fallecimiento.', cierreInput);
                     caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
                 }
             }
@@ -417,14 +423,13 @@ function initFieldConstraints() {
         cierreInput.addEventListener('change', () => {
             const fallec = fallecInput.value || caseData.causante.fecha_fallecimiento;
             if (fallec) {
+                if (!cierreInput.value) return;
                 const year = new Date(fallec).getFullYear();
                 if (cierreInput.value < fallec) {
-                    showToast('La fecha de cierre fiscal no puede ser anterior a la fecha de fallecimiento.');
-                    cierreInput.value = '';
+                    showInlineError('causanteErrors', 'causanteErrorsList', 'La fecha de cierre fiscal no puede ser anterior a la fecha de fallecimiento.', cierreInput);
                     caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
                 } else if (cierreInput.value > `${year}-12-31`) {
-                    showToast('La fecha de cierre fiscal no puede ser posterior al 31/12 del año de fallecimiento.');
-                    cierreInput.value = '';
+                    showInlineError('causanteErrors', 'causanteErrorsList', 'La fecha de cierre fiscal no puede ser posterior al 31/12 del año de fallecimiento.', cierreInput);
                     caseData.datos_fiscales_causante.fecha_cierre_fiscal = '';
                 }
             }
@@ -1730,10 +1735,18 @@ async function init() {
                     isEditMode = true;
                     hadSavedData = true;
                 } else {
-                    showToast(json.message || 'No se pudo cargar el caso para editar.');
+                    // Caso publicado o no encontrado: redirigir a la lista
+                    const msg = json.message || 'No se puede acceder a este caso.';
+                    const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+                    sessionStorage.setItem('cc_redirect_msg', msg);
+                    window.location.replace(baseUrl + '/casos-sucesorales');
+                    return;
                 }
             } catch (err) {
-                showToast('Error de red al cargar el caso: ' + err.message);
+                const baseUrl = (window.BASE_URL || '/tesis_francisco/public').replace(/\/+$/, '');
+                sessionStorage.setItem('cc_redirect_msg', 'Error de conexión al cargar el caso.');
+                window.location.replace(baseUrl + '/casos-sucesorales');
+                return;
             }
         }
 
@@ -1778,6 +1791,7 @@ async function init() {
     initCollapsibles();
     initTabs();
     initStepperClicks();
+    initChecklist();
 
     renderHerenciaCheckboxes();
     initRepresentanteLogic();
@@ -1815,6 +1829,14 @@ async function init() {
                 return;
             }
             submitCase('Borrador');
+        });
+    }
+
+    const btnTour = $('#btnTourTutorial');
+    if (btnTour) {
+        btnTour.addEventListener('click', async () => {
+            const { launchTour } = await import('./tour_loader.js');
+            launchTour();
         });
     }
 }

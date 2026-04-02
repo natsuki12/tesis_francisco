@@ -1,0 +1,43 @@
+Análisis de Deficiencias de UI/UX (Frontend)
+
+Este documento contiene un análisis exhaustivo del código frontend (estructuras HTML y CSS implícitas) y las prácticas de experiencia de usuario (UI/UX) detectadas en los módulos de Administrador, Estudiante y Profesor. Se ha evaluado la estructura, legibilidad, responsividad, reusabilidad y patrones de interacción.
+
+NOTA: Este análisis excluye explícitamente los módulos del Simulador, enfocándose íntegramente en los tableros generales, listados, gestión y reportes correspondientes de los roles principales.
+
+1. Falta de Estandarización del "Design System"
+Se observa una fuerte inconsistencia en las convenciones de clases CSS y el ecosistema de componentes a lo largo de los tres perfiles:
+- Prefijos aislados: El módulo Admin utiliza prefijos cerrados como .admin-stat-card, .admin-panel, mientras que Profesor y Estudiante utilizan o clases ambiguas .stat-card, .panel o prefijos propios de la vista como .gc-card (en Gestionar Caso).
+- Redundancia Visual: Las tarjetas de estadísticas (Stat Cards) y los Activity Feeds se reimplementan en cada vista. Admin tiene su base con <div class="admin-activity-item__dot bg-blue">, Estudiante con <span class="activity-dot dot-blue">, y Profesor reutiliza lógica con colores quemados como 'blue', pero con estructuras HTML ligeramente dispares. Esta divergencia causará una pesadilla de mantenimiento si se decide cambiar un comportamiento visual base.
+
+2. Abuso Constante de Estilos en Línea (Inline Styles)
+El patrón de aplicar diseño mediante el atributo estricto style="..." impregna múltiples áreas críticas de las vistas principales, particularmente en los Empty States (estados vacíos).
+- En Estudiantes (mis_asignaciones.php): <td colspan="8" style="text-align:center; padding:40px; color:var(--gray-400);">...</td>
+- En Profesores (home_professor.php): <div style="text-align:center; padding: 2rem; color: var(--gray-400); font-size: var(--text-md);">
+- En Administradores (home_admin.php): <p style="color:var(--text-muted, #94a3b8); padding:1rem; text-align:center;">No hay actividad reciente.</p>
+- En Botones y Acciones Especiales (gestionar_caso.php): <button type="button" class="btn btn-secondary" style="margin-left: auto; padding: 6px 14px; font-size: 0.8rem; ...">
+
+ADVERTENCIA: La falta de un componente formal para los mensajes vacíos (ej. .empty-state-container) o de clases utilitarias de alineación y color violenta el principio de Consistencia, dificultando drásticamente el cambio temas (ej. implementar Dark Mode) y forzando rediseños página por página.
+
+3. Manejo de Tablas y UI Responsiva
+Las vistas de administración de alta densidad carecen de wrappers protectores visuales.
+- Grillas y Layouts Complejos: gestionar_caso.php cuenta con múltiples tablas internas (.gc-table). Un redimensionado agresivo (teléfonos, mini-tablets) provocará desbordes horizontales o rupturas visuales, ya que no se divisa la encapsulación en elementos iterables .table-responsive que añadan comportamiento "scroll-X", o diseños de fallback tipo "Cards de Listado" (List Cards) para móviles.
+- Grillas del Dashboard: Las pantallas de inicio manejan un grid de resumen para métricas (4 columnas) cuyas clases (.stats-row, .admin-stats-row) sugieren implementaciones Flexbox rígidas.
+
+4. Deficiencias en Formularios y Filtros Básicos
+- Filtros Rígidos (Dropdowns): En mis_asignaciones.php, los filtros se delegan a etiquetas <select class="filter-select"> nativas. Estas aportan una experiencia "plana" y fuera de tono en sistemas web modernos si no se mejoran, dado que la interfaz variará diametralmente entre Android, iOS y Web (PC), afectando el Look and Feel.
+- "Row-Clickable" y Accesibilidad Incompleta: Dentro de las mismas asignaciones se emplea class="row-clickable" apoyado directamente en JS. Si bien mejora un poco el UX general mediante un oyente de eventos de clic genérico, supedita las acciones exclusivamente a Javascript en elementos que no son anclajes <a>. Esto afecta a los Screen Readers (Lector de pantalla) e impide convenciones estándar (click derecho + abrir en nueva pestaña).
+
+5. Falta de Loading States Uniformes (Skeleton Loaders o Spinners)
+Hacia las transiciones asincrónicas se emplean fallbacks de texto secos en lugar de animaciones que reduzcan la carga cognitiva:
+- Verificación SMTP asincrónica: En home_admin.php para la parte del estado del servidor de correos, inicialmente aparece el texto plano "Verificando...". Al culminar o fallar domina de nuevo texto duro como "Error de red".
+- Alterar el DOM virtual inyectando clases sueltas o innerHTML que arma SVGs masivos y cambiar .style.color en línea (dash-smtp-icon.style.color = '';) no sólo sobrecarga el index visual del código, sino que desentona del paradigma de clases declarativas (ej. .is-loading, .is-error). Hubo un gran descuido en la prevención asíncrona permitiendo "estados colgantes" sin opción gráfica a reintentar.
+
+6. Acoplamiento Arquitectónico (Vista / Backend)
+IMPORTANTE: Se ha detectado la inyección de funciones lógicas en PHP (como validación de fechas límite o concatenación condicional) codo a codo de las etiquetas de la estructura HTML. Ejemplos notorios: function formatBs() o function mapEstadoLabel().
+Este acoplamiento ahoga la agilidad de los perfiles Frontend en los archivos de vistas. gestionar_caso.php se prolonga por más de 2,200 líneas, mezclando iteraciones pesadas (foreach ($bienesMuebles)) y condicionales profundos dentro de las grillas de presentación.
+
+Conclusión y Siguientes Pasos UX
+La actual base refleja un MVP puramente estructurado. Para alcanzar una percepción técnica "Premium", es mandatorio:
+1. Creación de Colección Base de Componentes UI: Desterrar style="" e instanciar un sistema tipo componente, por ejemplo <div class="c-empty-state"> unificado en lugar de forzar parches manuales.
+2. Homogenización de Layout: Empaquetar las métricas de Stats (tarjetas numéricas) dentro de un único componente genérico reutilizado entre Admin y Profesor, diferenciando su iconografía mediante paso de datos técnicos estructurados, no HTML reimplementado tres veces.
+3. Optimización de Interacción: Los fetch y acciones transaccionales requieren inyecciones de spinners para mantener cautivo y seguro al usuario del sistema durante cargas asíncronas lentas (como verificaciones de red/base de datos).

@@ -36,7 +36,7 @@ ob_start();
     <div class="card">
         <div class="card-header fw-bold">APLICATIVOS</div>
         <div class="card-body">
-            <div class="aplicativos-wrapper">
+            <div class="aplicativos-wrapper" id="tourAplicativosList">
                 <div class="aplicativos-list">
                     <div class="aplicativo-item">IMPUESTO A LAS GRANDES TRANSACCIONES FINANCIERAS</div>
                     <div class="aplicativo-item">ENAJENACIÓN DE INMUEBLES</div>
@@ -44,7 +44,7 @@ ob_start();
                     <div class="aplicativo-item">PROTECCIÓN A LAS PENSIONES</div>
                     <div class="aplicativo-item">SUCESIONES</div>
                 </div>
-                <a href="<?= base_url('/simulador/servicios_declaracion/dashboard') ?>" class="btn-ir-sistema">Ir al Sistema <i class="bi bi-hand-index-thumb"></i></a>
+                <a href="<?= base_url('/simulador/servicios_declaracion/dashboard') ?>" class="btn-ir-sistema" id="tourIrAlSistema">Ir al Sistema <i class="bi bi-hand-index-thumb"></i></a>
             </div>
         </div>
     </div>

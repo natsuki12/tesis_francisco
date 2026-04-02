@@ -7,18 +7,22 @@ use App\Core\App;
 use App\Core\BitacoraModel;
 use App\Modules\Professor\Models\Casos\CasosModel;
 use App\Modules\Professor\Models\Casos\StoreCasoModel;
+use App\Modules\Professor\Models\HomeProfessorModel;
 use App\Modules\Professor\Validators\CasoValidator;
 
 class CasosController
 {
     private App $app;
     private CasosModel $casosModel;
+    private int $profesorId;
 
     public function __construct()
     {
         global $app;
         $this->app = $app;
         $this->casosModel = new CasosModel();
+        $userId = (int) ($_SESSION['user_id'] ?? 0);
+        $this->profesorId = (new HomeProfessorModel())->getProfesorId($userId) ?? 0;
     }
 
     /**
@@ -27,7 +31,7 @@ class CasosController
     public function index()
     {
         // La autenticación y verificación de rol se hacen en web.php ($requireAuth + $requireRole)
-        $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+        $profesorId = $this->profesorId;
 
         // Obtener la información real de la BD
         $casos = $this->casosModel->getCasosByProfesor($profesorId);
@@ -40,6 +44,33 @@ class CasosController
     }
 
     /**
+     * Muestra el formulario de crear/editar caso.
+     * Valida ?edit=ID en servidor antes de renderizar.
+     * GET /crear-caso
+     */
+    public function crearCaso()
+    {
+        $editId = isset($_GET['edit']) ? (int) $_GET['edit'] : 0;
+
+        if ($editId > 0) {
+            $db = \App\Core\DB::connect();
+            $stmt = $db->prepare("SELECT estado FROM sim_casos_estudios WHERE id = :id AND profesor_id = :prof");
+            $stmt->execute(['id' => $editId, 'prof' => $this->profesorId]);
+            $estado = $stmt->fetchColumn();
+
+            if (!$estado || $estado !== 'Borrador') {
+                $_SESSION['flash_msg'] = $estado
+                    ? 'No se puede editar un caso con estado "' . $estado . '".'
+                    : 'Caso no encontrado.';
+                header('Location: ' . base_url('/casos-sucesorales'));
+                exit;
+            }
+        }
+
+        return $this->app->view('professor/crear_caso');
+    }
+
+    /**
      * Retorna el JSON de un caso específico para edición.
      * GET /api/casos/{id}
      */
@@ -47,7 +78,7 @@ class CasosController
     {
         header('Content-Type: application/json');
 
-        $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+        $profesorId = $this->profesorId;
         $result = $this->casosModel->getCasoJsonById($id, $profesorId);
 
         if (!$result) {
@@ -89,7 +120,7 @@ class CasosController
     {
         header('Content-Type: application/json');
 
-        $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+        $profesorId = $this->profesorId;
 
         // Leer el JSON del body
         $raw = file_get_contents('php://input');
@@ -108,7 +139,7 @@ class CasosController
         $data = CasoValidator::sanitize($data);
 
         // Validar
-        $profesorId = (int) $_SESSION['user_id'];
+        // profesorId ya resuelto en constructor
         $casoId = isset($data['caso_id']) ? (int) $data['caso_id'] : null;
         $validator = new CasoValidator();
         $errors = $validator->validate($data, $modo, $profesorId, $casoId);
@@ -191,7 +222,7 @@ class CasosController
     public function checkTitulo()
     {
         header('Content-Type: application/json');
-        $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+        $profesorId = $this->profesorId;
         $titulo = trim($_GET['titulo'] ?? '');
         $casoId = isset($_GET['caso_id']) ? (int) $_GET['caso_id'] : null;
 
@@ -225,7 +256,7 @@ class CasosController
     public function destroy(int $id)
     {
         header('Content-Type: application/json');
-        $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+        $profesorId = $this->profesorId;
 
         try {
             $db = \App\Core\DB::connect();
@@ -270,7 +301,7 @@ class CasosController
     public function updateEstado(int $id)
     {
         header('Content-Type: application/json');
-        $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+        $profesorId = $this->profesorId;
 
         $raw = file_get_contents('php://input');
         $data = json_decode($raw, true);
@@ -324,7 +355,7 @@ class CasosController
     public function gestionar(int $id): string
     {
         try {
-            $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+            $profesorId = $this->profesorId;
             $model = new \App\Modules\Professor\Models\Casos\GestionarCasoModel();
             $data = $model->getFullCaseById($id, $profesorId);
             if (!$data) {
@@ -346,7 +377,7 @@ class CasosController
     public function descargarPdf(int $id): void
     {
         try {
-            $profesorId = (int) ($_SESSION['user_id'] ?? 0);
+            $profesorId = $this->profesorId;
             $model = new \App\Modules\Professor\Models\Casos\GestionarCasoModel();
             $casoData = $model->getFullCaseById($id, $profesorId);
 

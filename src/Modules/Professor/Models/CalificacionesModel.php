@@ -183,6 +183,15 @@ class CalificacionesModel
                         'estado'          => 'Enviado',
                         'intento_id'      => $info['intento_id'],
                     ];
+                } elseif ($info && in_array($info['intento_estado'], ['Pendiente_RIF', 'Pendiente_Calificacion'])) {
+                    $pendientes++;
+                    $est['notas'][$caso['config_id']] = [
+                        'tipo'            => $caso['tipo_calificacion'],
+                        'nota_numerica'   => null,
+                        'nota_cualitativa' => null,
+                        'estado'          => $info['intento_estado'],
+                        'intento_id'      => $info['intento_id'],
+                    ];
                 } elseif ($isAsignado) {
                     // Asignado pero sin intento enviado
                     $est['notas'][$caso['config_id']] = [

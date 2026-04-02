@@ -58,7 +58,7 @@ ob_start();
       <p class="text-center"><strong>La declaración será registrada bajo la siguiente información fiscal:</strong></p>
 
       <div class="shadow-lg p-3 mb-5 bg-body rounded lenletra">
-        <div class="card">
+        <div class="card" id="tourInfoFiscal">
           <div class="card-header">Información Fiscal</div>
           <div class="card-body">
             <div>
@@ -129,7 +129,7 @@ ob_start();
               <br>
 
               <!-- Tabla de Herederos -->
-              <table class="table table-bordered table-striped table-sm lenletra">
+              <table class="table table-bordered table-striped table-sm lenletra" id="tourHerederosTable">
                 <thead>
                   <tr align="center">
                     <td colspan="4"><strong>Herederos o Legatarios</strong></td>
@@ -160,7 +160,7 @@ ob_start();
               <br>
 
               <!-- Botones de acción -->
-              <div class="border-top">
+              <div class="border-top" id="tourBotonesAccion">
                 <div class="row">
                   <div class="col-md-6 col-sm-6 col-lg-6">
                     <?php if (!empty($mostrarAcciones)): ?>

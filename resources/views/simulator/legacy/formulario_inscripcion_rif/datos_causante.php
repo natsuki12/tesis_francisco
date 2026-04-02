@@ -128,30 +128,34 @@ ob_start();
                     <tr>
                         <td valign=top>
 
+                            <?php
+                            $tieneDatos = isset($intento) && !empty($intento['borrador_json'])
+                                && !empty(json_decode($intento['borrador_json'], true)['datos_basicos']['apellidos']);
+                            ?>
                             <div class="glossymenu">
                                 <span class="menuitem">Menú</span>
-
 
                                 <a class="menuitem"
                                     href="<?= base_url('/simulador/inscripcion-rif/datos-basicos') ?>">Datos
                                     Básicos</a>
 
+                                <?php if ($tieneDatos): ?>
+                                <div id="sidebarExtra">
+                                <?php else: ?>
+                                <div id="sidebarExtra" style="display:none">
+                                <?php endif; ?>
+                                    <a class="menuitem" id="tourLinkDirecciones"
+                                        href="<?= base_url('simulador/inscripcion-rif/direcciones') ?>">Direcciones</a>
 
-                                <a class="menuitem"
-                                    href="<?= base_url('simulador/inscripcion-rif/direcciones') ?>">Direcciones</a>
+                                    <a class="menuitem"
+                                        href="<?= base_url('simulador/inscripcion-rif/relaciones') ?>">Relaciones</a>
 
+                                    <a class="menuitem" href="javascript:void(0)">Ver Planilla</a>
 
-                                <a class="menuitem"
-                                    href="<?= base_url('simulador/inscripcion-rif/relaciones') ?>">Relaciones</a>
-
-
-                                <a class="menuitem" href="javascript:void(0)">Ver Planilla</a>
-
-
-                                <a class="menuitem"
-                                    href="<?= base_url('/simulador/inscripcion-rif/validar-inscripcion') ?>">Validar
-                                    Inscripción</a>
-
+                                    <a class="menuitem"
+                                        href="<?= base_url('/simulador/inscripcion-rif/validar-inscripcion') ?>">Validar
+                                        Inscripción</a>
+                                </div>
 
                             </div>
                             &nbsp;
@@ -565,8 +569,13 @@ ob_start();
                     .then(function (data) {
                         if (data.ok) {
                             window.simBorrador = borrador;
+                            // Mostrar links del sidebar si estaban ocultos
+                            var extra = document.getElementById('sidebarExtra');
+                            if (extra) extra.style.display = '';
+                            alert('Datos guardados correctamente.');
                         } else {
                             console.warn('Guardar retornó ok=false:', data);
+                            alert('Error al guardar los datos.');
                         }
                     })
                     .catch(function (error) {

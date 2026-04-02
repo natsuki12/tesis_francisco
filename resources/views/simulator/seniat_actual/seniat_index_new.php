@@ -55,7 +55,7 @@ ob_start();
                     </div>
                 </li>
                 <li><a href="#">Noticias SENIAT</a></li>
-                <li class="has-mega-dropdown dropdown-right">
+                <li class="has-mega-dropdown dropdown-right" id="tourSistemasEnLinea">
                     <a href="#">Sistemas en Línea <span class="dropdown-arrow">▼</span></a>
                     <div class="mega-dropdown">
                         <div class="mega-dropdown__section">
@@ -72,7 +72,7 @@ ob_start();
                 </li>
             </ul>
             <div class="seniat-navbar__actions">
-                <div class="ingresar-wrapper">
+                <div class="ingresar-wrapper" id="tourIngresarBtn">
                     <a href="#" class="btn-ingresar">Ingresar <span class="dropdown-arrow">▼</span></a>
                     <div class="ingresar-dropdown">
                         <div class="ingresar-header">SENIAT en Línea</div>

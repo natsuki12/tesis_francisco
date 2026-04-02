@@ -1579,3 +1579,315 @@
     border-color: var(--indigo-400);
     box-shadow: 0 0 0 3px rgba(99,102,241,.12);
 }
+
+/* ═══ Checklist Offcanvas Panel ═══ */
+.cc-checklist-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.cc-checklist-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cc-checklist-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 380px;
+    background: #fff;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.cc-checklist-panel.is-open {
+    transform: translateX(0);
+}
+
+.cc-checklist-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--gray-200);
+    background: var(--gray-50);
+}
+
+.cc-checklist-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gray-800);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cc-checklist-close {
+    background: none;
+    border: none;
+    color: var(--gray-400);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.cc-checklist-close:hover {
+    background: var(--gray-200);
+    color: var(--gray-700);
+}
+
+.cc-checklist-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.cc-checklist-group {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.cc-checklist-group-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gray-500);
+    background: var(--gray-50);
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.cc-checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--gray-100);
+    transition: background 0.2s;
+}
+
+.cc-checklist-item:last-child {
+    border-bottom: none;
+}
+
+.cc-checklist-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all 0.3s ease;
+}
+
+.cc-checklist-icon.is-pending {
+    background: var(--gray-100);
+    color: var(--gray-400);
+}
+
+.cc-checklist-icon.is-done {
+    background: var(--emerald-100);
+    color: var(--emerald-600);
+}
+
+.cc-checklist-text {
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--gray-700);
+    font-weight: 500;
+}
+
+.cc-checklist-desc {
+    font-size: 11px;
+    color: var(--gray-400);
+    margin-top: 2px;
+}
+
+.cc-checklist-footer {
+    padding: 16px 24px;
+    background: var(--gray-50);
+    border-top: 1px solid var(--gray-200);
+    text-align: center;
+}
+
+.cc-checklist-progress {
+    height: 6px;
+    background: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.cc-checklist-bar {
+    height: 100%;
+    background: var(--blue-500);
+    border-radius: 4px;
+    transition: width 0.4s ease, background 0.4s ease;
+}
+
+@media (max-width: 768px) {
+    .cc-checklist-panel {
+        width: 100%;
+        max-width: none;
+}
+}
+
+/* ═══ Driver.js Overrides (Para que parezca nativo del sistema) ═══ */
+.driver-popover {
+    font-family: var(--font-family, 'Inter', system-ui, sans-serif) !important;
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 0 1px rgba(0,0,0,0.2) !important;
+    padding: 20px !important;
+}
+
+.driver-popover-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: var(--gray-800, #1e293b) !important;
+    margin-bottom: 8px !important;
+    line-height: 1.3 !important;
+}
+
+.driver-popover-description {
+    font-size: 13.5px !important;
+    color: var(--gray-600, #475569) !important;
+    line-height: 1.5 !important;
+}
+
+/* Botones del Tour */
+.driver-popover-footer {
+    margin-top: 20px !important;
+    align-items: center !important;
+}
+
+.driver-popover-footer button {
+    font-family: inherit !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    padding: 7px 16px !important;
+    transition: all 0.2s ease !important;
+    text-shadow: none !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+}
+
+/* Botón Siguiente (Principal) */
+.driver-popover-footer .driver-popover-next-btn {
+    background-color: var(--blue-600, #2563eb) !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+}
+.driver-popover-footer .driver-popover-next-btn:hover {
+    background-color: var(--blue-700, #1d4ed8) !important;
+}
+
+/* Botón Anterior (Secundario/Outline) */
+.driver-popover-footer .driver-popover-prev-btn {
+    background-color: #fff !important;
+    color: var(--gray-700, #374151) !important;
+    border: 1px solid var(--gray-300, #d1d5db) !important;
+    margin-right: 8px !important;
+}
+.driver-popover-footer .driver-popover-prev-btn:hover {
+    border-color: var(--gray-400, #9ca3af) !important;
+    background-color: var(--gray-50, #f8fafc) !important;
+}
+
+/* Progreso */
+.driver-popover-progress-text {
+    font-size: 12px !important;
+    color: var(--gray-500, #64748b) !important;
+    font-weight: 600 !important;
+    margin-right: 16px !important;
+}
+
+/* Equis de cerrar */
+.driver-popover-close-btn {
+    color: var(--gray-400, #9ca3af) !important;
+}
+.driver-popover-close-btn:hover {
+    color: var(--gray-700, #374151) !important;
+}
+
+/* ═══ Tooltips Informativos (ⓘ) ═══ */
+.cc-tooltip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    font-size: 12px;
+    color: var(--blue-500, #3b82f6);
+    cursor: help;
+    vertical-align: middle;
+    margin-left: 4px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.cc-tooltip:hover {
+    opacity: 1;
+}
+
+/* Burbuja del tooltip (position: fixed, creada por JS) */
+.cc-tooltip-bubble {
+    position: fixed;
+    min-width: 240px;
+    max-width: 300px;
+    padding: 10px 12px;
+    background: var(--gray-800, #1e293b);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    pointer-events: none;
+    z-index: 99999;
+    white-space: normal;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.15s, transform 0.15s;
+}
+.cc-tooltip-bubble.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+.cc-tooltip-bubble::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: 8px;
+    border: 6px solid transparent;
+    border-bottom-color: var(--gray-800, #1e293b);
+}
+
+
+

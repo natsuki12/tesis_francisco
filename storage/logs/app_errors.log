@@ -7762,3 +7762,186 @@ Stack trace:
 [28-Mar-2026 11:49:40 America/Caracas] [GeneracionRsModel::getSolicitudes] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.nombre' in 'field list'
 [28-Mar-2026 11:49:41 America/Caracas] [GeneracionRsModel::getSolicitudes] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.nombre' in 'field list'
 [28-Mar-2026 11:49:46 America/Caracas] [GeneracionRsModel::getSolicitudes] SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.nombre' in 'field list'
+[28-Mar-2026 18:00:53 America/Caracas] [CRITICAL] Cannot access offset of type string on string in C:\xampp\htdocs\tesis_francisco\resources\views\professor\generacion_rs_detalle.php:35
+[28-Mar-2026 18:00:53 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\GeneracionRsController.php(87): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(748): App\Modules\Professor\Controllers\GeneracionRsController->detalle(6)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}('6')
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/generacion-rs/...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[28-Mar-2026 18:02:37 America/Caracas] [CRITICAL] Cannot access offset of type string on string in C:\xampp\htdocs\tesis_francisco\resources\views\professor\generacion_rs_detalle.php:35
+[28-Mar-2026 18:02:37 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\GeneracionRsController.php(87): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(748): App\Modules\Professor\Controllers\GeneracionRsController->detalle(6)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}('6')
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/generacion-rs/...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[28-Mar-2026 18:02:38 America/Caracas] [CRITICAL] Cannot access offset of type string on string in C:\xampp\htdocs\tesis_francisco\resources\views\professor\generacion_rs_detalle.php:35
+[28-Mar-2026 18:02:38 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\GeneracionRsController.php(87): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(748): App\Modules\Professor\Controllers\GeneracionRsController->detalle(6)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}('6')
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/generacion-rs/...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[28-Mar-2026 18:02:39 America/Caracas] [CRITICAL] Cannot access offset of type string on string in C:\xampp\htdocs\tesis_francisco\resources\views\professor\generacion_rs_detalle.php:35
+[28-Mar-2026 18:02:39 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\GeneracionRsController.php(87): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(748): App\Modules\Professor\Controllers\GeneracionRsController->detalle(6)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}('6')
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/generacion-rs/...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[28-Mar-2026 18:02:40 America/Caracas] [CRITICAL] Cannot access offset of type string on string in C:\xampp\htdocs\tesis_francisco\resources\views\professor\generacion_rs_detalle.php:35
+[28-Mar-2026 18:02:40 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\GeneracionRsController.php(87): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(748): App\Modules\Professor\Controllers\GeneracionRsController->detalle(6)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}('6')
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/generacion-rs/...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[28-Mar-2026 18:02:42 America/Caracas] [CRITICAL] Cannot access offset of type string on string in C:\xampp\htdocs\tesis_francisco\resources\views\professor\generacion_rs_detalle.php:35
+[28-Mar-2026 18:02:42 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\src\Modules\Professor\Controllers\GeneracionRsController.php(87): require_once()
+#1 C:\xampp\htdocs\tesis_francisco\routes\web.php(748): App\Modules\Professor\Controllers\GeneracionRsController->detalle(6)
+#2 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}('6')
+#3 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/generacion-rs/...')
+#4 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#5 {main}
+[28-Mar-2026 18:26:34 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.asignaciones_estudiantes' doesn't exist
+[28-Mar-2026 18:26:48 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.asignaciones_estudiantes' doesn't exist
+[28-Mar-2026 18:26:49 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.asignaciones_estudiantes' doesn't exist
+[28-Mar-2026 18:27:27 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.asignaciones_estudiantes' doesn't exist
+[28-Mar-2026 18:32:05 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.asignaciones_estudiantes' doesn't exist
+[28-Mar-2026 18:32:06 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.asignaciones_estudiantes' doesn't exist
+[28-Mar-2026 18:32:10 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.asignaciones_estudiantes' doesn't exist
+[28-Mar-2026 18:32:13 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.asignaciones_estudiantes' doesn't exist
+[28-Mar-2026 18:32:20 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S02]: Base table or view not found: 1146 Table 'spdss.asignaciones_estudiantes' doesn't exist
+[28-Mar-2026 18:36:17 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:36:22 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:36:22 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:36:23 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:36:23 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:36:24 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:36:44 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:36:44 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:38:13 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:38:16 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:40:00 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:40:01 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:40:01 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:40:01 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:40:02 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:41:17 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:41:18 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:41:18 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:41:18 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:41:22 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:41:57 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:41:58 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:42:34 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:44:32 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:45:33 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:45:34 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:45:34 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:45:35 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:45:36 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:47:26 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:47:27 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:47:29 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:47:29 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:47:40 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[28-Mar-2026 18:48:02 America/Caracas] [Professor\HomeController::index] SQLSTATE[42S22]: Column not found: 1054 Unknown column 's.activo' in 'where clause'
+[31-Mar-2026 13:35:16 America/Caracas] PHP Warning:  Undefined variable $vencIconColor in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 71
+[31-Mar-2026 13:35:16 America/Caracas] PHP Warning:  Undefined variable $vencColor in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 80
+[31-Mar-2026 13:35:16 America/Caracas] PHP Warning:  Undefined variable $vencLabel in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 80
+[31-Mar-2026 13:35:16 America/Caracas] PHP Warning:  Undefined variable $vencCaso in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 81
+[31-Mar-2026 13:35:16 America/Caracas] [HomeController::index] htmlspecialchars(): Argument #1 ($string) must be of type string, null given
+[31-Mar-2026 13:35:16 America/Caracas] PHP Warning:  Undefined variable $vencIconColor in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 71
+[31-Mar-2026 13:35:16 America/Caracas] PHP Warning:  Undefined variable $vencColor in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 80
+[31-Mar-2026 13:35:16 America/Caracas] PHP Warning:  Undefined variable $vencLabel in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 80
+[31-Mar-2026 13:35:16 America/Caracas] PHP Warning:  Undefined variable $vencCaso in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 81
+[31-Mar-2026 13:35:16 America/Caracas] [CRITICAL] htmlspecialchars(): Argument #1 ($string) must be of type string, null given in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php:81
+[31-Mar-2026 13:35:16 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php(81): htmlspecialchars(NULL)
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\tesis_francisco\src\Modules\Student\Controllers\HomeController.php(43): App\Core\App->view('student/home_st', Array)
+#3 C:\xampp\htdocs\tesis_francisco\routes\web.php(97): App\Modules\Student\Controllers\HomeController->index(Object(App\Core\App))
+#4 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#5 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/home')
+#6 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#7 {main}
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencIconColor in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 71
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencColor in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 80
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencLabel in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 80
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencCaso in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 81
+[31-Mar-2026 13:35:17 America/Caracas] [HomeController::index] htmlspecialchars(): Argument #1 ($string) must be of type string, null given
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencIconColor in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 71
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencColor in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 80
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencLabel in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 80
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencCaso in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 81
+[31-Mar-2026 13:35:17 America/Caracas] [CRITICAL] htmlspecialchars(): Argument #1 ($string) must be of type string, null given in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php:81
+[31-Mar-2026 13:35:17 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php(81): htmlspecialchars(NULL)
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\tesis_francisco\src\Modules\Student\Controllers\HomeController.php(43): App\Core\App->view('student/home_st', Array)
+#3 C:\xampp\htdocs\tesis_francisco\routes\web.php(97): App\Modules\Student\Controllers\HomeController->index(Object(App\Core\App))
+#4 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#5 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/home')
+#6 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#7 {main}
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencIconColor in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 71
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencColor in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 80
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencLabel in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 80
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencCaso in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 81
+[31-Mar-2026 13:35:17 America/Caracas] [HomeController::index] htmlspecialchars(): Argument #1 ($string) must be of type string, null given
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencIconColor in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 71
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencColor in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 80
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencLabel in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 80
+[31-Mar-2026 13:35:17 America/Caracas] PHP Warning:  Undefined variable $vencCaso in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php on line 81
+[31-Mar-2026 13:35:17 America/Caracas] [CRITICAL] htmlspecialchars(): Argument #1 ($string) must be of type string, null given in C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php:81
+[31-Mar-2026 13:35:17 America/Caracas] #0 C:\xampp\htdocs\tesis_francisco\resources\views\student\home_st.php(81): htmlspecialchars(NULL)
+#1 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(89): require('C:\\xampp\\htdocs...')
+#2 C:\xampp\htdocs\tesis_francisco\src\Modules\Student\Controllers\HomeController.php(43): App\Core\App->view('student/home_st', Array)
+#3 C:\xampp\htdocs\tesis_francisco\routes\web.php(97): App\Modules\Student\Controllers\HomeController->index(Object(App\Core\App))
+#4 C:\xampp\htdocs\tesis_francisco\src\Core\Router.php(132): {closure}()
+#5 C:\xampp\htdocs\tesis_francisco\src\Core\App.php(129): App\Core\Router->dispatch('GET', '/home')
+#6 C:\xampp\htdocs\tesis_francisco\public\index.php(19): App\Core\App->run()
+#7 {main}
+[01-Apr-2026 01:20:18 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:19 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:19 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:19 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:24 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:24 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:24 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:25 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:26 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:27 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:27 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:27 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:27 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:20:27 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:07 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:09 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:09 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:10 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:10 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:22 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:22 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:22 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:23 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:23 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:23 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:23 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:23 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:23 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:24 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:24 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:24 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:24 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:24 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:24 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:25 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:25 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:25 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:25 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:25 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:28 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:28 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:28 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42
+[01-Apr-2026 01:21:29 America/Caracas] PHP Warning:  Undefined variable $isGuidedMode in C:\xampp\htdocs\tesis_francisco\resources\views\simulator\seniat_actual\sucesion\herencia\tipo_herencia.php on line 42

@@ -142,6 +142,11 @@
                         history.pushState({ spaUrl: url }, '', url);
                     }
 
+                    // Re-init Guided Tour if applicable
+                    if (typeof window.initGuidedTourForPage === 'function') {
+                        window.initGuidedTourForPage();
+                    }
+
                     // Scroll to top
                     window.scrollTo({ top: 0, behavior: 'instant' });
                 } catch (err) {
