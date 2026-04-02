@@ -405,11 +405,16 @@ class IntentosController
         } catch (\Throwable $e) {
             error_log('[IntentosController::salir] Error: ' . $e->getMessage());
         }
-        $dest = $_GET['dest'] ?? '/home';
-        // Sanitizar: solo permitir rutas internas
-        if (strpos($dest, '/') !== 0) {
+        $dest = trim($_GET['dest'] ?? '/home');
+        
+        // Sanitización para prevenir Open Redirect:
+        // 1. Debe empezar con '/'
+        // 2. NO debe empezar con '//' (relative scheme attack)
+        // 3. NO debe contener '://'
+        if (strpos($dest, '/') !== 0 || strpos($dest, '//') === 0 || strpos($dest, '://') !== false) {
             $dest = '/home';
         }
+        
         header('Location: ' . base_url(ltrim($dest, '/')));
         exit;
     }

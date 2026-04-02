@@ -185,8 +185,6 @@ $role = $_SESSION['role_id'] ?? 3;
                         </svg>
                     </span>
                     <span class="sim-nav__text">Reportes Generales</span>
-                    <span class="sim-nav__badge-blue"
-                        style="margin-left: auto; background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px;">Pronto</span>
                 </a>
             </div>
         <?php endif; ?>

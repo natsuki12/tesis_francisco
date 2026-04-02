@@ -40,7 +40,7 @@ class CorreosController
             echo json_encode($result);
         } catch (\Throwable $e) {
             error_log('[CorreosController] SMTP Health Check failed: ' . $e->getMessage());
-            echo json_encode(['ok' => false, 'host' => '', 'latency_ms' => null, 'error' => $e->getMessage()]);
+            echo json_encode(['ok' => false, 'host' => '', 'latency_ms' => null, 'error' => 'No se pudo verificar el servidor de correo.']);
         }
     }
 

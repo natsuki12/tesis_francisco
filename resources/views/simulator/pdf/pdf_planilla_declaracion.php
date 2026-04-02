@@ -358,6 +358,9 @@ $printDatos = function() use ($datos, $esc) {
      PÁGINA 1
      ================================================================ -->
 
+<!-- ═══ MEMBRETE INSTITUCIONAL ═══ -->
+<?php include __DIR__ . '/../../partials/pdf/pdf_membrete.php'; ?>
+
 <?php $printHeader(); ?>
 <?php $printDatos(); ?>
 

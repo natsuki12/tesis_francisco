@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Página no encontrada';
+$pageTitle = 'Error del servidor';
 $activePage = '';
 
 // Detectar rol para redirigir correctamente
@@ -18,8 +18,7 @@ if ($role == 1) {
     $homeLabel = 'Ir al Inicio';
 }
 
-// Si el usuario está logueado, usar el layout loggeado; si no, renderizar standalone
-$isLogged = isset($_SESSION['user_id']);
+
 ob_start();
 ?>
 
@@ -29,8 +28,8 @@ ob_start();
         <div class="error-page__illustration">
             <svg viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <!-- Fondo circular -->
-                <circle cx="100" cy="80" r="70" fill="var(--blue-50, #eff6ff)" />
-                <!-- Documento roto -->
+                <circle cx="100" cy="80" r="70" fill="var(--red-50, #fef2f2)" />
+                <!-- Servidor/documento con error -->
                 <rect x="65" y="35" width="50" height="65" rx="4" fill="var(--white, #fff)"
                     stroke="var(--gray-300, #cbd5e1)" stroke-width="2" />
                 <line x1="75" y1="50" x2="105" y2="50" stroke="var(--gray-200, #e2e8f0)" stroke-width="3"
@@ -39,27 +38,31 @@ ob_start();
                     stroke-linecap="round" />
                 <line x1="75" y1="66" x2="95" y2="66" stroke="var(--gray-200, #e2e8f0)" stroke-width="3"
                     stroke-linecap="round" />
-                <!-- Signo de interrogación -->
-                <circle cx="135" cy="45" r="18" fill="var(--blue-600, #1a4a8a)" opacity="0.1" />
+                <!-- Signo de exclamación (triángulo de alerta) -->
+                <circle cx="135" cy="45" r="18" fill="var(--red-500, #ef4444)" opacity="0.12" />
                 <text x="135" y="52" text-anchor="middle" font-size="22" font-weight="700"
-                    fill="var(--blue-600, #1a4a8a)">?</text>
-                <!-- Lupa -->
-                <circle cx="72" cy="110" r="14" fill="none" stroke="var(--gray-400, #94a3b8)" stroke-width="3" />
-                <line x1="82" y1="120" x2="92" y2="130" stroke="var(--gray-400, #94a3b8)" stroke-width="3"
-                    stroke-linecap="round" />
+                    fill="var(--red-500, #ef4444)">!</text>
+                <!-- Engranaje roto -->
+                <circle cx="72" cy="112" r="12" fill="none" stroke="var(--gray-400, #94a3b8)" stroke-width="2.5" />
+                <circle cx="72" cy="112" r="4" fill="var(--gray-400, #94a3b8)" />
+                <line x1="72" y1="98" x2="72" y2="103" stroke="var(--gray-400, #94a3b8)" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="72" y1="121" x2="72" y2="126" stroke="var(--gray-400, #94a3b8)" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="58" y1="112" x2="63" y2="112" stroke="var(--gray-400, #94a3b8)" stroke-width="2.5" stroke-linecap="round" />
+                <line x1="81" y1="112" x2="86" y2="112" stroke="var(--gray-400, #94a3b8)" stroke-width="2.5" stroke-linecap="round" />
             </svg>
         </div>
 
         <!-- Código de error -->
-        <h1 class="error-page__code">404</h1>
+        <h1 class="error-page__code">500</h1>
 
         <!-- Mensaje principal -->
-        <h2 class="error-page__title">Página no encontrada</h2>
+        <h2 class="error-page__title">Error interno del servidor</h2>
 
         <!-- Descripción -->
         <p class="error-page__description">
-            El recurso que buscas no existe, fue movido o no tienes permiso para acceder a él.
-            Verifica la URL e inténtalo de nuevo.
+            Ocurrió un error inesperado al procesar tu solicitud.
+            El problema fue registrado automáticamente. Por favor, inténtalo de nuevo
+            o contacta al administrador si el error persiste.
         </p>
 
         <!-- Botones de acción -->
@@ -72,14 +75,14 @@ ob_start();
                 </svg>
                 <?= $homeLabel ?>
             </a>
-            <button onclick="history.back()" class="modal-btn modal-btn-cancel"
+            <button onclick="location.reload()" class="modal-btn modal-btn-cancel"
                 style="padding: 12px 28px; font-size: 15px;">
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"
                     stroke-linecap="round" style="margin-right:6px;">
-                    <line x1="19" y1="12" x2="5" y2="12" />
-                    <polyline points="12 19 5 12 12 5" />
+                    <polyline points="23 4 23 10 17 10" />
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
                 </svg>
-                Volver atrás
+                Reintentar
             </button>
         </div>
     </div>
@@ -124,7 +127,7 @@ ob_start();
     .error-page__code {
         font-size: 5rem;
         font-weight: 800;
-        color: var(--gray-200, #e2e8f0);
+        color: var(--red-100, #fee2e2);
         margin: 0;
         line-height: 1;
         letter-spacing: -2px;
@@ -160,39 +163,37 @@ ob_start();
 <?php
 $content = ob_get_clean();
 
-if ($isLogged) {
-    require __DIR__ . '/../layouts/logged_layout.php';
-} else {
-    // Standalone: página completa sin sidebar/navbar
-    ?>
-    <!DOCTYPE html>
-    <html lang="es">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title><?= $pageTitle ?> — UNIMAR</title>
-        <!-- Google Fonts (local, offline) -->
-        <link rel="stylesheet" href="<?= asset('css/fonts-local.css') ?>">
-        <link rel="stylesheet" href="<?= asset('css/base.css') ?>">
-        <link rel="stylesheet" href="<?= asset('css/global/components.css') ?>">
-        <style>
-            body {
-                margin: 0;
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: var(--gray-50, #f8fafc);
-            }
-        </style>
-    </head>
-
-    <body>
-        <?= $content ?>
-    </body>
-
-    </html>
-    <?php
-}
+// ⚠️ SIEMPRE renderizar standalone. Nunca usar logged_layout.php aquí porque:
+// 1) El error original pudo ser un crash de DB
+// 2) logged_layout.php ejecuta BackupMiddleware::check() y queries que fallarían de nuevo
+// 3) Eso causaría un segundo crash → loop infinito
 ?>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $pageTitle ?> — SUCELAB</title>
+    <!-- Google Fonts (local, offline) -->
+    <link rel="stylesheet" href="<?= asset('css/fonts-local.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/base.css') ?>">
+    <link rel="stylesheet" href="<?= asset('css/global/components.css') ?>">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-50, #f8fafc);
+        }
+    </style>
+</head>
+
+<body>
+    <?= $content ?>
+</body>
+
+</html>
+

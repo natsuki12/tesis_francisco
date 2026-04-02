@@ -125,7 +125,7 @@ class ProfesoresController
             $emailBody = $this->buildWelcomeEmail($nombres, $apellidos, $email, $cedula, $baseUrl);
             $emailSent = MailQueueService::send(
                 $email,
-                'Bienvenido al SPDSS — Su cuenta ha sido creada',
+                'Bienvenido al SUCELAB — Su cuenta ha sido creada',
                 $emailBody,
                 'bienvenida',
                 (int) $result['user_id']
@@ -479,7 +479,7 @@ class ProfesoresController
                     $emailBody = $this->buildWelcomeEmail($nombres, $apellidos, $email, $cedula, $baseUrl);
                     MailQueueService::queue(
                         $email,
-                        'Bienvenido al SPDSS — Su cuenta ha sido creada',
+                        'Bienvenido al SUCELAB — Su cuenta ha sido creada',
                         $emailBody,
                         'bienvenida',
                         (int) $result['user_id']
@@ -540,12 +540,12 @@ class ProfesoresController
         return "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
             <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
-                <h1 style='margin: 0; font-size: 24px;'>🎓 Bienvenido al SPDSS</h1>
-                <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Pedagógico de Declaración Sucesoral Simulada</p>
+                <h1 style='margin: 0; font-size: 24px;'>🎓 Bienvenido al SUCELAB</h1>
+                <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Universitario de Capacitación y Evaluación en Legislación y Administración de Bienes Sucesorales</p>
             </div>
             <div style='background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none;'>
                 <p style='font-size: 16px;'>Estimado/a <strong>{$n} {$a}</strong>,</p>
-                <p>Su cuenta de profesor ha sido creada exitosamente en el SPDSS. A continuación encontrará sus datos de acceso:</p>
+                <p>Su cuenta de profesor ha sido creada exitosamente en el SUCELAB. A continuación encontrará sus datos de acceso:</p>
                 
                 <div style='background: #f5f5f5; border-left: 4px solid #1a237e; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
                     <p style='margin: 5px 0;'><strong>🔗 URL del sistema:</strong> <a href='{$u}/login'>{$u}/login</a></p>
@@ -559,7 +559,7 @@ class ProfesoresController
                 </div>
 
                 <p style='color: #666; font-size: 13px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;'>
-                    Este es un correo automático del SPDSS. Si no solicitó esta cuenta, puede ignorar este mensaje.
+                    Este es un correo automático del SUCELAB. Si no solicitó esta cuenta, puede ignorar este mensaje.
                 </p>
             </div>
         </div>";

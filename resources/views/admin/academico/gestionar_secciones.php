@@ -9,7 +9,9 @@ $breadcrumbs = [
     'Secciones' => '#'
 ];
 
-$extraCss = '<link rel="stylesheet" href="' . asset('css/shared/data-table.css') . '">';
+$extraCss = '<link rel="stylesheet" href="' . asset('css/shared/data-table.css') . '">
+             <link rel="stylesheet" href="' . asset('css/global/autocomplete_dropdown.css') . '">';
+$extraJs  = '<script src="' . asset('js/global/autocomplete_dropdown.js') . '"></script>';
 
 // Datos inyectados por el controlador
 $secciones      = $secciones      ?? [];
@@ -130,6 +132,13 @@ ob_start();
                         </td>
                         <td>
                             <div class="row-actions">
+                                <button class="row-action-btn" title="Gestionar Estudiantes"
+                                    onclick="abrirEstudiantes(<?= (int)$sec['id'] ?>, '<?= e(addslashes($nombre)) ?>', <?= (int)$cupo ?>)">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                </button>
                                 <button class="row-action-btn" title="Editar Sección"
                                     onclick="openEditarSeccion(this)"
                                     data-id="<?= (int)$sec['id'] ?>"
@@ -227,6 +236,165 @@ ob_start();
         </div>
     </div>
 </dialog>
+
+<!-- ==============================================================
+     MODAL: Gestionar Estudiantes de una Sección
+     Usa div overlay (mismo patrón que gc-modal-overlay del profesor)
+     para compatibilidad con AutocompleteDropdown (z-index: 9999)
+     ============================================================== -->
+<div class="gc-modal-overlay" id="modal-estudiantes" style="display:none">
+    <div class="gc-modal" style="max-width: 640px;">
+        <div class="modal-base__header">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    width="20" height="20" style="color:var(--blue-500,#3b82f6);">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <div>
+                    <h3 class="modal-base__title" id="modal-est-title">Estudiantes</h3>
+                    <p style="font-size:12px; color:var(--gray-500); margin:2px 0 0; font-weight:500;" id="modal-est-cupo"></p>
+                </div>
+            </div>
+            <button class="modal-base__close" onclick="cerrarModalEstudiantes()">&times;</button>
+        </div>
+        <div class="modal-base__body">
+            <!-- Buscador para agregar -->
+            <div class="gc-section-divider" style="margin-top:0;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="flex-shrink:0;">
+                    <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path>
+                </svg>
+                Inscribir estudiante
+            </div>
+            <div class="gc-form-group" style="margin-bottom:20px;">
+                <input type="text" id="buscar-est-input" class="gc-input" placeholder="Buscar por nombre, cédula o correo..." autocomplete="off">
+            </div>
+
+            <!-- Inline errors -->
+            <div id="est-error-box" style="display:none; margin-bottom:12px; padding:10px 14px; border-radius:var(--radius-sm,8px); background:var(--red-50,#fef2f2); border:1px solid var(--red-200,#fecaca); color:var(--red-700,#b91c1c); font-size:13px; font-weight:500;">
+                <span id="est-error-msg"></span>
+            </div>
+
+            <!-- Lista de inscritos -->
+            <div class="gc-section-divider">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="flex-shrink:0;">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                </svg>
+                Inscritos <span class="gc-student-counter" id="est-counter">0</span>
+            </div>
+            <div id="lista-estudiantes" style="max-height:340px; overflow-y:auto;"></div>
+            <!-- Empty state -->
+            <div id="est-empty" class="gc-empty-students" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <line x1="19" y1="11" x2="23" y2="11"></line>
+                </svg>
+                <span>No hay estudiantes inscritos en esta sección.</span>
+            </div>
+            <!-- Loading -->
+            <div id="est-loading" style="display:none; text-align:center; padding:30px 0; color:var(--gray-400);">
+                Cargando...
+            </div>
+        </div>
+        <div class="modal-base__footer">
+            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalEstudiantes()">Cancelar</button>
+            <button class="modal-btn modal-btn-primary" id="btn-guardar-estudiantes" onclick="guardarEstudiantes()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Scoped styles for gc-modal-overlay (same as professor's gestionar_caso.css) -->
+<style>
+    .gc-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(10, 30, 61, 0.5);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+    .gc-modal {
+        background: var(--white, #ffffff);
+        border-radius: var(--radius-lg, 12px);
+        width: 100%;
+        max-width: 640px;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+    }
+    .gc-modal .modal-base__body {
+        flex: 1;
+        overflow-y: auto;
+    }
+    .gc-section-divider {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 8px 0 12px;
+        padding: 10px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--blue-700, #1d4ed8);
+        background: var(--blue-50, #eff6ff);
+        border-radius: var(--radius-sm, 8px);
+        border: 1px solid var(--blue-100, #dbeafe);
+    }
+    .gc-student-counter {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 7px;
+        border-radius: 11px;
+        font-size: 11px;
+        font-weight: 700;
+        background: var(--blue-600, #2563eb);
+        color: #fff;
+    }
+    .gc-form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .gc-input {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid var(--gray-200, #e5e7eb);
+        border-radius: var(--radius-sm, 8px);
+        font-size: var(--text-md, 14px);
+        background: var(--white, #ffffff);
+        color: var(--gray-700, #374151);
+        transition: border-color 0.15s;
+        font-family: var(--font-ui, inherit);
+    }
+    .gc-input:focus {
+        outline: none;
+        border-color: var(--blue-400, #60a5fa);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .gc-empty-students {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 28px 16px;
+        width: 100%;
+        color: var(--gray-400, #9ca3af);
+        text-align: center;
+    }
+    .gc-empty-students svg { opacity: 0.5; }
+    .gc-empty-students span { font-size: 13px; font-style: italic; }
+</style>
 
 <script>
 const CSRF_TOKEN = '<?= \App\Core\Csrf::getToken() ?>';
@@ -330,6 +498,269 @@ async function guardarSeccion() {
         window.modalManager.showError('modal-seccion', 'No se pudo conectar con el servidor.');
     } finally {
         window.modalManager.resetButtonLoading(btn);
+    }
+}
+// ═══════════════════════════════════════════════════════════
+//  GESTIÓN DE ESTUDIANTES POR SECCIÓN (BATCH SAVE)
+// ═══════════════════════════════════════════════════════════
+
+let currentSeccionId = null;
+let currentSeccionCupo = 0;
+let autocompleteEst = null;
+let localEstudiantes = [];  // [{id, nombre_completo, cedula, nacionalidad, email}]
+let isSaving = false;
+
+function cerrarModalEstudiantes() {
+    document.getElementById('modal-estudiantes').style.display = 'none';
+    document.body.style.overflow = '';
+    localEstudiantes = [];
+    clearEstError();
+}
+
+// ── Inline error helpers ──
+let estErrorTimer = null;
+function showEstError(msg) {
+    const box = document.getElementById('est-error-box');
+    document.getElementById('est-error-msg').textContent = msg;
+    box.style.display = '';
+    if (estErrorTimer) clearTimeout(estErrorTimer);
+    estErrorTimer = setTimeout(() => { box.style.display = 'none'; }, 5000);
+}
+function clearEstError() {
+    document.getElementById('est-error-box').style.display = 'none';
+    if (estErrorTimer) { clearTimeout(estErrorTimer); estErrorTimer = null; }
+}
+
+// ── Renderizar lista desde estado local ──
+function renderListaEstudiantes() {
+    const counter = document.getElementById('est-counter');
+    const cupoLabel = document.getElementById('modal-est-cupo');
+    counter.textContent = localEstudiantes.length;
+    cupoLabel.textContent = `${localEstudiantes.length} / ${currentSeccionCupo} cupos ocupados`;
+
+    const container = document.getElementById('lista-estudiantes');
+    const empty = document.getElementById('est-empty');
+
+    if (localEstudiantes.length === 0) {
+        container.innerHTML = '';
+        empty.style.display = '';
+        return;
+    }
+
+    empty.style.display = 'none';
+    container.innerHTML = localEstudiantes.map((est, i) => {
+        const cedula = (est.nacionalidad || 'V') + '-' + (est.cedula || '');
+        const parts = (est.nombre_completo || '').split(' ');
+        let initials = '';
+        parts.forEach(p => { if (p) initials += p.charAt(0).toUpperCase(); });
+        initials = initials.substring(0, 2);
+
+        return `<div class="est-row" style="display:flex; align-items:center; gap:12px; padding:10px 0;${i > 0 ? ' border-top:1px solid var(--gray-100);' : ''}">
+            <div class="causante-avatar m" style="width:32px;height:32px;font-size:11px;flex-shrink:0;">${initials}</div>
+            <div style="flex:1; min-width:0;">
+                <div style="font-size:14px; font-weight:var(--weight-semibold); color:var(--gray-800);">${est.nombre_completo}</div>
+                <div style="font-size:12px; color:var(--gray-500);">${cedula}${est.email ? ' · ' + est.email : ''}</div>
+            </div>
+            <button class="row-action-btn" title="Remover" style="color:var(--red-500); flex-shrink:0;"
+                onclick="removerEstudianteLocal(${est.id})"
+            >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+        </div>`;
+    }).join('');
+}
+
+// ── Agregar al estado local ──
+function agregarEstudianteLocal(item) {
+    const itemId = Number(item.id);
+    if (localEstudiantes.some(e => e.id === itemId)) {
+        showEstError('El estudiante ya está en la lista.');
+        return;
+    }
+    if (localEstudiantes.length >= currentSeccionCupo) {
+        showEstError('Se alcanzó el cupo máximo de la sección.');
+        return;
+    }
+    localEstudiantes.push({
+        id: itemId,
+        nombre_completo: item.nombre_completo,
+        cedula: item.cedula,
+        nacionalidad: item.nacionalidad,
+        email: item.email
+    });
+    renderListaEstudiantes();
+}
+
+// ── Remover del estado local ──
+function removerEstudianteLocal(estudianteId) {
+    localEstudiantes = localEstudiantes.filter(e => e.id !== estudianteId);
+    renderListaEstudiantes();
+    // Limpiar caché para que el removido vuelva a aparecer en búsquedas
+    if (autocompleteEst) autocompleteEst._cache.clear();
+}
+
+// ── Abrir modal ──
+async function abrirEstudiantes(seccionId, nombre, cupo) {
+    currentSeccionId = seccionId;
+    currentSeccionCupo = cupo;
+    localEstudiantes = [];
+    isSaving = false;
+
+    // Limpiar caché del autocomplete para que busque con la nueva sección
+    if (autocompleteEst) {
+        autocompleteEst._cache.clear();
+        autocompleteEst.close();
+    }
+
+    document.getElementById('modal-est-title').textContent = `Estudiantes — ${nombre}`;
+    document.getElementById('modal-est-cupo').textContent = 'Cargando...';
+    document.getElementById('est-counter').textContent = '0';
+    document.getElementById('lista-estudiantes').innerHTML = '';
+    document.getElementById('est-empty').style.display = 'none';
+    document.getElementById('est-loading').style.display = '';
+    document.getElementById('buscar-est-input').value = '';
+    clearEstError();
+
+    const btnGuardar = document.getElementById('btn-guardar-estudiantes');
+    btnGuardar.disabled = false;
+    btnGuardar.textContent = 'Guardar';
+
+    document.getElementById('modal-estudiantes').style.display = '';
+    document.body.style.overflow = 'hidden';
+
+    // Inicializar autocomplete (una sola vez)
+    if (!autocompleteEst) {
+        autocompleteEst = new AutocompleteDropdown({
+            input: document.getElementById('buscar-est-input'),
+            fetchFn: async (query) => {
+                const res = await fetch(BASE_URL + `/admin/secciones/buscar-estudiantes?seccion_id=${currentSeccionId}&q=${encodeURIComponent(query)}`);
+                const results = await res.json();
+                // Filtrar los que ya están en la lista local
+                const localIds = new Set(localEstudiantes.map(e => e.id));
+                return results.filter(r => !localIds.has(Number(r.id)));
+            },
+            renderItem: (item) => {
+                const cedula = (item.nacionalidad || 'V') + '-' + (item.cedula || '');
+                return `
+                    <div style="line-height:1.4;">
+                        <span class="ac-dropdown__cedula">${cedula}</span>
+                        <span class="ac-dropdown__sep">—</span>
+                        <span class="ac-dropdown__name">${item.nombre_completo}</span>
+                        <br>
+                        <small style="color:#64748b;">${item.email || 'Sin correo'}</small>
+                    </div>`;
+            },
+            onSelect: (item) => {
+                agregarEstudianteLocal(item);
+                document.getElementById('buscar-est-input').value = '';
+                // Cerrar dropdown tras selección (override del auto-reopen del componente)
+                setTimeout(() => {
+                    if (autocompleteEst) autocompleteEst.close();
+                    document.getElementById('buscar-est-input').blur();
+                }, 80);
+                // Scroll al final para que se vea la adición
+                const lista = document.getElementById('lista-estudiantes');
+                setTimeout(() => { lista.scrollTop = lista.scrollHeight; }, 100);
+            },
+            minLength: 0
+        });
+    }
+
+    // Cargar inscritos actuales al estado local
+    try {
+        const res = await fetch(BASE_URL + `/admin/secciones/estudiantes?seccion_id=${currentSeccionId}`);
+        const json = await res.json();
+        document.getElementById('est-loading').style.display = 'none';
+
+        if (json.success && json.data) {
+            localEstudiantes = json.data.map(est => ({
+                id: Number(est.id),
+                nombre_completo: est.nombre_completo,
+                cedula: est.cedula,
+                nacionalidad: est.nacionalidad,
+                email: est.email
+            }));
+        }
+        renderListaEstudiantes();
+    } catch (err) {
+        console.error(err);
+        document.getElementById('est-loading').style.display = 'none';
+        document.getElementById('est-empty').querySelector('span').textContent = 'Error al cargar estudiantes.';
+        document.getElementById('est-empty').style.display = '';
+    }
+}
+
+// ── Guardar (batch sync) con protección doble clic ──
+async function guardarEstudiantes() {
+    if (isSaving) return;
+    isSaving = true;
+
+    const btn = document.getElementById('btn-guardar-estudiantes');
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Guardando...';
+
+    try {
+        const res = await fetch(BASE_URL + '/admin/secciones/sync-estudiantes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                csrf_token: CSRF_TOKEN,
+                seccion_id: currentSeccionId,
+                estudiante_ids: localEstudiantes.map(e => e.id)
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            if (window.showToast) showToast(data.message, 'success');
+            actualizarContadorTabla(currentSeccionId, data.inscritos);
+            cerrarModalEstudiantes();
+        } else {
+            showEstError(data.message || 'Error al guardar.');
+            btn.disabled = false;
+            btn.textContent = originalText;
+            isSaving = false;
+        }
+    } catch (err) {
+        console.error(err);
+        showEstError('Error de conexión con el servidor.');
+        btn.disabled = false;
+        btn.textContent = originalText;
+        isSaving = false;
+    }
+}
+
+// Cerrar con Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('modal-estudiantes').style.display !== 'none') {
+        cerrarModalEstudiantes();
+    }
+});
+
+// ── Helper: actualizar tabla principal ──
+function actualizarContadorTabla(seccionId, inscritos) {
+    const table = document.getElementById('tbl-secciones');
+    if (!table) return;
+    const rows = table.querySelectorAll('tbody tr');
+    for (const row of rows) {
+        const idCell = row.children[0];
+        if (idCell && idCell.textContent.trim() == seccionId) {
+            const cupoCell = row.children[5];
+            if (cupoCell) {
+                const parts = cupoCell.innerHTML.split('/');
+                if (parts.length >= 2) {
+                    const cupoNum = parseInt(parts[1]) || currentSeccionCupo;
+                    const pct = cupoNum > 0 ? Math.round(inscritos / cupoNum * 100) : 0;
+                    let dot = '';
+                    if (pct >= 90) dot = '<span style="font-size:10px; color:var(--red-500); margin-left:4px;">●</span>';
+                    else if (pct >= 70) dot = '<span style="font-size:10px; color:var(--yellow-500); margin-left:4px;">●</span>';
+                    cupoCell.innerHTML = `<strong>${inscritos}</strong> / ${cupoNum}${dot}`;
+                }
+            }
+            break;
+        }
     }
 }
 </script>

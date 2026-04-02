@@ -359,6 +359,12 @@ class AsignacionesEstudianteController
                 $totalReducciones = round($totalReducciones, 2);
             }
 
+            // ── Variables del membrete ──
+            $pdfTipoDocumento = 'Caso Sucesoral';
+            $pdfReferencia = '#CASO-' . $casoIdVal;
+            $pdfEstado = $estado;
+            $pdfEstadoLabel = 'Estado';
+
             // ── Render PDF template into HTML ──
             ob_start();
             include __DIR__ . '/../../../../resources/views/professor/pdf/pdf_caso.php';
@@ -376,15 +382,15 @@ class AsignacionesEstudianteController
             ]);
 
             $safeTitle = preg_replace('/[^a-zA-Z0-9_\- áéíóúñÁÉÍÓÚÑ]/', '', $titulo);
-            $mpdf->SetTitle($safeTitle . ' — SPDSS');
-            $mpdf->SetAuthor('SPDSS');
+            $mpdf->SetTitle($safeTitle . ' — SUCELAB');
+            $mpdf->SetAuthor('SUCELAB');
             $mpdf->WriteHTML($html);
             $mpdf->Output('caso_' . $casoIdVal . '.pdf', 'I');
 
         } catch (\Throwable $e) {
             error_log('[AsignacionesEstudianteController::descargarCasoPdf] ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             http_response_code(500);
-            echo 'Error al generar el PDF: ' . $e->getMessage();
+            echo 'Ocurrió un error inesperado al generar el documento. Por favor, contacte al administrador.';
         }
     }
 }

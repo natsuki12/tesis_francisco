@@ -74,8 +74,8 @@ class RSMailerService
         $fecha = date('d/m/Y H:i');
 
         $html = "
-        <div style='font-family: \"Plus Jakarta Sans\", sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>
-            <h2 style='color: #004085; text-align: center;'>⚠ Discrepancias Detectadas</h2>
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>
+            <h2 style='color: #004085; text-align: center;'>Discrepancias Detectadas</h2>
             <p style='text-align: center; color: #555; margin-bottom: 20px;'>Se encontraron diferencias en su validación de RIF Sucesoral.</p>
 
             <div style='background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;'>
@@ -127,7 +127,7 @@ class RSMailerService
                 <strong>Total de discrepancias:</strong> {$totalErrores}
             </div>
 
-            <p style='color: #777; font-size: 12px; text-align: center;'>Este correo fue generado automáticamente por el Simulador SENIAT.</p>
+            <p style='color: #777; font-size: 12px; text-align: center;'>Este correo fue generado automáticamente por el SUCELAB — Simulador SENIAT.</p>
         </div>";
 
         return $html;
@@ -144,45 +144,51 @@ class RSMailerService
         string $casoTitulo
     ): string {
         $fecha = date('d/m/Y H:i');
+        $n     = htmlspecialchars($nombreEstudiante, ENT_QUOTES, 'UTF-8');
+        $rif   = htmlspecialchars($rifSucesoral, ENT_QUOTES, 'UTF-8');
+        $caso  = htmlspecialchars($casoTitulo, ENT_QUOTES, 'UTF-8');
 
         $html = "
-        <div style='font-family: \"Plus Jakarta Sans\", sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;'>
-            <h2 style='color: #004085; text-align: center;'>✅ RIF Sucesoral Generado</h2>
-            <p style='text-align: center; color: #555; margin-bottom: 20px;'>Su validación fue exitosa y se ha generado el RIF Sucesoral.</p>
-
-            <div style='background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;'>
-                <strong>Estudiante:</strong> " . htmlspecialchars($nombreEstudiante, ENT_QUOTES, 'UTF-8') . "<br>
-                <strong>Intento:</strong> #{$intentoId}<br>";
-
-        if ($casoTitulo) {
-            $html .= "                <strong>Caso:</strong> " . htmlspecialchars($casoTitulo, ENT_QUOTES, 'UTF-8') . "<br>";
-        }
-
-        $html .= "                <strong>Fecha:</strong> {$fecha}
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
+            <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
+                <h1 style='margin: 0; font-size: 24px;'>RIF Sucesoral Generado</h1>
+                <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Universitario de Capacitación y Evaluación en Legislación y Administración de Bienes Sucesorales</p>
             </div>
+            <div style='background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;'>
+                <p style='font-size: 16px;'>Estimado/a <strong>{$n}</strong>,</p>
+                <p>Su validación fue exitosa y se ha generado el RIF Sucesoral para su caso. A continuación encontrará los detalles:</p>
 
-            <div style='background-color: #f8f9fa; padding: 15px; text-align: center; margin: 20px 0;'>
-                <p style='margin: 0 0 8px; font-size: 13px; color: #555;'>Su RIF Sucesoral es:</p>
-                <strong style='font-size: 32px; letter-spacing: 5px; color: #0d6efd;'>" . htmlspecialchars($rifSucesoral, ENT_QUOTES, 'UTF-8') . "</strong>
+                <div style='background: #f5f5f5; border-left: 4px solid #1a237e; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
+                    <p style='margin: 5px 0;'><strong>Caso:</strong> {$caso}</p>
+                    <p style='margin: 5px 0;'><strong>Intento:</strong> #{$intentoId}</p>
+                    <p style='margin: 5px 0;'><strong>Fecha:</strong> {$fecha}</p>
+                </div>
+
+                <div style='background: #f0fdf4; border: 2px solid #059669; border-radius: 12px; padding: 24px; margin: 24px 0; text-align: center;'>
+                    <p style='margin: 0 0 8px; font-size: 13px; color: #555;'>Su RIF Sucesoral es:</p>
+                    <strong style='font-size: 32px; letter-spacing: 5px; color: #059669;'>{$rif}</strong>
+                </div>
+
+                <div style='margin: 24px 0; font-size: 14px; line-height: 1.7;'>
+                    <h3 style='font-size: 15px; color: #1a237e; margin: 0 0 12px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px;'>
+                        Instrucciones
+                    </h3>
+                    <ol style='margin: 0; padding-left: 20px; color: #444;'>
+                        <li style='margin-bottom: 8px;'>Guarde este RIF Sucesoral para sus registros.</li>
+                        <li style='margin-bottom: 8px;'>En el proceso real, debe presentar la planilla impresa ante la unidad del SENIAT correspondiente a su domicilio fiscal.</li>
+                        <li style='margin-bottom: 8px;'>Para fines educativos, este RIF ha sido asignado automáticamente a su caso en el simulador.</li>
+                    </ol>
+                </div>
+
+                <div style='background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
+                    <p style='margin: 0; font-weight: bold; color: #92400e;'>Nota sobre el proceso real</p>
+                    <p style='margin: 10px 0 0; font-size: 13px; color: #555;'>En el proceso real ante el SENIAT, se requiere un correo electrónico exclusivo para el RIF Sucesoral. Se recomienda crear uno para uso exclusivo de la sucesión.</p>
+                </div>
+
+                <p style='color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;'>
+                    Este correo fue generado automáticamente por el SUCELAB — Simulador SENIAT.
+                </p>
             </div>
-
-            <div style='margin-bottom: 16px; font-size: 13px; line-height: 1.7;'>
-                <h3 style='font-size: 14px; color: #004085; margin: 0 0 8px 0; border-bottom: 1px solid #e0e0e0; padding-bottom: 6px;'>
-                    📋 Instrucciones
-                </h3>
-                <ol style='margin: 0; padding-left: 20px; color: #555;'>
-                    <li style='margin-bottom: 6px;'>Guarde este RIF Sucesoral para sus registros.</li>
-                    <li style='margin-bottom: 6px;'>En el proceso real, debe presentar la planilla impresa ante la unidad del SENIAT correspondiente a su domicilio fiscal.</li>
-                    <li style='margin-bottom: 6px;'>Para fines educativos, este RIF ha sido asignado automáticamente a su caso en el simulador.</li>
-                </ol>
-            </div>
-
-            <div style='background-color: #f8f9fa; padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; color: #555;'>
-                <strong>📌 Recuerde:</strong> En el proceso real ante el SENIAT, se requiere un correo electrónico exclusivo para el RIF Sucesoral.
-                Se recomienda crear uno para uso exclusivo de la sucesión.
-            </div>
-
-            <p style='color: #777; font-size: 12px; text-align: center;'>Este correo fue generado automáticamente por el Simulador SENIAT.</p>
         </div>";
 
         return $html;
@@ -234,7 +240,7 @@ class RSMailerService
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
             <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
                 <h1 style='margin: 0; font-size: 24px;'>✅ RIF Sucesoral Aprobado</h1>
-                <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Pedagógico de Declaración Sucesoral Simulada</p>
+                <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Universitario de Capacitación y Evaluación en Legislación y Administración de Bienes Sucesorales</p>
             </div>
             <div style='background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;'>
                 <p style='font-size: 16px;'>Estimado/a <strong>{$n}</strong>,</p>
@@ -268,7 +274,7 @@ class RSMailerService
                 </div>
 
                 <p style='color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;'>
-                    Este correo fue generado automáticamente por el SPDSS — Simulador SENIAT.
+                    Este correo fue generado automáticamente por el SUCELAB — Simulador SENIAT.
                 </p>
             </div>
         </div>";
@@ -329,7 +335,7 @@ class RSMailerService
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
             <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
                 <h1 style='margin: 0; font-size: 24px;'>❌ RIF Sucesoral No Aprobado</h1>
-                <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Pedagógico de Declaración Sucesoral Simulada</p>
+                <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Universitario de Capacitación y Evaluación en Legislación y Administración de Bienes Sucesorales</p>
             </div>
             <div style='background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;'>
                 <p style='font-size: 16px;'>Estimado/a <strong>{$n}</strong>,</p>
@@ -353,7 +359,7 @@ class RSMailerService
                 </div>
 
                 <p style='color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;'>
-                    Este correo fue generado automáticamente por el SPDSS — Simulador SENIAT.
+                    Este correo fue generado automáticamente por el SUCELAB — Simulador SENIAT.
                 </p>
             </div>
         </div>";

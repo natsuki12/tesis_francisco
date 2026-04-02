@@ -61,19 +61,32 @@ class PasswordRecoveryService
         }
 
         // 6. Send Email
-        $subject = 'Código de Recuperación de Contraseña - Simulador SENIAT';
+        $subject = 'Código de Recuperación de Contraseña — SUCELAB';
         $body = "
-            <div style='font-family: \"Plus Jakarta Sans\", sans-serif; color: #333;'>
-                <h2>Recuperación de Contraseña</h2>
-                <p>Hola, hemos recibido una solicitud para restablecer tu contraseña en el Simulador SENIAT.</p>
-                <p>Tu código de verificación es:</p>
-                <div style='background: #f4f6f8; padding: 15px; border-radius: 8px; display: inline-block;'>
-                    <h1 style='color: #0052a3; margin: 0; letter-spacing: 5px;'>{$code}</h1>
-                </div>
-                <p>Este código expira en 15 minutos.</p>
-                <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;'>
-                <p style='font-size: 12px; color: #888;'>Si no solicitaste este cambio, por favor ignora este correo.</p>
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
+            <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
+                <h1 style='margin: 0; font-size: 24px;'>Recuperación de Contraseña</h1>
+                <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Universitario de Capacitación y Evaluación en Legislación y Administración de Bienes Sucesorales</p>
             </div>
+            <div style='background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 10px 10px;'>
+                <p style='font-size: 16px;'>Estimado/a usuario,</p>
+                <p>Hemos recibido una solicitud para restablecer su contraseña en el SUCELAB. Utilice el siguiente código de verificación para completar el proceso:</p>
+
+                <div style='background: #f5f5f5; border: 2px solid #1a237e; border-radius: 12px; padding: 24px; margin: 24px 0; text-align: center;'>
+                    <p style='margin: 0 0 8px; font-size: 13px; color: #555;'>Su código de verificación es:</p>
+                    <strong style='font-size: 32px; letter-spacing: 8px; color: #1a237e;'>{$code}</strong>
+                </div>
+
+                <div style='background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
+                    <p style='margin: 0; font-weight: bold; color: #e65100;'>Importante</p>
+                    <p style='margin: 10px 0 0;'>Este código expira en <strong>15 minutos</strong>. Si no solicitó este cambio, puede ignorar este correo de forma segura.</p>
+                </div>
+
+                <p style='color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;'>
+                    Este correo fue generado automáticamente por el SUCELAB — Simulador SENIAT.
+                </p>
+            </div>
+        </div>
         ";
 
         // Intentar envío directo (sin cola de reintentos)

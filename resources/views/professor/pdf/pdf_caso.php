@@ -76,12 +76,12 @@ if (!function_exists('pdfDate')) {
     .pie-reporte { text-align: center; font-size: 7pt; color: #a0aec0; margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 4px; }
 </style>
 
-<!-- ═══ ENCABEZADO ═══ -->
-<div class="encabezado">
-    <h1><?= htmlspecialchars($titulo) ?></h1>
-    <p>Caso Sucesoral — Sistema de Práctica de Declaración Sucesoral SENIAT (SPDSS)</p>
-    <?php $estadoClassPdf = match($estado) { 'Publicado' => 'estado-publicado', 'Borrador' => 'estado-borrador', default => 'estado-inactivo' }; ?>
-    <span class="estado <?= $estadoClassPdf ?>"><?= htmlspecialchars($estado) ?></span>
+<!-- ═══ MEMBRETE INSTITUCIONAL ═══ -->
+<?php include __DIR__ . '/../../partials/pdf/pdf_membrete.php'; ?>
+
+<!-- ═══ TÍTULO DEL CASO ═══ -->
+<div style="text-align: center; margin-bottom: 10px;">
+    <h1 style="font-size: 14pt; color: #1a365d; margin: 0; text-transform: uppercase;"><?= htmlspecialchars($titulo) ?></h1>
 </div>
 
 <!-- ═══ META ═══ -->
@@ -98,11 +98,7 @@ if (!function_exists('pdfDate')) {
         <td class="meta-label">Fecha Publicación:</td>
         <td><?= $fechaPublicacion ?></td>
     </tr>
-    <tr>
-        <td class="meta-label">Fecha Generación PDF:</td>
-        <td><?= date('d/m/Y H:i') ?></td>
-        <td></td><td></td>
-    </tr>
+
 </table>
 
 <!-- ═══ STATS ═══ -->
@@ -760,5 +756,5 @@ foreach ($desgravamenesItems as $dg) $totalDesgPdf += $dg['valor'];
 <?php endif; ?>
 
 <div class="pie-reporte">
-    Generado por SPDSS — <?= date('d/m/Y H:i:s') ?>
+    Generado por SUCELAB — <?= date('d/m/Y H:i:s') ?>
 </div>

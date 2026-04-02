@@ -288,8 +288,9 @@ class CasosController
 
             echo json_encode(['success' => true, 'message' => 'Caso eliminado exitosamente.']);
         } catch (\Throwable $e) {
+            error_log('[CasosController::eliminar] ' . $e->getMessage());
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Error al eliminar: ' . $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => 'Error interno del servidor. Intente más tarde.']);
         }
         exit;
     }
@@ -342,8 +343,9 @@ class CasosController
 
             echo json_encode(['success' => true, 'message' => 'Estado actualizado a ' . $nuevoEstado . '.']);
         } catch (\Throwable $e) {
+            error_log('[CasosController::updateEstado] ' . $e->getMessage());
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => 'Error interno del servidor. Intente más tarde.']);
         }
         exit;
     }
@@ -625,6 +627,12 @@ class CasosController
                 $totalReducciones = round($totalReducciones, 2);
             }
 
+            // ── Variables del membrete ──
+            $pdfTipoDocumento = 'Caso Sucesoral';
+            $pdfReferencia = '#CASO-' . $casoId;
+            $pdfEstado = $estado;
+            $pdfEstadoLabel = 'Estado';
+
             // ── Render PDF template into HTML ──
             ob_start();
             include __DIR__ . '/../../../../../resources/views/professor/pdf/pdf_caso.php';
@@ -642,15 +650,15 @@ class CasosController
             ]);
 
             $safeTitle = preg_replace('/[^a-zA-Z0-9_\- áéíóúñÁÉÍÓÚÑ]/', '', $titulo);
-            $mpdf->SetTitle($safeTitle . ' — SPDSS');
-            $mpdf->SetAuthor('SPDSS');
+            $mpdf->SetTitle($safeTitle . ' — SUCELAB');
+            $mpdf->SetAuthor('SUCELAB');
             $mpdf->WriteHTML($html);
             $mpdf->Output('caso_' . $casoId . '.pdf', 'I'); // I = inline (browser preview)
 
         } catch (\Throwable $e) {
             error_log('[CasosController::descargarPdf] ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             http_response_code(500);
-            echo 'Error al generar el PDF: ' . $e->getMessage();
+            echo 'Ocurrió un error inesperado al generar el documento. Por favor, contacte al administrador.';
         }
     }
 }

@@ -130,4 +130,105 @@ class EntregasDetalleController
         header('Location: ' . base_url('/entregas/' . $id));
         exit;
     }
+
+    /**
+     * GET /resumen-declaracion?intento_id=X
+     * Genera el PDF de comparación para un intento (acceso profesor).
+     */
+    public function pdfComparacion(): void
+    {
+        $intentoId = (int) ($_GET['intento_id'] ?? 0);
+        if ($intentoId <= 0) {
+            http_response_code(400);
+            echo 'Falta el parámetro intento_id.';
+            return;
+        }
+
+        $intento = $this->model->getIntentoDetalle($intentoId, $this->profesorId);
+        if (!$intento) {
+            http_response_code(404);
+            echo 'Intento no encontrado o no pertenece a sus estudiantes.';
+            return;
+        }
+
+        try {
+            $comparador = new \App\Modules\Simulator\Services\DeclaracionComparador();
+            $resultado = $comparador->comparar($intentoId, (int) $intento['estudiante_id']);
+
+            // Membrete variables
+            $pdfTipoDocumento = 'Reporte de Comparación';
+            $pdfReferencia = '#INT-' . $intentoId;
+            $pdfEstado = $resultado['score']['porcentaje'] . '% acierto';
+            $pdfEstadoLabel = 'Score';
+
+            // Render HTML template
+            ob_start();
+            $datos              = $resultado['datos_caso'];
+            $secciones          = $resultado['secciones'];
+            $resumenSecciones   = $resultado['resumen_secciones'];
+            $autoItems          = $resultado['autoliquidacion'];
+            $herederosCalc      = $resultado['herederos_calculo'];
+            $score              = $resultado['score'];
+            $patrimonioNeto     = $datos['patrimonio_neto_correcto'] ?? 0;
+            include __DIR__ . '/../../../../resources/views/simulator/pdf/pdf_comparacion.php';
+            $html = ob_get_clean();
+
+            $mpdf = new \Mpdf\Mpdf([
+                'mode'          => 'utf-8',
+                'format'        => 'Letter',
+                'margin_left'   => 15,
+                'margin_right'  => 15,
+                'margin_top'    => 15,
+                'margin_bottom' => 15,
+                'default_font'  => 'dejavusans',
+            ]);
+
+            $mpdf->SetTitle('Reporte de Comparación — SUCELAB');
+            $mpdf->SetAuthor('SUCELAB');
+            $mpdf->WriteHTML($html);
+            $mpdf->Output('reporte_comparacion_' . $intentoId . '.pdf', 'I');
+
+        } catch (\Throwable $e) {
+            error_log('[EntregasDetalleController::pdfComparacion] ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            http_response_code(500);
+            echo 'Ocurrió un error inesperado al generar el documento. Por favor, contacte al administrador.';
+        }
+    }
+
+    /**
+     * GET /planilla-sucesoral?intento_id=X
+     * Genera el PDF de planilla DS-99032 para un intento (acceso profesor).
+     */
+    public function pdfPlanilla(): void
+    {
+        $intentoId = (int) ($_GET['intento_id'] ?? 0);
+        if ($intentoId <= 0) {
+            http_response_code(400);
+            echo 'Falta el parámetro intento_id.';
+            return;
+        }
+
+        $intento = $this->model->getIntentoDetalle($intentoId, $this->profesorId);
+        if (!$intento) {
+            http_response_code(404);
+            echo 'Intento no encontrado o no pertenece a sus estudiantes.';
+            return;
+        }
+
+        try {
+            $service = new \App\Modules\Simulator\Services\PlanillaDeclaracionService();
+
+            $oldReporting = error_reporting();
+            error_reporting($oldReporting & ~E_WARNING & ~E_NOTICE);
+
+            $service->generar($intento);
+
+            error_reporting($oldReporting);
+
+        } catch (\Throwable $e) {
+            error_log('[EntregasDetalleController::pdfPlanilla] ' . $e->getMessage() . "\n" . $e->getTraceAsString());
+            http_response_code(500);
+            echo 'Ocurrió un error inesperado al generar el documento. Por favor, contacte al administrador.';
+        }
+    }
 }

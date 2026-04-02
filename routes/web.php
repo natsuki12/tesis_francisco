@@ -181,11 +181,68 @@ $router->post('/admin/secciones/actualizar', function () use ($requireAuth, $req
     return (new SeccionesController())->actualizar();
 });
 
+// Admin -> Secciones -> Gestión de Estudiantes
+$router->get('/admin/secciones/estudiantes', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new SeccionesController())->getEstudiantes();
+});
+$router->get('/admin/secciones/buscar-estudiantes', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new SeccionesController())->buscarEstudiantes();
+});
+$router->post('/admin/secciones/inscribir', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new SeccionesController())->inscribir();
+});
+$router->post('/admin/secciones/desinscribir', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new SeccionesController())->desinscribir();
+});
+$router->post('/admin/secciones/sync-estudiantes', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new SeccionesController())->syncEstudiantes();
+});
+
 // Admin -> Configuración -> Catálogos
 $router->get('/admin/configuracion/catalogos', function () use ($requireAuth, $requireRole) {
     $requireAuth();
     $requireRole(1);
     return (new CatalogosController())->index();
+});
+$router->post('/admin/configuracion/catalogos/guardar-simple', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new CatalogosController())->guardarSimple();
+});
+$router->post('/admin/configuracion/catalogos/toggle-activo', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new CatalogosController())->toggleActivo();
+});
+$router->post('/admin/configuracion/catalogos/guardar-parentesco', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new CatalogosController())->guardarParentesco();
+});
+$router->post('/admin/configuracion/catalogos/guardar-tipo-mueble', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new CatalogosController())->guardarTipoBienMueble();
+});
+$router->post('/admin/configuracion/catalogos/guardar-herencia', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new CatalogosController())->guardarTipoHerencia();
+});
+$router->post('/admin/configuracion/catalogos/guardar-ut', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new CatalogosController())->guardarUT();
 });
 
 // Admin -> Configuración -> Marco Legal
@@ -193,6 +250,16 @@ $router->get('/admin/configuracion/marco-legal', function () use ($requireAuth, 
     $requireAuth();
     $requireRole(1);
     return (new MarcoLegalController())->index();
+});
+$router->post('/admin/configuracion/marco-legal/guardar', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new MarcoLegalController())->guardar();
+});
+$router->post('/admin/configuracion/marco-legal/eliminar', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new MarcoLegalController())->eliminar();
 });
 
 // Admin -> Configuración -> Parámetros
@@ -832,6 +899,20 @@ $router->post('/entregas/{id}/calificar', function ($id) use ($requireAuth, $req
     $requireAuth();
     $requireRole(2);
     (new \App\Modules\Professor\Controllers\EntregasDetalleController())->calificar((int) $id);
+});
+
+// PDF Comparación desde vista del Profesor
+$router->get('/resumen-declaracion', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new \App\Modules\Professor\Controllers\EntregasDetalleController())->pdfComparacion();
+});
+
+// PDF Planilla DS-99032 desde vista del Profesor
+$router->get('/planilla-sucesoral', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(2);
+    (new \App\Modules\Professor\Controllers\EntregasDetalleController())->pdfPlanilla();
 });
 
 

@@ -13,8 +13,9 @@ class LocationController
             $estados = $model->obtenerEstados();
             echo json_encode(['success' => true, 'data' => $estados]);
         } catch (\Exception $e) {
+            error_log('[LocationController::getEstados] ' . $e->getMessage());
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Error al obtener los estados: ' . $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => 'Error interno del servidor. Intente más tarde.']);
         }
         exit;
     }
@@ -32,8 +33,9 @@ class LocationController
             $municipios = $model->obtenerMunicipiosPorEstado($estado_id);
             echo json_encode(['success' => true, 'data' => $municipios]);
         } catch (\Exception $e) {
+            error_log('[LocationController::getMunicipios] ' . $e->getMessage());
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Error al obtener los municipios: ' . $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => 'Error interno del servidor. Intente más tarde.']);
         }
         exit;
     }
@@ -51,8 +53,9 @@ class LocationController
             $parroquias = $model->obtenerParroquiasPorMunicipio($municipio_id);
             echo json_encode(['success' => true, 'data' => $parroquias]);
         } catch (\Exception $e) {
+            error_log('[LocationController::getParroquias] ' . $e->getMessage());
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Error al obtener las parroquias: ' . $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => 'Error interno del servidor. Intente más tarde.']);
         }
         exit;
     }
@@ -70,8 +73,9 @@ class LocationController
             $ciudades = $model->obtenerCiudadesPorMunicipio($municipio_id);
             echo json_encode(['success' => true, 'data' => $ciudades]);
         } catch (\Exception $e) {
+            error_log('[LocationController::getCiudades] ' . $e->getMessage());
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Error al obtener las ciudades: ' . $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => 'Error interno del servidor. Intente más tarde.']);
         }
         exit;
     }
@@ -89,8 +93,9 @@ class LocationController
             $zonas = $model->obtenerZonasPostalesPorEstado($estado_id);
             echo json_encode(['success' => true, 'data' => $zonas]);
         } catch (\Exception $e) {
+            error_log('[LocationController::getZonasPostales] ' . $e->getMessage());
             http_response_code(500);
-            echo json_encode(['success' => false, 'message' => 'Error al obtener las zonas postales: ' . $e->getMessage()]);
+            echo json_encode(['success' => false, 'message' => 'Error interno del servidor. Intente más tarde.']);
         }
         exit;
     }

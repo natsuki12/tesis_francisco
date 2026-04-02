@@ -128,6 +128,7 @@ class CatalogosModel
         try {
             $stmt = $this->db->query("
                 SELECT t.id, t.nombre, t.activo, t.created_at,
+                       t.categoria_bien_mueble_id,
                        c.nombre AS categoria
                 FROM sim_cat_tipos_bien_mueble t
                 LEFT JOIN sim_cat_categorias_bien_mueble c ON c.id = t.categoria_bien_mueble_id
@@ -224,4 +225,236 @@ class CatalogosModel
             return [];
         }
     }
+
+    // ══════════════════════════════════════════════════════════
+    //  CRUD GENÉRICO — Tablas simples (id, nombre, activo)
+    // ══════════════════════════════════════════════════════════
+
+    /** Whitelist de tablas simples permitidas para CRUD genérico */
+    private const TABLAS_SIMPLES = [
+        'sim_cat_tipos_bien_inmueble',
+        'sim_cat_categorias_bien_mueble',
+        'sim_cat_tipos_semoviente',
+        'sim_cat_tipos_pasivo_deuda',
+        'sim_cat_tipos_pasivo_gasto',
+    ];
+
+    /** Whitelist de TODAS las tablas permitidas para toggle activo */
+    private const TABLAS_TOGGLE = [
+        'sim_cat_tipos_bien_inmueble',
+        'sim_cat_categorias_bien_mueble',
+        'sim_cat_tipos_semoviente',
+        'sim_cat_tipos_pasivo_deuda',
+        'sim_cat_tipos_pasivo_gasto',
+        'sim_cat_tipos_bien_mueble',
+        'sim_cat_parentescos',
+        'sim_cat_tipoherencias',
+        'sim_cat_unidades_tributarias',
+    ];
+
+    /**
+     * Crear o actualizar un registro en una tabla simple (nombre + activo).
+     * @return array{success: bool, message: string}
+     */
+    public function upsertSimple(string $tabla, ?int $id, string $nombre): array
+    {
+        try {
+            if (!in_array($tabla, self::TABLAS_SIMPLES, true)) {
+                return ['success' => false, 'message' => 'Tabla no permitida.'];
+            }
+
+            $nombre = trim($nombre);
+            if (empty($nombre) || mb_strlen($nombre) < 2) {
+                return ['success' => false, 'message' => 'El nombre debe tener al menos 2 caracteres.'];
+            }
+
+            // Verificar duplicado de nombre
+            $dupSql = "SELECT id FROM {$tabla} WHERE nombre = ? " . ($id ? "AND id != ?" : "");
+            $dupStmt = $this->db->prepare($dupSql);
+            $dupStmt->execute($id ? [$nombre, $id] : [$nombre]);
+            if ($dupStmt->fetch()) {
+                return ['success' => false, 'message' => 'Ya existe un registro con ese nombre.'];
+            }
+
+            if ($id) {
+                $stmt = $this->db->prepare("UPDATE {$tabla} SET nombre = ? WHERE id = ?");
+                $stmt->execute([$nombre, $id]);
+                return ['success' => true, 'message' => 'Registro actualizado.'];
+            } else {
+                $stmt = $this->db->prepare("INSERT INTO {$tabla} (nombre) VALUES (?)");
+                $stmt->execute([$nombre]);
+                return ['success' => true, 'message' => 'Registro creado.'];
+            }
+        } catch (\Throwable $e) {
+            error_log("[CatalogosModel::upsertSimple:{$tabla}] " . $e->getMessage());
+            return ['success' => false, 'message' => 'Error interno al guardar.'];
+        }
+    }
+
+    /**
+     * Toggle activo/inactivo en cualquier tabla permitida.
+     * @return array{success: bool, message: string, activo?: int}
+     */
+    public function toggleActivo(string $tabla, int $id): array
+    {
+        try {
+            if (!in_array($tabla, self::TABLAS_TOGGLE, true)) {
+                return ['success' => false, 'message' => 'Tabla no permitida.'];
+            }
+
+            $stmt = $this->db->prepare("SELECT activo FROM {$tabla} WHERE id = ?");
+            $stmt->execute([$id]);
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if (!$row) {
+                return ['success' => false, 'message' => 'Registro no encontrado.'];
+            }
+
+            $nuevoActivo = (int)$row['activo'] === 1 ? 0 : 1;
+            $upd = $this->db->prepare("UPDATE {$tabla} SET activo = ? WHERE id = ?");
+            $upd->execute([$nuevoActivo, $id]);
+
+            $label = $nuevoActivo ? 'activado' : 'desactivado';
+            return ['success' => true, 'message' => "Registro {$label}.", 'activo' => $nuevoActivo];
+        } catch (\Throwable $e) {
+            error_log("[CatalogosModel::toggleActivo:{$tabla}] " . $e->getMessage());
+            return ['success' => false, 'message' => 'Error interno.'];
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  CRUD ESPECÍFICO — Parentescos
+    // ══════════════════════════════════════════════════════════
+
+    public function upsertParentesco(?int $id, string $clave, string $etiqueta, ?int $grupoTarifaId): array
+    {
+        try {
+            $clave = trim($clave);
+            $etiqueta = trim($etiqueta);
+
+            if (empty($clave) || empty($etiqueta)) {
+                return ['success' => false, 'message' => 'Clave y etiqueta son obligatorios.'];
+            }
+
+            // Verificar duplicado de clave
+            $dupSql = "SELECT id FROM sim_cat_parentescos WHERE clave = ?" . ($id ? " AND id != ?" : "");
+            $dupStmt = $this->db->prepare($dupSql);
+            $dupStmt->execute($id ? [$clave, $id] : [$clave]);
+            if ($dupStmt->fetch()) {
+                return ['success' => false, 'message' => 'Ya existe un parentesco con esa clave.'];
+            }
+
+            if ($id) {
+                $stmt = $this->db->prepare("UPDATE sim_cat_parentescos SET clave = ?, etiqueta = ?, grupo_tarifa_id = ? WHERE id = ?");
+                $stmt->execute([$clave, $etiqueta, $grupoTarifaId ?: null, $id]);
+                return ['success' => true, 'message' => 'Parentesco actualizado.'];
+            } else {
+                $stmt = $this->db->prepare("INSERT INTO sim_cat_parentescos (clave, etiqueta, grupo_tarifa_id) VALUES (?, ?, ?)");
+                $stmt->execute([$clave, $etiqueta, $grupoTarifaId ?: null]);
+                return ['success' => true, 'message' => 'Parentesco creado.'];
+            }
+        } catch (\Throwable $e) {
+            error_log('[CatalogosModel::upsertParentesco] ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Error interno al guardar parentesco.'];
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  CRUD ESPECÍFICO — Tipos Bien Mueble
+    // ══════════════════════════════════════════════════════════
+
+    public function upsertTipoBienMueble(?int $id, string $nombre, int $categoriaId): array
+    {
+        try {
+            $nombre = trim($nombre);
+            if (empty($nombre) || mb_strlen($nombre) < 2) {
+                return ['success' => false, 'message' => 'El nombre debe tener al menos 2 caracteres.'];
+            }
+            if ($categoriaId <= 0) {
+                return ['success' => false, 'message' => 'Debe seleccionar una categoría.'];
+            }
+
+            if ($id) {
+                $stmt = $this->db->prepare("UPDATE sim_cat_tipos_bien_mueble SET nombre = ?, categoria_bien_mueble_id = ? WHERE id = ?");
+                $stmt->execute([$nombre, $categoriaId, $id]);
+                return ['success' => true, 'message' => 'Tipo de bien mueble actualizado.'];
+            } else {
+                $stmt = $this->db->prepare("INSERT INTO sim_cat_tipos_bien_mueble (nombre, categoria_bien_mueble_id) VALUES (?, ?)");
+                $stmt->execute([$nombre, $categoriaId]);
+                return ['success' => true, 'message' => 'Tipo de bien mueble creado.'];
+            }
+        } catch (\Throwable $e) {
+            error_log('[CatalogosModel::upsertTipoBienMueble] ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Error interno al guardar tipo de bien mueble.'];
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  CRUD ESPECÍFICO — Tipo Herencias
+    // ══════════════════════════════════════════════════════════
+
+    public function upsertTipoHerencia(?int $id, string $nombre, string $descripcion): array
+    {
+        try {
+            $nombre = trim($nombre);
+            $descripcion = trim($descripcion);
+
+            if (empty($nombre) || mb_strlen($nombre) < 2) {
+                return ['success' => false, 'message' => 'El nombre debe tener al menos 2 caracteres.'];
+            }
+
+            if ($id) {
+                $stmt = $this->db->prepare("UPDATE sim_cat_tipoherencias SET nombre = ?, descripcion = ?, updated_at = NOW() WHERE id = ?");
+                $stmt->execute([$nombre, $descripcion ?: null, $id]);
+                return ['success' => true, 'message' => 'Tipo de herencia actualizado.'];
+            } else {
+                $stmt = $this->db->prepare("INSERT INTO sim_cat_tipoherencias (nombre, descripcion) VALUES (?, ?)");
+                $stmt->execute([$nombre, $descripcion ?: null]);
+                return ['success' => true, 'message' => 'Tipo de herencia creado.'];
+            }
+        } catch (\Throwable $e) {
+            error_log('[CatalogosModel::upsertTipoHerencia] ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Error interno al guardar tipo de herencia.'];
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  CRUD ESPECÍFICO — Unidad Tributaria
+    // ══════════════════════════════════════════════════════════
+
+    public function upsertUnidadTributaria(?int $id, int $anio, float $valor, string $fechaGaceta): array
+    {
+        try {
+            if ($anio < 1990 || $anio > 2100) {
+                return ['success' => false, 'message' => 'Año inválido.'];
+            }
+            if ($valor <= 0) {
+                return ['success' => false, 'message' => 'El valor debe ser mayor a cero.'];
+            }
+            if (empty($fechaGaceta)) {
+                return ['success' => false, 'message' => 'La fecha de gaceta es obligatoria.'];
+            }
+
+            // Verificar duplicado de año
+            $dupSql = "SELECT id FROM sim_cat_unidades_tributarias WHERE anio = ?" . ($id ? " AND id != ?" : "");
+            $dupStmt = $this->db->prepare($dupSql);
+            $dupStmt->execute($id ? [$anio, $id] : [$anio]);
+            if ($dupStmt->fetch()) {
+                return ['success' => false, 'message' => "Ya existe una UT registrada para el año {$anio}."];
+            }
+
+            if ($id) {
+                $stmt = $this->db->prepare("UPDATE sim_cat_unidades_tributarias SET anio = ?, valor = ?, fecha_gaceta = ? WHERE id = ?");
+                $stmt->execute([$anio, $valor, $fechaGaceta, $id]);
+                return ['success' => true, 'message' => 'Unidad Tributaria actualizada.'];
+            } else {
+                $stmt = $this->db->prepare("INSERT INTO sim_cat_unidades_tributarias (anio, valor, fecha_gaceta) VALUES (?, ?, ?)");
+                $stmt->execute([$anio, $valor, $fechaGaceta]);
+                return ['success' => true, 'message' => 'Unidad Tributaria creada.'];
+            }
+        } catch (\Throwable $e) {
+            error_log('[CatalogosModel::upsertUnidadTributaria] ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Error interno al guardar UT.'];
+        }
+    }
 }
+

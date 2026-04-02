@@ -40,7 +40,7 @@ $scoreColor = $score['porcentaje'] >= 80 ? '#28a745' : ($score['porcentaje'] >= 
 </style>
 
 <h1>Reporte de Comparación de Declaración</h1>
-<div class="subtitle">Sistema de Práctica de Declaración Sucesoral SENIAT (SPDSS)</div>
+<div class="subtitle">Sistema de Práctica de Declaración Sucesoral SENIAT (SUCELAB)</div>
 
 <!-- ═══ Datos del Caso ═══ -->
 <table class="meta-table">
@@ -154,5 +154,5 @@ $scoreColor = $score['porcentaje'] >= 80 ? '#28a745' : ($score['porcentaje'] >= 
 <?php endif; ?>
 
 <div style="text-align:center; margin-top:14px; font-size:8pt; color:#999;">
-    Generado por SPDSS — <?= date('d/m/Y H:i:s') ?>
+    Generado por SUCELAB — <?= date('d/m/Y H:i:s') ?>
 </div>

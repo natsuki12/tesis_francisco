@@ -83,7 +83,13 @@ class PdfReportController
             $comparador = new DeclaracionComparador();
             $resultado = $comparador->comparar((int) $intento['id'], $estudianteId);
 
-            // 3. Render HTML template
+            // 3. Membrete variables
+            $pdfTipoDocumento = 'Reporte de Comparación';
+            $pdfReferencia = '#INT-' . $intento['id'];
+            $pdfEstado = $resultado['score']['porcentaje'] . '% acierto';
+            $pdfEstadoLabel = 'Score';
+
+            // 4. Render HTML template
             ob_start();
             $datos              = $resultado['datos_caso'];
             $secciones          = $resultado['secciones'];
@@ -106,15 +112,15 @@ class PdfReportController
                 'default_font'  => 'dejavusans',
             ]);
 
-            $mpdf->SetTitle('Reporte de Comparación — SPDSS');
-            $mpdf->SetAuthor('SPDSS');
+            $mpdf->SetTitle('Reporte de Comparación — SUCELAB');
+            $mpdf->SetAuthor('SUCELAB');
             $mpdf->WriteHTML($html);
             $mpdf->Output('reporte_declaracion.pdf', 'I'); // 'I' = inline (browser)
 
         } catch (\Throwable $e) {
             error_log('[PdfReportController::generar] ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             http_response_code(500);
-            echo 'Error al generar el PDF: ' . $e->getMessage();
+            echo 'Ocurrió un error inesperado al generar el documento. Por favor, contacte al administrador.';
         }
     }
 
@@ -146,7 +152,7 @@ class PdfReportController
         } catch (\Throwable $e) {
             error_log('[PdfReportController::generarPlanilla] ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             http_response_code(500);
-            echo 'Error al generar la planilla: ' . $e->getMessage();
+            echo 'Ocurrió un error inesperado al generar el documento. Por favor, contacte al administrador.';
         }
     }
 }

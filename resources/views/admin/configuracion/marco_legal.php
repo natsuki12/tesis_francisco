@@ -11,8 +11,8 @@ $breadcrumbs = [
 
 $extraCss = '
     <link rel="stylesheet" href="' . asset('css/shared/data-table.css') . '">
-    <link rel="stylesheet" href="' . asset('css/admin/dashboard.css') . '">
 ';
+$extraJs = '<script src="' . asset('js/global/data_table_core.js') . '"></script>';
 
 // Datos inyectados por el controlador
 $articulosMarcoLegal = $articulosMarcoLegal ?? [];
@@ -28,11 +28,11 @@ $tipoLabels = [
 
 // Colores por tipo
 $tipoColors = [
-    'Ley' => 'background:#eff6ff; color:#1d4ed8;',
-    'Codigo' => 'background:#f0fdf4; color:#15803d;',
-    'Providencia' => 'background:#fefce8; color:#a16207;',
-    'Gaceta_Oficial' => 'background:#faf5ff; color:#7e22ce;',
-    'Reglamento' => 'background:#fff1f2; color:#be123c;',
+    'Ley' => 'background:var(--blue-50); color:var(--blue-600);',
+    'Codigo' => 'background:var(--green-50); color:var(--green-600);',
+    'Providencia' => 'background:var(--amber-50); color:var(--amber-600);',
+    'Gaceta_Oficial' => 'background:var(--purple-50); color:var(--purple-600);',
+    'Reglamento' => 'background:var(--red-50); color:var(--red-600);',
 ];
 
 ob_start();
@@ -41,9 +41,9 @@ ob_start();
 <div class="page-header">
     <div class="page-header-left">
         <h1>Marco Legal Vigente</h1>
-        <p>Artículos y estatutos técnicos aplicables al proceso sucesoral SENIAT (solo lectura).</p>
+        <p>Gestione los artículos y estatutos técnicos aplicables al proceso sucesoral SENIAT.</p>
     </div>
-    <button class="btn btn-primary" onclick="document.getElementById('modal-articulo').classList.add('show')">
+    <button class="btn btn-primary" onclick="abrirCrear()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
@@ -59,6 +59,12 @@ ob_start();
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
             <input type="text" data-search-for="tbl-marco" placeholder="Buscar artículo, tipo o descripción...">
         </div>
+        <button class="btn btn-secondary" data-reload-for="tbl-marco" onclick="window.DataTableManager.reloadTableData('tbl-marco');" title="Recargar tabla" style="padding: 10px; border-radius: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform-origin: center;">
+                <polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+        </button>
     </div>
     <div class="toolbar-right">
         <label style="font-size:var(--text-xs); color:var(--gray-500); display:flex; align-items:center; gap:6px;">
@@ -82,75 +88,82 @@ ob_start();
             </tr>
         </thead>
         <tbody>
-            <?php if (empty($articulosMarcoLegal)): ?>
-                <tr class="empty-row"><td colspan="7" style="text-align:center; padding:40px; color:var(--gray-400);">No se encontraron registros en el marco legal.</td></tr>
-            <?php else: ?>
-                <?php foreach ($articulosMarcoLegal as $art):
-                    $tipo = $art['tipo'] ?? 'Ley';
-                    $tipoLabel = $tipoLabels[$tipo] ?? ucfirst($tipo);
-                    $tipoStyle = $tipoColors[$tipo] ?? $tipoColors['Ley'];
-                    $estado = $art['estado'] ?? 'Vigente';
+            <?php foreach ($articulosMarcoLegal as $art):
+                $tipo = $art['tipo'] ?? 'Ley';
+                $tipoLabel = $tipoLabels[$tipo] ?? ucfirst($tipo);
+                $tipoStyle = $tipoColors[$tipo] ?? $tipoColors['Ley'];
+                $estado = $art['estado'] ?? 'Vigente';
 
-                    $fechaFmt = '—';
-                    if (!empty($art['fecha_publicacion'])) {
-                        try {
-                            $fechaFmt = (new \DateTime($art['fecha_publicacion']))->format('d/m/Y');
-                        } catch (\Throwable $e) {
-                            $fechaFmt = e($art['fecha_publicacion']);
-                        }
+                $fechaFmt = '—';
+                if (!empty($art['fecha_publicacion'])) {
+                    try {
+                        $fechaFmt = (new \DateTime($art['fecha_publicacion']))->format('d/m/Y');
+                    } catch (\Throwable $e) {
+                        $fechaFmt = e($art['fecha_publicacion']);
                     }
+                }
 
-                    $searchText = mb_strtolower(
-                        ($art['titulo'] ?? '') . ' ' .
-                        $tipoLabel . ' ' .
-                        ($art['descripcion'] ?? '') . ' ' .
-                        $estado . ' ' .
-                        ($art['numero_gaceta'] ?? '')
-                    );
-                ?>
-                    <tr data-search="<?= e($searchText) ?>">
-                        <td style="font-weight:600; color:var(--gray-500); text-align:center;"><?= (int)($art['orden'] ?? 0) ?></td>
-                        <td>
-                            <strong><?= e($art['titulo'] ?? '') ?></strong>
-                            <?php if (!empty($art['numero_gaceta'])): ?>
-                                <br><span style="font-size:11px; color:var(--gray-400);">G.O. <?= e($art['numero_gaceta']) ?></span>
-                            <?php endif; ?>
-                        </td>
-                        <td><span class="status-badge" style="<?= $tipoStyle ?>"><?= e($tipoLabel) ?></span></td>
-                        <td>
-                            <p style="margin:0; font-size:13px; color:var(--color-text-light); line-height:1.4; max-width:400px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
-                                <?= e($art['descripcion'] ?? '') ?>
-                            </p>
-                        </td>
-                        <td>
-                            <?php if ($estado === 'Vigente'): ?>
-                                <span class="status-badge status-published">Vigente</span>
-                            <?php else: ?>
-                                <span class="status-badge status-draft">Derogado</span>
-                            <?php endif; ?>
-                        </td>
-                        <td style="font-size:12px; color:var(--gray-500);"><?= $fechaFmt ?></td>
-                        <td>
-                            <div class="row-actions">
-                                <button class="row-action-btn" title="Editar" onclick="alert('Edición diferida — solo lectura.')">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                    </svg>
-                                </button>
-                                <button class="row-action-btn" title="Eliminar" onclick="alert('Eliminación diferida — solo lectura.')" style="color:var(--red-500);">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="3 6 5 6 21 6" />
-                                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                                        <path d="M10 11v6" />
-                                        <path d="M14 11v6" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
+                $searchText = mb_strtolower(
+                    ($art['titulo'] ?? '') . ' ' .
+                    $tipoLabel . ' ' .
+                    ($art['descripcion'] ?? '') . ' ' .
+                    $estado . ' ' .
+                    ($art['numero_gaceta'] ?? '')
+                );
+            ?>
+                <tr data-search="<?= e($searchText) ?>">
+                    <td style="font-weight:600; color:var(--gray-500); text-align:center;"><?= (int)($art['orden'] ?? 0) ?></td>
+                    <td>
+                        <strong><?= e($art['titulo'] ?? '') ?></strong>
+                        <?php if (!empty($art['numero_gaceta'])): ?>
+                            <br><span style="font-size:11px; color:var(--gray-400);">G.O. <?= e($art['numero_gaceta']) ?></span>
+                        <?php endif; ?>
+                    </td>
+                    <td><span class="status-badge" style="<?= $tipoStyle ?>"><?= e($tipoLabel) ?></span></td>
+                    <td>
+                        <p style="margin:0; font-size:13px; color:var(--text-light); line-height:1.4; max-width:400px; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">
+                            <?= e($art['descripcion'] ?? '') ?>
+                        </p>
+                    </td>
+                    <td>
+                        <?php if ($estado === 'Vigente'): ?>
+                            <span class="status-badge status-published">Vigente</span>
+                        <?php else: ?>
+                            <span class="status-badge status-draft">Derogado</span>
+                        <?php endif; ?>
+                    </td>
+                    <td style="font-size:12px; color:var(--gray-500);"><?= $fechaFmt ?></td>
+                    <td>
+                        <div class="row-actions">
+                            <button class="row-action-btn" title="Editar"
+                                onclick="abrirEditar(this)"
+                                data-id="<?= (int)$art['id'] ?>"
+                                data-titulo="<?= e($art['titulo'] ?? '') ?>"
+                                data-tipo="<?= e($tipo) ?>"
+                                data-descripcion="<?= e($art['descripcion'] ?? '') ?>"
+                                data-url="<?= e($art['url'] ?? '') ?>"
+                                data-estado="<?= e($estado) ?>"
+                                data-orden="<?= (int)($art['orden'] ?? 0) ?>"
+                                data-fecha="<?= e($art['fecha_publicacion'] ?? '') ?>"
+                                data-gaceta="<?= e($art['numero_gaceta'] ?? '') ?>">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                </svg>
+                            </button>
+                            <button class="row-action-btn" title="Eliminar"
+                                onclick="abrirEliminar(<?= (int)$art['id'] ?>, '<?= e(addslashes($art['titulo'] ?? '')) ?>')"
+                                style="color:var(--red-500);">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="3 6 5 6 21 6" />
+                                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                    <path d="M10 11v6" /><path d="M14 11v6" />
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
     <div class="table-footer" data-footer-for="tbl-marco">
@@ -160,22 +173,20 @@ ob_start();
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     MODAL: Registrar Artículo
+     MODAL: Crear / Editar Artículo
      ═══════════════════════════════════════════════════════════ -->
-<div id="modal-articulo" class="modal-overlay">
-    <div class="modal">
-        <div class="modal-header">
-            <div>
-                <h2>Registrar Artículo</h2>
-                <p>Agregue un nuevo instrumento al marco legal del sistema.</p>
-            </div>
-            <button class="modal-close" onclick="document.getElementById('modal-articulo').classList.remove('show')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            </button>
+<dialog class="modal-base" id="modal-articulo" data-no-backdrop-close>
+    <div class="modal-base__container" style="max-width: 640px;">
+        <div class="modal-base__header">
+            <h2 class="modal-base__title" id="modal-articulo-title">Registrar Artículo</h2>
+            <button class="modal-base__close" onclick="window.modalManager.close('modal-articulo')" aria-label="Cerrar modal">&times;</button>
         </div>
+        <div class="modal-base__body">
+            <p style="font-size: 15px; color: var(--text-body); margin-bottom: 20px;">Complete los datos del instrumento legal.</p>
 
-        <div class="modal-body">
             <div class="form-grid">
+                <input type="hidden" id="art-id" value="">
+
                 <!-- Título -->
                 <div class="form-group form-full">
                     <label>Título <span class="required">*</span></label>
@@ -235,130 +246,163 @@ ob_start();
             </div>
         </div>
 
-        <div class="modal-footer">
-            <button class="btn" style="background:var(--gray-100); color:var(--gray-600); padding:10px 20px;"
-                    onclick="document.getElementById('modal-articulo').classList.remove('show')">
-                Cancelar
-            </button>
-            <button class="btn btn-primary" style="padding:10px 24px;"
-                    onclick="alert('Guardado diferido — solo lectura por ahora.'); document.getElementById('modal-articulo').classList.remove('show');">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
-                    <polyline points="17 21 17 13 7 13 7 21"/>
-                    <polyline points="7 3 7 8 15 8"/>
-                </svg>
-                Guardar Artículo
-            </button>
+        <div class="modal-base__footer">
+            <button class="modal-btn modal-btn-cancel" onclick="window.modalManager.close('modal-articulo')">Cancelar</button>
+            <button class="modal-btn modal-btn-primary" id="btn-guardar-articulo" onclick="guardarArticulo()">Guardar Artículo</button>
         </div>
     </div>
-</div>
+</dialog>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL: Confirmar Eliminación
+     ═══════════════════════════════════════════════════════════ -->
+<dialog class="modal-base" id="modal-eliminar">
+    <div class="modal-base__container" style="max-width: 480px;">
+        <div class="modal-base__header">
+            <h2 class="modal-base__title">¿Eliminar artículo?</h2>
+            <button class="modal-base__close" onclick="window.modalManager.close('modal-eliminar')" aria-label="Cerrar modal">&times;</button>
+        </div>
+        <div class="modal-base__body">
+            <p style="font-size: 15px; color: var(--text-body); line-height: 1.5; margin-bottom: 0;" id="eliminar-body-text">
+                Se eliminará permanentemente el artículo <strong id="eliminar-nombre"></strong> del marco legal. Esta acción no puede deshacerse.
+            </p>
+        </div>
+        <div class="modal-base__footer" style="padding-top: 24px;">
+            <button class="modal-btn modal-btn-cancel" style="min-width: 120px;" onclick="window.modalManager.close('modal-eliminar')">Cancelar</button>
+            <button class="modal-btn modal-btn-danger" id="btn-confirmar-eliminar" style="min-width: 120px;" onclick="confirmarEliminar()">Eliminar</button>
+        </div>
+    </div>
+</dialog>
 
 <script>
-// ── Modal: cerrar con click fuera ──
-document.getElementById('modal-articulo')?.addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('show');
-});
-// ── Modal: cerrar con Escape ──
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') document.getElementById('modal-articulo')?.classList.remove('show');
-});
-</script>
+const CSRF_TOKEN = '<?= \App\Core\Csrf::getToken() ?>';
+const BASE_URL   = '<?= base_url() ?>';
 
-<script>
-(function() {
-    const table = document.getElementById('tbl-marco');
-    if (!table) return;
-    const tbody = table.querySelector('tbody');
-    const rows = Array.from(tbody.querySelectorAll('tr[data-search]'));
-    if (rows.length === 0) return;
+let eliminarId = 0;
 
-    const searchInput = document.querySelector('[data-search-for="tbl-marco"]');
-    const perPageSel = document.querySelector('[data-perpage-for="tbl-marco"]');
-    const footer = document.querySelector('[data-footer-for="tbl-marco"]');
-    const footerInfo = footer?.querySelector('.table-footer-info');
-    const paginationEl = footer?.querySelector('.pagination');
+// ── Abrir modal CREAR ──
+function abrirCrear() {
+    document.getElementById('art-id').value = '';
+    document.getElementById('art-titulo').value = '';
+    document.getElementById('art-tipo').value = 'Ley';
+    document.getElementById('art-estado').value = 'Vigente';
+    document.getElementById('art-descripcion').value = '';
+    document.getElementById('art-fecha').value = '';
+    document.getElementById('art-gaceta').value = '';
+    document.getElementById('art-url').value = '';
+    document.getElementById('art-orden').value = '0';
+    document.getElementById('modal-articulo-title').textContent = 'Registrar Artículo';
 
-    let searchTerm = '', currentPage = 1, sortCol = null, sortDir = 1;
+    window.modalManager.clearError('modal-articulo');
 
-    function getPerPage() { return parseInt(perPageSel?.value || '10', 10); }
+    const btn = document.getElementById('btn-guardar-articulo');
+    btn.textContent = 'Guardar Artículo';
+    btn.style.display = '';
 
-    function getVisible() {
-        return rows.filter(r => !searchTerm || (r.dataset.search || '').includes(searchTerm));
-    }
+    window.modalManager.open('modal-articulo');
+}
 
-    function sortRows(arr) {
-        if (sortCol === null) return arr;
-        return arr.slice().sort((a, b) => {
-            const va = (a.children[sortCol]?.textContent || '').trim().toLowerCase();
-            const vb = (b.children[sortCol]?.textContent || '').trim().toLowerCase();
-            const na = parseFloat(va.replace(/[^\d.-]/g, ''));
-            const nb = parseFloat(vb.replace(/[^\d.-]/g, ''));
-            if (!isNaN(na) && !isNaN(nb)) return sortDir * (na - nb);
-            return sortDir * va.localeCompare(vb);
-        });
-    }
+// ── Abrir modal EDITAR ──
+function abrirEditar(btnEl) {
+    document.getElementById('art-id').value = btnEl.dataset.id || '';
+    document.getElementById('art-titulo').value = btnEl.dataset.titulo || '';
+    document.getElementById('art-tipo').value = btnEl.dataset.tipo || 'Ley';
+    document.getElementById('art-estado').value = btnEl.dataset.estado || 'Vigente';
+    document.getElementById('art-descripcion').value = btnEl.dataset.descripcion || '';
+    document.getElementById('art-fecha').value = btnEl.dataset.fecha || '';
+    document.getElementById('art-gaceta').value = btnEl.dataset.gaceta || '';
+    document.getElementById('art-url').value = btnEl.dataset.url || '';
+    document.getElementById('art-orden').value = btnEl.dataset.orden || '0';
+    document.getElementById('modal-articulo-title').textContent = 'Editar Artículo';
 
-    function render() {
-        const PER_PAGE = getPerPage();
-        const visible = sortRows(getVisible());
-        const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
-        if (currentPage > totalPages) currentPage = totalPages;
-        const start = (currentPage - 1) * PER_PAGE;
-        const pageRows = visible.slice(start, start + PER_PAGE);
+    window.modalManager.clearError('modal-articulo');
 
-        rows.forEach(r => r.style.display = 'none');
-        pageRows.forEach(r => r.style.display = '');
+    const btn = document.getElementById('btn-guardar-articulo');
+    btn.textContent = 'Actualizar Artículo';
+    btn.style.display = '';
 
-        if (footerInfo) {
-            const from = visible.length > 0 ? start + 1 : 0;
-            const to = Math.min(start + PER_PAGE, visible.length);
-            footerInfo.innerHTML = `Mostrando <strong>${from}</strong> a <strong>${to}</strong> de <strong>${visible.length}</strong> registros`;
-        }
+    window.modalManager.open('modal-articulo');
+}
 
-        if (paginationEl) {
-            paginationEl.innerHTML = '';
-            if (totalPages > 1) {
-                const prev = document.createElement('button');
-                prev.innerHTML = '‹'; prev.disabled = currentPage === 1;
-                prev.addEventListener('click', () => { currentPage--; render(); });
-                paginationEl.appendChild(prev);
-                for (let p = 1; p <= totalPages; p++) {
-                    const b = document.createElement('button');
-                    b.textContent = p;
-                    if (p === currentPage) b.classList.add('active');
-                    b.addEventListener('click', () => { currentPage = p; render(); });
-                    paginationEl.appendChild(b);
-                }
-                const next = document.createElement('button');
-                next.innerHTML = '›'; next.disabled = currentPage === totalPages;
-                next.addEventListener('click', () => { currentPage++; render(); });
-                paginationEl.appendChild(next);
-            }
-        }
-    }
+// ── AJAX: Guardar (crear/editar) ──
+async function guardarArticulo() {
+    const btn = document.getElementById('btn-guardar-articulo');
+    const artId = document.getElementById('art-id').value;
+    const isUpdate = artId !== '';
 
-    searchInput?.addEventListener('input', e => {
-        searchTerm = e.target.value.toLowerCase().trim();
-        currentPage = 1;
-        render();
+    window.modalManager.setButtonLoading(btn);
+
+    const body = new URLSearchParams({
+        csrf_token:        CSRF_TOKEN,
+        titulo:            document.getElementById('art-titulo').value.trim(),
+        tipo:              document.getElementById('art-tipo').value,
+        estado:            document.getElementById('art-estado').value,
+        descripcion:       document.getElementById('art-descripcion').value.trim(),
+        fecha_publicacion: document.getElementById('art-fecha').value,
+        numero_gaceta:     document.getElementById('art-gaceta').value.trim(),
+        url:               document.getElementById('art-url').value.trim(),
+        orden:             document.getElementById('art-orden').value,
     });
 
-    perPageSel?.addEventListener('change', () => { currentPage = 1; render(); });
+    if (isUpdate) body.append('id', artId);
 
-    table.querySelectorAll('th.sortable[data-col]').forEach(th => {
-        th.style.cursor = 'pointer';
-        th.addEventListener('click', () => {
-            const col = parseInt(th.dataset.col, 10);
-            if (sortCol === col) sortDir *= -1;
-            else { sortCol = col; sortDir = 1; }
-            table.querySelectorAll('th.sortable').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
-            th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
-            render();
+    try {
+        const res = await fetch(BASE_URL + '/admin/configuracion/marco-legal/guardar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body
         });
-    });
+        const data = await res.json();
 
-    render();
-})();
+        if (data.success) {
+            window.modalManager.close('modal-articulo');
+            showToast(data.message, 'success');
+            window.DataTableManager.reloadTableData('tbl-marco');
+        } else {
+            window.modalManager.showError('modal-articulo', data.message || 'Ocurrió un error.');
+        }
+    } catch (err) {
+        console.error(err);
+        window.modalManager.showError('modal-articulo', 'No se pudo conectar con el servidor.');
+    } finally {
+        window.modalManager.resetButtonLoading(btn);
+    }
+}
+
+// ── Abrir modal ELIMINAR ──
+function abrirEliminar(id, titulo) {
+    eliminarId = id;
+    document.getElementById('eliminar-nombre').textContent = titulo;
+    window.modalManager.open('modal-eliminar');
+}
+
+// ── AJAX: Confirmar eliminación ──
+async function confirmarEliminar() {
+    const btn = document.getElementById('btn-confirmar-eliminar');
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(BASE_URL + '/admin/configuracion/marco-legal/eliminar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ csrf_token: CSRF_TOKEN, id: eliminarId })
+        });
+        const data = await res.json();
+
+        window.modalManager.close('modal-eliminar');
+        if (data.success) {
+            showToast(data.message, 'success');
+            window.DataTableManager.reloadTableData('tbl-marco');
+        } else {
+            showToast(data.message || 'Error al eliminar.', 'error');
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Error de conexión.', 'error');
+    } finally {
+        btn.disabled = false;
+    }
+}
 </script>
 
 <?php

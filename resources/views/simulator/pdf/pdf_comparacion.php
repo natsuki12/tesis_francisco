@@ -265,10 +265,12 @@ $scoreColor = $score['porcentaje'] >= 70 ? '#38a169' : ($score['porcentaje'] >= 
     }
 </style>
 
-<!-- ═══ ENCABEZADO ═══ -->
-<div class="encabezado">
-    <h1>Reporte de Comparación de Declaración</h1>
-    <p>Sistema de Práctica de Declaración Sucesoral SENIAT (SPDSS)</p>
+<!-- ═══ MEMBRETE INSTITUCIONAL ═══ -->
+<?php include __DIR__ . '/../../partials/pdf/pdf_membrete.php'; ?>
+
+<!-- ═══ TÍTULO DEL REPORTE ═══ -->
+<div style="text-align: center; margin-bottom: 6px;">
+    <h1 style="font-size: 14pt; color: #1a365d; margin: 0;">Reporte de Comparación de Declaración</h1>
 </div>
 
 <table class="meta-table">
@@ -524,5 +526,5 @@ $hcErrUnits = count($herederosCalc) - $hcOkUnits;
 <?php endif; ?>
 
 <div class="pie-reporte">
-    Generado por SPDSS — <?= date('d/m/Y H:i:s') ?>
+    Generado por SUCELAB — <?= date('d/m/Y H:i:s') ?>
 </div>

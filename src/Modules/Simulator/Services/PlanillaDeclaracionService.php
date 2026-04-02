@@ -231,6 +231,12 @@ class PlanillaDeclaracionService
         // ── Nro Planilla (estático para simulador) ──
         $nroPlanilla = '0000000000';
 
+        // ── Variables del membrete ──
+        $pdfTipoDocumento = 'Planilla DS-99032';
+        $pdfReferencia = '#INT-' . ($intento['id'] ?? $intento['intento_id'] ?? '0');
+        $pdfEstado = $datos['rif_sucesoral'] ?? '';
+        $pdfEstadoLabel = 'RIF';
+
         // ── Render HTML ──
         ob_start();
         include __DIR__ . '/../../../../resources/views/simulator/pdf/pdf_planilla_declaracion.php';
@@ -248,7 +254,7 @@ class PlanillaDeclaracionService
         ]);
 
         $mpdf->SetTitle('Declaración Sucesoral — FORMA DS-99032');
-        $mpdf->SetAuthor('SPDSS');
+        $mpdf->SetAuthor('SUCELAB');
         $mpdf->WriteHTML($html);
         $mpdf->Output('planilla_declaracion.pdf', 'I');
     }
