@@ -187,6 +187,10 @@ class RSMailerService
                     <p style='margin: 10px 0 0; font-size: 13px; color: #555;'>En el proceso real ante el SENIAT, se requiere un correo electrónico exclusivo para el RIF Sucesoral. Se recomienda crear uno para uso exclusivo de la sucesión.</p>
                 </div>
 
+                <div style='text-align: center; margin: 35px 0 15px 0;'>
+                    <a href='{$baseUrl}/home' style='background-color: #283593; color: #ffffff; padding: 12px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block; font-family: Arial, sans-serif;'>Ir al sistema</a>
+                </div>
+
                 <p style='color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;'>
                     Este correo fue generado automáticamente por el SUCELAB — Simulador SENIAT.
                 </p>
@@ -277,6 +281,10 @@ class RSMailerService
                     <p style='margin: 10px 0 0; font-size: 13px; color: #555;'>En el proceso real ante el SENIAT, el contribuyente debe presentar la planilla impresa ante la Unidad/Sector/Gerencia Regional de Tributos Internos correspondiente a su domicilio fiscal para formalizar el trámite.</p>
                 </div>
 
+                <div style='text-align: center; margin: 35px 0 15px 0;'>
+                    <a href='{$baseUrl}/home' style='background-color: #283593; color: #ffffff; padding: 12px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block; font-family: Arial, sans-serif;'>Ir al sistema</a>
+                </div>
+
                 <p style='color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;'>
                     Este correo fue generado automáticamente por el SUCELAB — Simulador SENIAT.
                 </p>
@@ -362,6 +370,10 @@ class RSMailerService
                 <div style='background: #f5f5f5; border-left: 4px solid #283593; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
                     <p style='margin: 0; font-weight: bold; color: #1a237e;'>💡 ¿Qué puede hacer?</p>
                     <p style='margin: 10px 0 0; font-size: 13px; color: #555;'>Si la configuración de su caso permite múltiples intentos, puede iniciar un nuevo intento desde la vista de <strong>Mis Asignaciones</strong>, revisando cuidadosamente los datos antes de enviarlo nuevamente. Si tiene dudas, comuníquese directamente con su profesor.</p>
+                </div>
+
+                <div style='text-align: center; margin: 35px 0 15px 0;'>
+                    <a href='{$baseUrl}/home' style='background-color: #283593; color: #ffffff; padding: 12px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block; font-family: Arial, sans-serif;'>Ir al sistema</a>
                 </div>
 
                 <p style='color: #999; font-size: 12px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; text-align: center;'>

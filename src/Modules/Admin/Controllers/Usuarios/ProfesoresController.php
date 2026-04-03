@@ -575,14 +575,17 @@ class ProfesoresController
                 <p>Su cuenta de profesor ha sido creada exitosamente en el SUCELAB. A continuación encontrará sus datos de acceso:</p>
                 
                 <div style='background: #f5f5f5; border-left: 4px solid #1a237e; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
-                    <p style='margin: 5px 0;'><strong>🔗 URL del sistema:</strong> <a href='{$u}/login'>{$u}/login</a></p>
-                    <p style='margin: 5px 0;'><strong>📧 Email:</strong> {$e}</p>
+                    <p style='margin: 5px 0;'><strong>👤 Usuario:</strong> {$e}</p>
                     <p style='margin: 5px 0;'><strong>🔑 Contraseña temporal:</strong> Su número de cédula ({$c})</p>
                 </div>
 
                 <div style='background: #fff3e0; border-left: 4px solid #ff9800; padding: 15px; margin: 20px 0; border-radius: 0 5px 5px 0;'>
                     <p style='margin: 0; font-weight: bold; color: #e65100;'>⚠️ Importante</p>
                     <p style='margin: 10px 0 0;'>Al iniciar sesión por primera vez, el sistema le solicitará establecer una nueva contraseña segura.</p>
+                </div>
+
+                <div style='text-align: center; margin: 35px 0 15px 0;'>
+                    <a href='{$u}/home' style='background-color: #283593; color: #ffffff; padding: 12px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px; display: inline-block; font-family: Arial, sans-serif;'>Ir al sistema</a>
                 </div>
 
                 <p style='color: #666; font-size: 13px; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;'>
