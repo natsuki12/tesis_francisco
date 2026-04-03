@@ -134,7 +134,11 @@
         elIntentos.min = 0;
         elModalidad.title = '';
         elIntentos.title = '';
-        if (elTipoCalif) elTipoCalif.value = 'aprobado_reprobado';
+        if (elTipoCalif) {
+            elTipoCalif.disabled = false;
+            elTipoCalif.title = '';
+            elTipoCalif.value = 'aprobado_reprobado';
+        }
         toggleTipoCalif();
         if (seccionSelect) seccionSelect.value = '';
         // Show bulk actions (create mode)
@@ -198,6 +202,10 @@
                     if (editRules.min_intentos_permitido > 0) {
                         elIntentos.min = editRules.min_intentos_permitido;
                         elIntentos.title = `Mínimo ${editRules.min_intentos_permitido} (ya hay intentos usados)`;
+                    }
+                    if (!editRules.tipo_calif_editable && elTipoCalif) {
+                        elTipoCalif.disabled = true;
+                        elTipoCalif.title = 'No editable — ya existen intentos registrados.';
                     }
                 }
 

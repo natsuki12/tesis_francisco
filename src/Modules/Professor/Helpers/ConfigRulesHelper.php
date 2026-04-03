@@ -60,6 +60,7 @@ class ConfigRulesHelper
             'total_intentos' => $totalIntentos,
             'max_intentos_usados' => $maxIntentosUsados,
             'modalidad_editable' => !$tieneIntentos,
+            'tipo_calif_editable' => !$tieneIntentos,
             'intentos_editable' => true, // siempre, pero con min
             'min_intentos_permitido' => $maxIntentosUsados,
             'fechas_editables' => true, // siempre

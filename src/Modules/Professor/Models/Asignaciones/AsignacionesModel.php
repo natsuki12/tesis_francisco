@@ -126,7 +126,7 @@ class AsignacionesModel
             $rules = $this->rules->getEditRules($configId);
 
             // Obtener estado actual de DB
-            $stmt = $this->db->prepare("SELECT modalidad, max_intentos FROM sim_caso_configs WHERE id = :id");
+            $stmt = $this->db->prepare("SELECT modalidad, max_intentos, tipo_calificacion FROM sim_caso_configs WHERE id = :id");
             $stmt->execute(['id' => $configId]);
             $currentConfig = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -138,6 +138,13 @@ class AsignacionesModel
             if (isset($data['modalidad']) && $data['modalidad'] !== $currentConfig['modalidad']) {
                 if (!$rules['modalidad_editable']) {
                     return ['ok' => false, 'error' => 'No se puede cambiar la modalidad — ya existen intentos registrados.'];
+                }
+            }
+
+            // Validar tipo_calificacion (solo falla si muta y no es editable)
+            if (isset($data['tipo_calificacion']) && $data['tipo_calificacion'] !== $currentConfig['tipo_calificacion']) {
+                if (!$rules['tipo_calif_editable']) {
+                    return ['ok' => false, 'error' => 'No se puede cambiar el tipo de calificación — ya existen intentos registrados.'];
                 }
             }
 
