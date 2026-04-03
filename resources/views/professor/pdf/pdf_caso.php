@@ -23,6 +23,19 @@ if (!function_exists('pdfDate')) {
         return $ts ? date('d/m/Y', $ts) : '—';
     }
 }
+
+// Cargar el ícono "isotipo" en base64 para los encabezados posteriores
+$_iconoPath = dirname(__DIR__, 4) . DIRECTORY_SEPARATOR
+    . 'public' . DIRECTORY_SEPARATOR
+    . 'assets' . DIRECTORY_SEPARATOR
+    . 'img' . DIRECTORY_SEPARATOR
+    . 'logos' . DIRECTORY_SEPARATOR
+    . 'sucelab' . DIRECTORY_SEPARATOR
+    . 'logo_Mesa de trabajo 1-04.png';
+$_iconoData = '';
+if (file_exists($_iconoPath)) {
+    $_iconoData = 'data:image/png;base64,' . base64_encode(file_get_contents($_iconoPath));
+}
 ?>
 <style>
     body { font-family: 'dejavusans', sans-serif; font-size: 9pt; color: #1a1a1a; line-height: 1.4; }
@@ -76,7 +89,30 @@ if (!function_exists('pdfDate')) {
     .pie-reporte { text-align: center; font-size: 7pt; color: #a0aec0; margin-top: 15px; border-top: 1px solid #e2e8f0; padding-top: 4px; }
 </style>
 
-<!-- ═══ MEMBRETE INSTITUCIONAL ═══ -->
+<!-- === CONFIGURACIONES DE PAGINACIÓN mPDF === -->
+<htmlpageheader name="headerLogo">
+    <div style="text-align: right; padding-top: 15px; padding-right: 25px;">
+        <?php if (!empty($_iconoData)): ?>
+            <img src="<?= $_iconoData ?>" style="width: 45px; height: auto;" />
+        <?php endif; ?>
+    </div>
+</htmlpageheader>
+
+<htmlpagefooter name="footerPagina">
+    <table width="100%" style="font-size: 8pt; color: #718096; border-top: 1.5px solid #e2e8f0; padding-top: 8px;">
+        <tr>
+            <td width="50%" style="text-align: left;">Generado por SUCELAB — <?= date('d/m/Y H:i') ?></td>
+            <td width="50%" style="text-align: right; font-weight: 600;">Página {PAGENO} de {nbpg}</td>
+        </tr>
+    </table>
+</htmlpagefooter>
+
+<!-- Activar encabezado desde la pág 2 (show-this-page=0) -->
+<sethtmlpageheader name="headerLogo" value="on" show-this-page="0" />
+<!-- Activar pie de página globalmente (show-this-page=1) -->
+<sethtmlpagefooter name="footerPagina" value="on" show-this-page="1" />
+
+<!-- ═══ MEMBRETE INSTITUCIONAL (Portada) ═══ -->
 <?php include __DIR__ . '/../../partials/pdf/pdf_membrete.php'; ?>
 
 <!-- ═══ TÍTULO DEL CASO ═══ -->
@@ -754,7 +790,3 @@ foreach ($desgravamenesItems as $dg) $totalDesgPdf += $dg['valor'];
 </table>
 <?php endif; ?>
 <?php endif; ?>
-
-<div class="pie-reporte">
-    Generado por SUCELAB — <?= date('d/m/Y H:i:s') ?>
-</div>
