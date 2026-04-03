@@ -63,6 +63,25 @@
         if (errList) errList.innerHTML = '';
     }
 
+    /* ========== BUTTONS STATE ========== */
+    function updateBulkButtonsState() {
+        if (!bulkActions || bulkActions.style.display === 'none') return; // no visible
+
+        if (btnRemoveAll) {
+            btnRemoveAll.disabled = selectedStudents.length === 0;
+        }
+
+        if (btnSelectAll) {
+            const seccion = seccionSelect ? seccionSelect.value : '';
+            const selectedIds = new Set(selectedStudents.map(s => String(s.id)));
+            const toAdd = availableStudents.filter(s =>
+                !selectedIds.has(String(s.estudiante_id)) &&
+                (!seccion || (s.seccion_nombre || '').split(', ').includes(seccion))
+            );
+            btnSelectAll.disabled = toAdd.length === 0;
+        }
+    }
+
     /* ========== COUNTER ========== */
     function updateCounter() {
         if (counterEl) counterEl.textContent = selectedStudents.length;
@@ -88,6 +107,7 @@
             currentSeccion = seccionSelect.value;
             if (autocompleteEst) { autocompleteEst._cache.clear(); autocompleteEst.close(); }
             if (searchInput) { searchInput.value = ''; searchInput.focus(); }
+            updateBulkButtonsState(); // Update btn state on filter change
         });
     }
 
@@ -465,6 +485,7 @@
         } catch (e) {
             availableStudents = [];
         }
+        updateBulkButtonsState(); // Update after fetching
     }
 
     if (searchInput && window.AutocompleteDropdown) {
@@ -526,6 +547,7 @@
         if (!selectedDiv) return;
         if (selectedStudents.length === 0) {
             selectedDiv.innerHTML = '<div class="gc-empty-students"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="11" x2="23" y2="11"></line></svg><span>No hay estudiantes seleccionados</span></div>';
+            updateBulkButtonsState(); // Ensure empty means disabled Remove All
             return;
         }
         selectedDiv.innerHTML = selectedStudents.map((s, i) => {
@@ -535,6 +557,7 @@
                 <button type="button" class="gc-chip-remove" data-idx="${i}" title="${s.existing ? 'Quitar de la asignación' : 'Quitar'}">&times;</button>
             </div>`;
         }).join('');
+        updateBulkButtonsState(); // Check button states whenever UI updates
     }
 
     selectedDiv?.addEventListener('click', async e => {

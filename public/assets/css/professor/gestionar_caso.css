@@ -728,6 +728,13 @@
     border: 1px solid transparent;
 }
 
+.gc-btn-bulk:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(100%);
+}
+
 .gc-btn-select-all {
     background: var(--blue-50, #eff6ff);
     color: var(--blue-700, #1d4ed8);
