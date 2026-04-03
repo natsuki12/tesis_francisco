@@ -200,7 +200,10 @@ class EstadisticasModel
         $stmt->execute([':pid' => $profesorId]);
         $cualRows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        $cualitativas = [];
+        $cualitativas = [
+            'Aprobado' => 0,
+            'Reprobado' => 0
+        ];
         foreach ($cualRows as $r) {
             $cualitativas[$r['nota_cualitativa']] = (int) $r['total'];
         }

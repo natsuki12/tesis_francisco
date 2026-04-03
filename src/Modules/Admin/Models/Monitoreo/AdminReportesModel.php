@@ -155,7 +155,10 @@ class AdminReportesModel
                 GROUP BY nota_cualitativa
             ")->fetchAll(\PDO::FETCH_ASSOC);
 
-            $cualitativas = [];
+            $cualitativas = [
+                'Aprobado' => 0,
+                'Reprobado' => 0
+            ];
             foreach ($cual as $r) {
                 $cualitativas[$r['nota_cualitativa']] = (int) $r['total'];
             }
