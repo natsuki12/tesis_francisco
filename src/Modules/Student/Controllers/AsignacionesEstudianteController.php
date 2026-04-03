@@ -376,10 +376,14 @@ class AsignacionesEstudianteController
                 'format'        => 'Letter',
                 'margin_left'   => 15,
                 'margin_right'  => 15,
-                'margin_top'    => 15,
-                'margin_bottom' => 15,
+                'margin_top'    => 20,
+                'margin_bottom' => 20,
+                'margin_header' => 5,
+                'margin_footer' => 5,
                 'default_font'  => 'dejavusans',
             ]);
+            $mpdf->setAutoTopMargin = 'stretch';
+            $mpdf->setAutoBottomMargin = 'stretch';
 
             $safeTitle = preg_replace('/[^a-zA-Z0-9_\- áéíóúñÁÉÍÓÚÑ]/', '', $titulo);
             $mpdf->SetTitle($safeTitle . ' — SUCELAB');
