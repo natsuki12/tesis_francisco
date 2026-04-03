@@ -32,8 +32,8 @@ $resultados = [];
 // ════════════════════════════════════════════════════════════
 $body1 = "
 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
-    <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
-        <img src='https://raw.githubusercontent.com/natsuki12/tesis_francisco/refs/heads/main/public/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.png' alt='SUCELAB Logo' style='display: block; margin: 0 auto 15px auto; max-width: 150px; height: auto;'>
+    <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 24px 20px; border-radius: 10px 10px 0 0; text-align: center;'>
+        <img src='https://raw.githubusercontent.com/natsuki12/tesis_francisco/refs/heads/main/public/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.png' alt='SUCELAB Logo' style='display: block; margin: 0 auto 12px auto; max-width: 120px; height: auto;'>
         <h1 style='margin: 0; font-size: 24px;'>Bienvenido al SUCELAB</h1>
         <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Universitario de Capacitación y Evaluación en Legislación y Administración de Bienes Sucesorales</p>
     </div>
@@ -69,8 +69,8 @@ $resultados[] = [
 // ════════════════════════════════════════════════════════════
 $body2 = "
 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
-    <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
-        <img src='https://raw.githubusercontent.com/natsuki12/tesis_francisco/refs/heads/main/public/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.png' alt='SUCELAB Logo' style='display: block; margin: 0 auto 15px auto; max-width: 150px; height: auto;'>
+    <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 24px 20px; border-radius: 10px 10px 0 0; text-align: center;'>
+        <img src='https://raw.githubusercontent.com/natsuki12/tesis_francisco/refs/heads/main/public/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.png' alt='SUCELAB Logo' style='display: block; margin: 0 auto 12px auto; max-width: 120px; height: auto;'>
         <h1 style='margin: 0; font-size: 24px;'>Bienvenido al SUCELAB</h1>
         <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Universitario de Capacitación y Evaluación en Legislación y Administración de Bienes Sucesorales</p>
     </div>
@@ -106,8 +106,8 @@ $resultados[] = [
 // ════════════════════════════════════════════════════════════
 $body3 = "
 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
-    <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
-        <img src='https://raw.githubusercontent.com/natsuki12/tesis_francisco/refs/heads/main/public/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.png' alt='SUCELAB Logo' style='display: block; margin: 0 auto 15px auto; max-width: 150px; height: auto;'>
+    <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 24px 20px; border-radius: 10px 10px 0 0; text-align: center;'>
+        <img src='https://raw.githubusercontent.com/natsuki12/tesis_francisco/refs/heads/main/public/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.png' alt='SUCELAB Logo' style='display: block; margin: 0 auto 12px auto; max-width: 120px; height: auto;'>
         <h1 style='margin: 0; font-size: 24px;'>Recuperación de Contraseña</h1>
         <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Universitario de Capacitación y Evaluación en Legislación y Administración de Bienes Sucesorales</p>
     </div>
@@ -142,8 +142,8 @@ $resultados[] = [
 // ════════════════════════════════════════════════════════════
 $body4 = "
 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
-    <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
-        <img src='https://raw.githubusercontent.com/natsuki12/tesis_francisco/refs/heads/main/public/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.png' alt='SUCELAB Logo' style='display: block; margin: 0 auto 15px auto; max-width: 150px; height: auto;'>
+    <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 24px 20px; border-radius: 10px 10px 0 0; text-align: center;'>
+        <img src='https://raw.githubusercontent.com/natsuki12/tesis_francisco/refs/heads/main/public/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.png' alt='SUCELAB Logo' style='display: block; margin: 0 auto 12px auto; max-width: 120px; height: auto;'>
         <h1 style='margin: 0; font-size: 24px;'>RIF Sucesoral Generado</h1>
         <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Universitario de Capacitación y Evaluación en Legislación y Administración de Bienes Sucesorales</p>
     </div>
@@ -195,8 +195,8 @@ $resultados[] = [
 // ════════════════════════════════════════════════════════════
 $body5 = "
 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
-    <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
-        <img src='https://raw.githubusercontent.com/natsuki12/tesis_francisco/refs/heads/main/public/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.png' alt='SUCELAB Logo' style='display: block; margin: 0 auto 15px auto; max-width: 150px; height: auto;'>
+    <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 24px 20px; border-radius: 10px 10px 0 0; text-align: center;'>
+        <img src='https://raw.githubusercontent.com/natsuki12/tesis_francisco/refs/heads/main/public/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.png' alt='SUCELAB Logo' style='display: block; margin: 0 auto 12px auto; max-width: 120px; height: auto;'>
         <h1 style='margin: 0; font-size: 24px;'>RIF Sucesoral Aprobado</h1>
         <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Universitario de Capacitación y Evaluación en Legislación y Administración de Bienes Sucesorales</p>
     </div>
@@ -248,8 +248,8 @@ $resultados[] = [
 // ════════════════════════════════════════════════════════════
 $body6 = "
 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
-    <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
-        <img src='{$baseUrl}/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.svg' alt='SUCELAB Logo' style='display: block; margin: 0 auto 15px auto; max-width: 150px; height: auto;'>
+    <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 24px 20px; border-radius: 10px 10px 0 0; text-align: center;'>
+        <img src='https://raw.githubusercontent.com/natsuki12/tesis_francisco/refs/heads/main/public/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.png' alt='SUCELAB Logo' style='display: block; margin: 0 auto 12px auto; max-width: 120px; height: auto;'>
         <h1 style='margin: 0; font-size: 24px;'>RIF Sucesoral No Aprobado</h1>
         <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Universitario de Capacitación y Evaluación en Legislación y Administración de Bienes Sucesorales</p>
     </div>
