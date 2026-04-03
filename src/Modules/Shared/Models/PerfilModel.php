@@ -14,13 +14,13 @@ class PerfilModel
     /**
      * Obtiene los datos personales desde la tabla `personas`.
      *
-     * @return array{nacionalidad: string, cedula: string, nombres: string, apellidos: string, fecha_nacimiento: string, genero: ?string}|array{}
+     * @return array{nacionalidad: string, cedula: string, nombres: string, apellidos: string}|array{}
      */
     public function getPersona(int $personaId): array
     {
         $db = DB::connect();
         $stmt = $db->prepare(
-            "SELECT nacionalidad, cedula, nombres, apellidos, fecha_nacimiento, genero
+            "SELECT nacionalidad, cedula, nombres, apellidos
              FROM personas
              WHERE id = ?
              LIMIT 1"

@@ -39,6 +39,12 @@ class StoreIntentoModel
     ];
 
     /**
+     * Categorías que SÍ tienen sub-tipos registrados en sim_cat_tipos_bien_mueble.
+     * Las categorías que NO están aquí deben guardar tipo_bien_mueble_id = NULL.
+     */
+    private const CATS_CON_TIPOS = [1, 2, 3, 5, 8];
+
+    /**
      * Mapping: borrador key → tipo_pasivo_deuda_id
      */
     private const DEUDA_MAP = [
@@ -560,8 +566,10 @@ class StoreIntentoModel
                 $stmtBase->execute([
                     'intento_id'  => $intentoId,
                     'cat_id'      => $catId,
-                    'tipo_id'     => !empty($b['tipo_bien'] ?? $b['tipo_bien_mueble_id'] ?? null)
-                                     ? (int) ($b['tipo_bien'] ?? $b['tipo_bien_mueble_id']) : null,
+                    'tipo_id'     => in_array($catId, self::CATS_CON_TIPOS, true)
+                                     && !empty($b['tipo_bien'] ?? $b['tipo_bien_mueble_id'] ?? null)
+                                     ? (int) ($b['tipo_bien'] ?? $b['tipo_bien_mueble_id'])
+                                     : null,
                     'litigioso'   => $esLitigioso ? 1 : 0,
                     'porcentaje'  => self::toFloat($b['porcentaje'] ?? '100', 100),
                     'descripcion' => $b['descripcion'] ?? null,
@@ -701,7 +709,9 @@ class StoreIntentoModel
         foreach ($items as $pg) {
             $stmt->execute([
                 'intento_id' => $intentoId,
-                'tipo_id'    => (int) ($pg['tipo_pasivo_gasto_id'] ?? $pg['tipo_gasto'] ?? 0),
+                'tipo_id'    => !empty($pg['tipo_pasivo_gasto_id'] ?? $pg['tipo_gasto'] ?? null)
+                                ? (int) ($pg['tipo_pasivo_gasto_id'] ?? $pg['tipo_gasto'])
+                                : 7, // 7 is "Otros (Especifique)", avoiding FK violation with ID 0
                 'pct'        => self::toFloat($pg['porcentaje'] ?? '100', 100),
                 'desc'       => $pg['descripcion'] ?? null,
                 'valor'      => self::toFloat($pg['valor_declarado'] ?? '0'),

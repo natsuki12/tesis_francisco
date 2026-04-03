@@ -225,7 +225,7 @@ ob_start();
         // Cualitativa
         if (nota.nota_cualitativa) {
             var cls2 = nota.nota_cualitativa === 'Aprobado' ? 'grade-pass' : 'grade-fail';
-            var label = nota.nota_cualitativa === 'Aprobado' ? 'A' : 'R';
+            var label = nota.nota_cualitativa === 'Aprobado' ? 'Aprobado' : 'Reprobado';
             return '<a href="<?= base_url("/entregas/") ?>' + nota.intento_id + '" class="grade-cell ' + cls2 + '" title="' + nota.nota_cualitativa + '">' + label + '</a>';
         }
         return '<span class="grade-cell grade-na">—</span>';

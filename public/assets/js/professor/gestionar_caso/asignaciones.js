@@ -37,6 +37,7 @@
     let availableStudents = [];
     let isEditMode = false;
     let currentSeccion = '';
+    let autocompleteEst = null;
 
     if (!modal) return;
 
@@ -85,6 +86,7 @@
     if (seccionSelect) {
         seccionSelect.addEventListener('change', () => {
             currentSeccion = seccionSelect.value;
+            if (autocompleteEst) { autocompleteEst._cache.clear(); autocompleteEst.close(); }
             if (searchInput) { searchInput.value = ''; searchInput.focus(); }
         });
     }
@@ -103,6 +105,7 @@
         editRules = null;
         isEditMode = false;
         currentSeccion = '';
+        if (autocompleteEst) { autocompleteEst._cache.clear(); autocompleteEst.close(); }
         clearErrors();
         updateCounter();
         renderSelected();
@@ -465,7 +468,7 @@
     }
 
     if (searchInput && window.AutocompleteDropdown) {
-        new AutocompleteDropdown({
+        autocompleteEst = new AutocompleteDropdown({
             input: searchInput,
             minLength: 0,
             debounceMs: 150,
@@ -482,7 +485,10 @@
                 ).slice(0, 10);
             },
             renderItem: (item) => {
-                const ci = item.cedula || '—';
+                let ci = item.cedula || '—';
+                if (ci !== '—' && !ci.includes('-')) {
+                    ci = (item.nacionalidad || 'V') + '-' + ci;
+                }
                 const nombre = `${esc(item.nombres)} ${esc(item.apellidos)}`;
                 const email = item.email ? esc(item.email) : '';
                 const seccion = item.seccion_nombre ? esc(item.seccion_nombre) : '';
@@ -508,6 +514,10 @@
                 updateCounter();
                 renderSelected();
                 searchInput.value = '';
+                setTimeout(() => {
+                    if (autocompleteEst) autocompleteEst.close();
+                    searchInput.blur();
+                }, 80);
             }
         });
     }

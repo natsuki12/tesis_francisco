@@ -77,7 +77,20 @@ function evaluateRules() {
     // Regla 1: Datos del Caso (Título, Desc, Sucesión y Parentesco)
     const tituloOk = (dCaso.titulo || '').trim().length > 0;
     const descOk = (dCaso.descripcion || '').trim().length > 0;
-    const herenciaOk = Array.isArray(dHer.tipos) && dHer.tipos.length > 0;
+    
+    let herenciaOk = Array.isArray(dHer.tipos) && dHer.tipos.length > 0;
+    if (herenciaOk) {
+        // Validar subcampos obligatorios dinámicos
+        for (const t of dHer.tipos) {
+            const nombre = t.nombre ? t.nombre.toLowerCase() : '';
+            if (nombre.includes('testamento')) {
+                if (!t.subtipo_testamento || !t.fecha_testamento) herenciaOk = false;
+            }
+            if (nombre.includes('inventario')) {
+                if (!t.fecha_conclusion_inventario) herenciaOk = false;
+            }
+        }
+    }
     
     // Regla 2: Filiación Causante
     const filiacionOk = !!(
@@ -107,7 +120,7 @@ function evaluateRules() {
             title: '1. Configuración del Escenario',
             items: [
                 { id: 't_desc', label: 'Título y Descripción', desc: 'Define el título y contexto general del caso.', done: tituloOk && descOk },
-                { id: 't_her', label: 'Tipo de Herencia', desc: 'Selecciona si es Testada o Intestada.', done: herenciaOk }
+                { id: 't_her', label: 'Tipo de Herencia', desc: 'Selecciona el tipo y completa los sub-campos si aplica.', done: herenciaOk }
             ]
         },
         {
@@ -122,7 +135,7 @@ function evaluateRules() {
             title: '3. Relaciones y Roles',
             items: [
                 { id: 'r_hered', label: 'Agregar Herederos', desc: 'Mínimo 1 heredero registrado.', done: hasHerederos },
-                { id: 'r_rep', label: 'Designar Representante', desc: 'Opcional. Si lo asignas, completa sus datos.', done: !!(c.representante && c.representante.cedula) } // Para UI es un "bonus", lo marcamos según exista.
+                { id: 'r_rep', label: 'Designar Representante', desc: 'Debes registrar al representante y completar sus datos.', done: !!(c.representante && c.representante.cedula && c.representante.nombres && c.representante.apellidos && c.representante.rif_personal && c.representante.fecha_nacimiento && c.representante.sexo) } 
             ]
         },
         {
@@ -156,14 +169,6 @@ export function updateChecklist() {
         group.items.forEach(item => {
             if (item.hidden === true) return; // Saltarse si no aplica
             
-            // Rep represent es especial, si existe, suma puntos. Si no existe, no resta.
-            // Para simplicar, lo contaremos en base 100 igual. Requisito opcional pero si está hecho es un check.
-            if (item.id === 'r_rep') {
-                // Lo trataremos como completado si no hay representante, pero si empezó a escribirlo y le faltan datos, lo pondremos incompleto.
-                // En realidad es estricto: El sistema pide "Opcional" así que dejemos que sea un sub-requisito siempre cumplido si está vacio, o cumplido si está lleno.
-                // Ah! Mejor no contar r_rep en el total estricto o hacerlo condicional.
-            }
-
             totalItems++;
             if (item.done) doneItems++;
 

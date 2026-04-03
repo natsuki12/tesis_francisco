@@ -74,7 +74,7 @@ class EstudiantesController
             $cedula       = trim($_POST['cedula'] ?? '');
             $nombres      = trim($_POST['nombres'] ?? '');
             $apellidos    = trim($_POST['apellidos'] ?? '');
-            $email        = trim($_POST['email'] ?? '');
+            $email        = mb_strtolower(trim($_POST['email'] ?? ''), 'UTF-8'); // Normalizamos a minúsculas
 
             // ── 3. Validar ──
             $errors = [];
@@ -136,20 +136,25 @@ class EstudiantesController
             );
 
             // ── 7. Enviar correo de bienvenida ──
-            $baseUrl = rtrim($_ENV['APP_BASE'] ?? 'http://localhost/tesis_francisco', '/');
-            $emailBody = $this->buildWelcomeEmail($nombres, $apellidos, $email, $cedula, $baseUrl);
-            $emailSent = MailQueueService::send(
-                $email,
-                'Bienvenido al SUCELAB — Su cuenta ha sido creada',
-                $emailBody,
-                'bienvenida',
-                (int) $result['user_id']
-            );
+            $emailSent = false;
+            try {
+                $baseUrl = rtrim($_ENV['APP_BASE'] ?? 'http://localhost/tesis_francisco', '/');
+                $emailBody = $this->buildWelcomeEmail($nombres, $apellidos, $email, $cedula, $baseUrl);
+                $emailSent = MailQueueService::send(
+                    $email,
+                    'Bienvenido al SUCELAB — Su cuenta ha sido creada',
+                    $emailBody,
+                    'bienvenida',
+                    (int) $result['user_id']
+                );
+            } catch (\Throwable $m) {
+                error_log('[EstudiantesController::guardar] Advertencia: Fallo al enviar email asíncrono: ' . $m->getMessage());
+            }
 
             // ── 8. Respuesta ──
             $message = $emailSent
                 ? 'Estudiante registrado exitosamente. Se ha enviado un correo de bienvenida.'
-                : 'Estudiante registrado exitosamente. El correo de bienvenida será entregado en breve.';
+                : 'Estudiante registrado exitosamente. El correo de bienvenida será entregado en breve (fallo temporal al despachar).';
 
             echo json_encode(['success' => true, 'message' => $message]);
             exit;
@@ -229,9 +234,25 @@ class EstudiantesController
                 }
 
                 $email     = trim($row[0]);
+                // Eliminación del "Byte Order Mark" (BOM) invisible que añade Excel (UTF-8) a la celda A1 (\xEF\xBB\xBF)
+                $email     = preg_replace('/^\xEF\xBB\xBF/', '', $email);
+                // Normalización obligatoria a minúsculas para evitar colisiones "Case-Sensitive"
+                $email     = mb_strtolower($email, 'UTF-8');
+                
+                // Saneamiento de la cédula: remueve espacios, guiones, puntos y comas.
                 $cedulaRaw = strtoupper(trim($row[1]));
+                $cedulaRaw = preg_replace('/[\s\-\.,]/', '', $cedulaRaw);
+                
                 $nombres   = trim($row[2]);
                 $apellidos = trim($row[3]);
+
+                // ── Detección e Ignorado Silencioso de Cabeceras (Header Row) ──
+                if ($lineNum === 1) {
+                    if (stripos($email, 'email') !== false || stripos($email, 'correo') !== false || stripos($cedulaRaw, 'cedula') !== false) {
+                        // Saltamos la fila de títulos sin contarla como $skipped ni como error
+                        continue;
+                    }
+                }
 
                 $rowErrors = [];
 
@@ -308,16 +329,22 @@ class EstudiantesController
                         "Estudiante importado (CSV): $nombres $apellidos ($cedulaRaw)"
                     );
 
-                    // Encolar correo de bienvenida (CRON lo envía, no bloquea)
-                    $baseUrl = rtrim($_ENV['APP_BASE'] ?? 'http://localhost/tesis_francisco', '/');
-                    $emailBody = $this->buildWelcomeEmail($nombres, $apellidos, $email, $cedula, $baseUrl);
-                    MailQueueService::queue(
-                        $email,
-                        'Bienvenido al SUCELAB — Su cuenta ha sido creada',
-                        $emailBody,
-                        'bienvenida',
-                        (int) $result['user_id']
-                    );
+                    // Encolar correo de bienvenida (Proteger del rollback en caso de fallo externo)
+                    try {
+                        $baseUrl = rtrim($_ENV['APP_BASE'] ?? 'http://localhost/tesis_francisco', '/');
+                        $emailBody = $this->buildWelcomeEmail($nombres, $apellidos, $email, $cedula, $baseUrl);
+                        MailQueueService::queue(
+                            $email,
+                            'Bienvenido al SUCELAB — Su cuenta ha sido creada',
+                            $emailBody,
+                            'bienvenida',
+                            (int) $result['user_id']
+                        );
+                    } catch (\Throwable $m) {
+                        error_log("[EstudiantesController::importarCSV] Error encolando email fila $lineNum: " . $m->getMessage());
+                        // Se notifica la advertencia de correo sin invalidar ni saltar la inserción
+                        $errors[] = "Fila $lineNum: El estudiante fue creado existosamente, pero falló el encolamiento de su correo de bienvenida.";
+                    }
 
                 } catch (\Throwable $e) {
                     error_log("[EstudiantesController::importarCSV] Fila $lineNum: " . $e->getMessage());
@@ -368,7 +395,8 @@ class EstudiantesController
         return "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;'>
             <div style='background: linear-gradient(135deg, #1a237e, #283593); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;'>
-                <h1 style='margin: 0; font-size: 24px;'>🎓 Bienvenido al SUCELAB</h1>
+                <img src='{$u}/assets/img/logos/sucelab/logo_Mesa%20de%20trabajo%201-04.png' alt='SUCELAB Logo' style='display: block; margin: 0 auto 15px auto; max-width: 150px; height: auto;'>
+                <h1 style='margin: 0; font-size: 24px;'>Bienvenido al SUCELAB</h1>
                 <p style='margin: 10px 0 0; opacity: 0.9;'>Sistema Universitario de Capacitación y Evaluación en Legislación y Administración de Bienes Sucesorales</p>
             </div>
             <div style='background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; border-top: none;'>

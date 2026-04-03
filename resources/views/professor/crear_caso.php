@@ -365,14 +365,6 @@ ob_start();
     </div>
     <div class="cc-card__body cc-card__collapse p-0" style="display:none;">
 
-      <!-- Inline validation errors -->
-      <div class="cc-inline-errors" id="direccionErrors">
-        <p class="cc-inline-errors__title">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Campos requeridos faltantes:
-        </p>
-        <ul class="cc-inline-errors__list" id="direccionErrorsList"></ul>
-      </div>
 
       <!-- Tipo de dirección -->
       <div class="cc-p-4 cc-border-b">
@@ -397,6 +389,7 @@ ob_start();
 
         <div class="cc-grid cc-grid--1">
           <div class="cc-field">
+            <label style="font-size:10px; color:#64748b; margin-bottom:2px; font-weight:600;">TIPO DE DIRECCIÓN <span class="cc-required">*</span></label>
             <select data-bind="domicilio_causante.tipo_direccion" class="cc-select-lg">
               <option value="">SELECCIONAR TIPO DE DIRECCIÓN</option>
               <option value="Bodega_Almacenamiento_Deposito">BODEGA, ALMACENAMIENTO, DEPÓSITO</option>
@@ -417,7 +410,8 @@ ob_start();
         <!-- ROW 1: Headers with Radios -->
         <div class="cc-addr-tr">
           <!-- Left: Vialidad -->
-          <div class="cc-addr-th">
+          <div class="cc-addr-th" style="flex-direction: column; gap: 4px;">
+            <span style="font-size:10px; color:#64748b; font-weight:600; text-align:center;">TIPO DE VIALIDAD <span class="cc-required">*</span></span>
             <div class="cc-addr-radios cc-addr-radios--inline">
               <label class="cc-radio-pill"><input type="radio" name="tipo_vialidad" value="Calle"
                   data-bind="domicilio_causante.tipo_vialidad"> calle</label>
@@ -434,7 +428,8 @@ ob_start();
             </div>
           </div>
           <!-- Right: Vivienda -->
-          <div class="cc-addr-th">
+          <div class="cc-addr-th" style="flex-direction: column; gap: 4px;">
+            <span style="font-size:10px; color:#64748b; font-weight:600; text-align:center;">TIPO DE INMUEBLE <span class="cc-required">*</span></span>
             <div class="cc-addr-radios cc-addr-radios--inline">
               <label class="cc-radio-pill"><input type="radio" name="tipo_inmueble" value="Edificio"
                   data-bind="domicilio_causante.tipo_inmueble"> edificio</label>
@@ -455,14 +450,14 @@ ob_start();
           <div class="cc-addr-td">
             <div class="cc-field">
               <label style="font-size:10px; color:#64748b; margin-bottom:2px; font-weight:600;">NOMBRE DE
-                VIALIDAD</label>
+                VIALIDAD <span class="cc-required">*</span></label>
               <input type="text" data-bind="domicilio_causante.nombre_vialidad" placeholder="">
             </div>
           </div>
           <div class="cc-addr-td" style="display: flex; gap: 8px;">
             <div class="cc-field" style="flex: 2;">
               <label style="font-size:10px; color:#64748b; margin-bottom:2px; font-weight:600;">NOMBRE /
-                DESCRIPCIÓN</label>
+                DESCRIPCIÓN <span class="cc-required">*</span></label>
               <input type="text" id="input_desc_inmueble" data-bind="domicilio_causante.desc_inmueble"
                 placeholder="Ej: Torre A">
             </div>
@@ -488,7 +483,8 @@ ob_start();
             </div>
           </div>
           <!-- Right: Sector -->
-          <div class="cc-addr-th">
+          <div class="cc-addr-th" style="flex-direction: column; gap: 4px;">
+            <span style="font-size:10px; color:#64748b; font-weight:600; text-align:center;">TIPO DE SECTOR <span class="cc-required">*</span></span>
             <div class="cc-addr-radios cc-addr-radios--inline">
               <label class="cc-radio-pill"><input type="radio" name="tipo_sector" value="Urbanizacion"
                   data-bind="domicilio_causante.tipo_sector"> urbanización</label>
@@ -509,17 +505,23 @@ ob_start();
         <!-- ROW 4: Inputs -->
         <div class="cc-addr-tr">
           <div class="cc-addr-td">
-            <div class="cc-field"><input type="text" data-bind="domicilio_causante.nro_nivel" placeholder=""></div>
+            <div class="cc-field">
+              <label style="font-size:10px; color:#64748b; margin-bottom:2px; font-weight:600;">NRO / NIVEL</label>
+              <input type="text" data-bind="domicilio_causante.nro_nivel" placeholder="">
+            </div>
           </div>
           <div class="cc-addr-td">
-            <div class="cc-field"><input type="text" data-bind="domicilio_causante.nombre_sector" placeholder=""></div>
+            <div class="cc-field">
+              <label style="font-size:10px; color:#64748b; margin-bottom:2px; font-weight:600;">NOMBRE SECTOR <span class="cc-required">*</span></label>
+              <input type="text" data-bind="domicilio_causante.nombre_sector" placeholder="">
+            </div>
           </div>
         </div>
 
         <!-- ROW 5: Estado / Municipio Headers -->
         <div class="cc-addr-tr">
-          <div class="cc-addr-th"><span>Estado</span></div>
-          <div class="cc-addr-th"><span>Municipio</span></div>
+          <div class="cc-addr-th"><span>Estado <span class="cc-required">*</span></span></div>
+          <div class="cc-addr-th"><span>Municipio <span class="cc-required">*</span></span></div>
         </div>
 
         <!-- ROW 6: Estado / Municipio Inputs -->
@@ -542,8 +544,8 @@ ob_start();
 
         <!-- ROW 7: Parroquia / Ciudad Headers -->
         <div class="cc-addr-tr">
-          <div class="cc-addr-th"><span>Parroquia</span></div>
-          <div class="cc-addr-th"><span>Ciudad</span></div>
+          <div class="cc-addr-th"><span>Parroquia <span class="cc-required">*</span></span></div>
+          <div class="cc-addr-th"><span>Ciudad <span class="cc-required">*</span></span></div>
         </div>
 
         <!-- ROW 8: Parroquia / Ciudad Inputs -->
@@ -572,7 +574,7 @@ ob_start();
           <div class="cc-addr-th"><span>Teléfono Fijo Ej: 0212-1234567</span></div>
           <div class="cc-addr-th"><span>Teléfono Celular Ej: 0416-1234567</span></div>
           <div class="cc-addr-th"><span>Fax Ej: 0212-1234567</span></div>
-          <div class="cc-addr-th"><span>Zona Postal</span></div>
+          <div class="cc-addr-th"><span>Zona Postal <span class="cc-required">*</span></span></div>
         </div>
 
         <!-- ROW 10: Contact Inputs -->
@@ -599,16 +601,25 @@ ob_start();
 
       <!-- Punto de Referencia -->
       <div class="cc-addr-table cc-mt-0">
-        <div class="cc-addr-tr">
+        <div class="cc-addr-tr cc-addr-tr--1">
           <div class="cc-addr-th"><span>Punto de Referencia</span></div>
         </div>
-        <div class="cc-addr-tr">
+        <div class="cc-addr-tr cc-addr-tr--1">
           <div class="cc-addr-td">
             <div class="cc-field">
               <input type="text" data-bind="domicilio_causante.punto_referencia" placeholder="">
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Inline validation errors -->
+      <div class="cc-inline-errors" id="direccionErrors">
+        <p class="cc-inline-errors__title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Campos requeridos faltantes:
+        </p>
+        <ul class="cc-inline-errors__list" id="direccionErrorsList"></ul>
       </div>
 
       <!-- Footer de agregar direcciones de la tarjeta -->

@@ -231,6 +231,10 @@
     grid-template-columns: repeat(4, 1fr);
 }
 
+.cc-addr-tr--1 {
+    grid-template-columns: 1fr;
+}
+
 .cc-addr-th {
     padding: 8px 12px;
     background: #f1f5f9;

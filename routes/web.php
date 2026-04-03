@@ -159,6 +159,21 @@ $router->get('/admin/periodos', function () use ($requireAuth, $requireRole) {
     $requireRole(1);
     return (new PeriodosController())->index();
 });
+$router->post('/admin/periodos/crear', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new PeriodosController())->crear();
+});
+$router->post('/admin/periodos/actualizar', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new PeriodosController())->actualizar();
+});
+$router->post('/admin/periodos/toggle', function () use ($requireAuth, $requireRole) {
+    $requireAuth();
+    $requireRole(1);
+    return (new PeriodosController())->toggleEstado();
+});
 
 // Admin -> Gestión Académica -> Secciones
 $router->get('/admin/secciones', function () use ($requireAuth, $requireRole) {

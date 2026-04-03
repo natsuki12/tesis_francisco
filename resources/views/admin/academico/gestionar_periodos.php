@@ -124,10 +124,18 @@ ob_start();
                                 </button>
                                 <?php if ($activo): ?>
                                 <button class="row-action-btn" title="Cerrar Período"
-                                    onclick="openCerrarPeriodo(<?= (int)$per['id'] ?>)" style="color:var(--red-500);">
+                                    onclick="openTogglePeriodo(<?= (int)$per['id'] ?>, 'cerrar', '<?= e(addslashes($nombre)) ?>')" style="color:var(--red-500);">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
                                         <line x1="12" y1="2" x2="12" y2="12" />
+                                    </svg>
+                                </button>
+                                <?php else: ?>
+                                <button class="row-action-btn" title="Reactivar Período"
+                                    onclick="openTogglePeriodo(<?= (int)$per['id'] ?>, 'reactivar', '<?= e(addslashes($nombre)) ?>')" style="color:var(--green-500);">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M23 4v6h-6" /><path d="M1 20v-6h6" />
+                                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
                                     </svg>
                                 </button>
                                 <?php endif; ?>
@@ -145,25 +153,22 @@ ob_start();
 </div>
 
 <!-- ==============================================
-     MODALES
+     MODAL: Crear / Editar Período (HTML5 dialog)
      ============================================== -->
-
-<!-- Modal: Crear/Editar Período -->
-<div id="modal-periodo" class="modal-overlay">
-    <div class="modal" style="max-width:500px;">
-        <div class="modal-header">
-            <div>
-                <h2 id="modal-periodo-title">Crear Período Académico</h2>
-                <p>Defina el código del período y su rango de fechas.</p>
-            </div>
-            <button class="modal-close" onclick="document.getElementById('modal-periodo').classList.remove('show')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            </button>
+<dialog class="modal-base" id="modal-periodo">
+    <div class="modal-base__container" style="max-width: 500px;">
+        <div class="modal-base__header">
+            <h2 class="modal-base__title" id="modal-periodo-title">Crear Período Académico</h2>
+            <button class="modal-base__close" onclick="window.modalManager.close('modal-periodo')" aria-label="Cerrar modal">&times;</button>
         </div>
-        <div class="modal-body">
-            <div class="form-grid">
-                <input type="hidden" id="periodo_id" value="">
+        <div class="modal-base__body">
+            <p id="modal-periodo-desc" style="font-size: 15px; color: var(--text-body); margin-bottom: 20px;">
+                Defina el código del período y su rango de fechas.
+            </p>
 
+            <input type="hidden" id="periodo_id" value="">
+
+            <div class="form-grid">
                 <div class="form-group form-full">
                     <label>Código del Período <span class="required">*</span></label>
                     <input type="text" id="periodo_codigo" placeholder="Ej: 2026-I" maxlength="20">
@@ -180,183 +185,198 @@ ob_start();
                 </div>
             </div>
         </div>
-        <div class="modal-footer">
-            <button class="btn" style="background:var(--gray-100); color:var(--gray-600); padding:10px 20px;"
-                    onclick="document.getElementById('modal-periodo').classList.remove('show')">
-                Cancelar
-            </button>
-            <button class="btn btn-primary" style="padding:10px 24px;"
-                    onclick="alert('Guardado diferido — solo lectura por ahora.'); document.getElementById('modal-periodo').classList.remove('show');">
-                Guardar Período
-            </button>
+        <div class="modal-base__footer">
+            <button class="modal-btn modal-btn-cancel" onclick="window.modalManager.close('modal-periodo')">Cancelar</button>
+            <button class="modal-btn modal-btn-primary" id="btn-guardar-periodo" onclick="guardarPeriodo()">Crear Período</button>
         </div>
     </div>
-</div>
+</dialog>
 
-<!-- Modal: Confirmar Cierre -->
-<div id="modal-cerrar-periodo" class="modal-overlay">
-    <div class="modal" style="max-width:480px;">
-        <div class="modal-header">
-            <div>
-                <h2>¿Cerrar Período?</h2>
-                <p>Las secciones asociadas pasarán a estado inactivo.</p>
-            </div>
-            <button class="modal-close" onclick="document.getElementById('modal-cerrar-periodo').classList.remove('show')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            </button>
+<!-- ==============================================
+     MODAL: Confirmar Cerrar / Reactivar
+     ============================================== -->
+<dialog class="modal-base" id="modal-toggle-periodo">
+    <div class="modal-base__container" style="max-width: 480px;">
+        <div class="modal-base__header">
+            <h2 class="modal-base__title" id="modal-toggle-title">¿Cerrar Período?</h2>
+            <button class="modal-base__close" onclick="window.modalManager.close('modal-toggle-periodo')" aria-label="Cerrar modal">&times;</button>
         </div>
-        <div class="modal-body">
-            <p style="font-size:14px; color:var(--gray-600); line-height:1.5;">
-                Al cerrar este período, <strong>todas las secciones asociadas pasarán a estado inactivo</strong>
-                y los estudiantes no podrán continuar trabajando en sus casos asignados. Esta acción
-                puede ser revertida posteriormente reactivando el período.
-            </p>
+        <div class="modal-base__body">
+            <p id="modal-toggle-desc" style="font-size:14px; color:var(--gray-600); line-height:1.5;"></p>
         </div>
-        <div class="modal-footer">
-            <button class="btn" style="background:var(--gray-100); color:var(--gray-600); padding:10px 20px;"
-                    onclick="document.getElementById('modal-cerrar-periodo').classList.remove('show')">
-                Cancelar
-            </button>
-            <button class="btn" style="background:var(--red-500); color:white; padding:10px 24px;"
-                    onclick="alert('Cierre diferido — solo lectura por ahora.'); document.getElementById('modal-cerrar-periodo').classList.remove('show');">
-                Cerrar Período
-            </button>
+        <div class="modal-base__footer">
+            <button class="modal-btn modal-btn-cancel" onclick="window.modalManager.close('modal-toggle-periodo')">Cancelar</button>
+            <button class="modal-btn" id="btn-confirmar-toggle" onclick="confirmarToggle()">Confirmar</button>
         </div>
     </div>
-</div>
+</dialog>
 
 <script>
-// ── Modal helpers ──
+const CSRF_TOKEN = '<?= \App\Core\Csrf::getToken() ?>';
+const BASE_URL = '<?= base_url('') ?>';
+
+let editingId = null;
+let toggleId = null;
+let toggleAccion = null;
+
+// ── Abrir modal crear ──
 function openCrearPeriodo() {
+    editingId = null;
     document.getElementById('periodo_id').value = '';
     document.getElementById('periodo_codigo').value = '';
     document.getElementById('periodo_fecha_inicio').value = '';
     document.getElementById('periodo_fecha_fin').value = '';
     document.getElementById('modal-periodo-title').textContent = 'Crear Período Académico';
-    document.getElementById('modal-periodo').classList.add('show');
+    document.getElementById('modal-periodo-desc').textContent = 'Defina el código del período y su rango de fechas. Se creará como activo.';
+    document.getElementById('btn-guardar-periodo').textContent = 'Crear Período';
+    window.modalManager.clearError('modal-periodo');
+    window.modalManager.open('modal-periodo');
 }
 
+// ── Abrir modal editar ──
 function openEditarPeriodo(btn) {
-    document.getElementById('periodo_id').value = btn.dataset.id || '';
+    editingId = btn.dataset.id;
+    document.getElementById('periodo_id').value = editingId;
     document.getElementById('periodo_codigo').value = btn.dataset.codigo || '';
     document.getElementById('periodo_fecha_inicio').value = btn.dataset.fechaInicio || '';
     document.getElementById('periodo_fecha_fin').value = btn.dataset.fechaFin || '';
     document.getElementById('modal-periodo-title').textContent = 'Editar Período';
-    document.getElementById('modal-periodo').classList.add('show');
+    document.getElementById('modal-periodo-desc').textContent = 'Modifique los datos del período y guarde los cambios.';
+    document.getElementById('btn-guardar-periodo').textContent = 'Guardar Cambios';
+    window.modalManager.clearError('modal-periodo');
+    window.modalManager.open('modal-periodo');
 }
 
-function openCerrarPeriodo(id) {
-    document.getElementById('modal-cerrar-periodo').classList.add('show');
+// ── AJAX: Guardar período (crear o editar) ──
+async function guardarPeriodo() {
+    const btn = document.getElementById('btn-guardar-periodo');
+    window.modalManager.clearError('modal-periodo');
+    window.modalManager.setButtonLoading(btn);
+
+    const nombre = document.getElementById('periodo_codigo').value.trim();
+    const fechaInicio = document.getElementById('periodo_fecha_inicio').value;
+    const fechaFin = document.getElementById('periodo_fecha_fin').value;
+
+    // Validación client-side
+    if (!nombre) {
+        window.modalManager.showError('modal-periodo', 'El código del período es obligatorio.');
+        window.modalManager.resetButtonLoading(btn);
+        return;
+    }
+    if (!fechaInicio || !fechaFin) {
+        window.modalManager.showError('modal-periodo', 'Ambas fechas son obligatorias.');
+        window.modalManager.resetButtonLoading(btn);
+        return;
+    }
+    if (fechaInicio >= fechaFin) {
+        window.modalManager.showError('modal-periodo', 'La fecha de inicio debe ser anterior a la fecha de fin.');
+        window.modalManager.resetButtonLoading(btn);
+        return;
+    }
+
+    try {
+        const params = {
+            csrf_token:    CSRF_TOKEN,
+            nombre:        nombre,
+            fecha_inicio:  fechaInicio,
+            fecha_fin:     fechaFin
+        };
+
+        let url = BASE_URL + '/admin/periodos/crear';
+
+        if (editingId) {
+            params.id = editingId;
+            url = BASE_URL + '/admin/periodos/actualizar';
+        }
+
+        const res = await fetch(url, {
+            method: 'POST',
+            body: new URLSearchParams(params)
+        });
+
+        if (res.redirected || !res.ok) {
+            window.modalManager.showError('modal-periodo', 'Sesión expirada. Recargue la página.');
+            window.modalManager.resetButtonLoading(btn);
+            return;
+        }
+
+        const data = await res.json();
+
+        if (data.success) {
+            window.modalManager.close('modal-periodo');
+            if (window.showToast) window.showToast(data.message, 'success');
+            setTimeout(() => location.reload(), 800);
+        } else {
+            window.modalManager.showError('modal-periodo', data.message || 'Error al guardar el período.');
+        }
+    } catch (err) {
+        console.error(err);
+        window.modalManager.showError('modal-periodo', 'No se pudo conectar con el servidor.');
+    } finally {
+        window.modalManager.resetButtonLoading(btn);
+    }
 }
 
-// ── Close modals on click outside / Escape ──
-['modal-periodo', 'modal-cerrar-periodo'].forEach(id => {
-    document.getElementById(id)?.addEventListener('click', function(e) {
-        if (e.target === this) this.classList.remove('show');
-    });
-});
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-        document.getElementById('modal-periodo')?.classList.remove('show');
-        document.getElementById('modal-cerrar-periodo')?.classList.remove('show');
-    }
-});
+// ── Abrir modal toggle (cerrar/reactivar) ──
+function openTogglePeriodo(id, accion, nombre) {
+    toggleId = id;
+    toggleAccion = accion;
 
-// ── DataTable Engine ──
-(function() {
-    const table = document.getElementById('tbl-periodos');
-    if (!table) return;
-    const tbody = table.querySelector('tbody');
-    const rows = Array.from(tbody.querySelectorAll('tr[data-search]'));
-    if (rows.length === 0) return;
+    const btn = document.getElementById('btn-confirmar-toggle');
 
-    const searchInput = document.querySelector('[data-search-for="tbl-periodos"]');
-    const perPageSel = document.querySelector('[data-perpage-for="tbl-periodos"]');
-    const footer = document.querySelector('[data-footer-for="tbl-periodos"]');
-    const footerInfo = footer?.querySelector('.table-footer-info');
-    const paginationEl = footer?.querySelector('.pagination');
-
-    let searchTerm = '', currentPage = 1, sortCol = null, sortDir = 1;
-
-    function getPerPage() { return parseInt(perPageSel?.value || '10', 10); }
-
-    function getVisible() {
-        return rows.filter(r => !searchTerm || (r.dataset.search || '').includes(searchTerm));
+    if (accion === 'cerrar') {
+        document.getElementById('modal-toggle-title').textContent = '¿Cerrar Período?';
+        document.getElementById('modal-toggle-desc').innerHTML =
+            'Al cerrar el período <strong>' + nombre + '</strong>, no se podrán crear nuevas secciones ni asignaciones. ' +
+            'Los estudiantes con trabajo en curso <strong>no serán afectados</strong>. Esta acción es reversible.';
+        btn.textContent = 'Cerrar Período';
+        btn.style.background = 'var(--red-500)';
+        btn.style.color = 'white';
+    } else {
+        document.getElementById('modal-toggle-title').textContent = '¿Reactivar Período?';
+        document.getElementById('modal-toggle-desc').innerHTML =
+            'Al reactivar <strong>' + nombre + '</strong>, se convertirá en el período activo del sistema. ' +
+            'Si existe otro período activo, será cerrado automáticamente.';
+        btn.textContent = 'Reactivar Período';
+        btn.style.background = 'var(--green-500)';
+        btn.style.color = 'white';
     }
 
-    function sortRows(arr) {
-        if (sortCol === null) return arr;
-        return arr.slice().sort((a, b) => {
-            const va = (a.children[sortCol]?.textContent || '').trim().toLowerCase();
-            const vb = (b.children[sortCol]?.textContent || '').trim().toLowerCase();
-            const na = parseFloat(va.replace(/[^\d.-]/g, ''));
-            const nb = parseFloat(vb.replace(/[^\d.-]/g, ''));
-            if (!isNaN(na) && !isNaN(nb)) return sortDir * (na - nb);
-            return sortDir * va.localeCompare(vb);
+    window.modalManager.clearError('modal-toggle-periodo');
+    window.modalManager.open('modal-toggle-periodo');
+}
+
+// ── AJAX: Confirmar toggle ──
+async function confirmarToggle() {
+    const btn = document.getElementById('btn-confirmar-toggle');
+    window.modalManager.setButtonLoading(btn);
+
+    try {
+        const res = await fetch(BASE_URL + '/admin/periodos/toggle', {
+            method: 'POST',
+            body: new URLSearchParams({
+                csrf_token: CSRF_TOKEN,
+                id: toggleId,
+                accion: toggleAccion
+            })
         });
-    }
 
-    function render() {
-        const PER_PAGE = getPerPage();
-        const visible = sortRows(getVisible());
-        const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
-        if (currentPage > totalPages) currentPage = totalPages;
-        const start = (currentPage - 1) * PER_PAGE;
-        const pageRows = visible.slice(start, start + PER_PAGE);
+        const data = await res.json();
 
-        rows.forEach(r => r.style.display = 'none');
-        pageRows.forEach(r => r.style.display = '');
-
-        if (footerInfo) {
-            const from = visible.length > 0 ? start + 1 : 0;
-            const to = Math.min(start + PER_PAGE, visible.length);
-            footerInfo.innerHTML = `Mostrando <strong>${from}</strong> a <strong>${to}</strong> de <strong>${visible.length}</strong> registros`;
+        if (data.success) {
+            window.modalManager.close('modal-toggle-periodo');
+            if (window.showToast) window.showToast(data.message, 'success');
+            setTimeout(() => location.reload(), 800);
+        } else {
+            window.modalManager.showError('modal-toggle-periodo', data.message || 'Error al cambiar el estado.');
+            window.modalManager.resetButtonLoading(btn);
         }
-
-        if (paginationEl) {
-            paginationEl.innerHTML = '';
-            if (totalPages > 1) {
-                const prev = document.createElement('button');
-                prev.innerHTML = '‹'; prev.disabled = currentPage === 1;
-                prev.addEventListener('click', () => { currentPage--; render(); });
-                paginationEl.appendChild(prev);
-                for (let p = 1; p <= totalPages; p++) {
-                    const b = document.createElement('button');
-                    b.textContent = p;
-                    if (p === currentPage) b.classList.add('active');
-                    b.addEventListener('click', () => { currentPage = p; render(); });
-                    paginationEl.appendChild(b);
-                }
-                const next = document.createElement('button');
-                next.innerHTML = '›'; next.disabled = currentPage === totalPages;
-                next.addEventListener('click', () => { currentPage++; render(); });
-                paginationEl.appendChild(next);
-            }
-        }
+    } catch (err) {
+        console.error(err);
+        window.modalManager.showError('modal-toggle-periodo', 'Error de conexión con el servidor.');
+        window.modalManager.resetButtonLoading(btn);
     }
-
-    searchInput?.addEventListener('input', e => {
-        searchTerm = e.target.value.toLowerCase().trim();
-        currentPage = 1;
-        render();
-    });
-
-    perPageSel?.addEventListener('change', () => { currentPage = 1; render(); });
-
-    table.querySelectorAll('th.sortable[data-col]').forEach(th => {
-        th.style.cursor = 'pointer';
-        th.addEventListener('click', () => {
-            const col = parseInt(th.dataset.col, 10);
-            if (sortCol === col) sortDir *= -1;
-            else { sortCol = col; sortDir = 1; }
-            table.querySelectorAll('th.sortable').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
-            th.classList.add(sortDir === 1 ? 'sort-asc' : 'sort-desc');
-            render();
-        });
-    });
-
-    render();
-})();
+}
 </script>
 
 <?php

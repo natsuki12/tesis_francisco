@@ -16,8 +16,6 @@ $persona = [
     'apellidos'        => $personaRow['apellidos'] ?? '—',
     'nacionalidad'     => $personaRow['nacionalidad'] ?? 'V',
     'cedula'           => $personaRow['cedula'] ?? '—',
-    'fecha_nacimiento' => $personaRow['fecha_nacimiento'] ?? null,
-    'genero'           => $personaRow['genero'] ?? null,
     'email'            => $_SESSION['email'] ?? 'correo@ejemplo.com',
 ];
 
@@ -125,18 +123,6 @@ ob_start();
                         <label>Cédula</label>
                         <span>
                             <?= htmlspecialchars($persona['nacionalidad'] . '-' . $persona['cedula']) ?>
-                        </span>
-                    </div>
-                    <div class="perfil-field">
-                        <label>Fecha de nacimiento</label>
-                        <span>
-                            <?= $persona['fecha_nacimiento'] ? date('d/m/Y', strtotime($persona['fecha_nacimiento'])) : '—' ?>
-                        </span>
-                    </div>
-                    <div class="perfil-field">
-                        <label>Género</label>
-                        <span>
-                            <?= htmlspecialchars($persona['genero'] ?: '—') ?>
                         </span>
                     </div>
                 </div>

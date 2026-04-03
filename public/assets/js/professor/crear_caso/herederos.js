@@ -34,26 +34,36 @@ export function renderHerenciaCheckboxes() {
     </label>`;
 
     if (checked && tipo.nombre && tipo.nombre.toLowerCase().includes('testamento')) {
-      htmlExtras += `<div class="cc-herencia-extra cc-mt">
-                <div class="cc-field">
-                    <label>Subtipo de Testamento</label>
-                    <select data-herencia-extra="subtipo_testamento" data-herencia-ref="${id}">
-                        <option value="">Seleccione</option>
-                        <option value="Abierto" ${exists.subtipo_testamento === 'Abierto' ? 'selected' : ''}>Abierto</option>
-                        <option value="Cerrado" ${exists.subtipo_testamento === 'Cerrado' ? 'selected' : ''}>Cerrado</option>
-                    </select>
-                </div>
-                <div class="cc-field cc-mt">
-                    <label>Fecha de Testamento</label>
-                    <input type="date" data-herencia-extra="fecha_testamento" data-herencia-ref="${id}" value="${exists.fecha_testamento || ''}">
+      htmlExtras += `<div class="cc-herencia-extra cc-mt" style="background: var(--blue-50); border: 1px solid var(--blue-200); border-radius: 8px; padding: 16px; animation: fadeIn 0.3s ease;">
+                <p style="font-size: 13.5px; color: var(--blue-800); margin-top: 0; margin-bottom: 16px; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    Has seleccionado Herencia Testamentaria. Por favor completa los siguientes campos:
+                </p>
+                <div class="cc-grid cc-grid--2" style="gap: 16px;">
+                    <div class="cc-field">
+                        <label>Subtipo de Testamento <span class="cc-required">*</span></label>
+                        <select data-herencia-extra="subtipo_testamento" data-herencia-ref="${id}">
+                            <option value="">Seleccione</option>
+                            <option value="Abierto" ${exists.subtipo_testamento === 'Abierto' ? 'selected' : ''}>Abierto</option>
+                            <option value="Cerrado" ${exists.subtipo_testamento === 'Cerrado' ? 'selected' : ''}>Cerrado</option>
+                        </select>
+                    </div>
+                    <div class="cc-field">
+                        <label>Fecha de Testamento <span class="cc-required">*</span></label>
+                        <input type="date" data-herencia-extra="fecha_testamento" data-herencia-ref="${id}" value="${exists.fecha_testamento || ''}">
+                    </div>
                 </div>
             </div>`;
     }
 
     if (checked && tipo.nombre && tipo.nombre.toLowerCase().includes('inventario')) {
-      htmlExtras += `<div class="cc-herencia-extra cc-mt">
+      htmlExtras += `<div class="cc-herencia-extra cc-mt" style="background: var(--blue-50); border: 1px solid var(--blue-200); border-radius: 8px; padding: 16px; animation: fadeIn 0.3s ease;">
+                <p style="font-size: 13.5px; color: var(--blue-800); margin-top: 0; margin-bottom: 16px; font-weight: 500; display: flex; align-items: center; gap: 8px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    Has seleccionado Beneficio de Inventario. Por favor completa el siguiente campo:
+                </p>
                 <div class="cc-field">
-                    <label>Fecha Conclusión Inventario</label>
+                    <label>Fecha Conclusión Inventario <span class="cc-required">*</span></label>
                     <input type="date" data-herencia-extra="fecha_conclusion_inventario" data-herencia-ref="${id}" value="${exists.fecha_conclusion_inventario || ''}">
                 </div>
             </div>`;

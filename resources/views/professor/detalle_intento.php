@@ -670,8 +670,12 @@ ob_start();
             <h3>Confirmar Calificación</h3>
         </div>
         <div class="modal-body">
-            <p>¿Está seguro de que desea <?= $isCalificado ? 'actualizar' : 'enviar' ?> esta calificación?</p>
+            <p>¿Está seguro de que desea <?= $isCalificado ? 'actualizar' : 'enviar' ?> la calificación para <strong><?= htmlspecialchars($fullName) ?></strong>?</p>
             <div class="modal-summary">
+                <div class="modal-summary-row" style="margin-bottom:8px; border-bottom:1px dashed #e2e8f0; padding-bottom:8px;">
+                    <span class="modal-summary-label">Estudiante:</span>
+                    <span class="modal-summary-value" style="font-weight:600; color:var(--primary-color, #1e293b);"><?= htmlspecialchars($fullName) ?></span>
+                </div>
                 <div class="modal-summary-row">
                     <span class="modal-summary-label">Nota:</span>
                     <span class="modal-summary-value" id="modal-nota-display">—</span>
