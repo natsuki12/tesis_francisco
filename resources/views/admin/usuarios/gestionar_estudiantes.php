@@ -644,8 +644,20 @@ async function ejecutarImportacionEst() {
     }
 
     const btn = document.getElementById('btn-importar-csv-est');
-    btn.disabled = true;
+    const closeBtn = document.querySelector('#modal-importar-est .modal-base__close');
+    const cancelBtn = document.querySelector('#modal-importar-est .modal-btn-cancel');
+    const dialog = document.getElementById('modal-importar-est');
+
+    // UI Locks
+    window.modalManager.setButtonLoading(btn);
     btn.textContent = 'Importando...';
+    if (closeBtn) closeBtn.style.pointerEvents = 'none';
+    if (cancelBtn) cancelBtn.disabled = true;
+    dialog.setAttribute('data-no-backdrop-close', 'true');
+
+    // Prevent Page Reload/Navigation
+    const preventReload = (e) => { e.preventDefault(); e.returnValue = ''; };
+    window.addEventListener('beforeunload', preventReload);
 
     const formData = new FormData();
     formData.append('csrf_token', CSRF_TOKEN);
@@ -689,8 +701,12 @@ async function ejecutarImportacionEst() {
         console.error(err);
         window.showToast('Error de conexión al importar.', 'error');
     } finally {
-        btn.disabled = false;
+        window.modalManager.resetButtonLoading(btn);
         btn.textContent = 'Importar';
+        if (closeBtn) closeBtn.style.pointerEvents = '';
+        if (cancelBtn) cancelBtn.disabled = false;
+        dialog.removeAttribute('data-no-backdrop-close');
+        window.removeEventListener('beforeunload', preventReload);
     }
 }
 </script>
