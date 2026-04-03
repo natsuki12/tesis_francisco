@@ -122,67 +122,84 @@ class AsignacionesModel
 
     public function updateConfig(int $configId, array $data): array
     {
-        $rules = $this->rules->getEditRules($configId);
+        try {
+            $rules = $this->rules->getEditRules($configId);
 
-        // Validar modalidad
-        if (isset($data['modalidad']) && !$rules['modalidad_editable']) {
-            return ['ok' => false, 'error' => 'No se puede cambiar la modalidad — ya existen intentos registrados.'];
-        }
+            // Obtener estado actual de DB
+            $stmt = $this->db->prepare("SELECT modalidad, max_intentos FROM sim_caso_configs WHERE id = :id");
+            $stmt->execute(['id' => $configId]);
+            $currentConfig = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Validar max_intentos
-        if (isset($data['max_intentos'])) {
-            $nuevo = (int) $data['max_intentos'];
-            if ($nuevo !== 0 && $nuevo < $rules['min_intentos_permitido']) {
-                return [
-                    'ok' => false,
-                    'error' => "No se puede bajar a {$nuevo} intentos — ya hay estudiantes con {$rules['min_intentos_permitido']} intentos usados."
-                ];
+            if (!$currentConfig) {
+                return ['ok' => false, 'error' => 'Configuración no encontrada.'];
             }
-        }
 
-        // Construir SET dinámico
-        $sets = [];
-        $params = ['id' => $configId];
+            // Validar modalidad (solo falla si muta el valor y no es editable)
+            if (isset($data['modalidad']) && $data['modalidad'] !== $currentConfig['modalidad']) {
+                if (!$rules['modalidad_editable']) {
+                    return ['ok' => false, 'error' => 'No se puede cambiar la modalidad — ya existen intentos registrados.'];
+                }
+            }
 
-        if (array_key_exists('nombre', $data)) {
-            $sets[] = 'nombre = :nombre';
-            $trimmed = trim($data['nombre'] ?? '');
-            $params['nombre'] = $trimmed !== '' ? $trimmed : null;
-        }
-        if (isset($data['modalidad'])) {
-            $sets[] = 'modalidad = :modalidad';
-            $params['modalidad'] = $data['modalidad'];
-        }
-        if (isset($data['max_intentos'])) {
-            $sets[] = 'max_intentos = :max';
-            $params['max'] = max(0, min(100, (int) $data['max_intentos']));
-        }
-        if (array_key_exists('fecha_apertura', $data)) {
-            $sets[] = 'fecha_apertura = :apertura';
-            $params['apertura'] = !empty($data['fecha_apertura']) ? $data['fecha_apertura'] : null;
-        }
-        if (array_key_exists('fecha_limite', $data)) {
-            $sets[] = 'fecha_limite = :limite';
-            $params['limite'] = !empty($data['fecha_limite']) ? $data['fecha_limite'] : null;
-        }
-        if (isset($data['status']) && in_array($data['status'], ['Activo', 'Inactivo'])) {
-            $sets[] = 'status = :status';
-            $params['status'] = $data['status'];
-        }
-        if (isset($data['tipo_calificacion']) && in_array($data['tipo_calificacion'], ['numerica', 'aprobado_reprobado'])) {
-            $sets[] = 'tipo_calificacion = :tipo_calif';
-            $params['tipo_calif'] = $data['tipo_calificacion'];
-        }
+            // Validar max_intentos
+            if (isset($data['max_intentos'])) {
+                $nuevo = (int) $data['max_intentos'];
+                if ($nuevo !== 0 && $nuevo < $rules['min_intentos_permitido']) {
+                    return [
+                        'ok' => false,
+                        'error' => "No se puede bajar a {$nuevo} intentos — ya hay estudiantes con {$rules['min_intentos_permitido']} intentos usados."
+                    ];
+                }
+            }
 
-        if (empty($sets)) {
-            return ['ok' => true, 'message' => 'Nada que actualizar.'];
+            // Construir SET dinámico
+            $sets = [];
+            $params = ['id' => $configId];
+
+            if (array_key_exists('nombre', $data)) {
+                $sets[] = 'nombre = :nombre';
+                $trimmed = trim($data['nombre'] ?? '');
+                $params['nombre'] = $trimmed !== '' ? $trimmed : null;
+            }
+            if (isset($data['modalidad'])) {
+                $sets[] = 'modalidad = :modalidad';
+                $params['modalidad'] = $data['modalidad'];
+            }
+            if (isset($data['max_intentos'])) {
+                $sets[] = 'max_intentos = :max';
+                $params['max'] = max(0, min(100, (int) $data['max_intentos']));
+            }
+            if (array_key_exists('fecha_apertura', $data)) {
+                $sets[] = 'fecha_apertura = :apertura';
+                $params['apertura'] = !empty($data['fecha_apertura']) ? $data['fecha_apertura'] : null;
+            }
+            if (array_key_exists('fecha_limite', $data)) {
+                $sets[] = 'fecha_limite = :limite';
+                $params['limite'] = !empty($data['fecha_limite']) ? $data['fecha_limite'] : null;
+            }
+            if (isset($data['status']) && in_array($data['status'], ['Activo', 'Inactivo'])) {
+                $sets[] = 'status = :status';
+                $params['status'] = $data['status'];
+            }
+            if (isset($data['tipo_calificacion']) && in_array($data['tipo_calificacion'], ['numerica', 'aprobado_reprobado'])) {
+                $sets[] = 'tipo_calificacion = :tipo_calif';
+                $params['tipo_calif'] = $data['tipo_calificacion'];
+            }
+
+            if (empty($sets)) {
+                return ['ok' => true, 'message' => 'Nada que actualizar.'];
+            }
+
+            $sql = "UPDATE sim_caso_configs SET " . implode(', ', $sets) . " WHERE id = :id";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($params);
+
+            return ['ok' => true, 'rules' => $rules];
+
+        } catch (\Throwable $e) {
+            error_log('[AsignacionesModel::updateConfig] Error DB: ' . $e->getMessage());
+            return ['ok' => false, 'error' => 'Ocurrió un error interno al actualizar la configuración de asignación.'];
         }
-
-        $sql = "UPDATE sim_caso_configs SET " . implode(', ', $sets) . " WHERE id = :id";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute($params);
-
-        return ['ok' => true, 'rules' => $rules];
     }
 
     /* =========================================================
