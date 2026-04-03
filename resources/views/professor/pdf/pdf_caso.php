@@ -91,9 +91,9 @@ if (file_exists($_iconoPath)) {
 
 <!-- === CONFIGURACIONES DE PAGINACIÓN mPDF === -->
 <htmlpageheader name="headerLogo">
-    <div style="text-align: right; padding-right: 30px; margin-top: -10px;">
+    <div style="text-align: center; padding-top: 10px;">
         <?php if (!empty($_iconoData)): ?>
-            <img src="<?= $_iconoData ?>" style="width: 25px; height: auto; opacity: 0.8;" />
+            <img src="<?= $_iconoData ?>" style="width: 45px; height: auto; opacity: 0.85;" />
         <?php endif; ?>
     </div>
 </htmlpageheader>
