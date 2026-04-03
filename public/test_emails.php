@@ -21,7 +21,10 @@ App::loadEnv(__DIR__ . '/../.env');
 
 // ── Config ──
 $destinatario = 'fadr2001@gmail.com';
-$baseUrl      = rtrim($_ENV['APP_BASE'] ?? 'http://localhost/tesis_francisco', '/');
+$appBase      = $_ENV['APP_BASE'] ?? '/tesis_francisco';
+$host         = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$protocol     = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+$baseUrl      = (strpos($appBase, 'http') === 0) ? rtrim($appBase, '/') : rtrim($protocol . '://' . $host . $appBase, '/');
 $fecha        = date('d/m/Y H:i');
 
 // ── Resultados ──

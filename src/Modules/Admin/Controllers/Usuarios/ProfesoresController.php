@@ -123,7 +123,10 @@ class ProfesoresController
             // ── 7. Enviar correo de bienvenida (no bloquea) ──
             $emailSent = false;
             try {
-                $baseUrl = rtrim($_ENV['APP_BASE'] ?? 'http://localhost/tesis_francisco', '/');
+                $appBase = $_ENV['APP_BASE'] ?? '/tesis_francisco';
+                $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+                $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+                $baseUrl = (strpos($appBase, 'http') === 0) ? rtrim($appBase, '/') : rtrim($protocol . '://' . $host . $appBase, '/');
                 $emailBody = $this->buildWelcomeEmail($nombres, $apellidos, $email, $cedula, $baseUrl);
                 $emailSent = MailQueueService::send(
                     $email,

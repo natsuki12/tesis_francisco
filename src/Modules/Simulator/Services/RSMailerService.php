@@ -147,7 +147,10 @@ class RSMailerService
         $n     = htmlspecialchars($nombreEstudiante, ENT_QUOTES, 'UTF-8');
         $rif   = htmlspecialchars($rifSucesoral, ENT_QUOTES, 'UTF-8');
         $caso  = htmlspecialchars($casoTitulo, ENT_QUOTES, 'UTF-8');
-        $baseUrl = rtrim($_ENV['APP_BASE'] ?? 'http://localhost/tesis_francisco', '/');
+        $appBase = $_ENV['APP_BASE'] ?? '/tesis_francisco';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+        $baseUrl = (strpos($appBase, 'http') === 0) ? rtrim($appBase, '/') : rtrim($protocol . '://' . $host . $appBase, '/');
 
         $html = "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
@@ -241,7 +244,10 @@ class RSMailerService
         $rif   = htmlspecialchars($rifSucesoral, ENT_QUOTES, 'UTF-8');
         $caso  = htmlspecialchars($casoTitulo, ENT_QUOTES, 'UTF-8');
         $fecha = date('d/m/Y H:i');
-        $baseUrl = rtrim($_ENV['APP_BASE'] ?? 'http://localhost/tesis_francisco', '/');
+        $appBase = $_ENV['APP_BASE'] ?? '/tesis_francisco';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+        $baseUrl = (strpos($appBase, 'http') === 0) ? rtrim($appBase, '/') : rtrim($protocol . '://' . $host . $appBase, '/');
 
         return "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 0;'>
@@ -336,7 +342,10 @@ class RSMailerService
         $caso  = htmlspecialchars($casoTitulo, ENT_QUOTES, 'UTF-8');
         $obs   = htmlspecialchars($observacion, ENT_QUOTES, 'UTF-8');
         $fecha = date('d/m/Y H:i');
-        $baseUrl = rtrim($_ENV['APP_BASE'] ?? 'http://localhost/tesis_francisco', '/');
+        $appBase = $_ENV['APP_BASE'] ?? '/tesis_francisco';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+        $baseUrl = (strpos($appBase, 'http') === 0) ? rtrim($appBase, '/') : rtrim($protocol . '://' . $host . $appBase, '/');
 
         $notaHtml = '';
         if ($nota !== null && $nota !== '') {
