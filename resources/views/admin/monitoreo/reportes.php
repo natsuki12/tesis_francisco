@@ -291,8 +291,11 @@ ob_start();
 
                 <?php if ($notas['promedio'] !== null): ?>
                     <div class="rpt-promedio-general">
-                        <div class="rpt-promedio-general__value"><?= $notas['promedio'] ?></div>
-                        <div class="rpt-promedio-general__label">Promedio general /20</div>
+                        <div class="rpt-promedio-general__value" style="display: flex; align-items: baseline; justify-content: center; gap: 4px;">
+                            <?= $notas['promedio'] ?> 
+                            <span style="font-size: 16px; font-weight: 500; color: var(--gray-400);">/20</span>
+                        </div>
+                        <div class="rpt-promedio-general__label">Promedio general</div>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
